@@ -91,9 +91,13 @@ app.use('/api', (req, res, next) => {
 // Static files for local development; Netlify publishes the frontend directly.
 if (!mediaStore) fs.mkdirSync(uploadDir, { recursive: true });
 if (!mediaStore) {
-  app.get('/admin', (req, res) => res.redirect('/admin/login.html'));
+  // The admin page contains both the sign-in/setup view and the dashboard.
+  // Serving login.html here would bounce /admin ↔ /admin/ because that legacy
+  // file redirects back to the admin root.
+  const sendAdmin = (req, res) => res.sendFile(path.join(adminDir, 'index.html'));
+  app.get(['/admin', '/admin/', '/admin/login', '/admin/login.html'], sendAdmin);
   app.use(express.static(publicDir));
-  if (fs.existsSync(adminDir)) app.use('/admin', express.static(adminDir));
+  if (fs.existsSync(adminDir)) app.use('/admin', express.static(adminDir, { index: false, redirect: false }));
 }
 if (!mediaStore) app.use('/uploads', express.static(uploadDir));
 

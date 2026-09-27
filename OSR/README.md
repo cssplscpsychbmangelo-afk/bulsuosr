@@ -6,7 +6,7 @@ admin dashboard that is **fully standalone with only Neon**.
 - **Only required env var in production:** `DATABASE_URL` (Neon pooled URL)
 - **No `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `JWT_SECRET` env vars required** — admin credentials live in Neon, JWT secret is auto-generated and persisted in `site_settings.jwt_secret`.
 - Public site (local): `http://localhost:4000/`
-- Admin login (local): `http://localhost:4000/admin/login.html`
+- Admin login (local): `http://localhost:4000/admin`
 - Production deployment: [`server/DEPLOY.md`](server/DEPLOY.md)
 
 ## Standalone Admin (like https://rcloudcssp2.netlify.app/admin)
@@ -14,7 +14,7 @@ admin dashboard that is **fully standalone with only Neon**.
 Reference: rCloud CSSP LSC admin uses only Neon. This OSR admin now does the same:
 
 1. **DB-only credentials** — `admins` table in Neon. No env var.
-   - Fresh DB auto-seeds `admin@osr.bulsu.edu.ph / Admin123456!` OR you can create first admin via `/admin/login.html` setup form (`/api/auth/setup`).
+   - Fresh DB auto-seeds `admin@osr.bulsu.edu.ph / Admin123456!` OR you can create the first admin from the `/admin` setup form (`/api/auth/setup`).
 2. **JWT secret persistence** — On first migration, a random 96-char secret is generated and stored as `site_settings.jwt_secret`. `process.env.JWT_SECRET` is populated from DB, so sessions survive Netlify cold starts without env config.
 3. **Only DATABASE_URL required in Netlify Functions env** — set it with Functions scope and redeploy. No need to set `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `JWT_SECRET`.
 4. **Setup flow** — `GET /api/auth/setup-status` tells login page if DB has 0 admins → shows setup form. `POST /api/auth/setup` creates first admin without auth (blocked after first admin exists).
@@ -39,7 +39,7 @@ Admin Dashboard (/admin)
 - Public displays published only; admin manages drafts via CMS; DB is source of truth; frontend fetches from API.
 
 ### 2. Admin Login
-- `/admin/login` with email/password, show/hide, remember (30d vs 8h), forgot placeholder, error/loading, logout (clears cookie).
+- `/admin` has the email/password sign-in, show/hide, remember (30d vs 8h), setup, error/loading, and logout (clears cookie).
 - Standalone: detects if no admin → shows setup form to create first admin in Neon.
 
 ### 3. Admin Account
