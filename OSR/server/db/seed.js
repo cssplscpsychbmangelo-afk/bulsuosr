@@ -105,6 +105,29 @@ export function seedFromFrontend(db) {
       }
     }
 
+    // Site settings — prefill the verified office/contact details so the
+    // admin Settings form starts with real values (all editable from the CMS).
+    const settingsCount = db.prepare('SELECT COUNT(*) as c FROM site_settings').get().c;
+    if (settingsCount === 0) {
+      const defaults = {
+        site_title: 'Office of the Student Regent - Bulacan State University',
+        footer_text: 'Verified announcements, Board Meeting records, initiatives, and student resources.',
+        contact_email: 'bulsusg1983@gmail.com',
+        contact_phone: '+63 44 796 3817',
+        office_line1: 'Student Government (SG) Office',
+        office_line2: 'BulSU Main Campus, Guinhawa',
+        office_city: 'City of Malolos, Bulacan',
+        office_address: 'Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan',
+        office_hours: 'Monday to Friday, within office hours',
+        office_hours_short: 'Office hours • Within office hours',
+        official_page: 'https://www.facebook.com/BulSUSG1983/',
+        footer_credit: 'OSR™ 2025–2026 • Made by Angelo Alvarado'
+      };
+      const stmt = db.prepare('INSERT OR IGNORE INTO site_settings (key, value) VALUES (?,?)');
+      for (const [k, v] of Object.entries(defaults)) stmt.run(k, v);
+      console.log('[Seed] Site settings: defaults');
+    }
+
     // Pages - About
     const pageCount = db.prepare('SELECT COUNT(*) as c FROM pages WHERE slug=?').get('about')?.c || 0;
     // Use a simple check

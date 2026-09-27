@@ -72,27 +72,103 @@
     console.info('[CMS] No API here ('+reason+') — showing built-in content.');
   }
 
-  // Patch DOM after original render
+  // Replace the built-in content arrays with published CMS data and re-render.
+  // The inline site script declares ANNOUNCEMENTS/RESOURCES as top-level consts,
+  // so we mutate them in place (splice) rather than reassigning.
+  function replaceArray(target, items){
+    if(!Array.isArray(target) || !Array.isArray(items)) return false;
+    target.length = 0;
+    target.push(...items);
+    return true;
+  }
+
   function patchAnnouncements(data){
     if(!data || !data.length) return;
-    // Try to find the announcements list container and re-render with API data
-    // The original site uses #annList or similar - we need to detect
-    const containers = ['#annList','#announcementsList','#homeAnnouncements','.announcements-list','[data-announcements]'];
-    let container = null;
-    for(const sel of containers){
-      container = document.querySelector(sel);
-      if(container) break;
+    const mapped = data.map(a => ({
+      id: a.id,
+      title: a.title,
+      category: a.category || 'Announcement & Letter',
+      date: a.date || '',
+      summary: a.summary || '',
+      content: a.content || '',
+      externalLink: a.external_link || '',
+      image: a.image || '',
+      is_featured: !!a.is_featured
+    }));
+    if(replaceArray(window.ANNOUNCEMENTS || (typeof ANNOUNCEMENTS !== 'undefined' ? ANNOUNCEMENTS : null), mapped)){
+      try{ window.renderAnnouncements && window.renderAnnouncements(); }catch(e){ console.warn('[CMS] re-render announcements failed', e); }
+      try{ window.renderHomeAnnouncements && window.renderHomeAnnouncements(); }catch(e){}
+      console.log('[CMS] Announcements hydrated:', mapped.length);
     }
-    // Fallback: find by looking for feed items
-    if(!container){
-      const feed = document.querySelector('.feed, #page-announcements');
-      if(feed) container = feed;
-    }
-    if(!container) return;
-    // If we can't patch via original render, just log that we have data
-    console.log('[CMS] Patch announcements with', data.length, 'items');
-    // Store globally for any custom handler
     window.__CMS_ANNOUNCEMENTS = data;
+  }
+
+  function patchResources(data){
+    if(!data || !data.length) return;
+    const mapped = data.map(r => ({
+      id: r.id,
+      title: r.title,
+      category: r.category || 'GENERAL',
+      description: r.description || '',
+      link: r.external_link || r.file_url || '#'
+    }));
+    if(replaceArray(window.RESOURCES || (typeof RESOURCES !== 'undefined' ? RESOURCES : null), mapped)){
+      try{ window.renderResources && window.renderResources(); }catch(e){ console.warn('[CMS] re-render resources failed', e); }
+      console.log('[CMS] Resources hydrated:', mapped.length);
+    }
+    window.__CMS_RESOURCES = data;
+  }
+
+  // Apply admin-managed site settings (Settings → Website settings) to the
+  // footer and contact cards. Only non-empty values override the built-ins.
+  function applySiteSettings(s){
+    if(!s || typeof s !== 'object') return;
+    const text = (id, v) => { const el = document.getElementById(id); if(el && v) el.textContent = v; };
+    const mail = (id, v) => { const el = document.getElementById(id); if(el && v){ el.textContent = v; el.href = 'mailto:' + v; } };
+    const href = (id, v) => { const el = document.getElementById(id); if(el && v) el.href = v; };
+
+    text('foLine1', s.office_line1);
+    text('foLine2', s.office_line2);
+    text('foCity', s.office_city);
+    mail('foEmail', s.contact_email);
+    text('foPhone', s.contact_phone);
+    text('foHours', s.office_hours_short);
+    text('footerCredit', s.footer_credit);
+
+    mail('hcEmail', s.contact_email);
+    text('hcOffice', s.office_address);
+    text('hcPhone', s.contact_phone);
+    text('hcHours', s.office_hours);
+    href('hcPage', s.official_page);
+    href('hcMailto', s.contact_email ? 'mailto:' + s.contact_email : null);
+
+    mail('acEmail', s.contact_email);
+    text('acPhone', s.contact_phone);
+    text('acAddress', s.office_address);
+    text('acHours', s.office_hours);
+    href('acMailto', s.contact_email ? 'mailto:' + s.contact_email : null);
+
+    if(s.site_title) document.title = s.site_title;
+
+    // Keep the copy-contact block in sync with whatever the admin saved.
+    window.OSR_CONTACT = Object.assign(window.OSR_CONTACT || {}, {
+      email: s.contact_email || (window.OSR_CONTACT || {}).email,
+      phone: s.contact_phone || (window.OSR_CONTACT || {}).phone,
+      office: s.office_address || (window.OSR_CONTACT || {}).office,
+      hours: s.office_hours || (window.OSR_CONTACT || {}).hours
+    });
+    console.log('[CMS] Site settings applied');
+  }
+
+  async function fetchSettings(){
+    if(!backendAvailable) return null;
+    try{
+      const r = await fetch(`${API_BASE}/api/settings/public`, {credentials:'include'});
+      if(!r.ok || !isJson(r)) return null;
+      const j = await r.json();
+      if(j && j.available === false) return null; // static-host stub
+      return j;
+    }catch(e){ return null; }
   }
 
   // Guide data patch: override perPageGuides if available
@@ -197,12 +273,17 @@
     // Patch guides immediately
     if(guides) patchGuides(guides);
 
+    // Apply admin-managed site settings (office, contact, footer credit)
+    const settings = await fetchSettings();
+    if(settings) applySiteSettings(settings);
+
     // Patch announcements etc after a delay to let original render finish
     setTimeout(()=>{
       if(anns) patchAnnouncements(anns);
-      // For other types, similar patching could be done
-      // For now, we store the data and let the public site keep its hardcoded fallback
-      // The important part is that the data is available for any future render
+      if(ress) patchResources(ress);
+      // Other types (board, initiatives, calendar) stay on the built-in
+      // content until their renderers support hydration; the data is kept
+      // on window.__CMS_DATA for future use.
       console.log('[CMS] Data hydrated', window.__CMS_DATA);
 
       // Trigger a custom event so the original script could react if it listens

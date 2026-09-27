@@ -1693,15 +1693,15 @@ img,svg{max-width:100%; height:auto}
           </div>
           <div class="about-card">
             <h3>Contact OSR</h3>
-            <div class="kv"><b>Email</b> <span><a href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a></span></div>
-            <div class="kv"><b>Office</b> <span>Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan</span></div>
-            <div class="kv"><b>Telephone</b> <span>+63 44 796 3817</span></div>
-            <div class="kv"><b>Hours</b> <span>Monday to Friday, within office hours</span></div>
-            <div class="kv"><b>Official page</b> <span><a href="https://www.facebook.com/BulSUSG1983/" target="_blank" rel="noopener">BulSU Student Government on Facebook</a></span></div>
+            <div class="kv"><b>Email</b> <span><a id="hcEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a></span></div>
+            <div class="kv"><b>Office</b> <span id="hcOffice">Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan</span></div>
+            <div class="kv"><b>Telephone</b> <span id="hcPhone">+63 44 796 3817</span></div>
+            <div class="kv"><b>Hours</b> <span id="hcHours">Monday to Friday, within office hours</span></div>
+            <div class="kv"><b>Official page</b> <span><a id="hcPage" href="https://www.facebook.com/BulSUSG1983/" target="_blank" rel="noopener">BulSU Student Government on Facebook</a></span></div>
             <div class="divider"></div>
             <p class="small muted">The OSR is housed at the Student Government office. Messages are triaged within office hours.</p>
             <div class="row">
-              <a class="btn btn--sm" href="mailto:bulsusg1983@gmail.com">Send email</a>
+              <a class="btn btn--sm" id="hcMailto" href="mailto:bulsusg1983@gmail.com">Send email</a>
               <button class="btn btn--sm btn--ghost" id="copyContact">Copy contact block</button>
             </div>
           </div>
@@ -1832,14 +1832,14 @@ img,svg{max-width:100%; height:auto}
           </div>
           <div class="about-card">
             <h3>Contact information</h3>
-            <div class="kv"><b>Email</b> <span><a href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a></span></div>
-            <div class="kv"><b>Telephone</b> <span>+63 44 796 3817</span></div>
-            <div class="kv"><b>Office address</b> <span>Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan</span></div>
-            <div class="kv"><b>Office hours</b> <span>Monday to Friday, within office hours</span></div>
+            <div class="kv"><b>Email</b> <span><a id="acEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a></span></div>
+            <div class="kv"><b>Telephone</b> <span id="acPhone">+63 44 796 3817</span></div>
+            <div class="kv"><b>Office address</b> <span id="acAddress">Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan</span></div>
+            <div class="kv"><b>Office hours</b> <span id="acHours">Monday to Friday, within office hours</span></div>
             <div class="kv"><b>Response time</b> <span>Within office hours</span></div>
             <div class="row" style="margin-top:10px">
               <a class="btn btn--sm btn--red" href="#help" data-nav>Contact form</a>
-              <a class="btn btn--sm btn--ghost" href="mailto:bulsusg1983@gmail.com">Send email</a>
+              <a class="btn btn--sm btn--ghost" id="acMailto" href="mailto:bulsusg1983@gmail.com">Send email</a>
             </div>
           </div>
           <div class="about-card">
@@ -2187,8 +2187,8 @@ img,svg{max-width:100%; height:auto}
     </div>
     <div>
       <h4>Office</h4>
-      <p>Student Government (SG) Office<br>BulSU Main Campus, Guinhawa<br>City of Malolos, Bulacan<br><a href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a> • +63 44 796 3817</p>
-      <div class="mono" style="font-size:11px; color:#9A9590; margin-top:8px; letter-spacing:0.04em; text-transform:uppercase">Office hours • Within office hours</div>
+      <p><span id="foLine1">Student Government (SG) Office</span><br><span id="foLine2">BulSU Main Campus, Guinhawa</span><br><span id="foCity">City of Malolos, Bulacan</span><br><a id="foEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a> • <span id="foPhone">+63 44 796 3817</span></p>
+      <div class="mono" id="foHours" style="font-size:11px; color:#9A9590; margin-top:8px; letter-spacing:0.04em; text-transform:uppercase">Office hours • Within office hours</div>
       <div class="row" style="margin-top:14px">
         <a class="btn btn--sm" href="#help" data-nav style="background:white; color:var(--ink); border-color:white">Raise a concern</a>
         <a class="btn btn--sm btn--ghost" href="#about" data-nav style="border-color:rgba(255,255,255,0.18); color:white">Contact</a>
@@ -2197,7 +2197,7 @@ img,svg{max-width:100%; height:auto}
   </div>
   <div class="footer__bar">
     <span>© <span id="year"></span> Office of the Student Regent, Bulacan State University. Verified content only.</span>
-    <span class="mono small">OSR™ 2025–2026 • Made by Angelo Alvarado</span>
+    <span class="mono small" id="footerCredit">OSR™ 2025–2026 • Made by Angelo Alvarado</span>
   </div>
 </footer>
 
@@ -2574,8 +2574,17 @@ $("#concernForm").addEventListener("submit", e=>{
   safeRemove("osr-concern");
   setTimeout(()=>{ e.target.reset(); updateAnonState(); setConcernStep(1); }, 900);
 });
+// Shared contact details — defaults below; the admin CMS (Settings → Website
+// settings) can override them at runtime via /api/settings/public.
+window.OSR_CONTACT = window.OSR_CONTACT || {
+  email:"bulsusg1983@gmail.com",
+  phone:"+63 44 796 3817",
+  office:"Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan",
+  hours:"Monday to Friday, within office hours"
+};
 $("#copyContact").addEventListener("click", async ()=>{
-  const text=`Office of the Student Regent, Bulacan State University\nEmail: bulsusg1983@gmail.com\nTelephone: +63 44 796 3817\nOffice: Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan\nHours: Monday to Friday, within office hours`;
+  const c=window.OSR_CONTACT;
+  const text=`Office of the Student Regent, Bulacan State University\nEmail: ${c.email}\nTelephone: ${c.phone}\nOffice: ${c.office}\nHours: ${c.hours}`;
   const ok=await safeCopy(text); toast(ok?"Contact block copied":"Copy failed — select and copy manually");
 });
 
