@@ -41,7 +41,7 @@ npm start
 
 Open `http://localhost:4000/admin`. Without `DATABASE_URL`, local development
 uses SQLite and local files. With `DATABASE_URL`, it uses Neon directly.
-Default login on fresh DB: `admin@osr.bulsu.edu.ph / Admin123456!` OR setup form at `/admin/login.html`.
+Default login on a fresh DB: `admin@osr.bulsu.edu.ph / Admin123456!`. The setup form is available on `/admin` when no account exists.
 
 ## Tests
 
@@ -61,4 +61,4 @@ Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
 - `OSR/server/middleware/auth.js`: `getJwtSecret()` no longer throws in production; generates ephemeral if missing, persists via DB.
 - `OSR/server/netlify/cms.mjs`: removed 503 for missing `JWT_SECRET`; only `DATABASE_URL` required. Loads secret from DB if env missing.
 - `OSR/server/routes/auth.js`: added `GET /setup-status` and `POST /setup` for first-admin creation without env.
-- `OSR/admin/login.html`: new standalone UI with setup form, health check showing "Neon standalone".
+- `OSR/admin/index.html`: standalone login/setup/dashboard UI, including a health check showing "Neon standalone".

@@ -24,7 +24,7 @@ Netlify serves the website, admin pages, and API functions. Your Neon Postgres d
    - `ALLOWED_ORIGINS` — for cross-origin API if public site on different domain.
 
 3. Remove obsolete vars if present: `OSR_BACKEND_URL`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` are ignored now.
-4. Trigger fresh deployment. Visit `/admin/login.html`:
+4. Trigger a fresh deployment. Visit `/admin`:
 
    - If DB empty: setup form appears → create first admin (stored in Neon only)
    - If DB already seeded: default login `admin@osr.bulsu.edu.ph / Admin123456!` works
@@ -48,7 +48,7 @@ First API call initializes private `osr` Postgres schema and content in one tran
 - **503 "Cannot connect to the database"** — verify `DATABASE_URL` correct and Neon running.
 - **503 "Database authentication failed"** — wrong user/pass in `DATABASE_URL`.
 - **503 other message** — read it; it tells exactly what failed.
-- **401 on login** — use default `admin@osr.bulsu.edu.ph / Admin123456!` or your setup-created admin. If forgot, use SQL to delete admins or `DELETE FROM osr.admins` then re-setup via `/admin/login.html`.
+- **401 on login** — use default `admin@osr.bulsu.edu.ph / Admin123456!` or your setup-created admin. If forgot, use SQL to delete admins or `DELETE FROM osr.admins` then re-setup via `/admin`.
 - **429** — wait 15 min for login rate limit reset.
 - **Missing functions/admin files** — deploy through Git with root config. Drag-and-drop cannot deploy API.
 

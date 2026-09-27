@@ -5,6 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { initDb } from '../db/init.js';
 import { seedFromFrontend } from '../db/seed.js';
+import { createApp } from '../app.js';
 
 test('local SQLite initialization, seed and async rollback still work', async () => {
   // Standalone mode: no ADMIN_PASSWORD env needed
@@ -19,5 +20,20 @@ test('local SQLite initialization, seed and async rollback still work', async ()
       throw new Error('rollback');
     })());
     assert.equal(db.prepare('SELECT COUNT(*) AS c FROM admins').get().c, 1);
+
+    const app = createApp(db);
+    const server = await new Promise(resolve => {
+      const listener = app.listen(0, '127.0.0.1', () => resolve(listener));
+    });
+    try {
+      const port = server.address().port;
+      for (const route of ['/admin', '/admin/', '/admin/login', '/admin/login.html']) {
+        const response = await fetch(`http://127.0.0.1:${port}${route}`, { redirect: 'manual' });
+        assert.equal(response.status, 200, `${route} must render the single admin page`);
+        assert.match(await response.text(), /<title>OSR Admin — Neon Standalone<\/title>/);
+      }
+    } finally {
+      await new Promise(resolve => server.close(resolve));
+    }
   } finally { db?.close(); await fs.rm(dir, { recursive: true, force: true }); }
 });
