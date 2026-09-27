@@ -9,15 +9,37 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  :root{--red:#A6192E;--red-2:#8F1428;--ink:#111214;--stone:#6B6560;--paper:#F7F5F2;--line:#E9E6E1;--white:#fff}
+  :root{--red:#A6192E;--red-2:#8F1428;--ink:#111214;--stone:#6B6560;--paper:#F7F5F2;--line:#E9E6E1;--white:#fff;--ok:#115E34;--ok-bg:#E6F4EA}
   *{box-sizing:border-box}
   body{margin:0;min-height:100vh;padding:20px;display:grid;place-items:center;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif}
-  .card{width:min(540px,100%);padding:28px;background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 44px rgba(0,0,0,.08)}
+  .card{width:min(560px,100%);padding:28px;background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 44px rgba(0,0,0,.08)}
   .eyebrow{margin:0 0 9px;color:var(--red);font:600 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
   h1{margin:0 0 10px;font:600 clamp(23px,5vw,28px)/1.15 'Fraunces',serif;letter-spacing:-.02em}
   p{margin:0 0 12px;color:var(--stone);font-size:13.5px;line-height:1.55}
-  .steps{margin:16px 0;padding:14px 16px;background:var(--paper);border:1px solid var(--line);border-radius:11px}
-  .steps h2{margin:0 0 8px;font:600 11px 'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+  .panel{margin:14px 0;padding:14px 16px;background:var(--paper);border:1px solid var(--line);border-radius:11px}
+  .panel h2{margin:0 0 8px;font:600 11px 'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+  .panel p{font-size:12.5px}
+  .status{display:flex;gap:10px;align-items:flex-start;margin:0;padding:11px 12px;border-radius:9px;border:1px solid var(--line);background:#fff;font-size:12.5px;line-height:1.5;color:var(--stone)}
+  .status b{color:var(--ink)}
+  .status.ok{background:var(--ok-bg);border-color:#B7E1C6;color:var(--ok)}
+  .status.ok b{color:var(--ok)}
+  .status.err{background:#FFF0F2;border-color:#FFD0D6;color:var(--red)}
+  .status.err b{color:var(--red)}
+  .dot{flex:0 0 auto;width:9px;height:9px;margin-top:5px;border-radius:50%;background:var(--stone);opacity:.55}
+  .dot.pulse{animation:pulse 1.1s ease-in-out infinite;background:var(--red);opacity:1}
+  .dot.ok{background:var(--ok);opacity:1}
+  @keyframes pulse{50%{opacity:.25}}
+  .connect-row{display:flex;gap:8px;margin-top:10px}
+  .connect-row input{flex:1;min-width:0;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:#fff;font:400 13px 'IBM Plex Sans',sans-serif;outline:none}
+  .connect-row input:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(166,25,46,.08)}
+  .btn{appearance:none;border:1px solid var(--red);background:var(--red);color:#fff;padding:10px 16px;border-radius:999px;font:600 12.5px 'IBM Plex Sans',sans-serif;cursor:pointer;white-space:nowrap}
+  .btn:hover{background:var(--red-2)}
+  .btn:disabled{opacity:.6;cursor:wait}
+  .btn--ghost{background:#fff;color:var(--ink);border-color:var(--line)}
+  .btn--ghost:hover{background:var(--paper)}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .saved{margin-top:10px;padding:11px 12px;border:1px dashed var(--line);border-radius:9px;background:#fff;font-size:12.5px;color:var(--stone)}
+  .saved code{display:block;margin:6px 0;word-break:break-all}
   ol{margin:0;padding-left:18px;color:var(--ink);font-size:13px;line-height:1.65}
   li+li{margin-top:3px}
   code{padding:2px 5px;border:1px solid var(--line);border-radius:5px;background:#fff;font:500 11px 'IBM Plex Mono',monospace;overflow-wrap:anywhere}
@@ -25,7 +47,7 @@
   .deploy-note{margin:14px 0;color:var(--stone);font-size:12px;line-height:1.5}
   .back{display:inline-flex;align-items:center;gap:6px;margin-top:3px;color:var(--red);font-size:13px;font-weight:600;text-decoration:none}
   .back:hover{color:var(--red-2);text-decoration:underline}
-  @media(max-width:480px){body{padding:12px}.card{padding:20px;border-radius:13px}.steps{padding:12px}}
+  @media(max-width:480px){body{padding:12px}.card{padding:20px;border-radius:13px}.panel{padding:12px}.connect-row{flex-direction:column}.connect-row .btn{width:100%}}
 </style>
 </head>
 <body>
@@ -34,7 +56,40 @@
   <h1>The CMS backend is not connected here</h1>
   <p>This public site is hosted as static files on Netlify. The admin dashboard requires the OSR Express server and database, so this host cannot sign you in.</p>
 
-  <section class="steps" aria-labelledby="local-setup-title">
+  <section class="panel" aria-labelledby="probe-title">
+    <h2 id="probe-title">Live connection check</h2>
+    <div class="status" id="probeBox" role="status">
+      <span class="dot pulse" id="probeDot"></span>
+      <div id="probeText"><b>Checking…</b><br/>Looking for a backend behind this address (the proxy may have just been connected).</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn--ghost" id="probeRetry" type="button">Check again</button>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="direct-title">
+    <h2 id="direct-title">Backend already deployed? Open it directly</h2>
+    <p>If the Express server is running on Render (or another Node host), paste its web address below. This page will verify it and take you straight to its admin login — no Netlify proxy needed for this step.</p>
+    <div class="connect-row">
+      <input id="backendUrl" type="url" inputmode="url" autocomplete="url" spellcheck="false"
+             placeholder="https://your-service.onrender.com" aria-label="Backend origin URL"/>
+      <button class="btn" id="connectBtn" type="button">Connect</button>
+    </div>
+    <div class="status" id="connectBox" role="status" style="display:none;margin-top:10px">
+      <span class="dot" id="connectDot"></span>
+      <div id="connectText"></div>
+    </div>
+    <div class="saved" id="savedBox" style="display:none">
+      <b style="color:var(--ink)">Remembered backend</b>
+      <code id="savedUrl"></code>
+      <div class="btn-row" style="margin-top:0">
+        <button class="btn btn--ghost" id="openSaved" type="button">Open admin</button>
+        <button class="btn btn--ghost" id="forgetSaved" type="button">Forget</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="local-setup-title">
     <h2 id="local-setup-title">Run the CMS locally</h2>
     <ol>
       <li>From the repository root, run <code>cd OSR/server</code> and <code>npm ci</code>.</li>
@@ -44,8 +99,167 @@
     <p class="local-url">Then open <code>http://localhost:4000/admin/login.html</code>.</p>
   </section>
 
-  <p class="deploy-note">To use the CMS on the live domain, the Express server must be deployed to a Node host and Netlify must proxy the admin and API routes to it.</p>
+  <p class="deploy-note">To use the CMS on the live domain, the Express server must be deployed to a Node host and Netlify must proxy the admin and API routes to it (set <code>OSR_BACKEND_URL</code> in Netlify → Site configuration → Environment variables, then redeploy).</p>
   <a class="back" href="/" aria-label="Return to the public OSR website">← Return to the public website</a>
 </main>
+
+<script>
+(function(){
+  'use strict';
+  var STORE_KEY = 'osr_backend_url';
+
+  function $(id){ return document.getElementById(id); }
+  function setStatus(box, dot, text, kind, html){
+    box.style.display = 'flex';
+    box.className = 'status' + (kind ? ' ' + kind : '');
+    dot.className = 'dot' + (kind === 'checking' ? ' pulse' : kind === 'ok' ? ' ok' : '');
+    text.innerHTML = html;
+  }
+  function escapeHtml(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function fetchWithTimeout(url, ms){
+    var ctrl = new AbortController();
+    var timer = setTimeout(function(){ ctrl.abort(); }, ms);
+    return fetch(url, { signal: ctrl.signal, cache: 'no-store' })
+      .finally(function(){ clearTimeout(timer); });
+  }
+  function normalizeOrigin(raw){
+    var value = String(raw || '').trim().replace(/\/+$/, '');
+    if (!value) throw new Error('Enter the backend address first.');
+    if (!/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(value)) value = 'https://' + value;
+    var url;
+    try { url = new URL(value); }
+    catch (e) { throw new Error('That address is not a valid URL.'); }
+    var isLocal = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+    if (url.protocol !== 'https:' && !(isLocal && url.protocol === 'http:')) {
+      throw new Error('Use an https:// address (http:// is only allowed for localhost).');
+    }
+    return url.origin;
+  }
+  function loadSaved(){
+    try { return localStorage.getItem(STORE_KEY) || ''; } catch (e) { return ''; }
+  }
+  function saveOrigin(origin){
+    try { localStorage.setItem(STORE_KEY, origin); } catch (e) {}
+  }
+  function forgetOrigin(){
+    try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  }
+
+  /* ── 1. Same-origin probe: is the Netlify → backend proxy live now? ── */
+  var probeBox = $('probeBox'), probeDot = $('probeDot'), probeText = $('probeText');
+  var probing = false;
+  function probeSameOrigin(){
+    if (probing) return;
+    probing = true;
+    setStatus(probeBox, probeDot, probeText, 'checking',
+      '<b>Checking…</b><br/>Asking this host for <code>/api/health</code>.');
+    fetchWithTimeout('/api/health?t=' + Date.now(), 9000)
+      .then(function(r){
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(data){
+        if (data && data.ok === true) {
+          setStatus(probeBox, probeDot, probeText, 'ok',
+            '<b>Backend detected.</b><br/>Opening the real admin login…');
+          setTimeout(function(){ location.href = '/admin/login.html'; }, 900);
+        } else {
+          throw new Error('static stub');
+        }
+      })
+      .catch(function(){
+        setStatus(probeBox, probeDot, probeText, '',
+          '<b>Still static-only.</b><br/>This host serves the fallback page, so the Netlify proxy is not connected yet. Use the direct-backend option below, or finish the proxy setup and press “Check again”.');
+      })
+      .finally(function(){ probing = false; });
+  }
+  $('probeRetry').addEventListener('click', probeSameOrigin);
+
+  /* ── 2. Direct backend connection (works without the Netlify proxy) ── */
+  var input = $('backendUrl'), connectBtn = $('connectBtn');
+  var connectBox = $('connectBox'), connectDot = $('connectDot'), connectText = $('connectText');
+  var savedBox = $('savedBox'), savedUrl = $('savedUrl');
+  var connecting = false;
+
+  function refreshSaved(){
+    var saved = loadSaved();
+    if (saved) {
+      savedBox.style.display = 'block';
+      savedUrl.textContent = saved;
+      if (!input.value) input.value = saved;
+    } else {
+      savedBox.style.display = 'none';
+    }
+  }
+
+  function connectTo(origin, opts){
+    opts = opts || {};
+    if (connecting) return;
+    connecting = true;
+    connectBtn.disabled = true;
+    setStatus(connectBox, connectDot, connectText, 'checking',
+      '<b>Contacting ' + escapeHtml(origin) + '…</b><br/>First Render deploys and cold starts can take up to a minute.');
+    fetchWithTimeout(origin + '/api/health?t=' + Date.now(), 45000)
+      .then(function(r){
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.json();
+      })
+      .then(function(data){
+        if (!data || data.ok !== true) throw new Error('unexpected answer');
+        saveOrigin(origin);
+        refreshSaved();
+        setStatus(connectBox, connectDot, connectText, 'ok',
+          '<b>Backend is healthy.</b><br/>Opening its admin login…');
+        setTimeout(function(){ location.href = origin + '/admin/login.html'; }, 900);
+      })
+      .catch(function(err){
+        var isAbort = err && err.name === 'AbortError';
+        var msg = isAbort
+          ? '<b>No answer yet.</b><br/>The backend did not respond within 45 seconds. On Render, a first deploy takes a few minutes — wait for its dashboard to report “Live”, then try again.'
+          : '<b>Could not verify automatically.</b><br/>The address may be wrong, the service may still be starting, or its <code>ALLOWED_ORIGINS</code> may not list this site (browsers then block the check).';
+        msg += '<br/><br/>If the backend is running, you can still open it directly: ' +
+          '<a href="' + escapeHtml(origin) + '/admin/login.html"><b>open ' +
+          escapeHtml(origin) + '/admin/login.html</b></a>';
+        if (!opts.quiet) setStatus(connectBox, connectDot, connectText, 'err', msg);
+      })
+      .finally(function(){ connecting = false; connectBtn.disabled = false; });
+  }
+
+  connectBtn.addEventListener('click', function(){
+    var origin;
+    try { origin = normalizeOrigin(input.value); }
+    catch (e) {
+      setStatus(connectBox, connectDot, connectText, 'err', '<b>Check the address.</b><br/>' + escapeHtml(e.message));
+      return;
+    }
+    if (origin.indexOf('http://') === 0) {
+      setStatus(connectBox, connectDot, connectText, '',
+        '<b>Local backend?</b><br/>Open it directly instead: ' +
+        '<a href="http://localhost:4000/admin/login.html"><b>http://localhost:4000/admin/login.html</b></a>');
+      return;
+    }
+    connectTo(origin);
+  });
+  input.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') { e.preventDefault(); connectBtn.click(); }
+  });
+  $('openSaved').addEventListener('click', function(){
+    var saved = loadSaved();
+    if (saved) connectTo(saved);
+  });
+  $('forgetSaved').addEventListener('click', function(){
+    forgetOrigin();
+    refreshSaved();
+    connectBox.style.display = 'none';
+  });
+
+  refreshSaved();
+  probeSameOrigin();
+})();
+</script>
 </body>
 </html>

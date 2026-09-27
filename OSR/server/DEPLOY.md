@@ -136,3 +136,53 @@ Open `http://localhost:4000/` for the site and
   Blueprint and storage strategy before removing the persistent disk.
 - No service has been created in Render or Netlify from this workspace. The
   hosting account must perform the account-authorized deployment steps above.
+
+## Troubleshooting
+
+### Netlify `/admin` still shows "The CMS backend is not connected here"
+
+That page means Netlify served the static fallback, so the proxy is not active
+for this deploy. Work through this checklist:
+
+1. **Backend live?** Open `https://<your-render-service>.onrender.com/api/health`
+   directly. It must return JSON with `"ok": true`. A first Render deploy takes
+   a few minutes; wait for the dashboard to report "Live".
+2. **Shortcut (no proxy needed):** the "backend not connected" page has a
+   "Backend already deployed?" box. Paste the Render origin there and press
+   **Connect** — it verifies `/api/health` and jumps straight to the backend's
+   own admin login at `https://<render-host>/admin/login.html`, where the API
+   and dashboard share the same origin. The address is remembered in that
+   browser for next time.
+3. **Proxy configured?** In Netlify → **Site configuration → Environment
+   variables**, `OSR_BACKEND_URL` must be the backend **origin only**, e.g.
+   `https://bulsu-osr-cms.onrender.com` (no `/api`, path, or trailing slash).
+4. **Redeployed after setting it?** The `_redirects` proxy rules are generated
+   at build time. After adding or changing `OSR_BACKEND_URL`, trigger a new
+   Netlify deploy (Deploys → Trigger deploy). Merely saving the variable does
+   not update the live site.
+5. **Git or manual deploy?** The build script only runs on Git-connected and CLI
+   builds. Drag-and-drop zips use the `_redirects` file as committed, which is
+   the static fallback. Regenerate it before zipping (see
+   [`../osr-website/README_NETLIFY.md`](../osr-website/README_NETLIFY.md#manual-and-drag-and-drop-deploys)).
+6. **Verify:** `https://<netlify-site>/api/health` must return `{"ok":true,…}`.
+   If it returns the `available:false` stub, the proxy rules are not in effect.
+   The fallback page also self-checks this and offers a "Check again" button —
+   if it detects the proxy, it forwards you to the real login automatically.
+
+### Admin login says "Invalid credentials" locally
+
+`ADMIN_PASSWORD` is used **only when the database has no admins yet**. If the
+server opens an existing database file, it logs how many admins already exist
+and ignores `ADMIN_PASSWORD`. Common causes:
+
+- The server is using a different database file than you think. `.env` sets
+  `DB_PATH` (default `./db/osr.db` relative to `OSR/server`). The startup log
+  names the file it opened.
+- A stale `osr.db` from an earlier setup (with an unknown password) is being
+  reused. Either delete the local `osr.db*` files for a clean start (content is
+  lost), or keep the content and reset just the logins:
+  ```bash
+  cd OSR/server
+  npm run reset:admin -- --confirm
+  npm start   # re-creates the admin from ADMIN_EMAIL + ADMIN_PASSWORD in .env
+  ```

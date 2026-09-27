@@ -11,7 +11,15 @@
   // cross-origin use, that API must allow this site's exact origin via ALLOWED_ORIGINS.
   const cfg = window.OSR_CONFIG || {};
   const metaApi = document.querySelector('meta[name="osr-api-base"]');
-  const API_BASE = (cfg.apiBase || (metaApi && metaApi.getAttribute('content')) || '').replace(/\/+$/, '');
+  // A backend remembered via the "backend not connected" page lets the public
+  // site hydrate live content without the Netlify proxy, as long as the
+  // backend's ALLOWED_ORIGINS includes this site's origin.
+  let storedBase = '';
+  try { storedBase = localStorage.getItem('osr_backend_url') || ''; } catch (e) { storedBase = ''; }
+  const API_BASE = (cfg.apiBase || (metaApi && metaApi.getAttribute('content')) || storedBase || '').replace(/\/+$/, '');
+  if (storedBase && !cfg.apiBase && !(metaApi && metaApi.getAttribute('content'))) {
+    console.info('[CMS] Using remembered backend ' + API_BASE);
+  }
 
   // Flipped to false as soon as we learn there is no backend behind this host.
   let backendAvailable = true;
@@ -142,25 +150,26 @@
     if(!s || typeof s !== 'object') return;
     const text = (id, v) => { const el = document.getElementById(id); if(el && v) el.textContent = v; };
     const mail = (id, v) => { const el = document.getElementById(id); if(el && v){ el.textContent = v; el.href = 'mailto:' + v; } };
+    const tel = (id, v) => { const el = document.getElementById(id); if(el && v){ el.textContent = v; if(el.tagName === 'A') el.href = 'tel:' + String(v).replace(/[^\d+]/g, ''); } };
     const href = (id, v) => { const el = document.getElementById(id); if(el && v) el.href = v; };
 
     text('foLine1', s.office_line1);
     text('foLine2', s.office_line2);
     text('foCity', s.office_city);
     mail('foEmail', s.contact_email);
-    text('foPhone', s.contact_phone);
+    tel('foPhone', s.contact_phone);
     text('foHours', s.office_hours_short);
     text('footerCredit', s.footer_credit);
 
     mail('hcEmail', s.contact_email);
     text('hcOffice', s.office_address);
-    text('hcPhone', s.contact_phone);
+    tel('hcPhone', s.contact_phone);
     text('hcHours', s.office_hours);
     href('hcPage', s.official_page);
     href('hcMailto', s.contact_email ? 'mailto:' + s.contact_email : null);
 
     mail('acEmail', s.contact_email);
-    text('acPhone', s.contact_phone);
+    tel('acPhone', s.contact_phone);
     text('acAddress', s.office_address);
     text('acHours', s.office_hours);
     href('acMailto', s.contact_email ? 'mailto:' + s.contact_email : null);

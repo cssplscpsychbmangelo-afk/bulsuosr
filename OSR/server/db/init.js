@@ -231,6 +231,13 @@ export function initDb() {
     const hash = bcrypt.hashSync(password, 10);
     db.prepare('INSERT INTO admins (email, password_hash, name) VALUES (?,?,?)').run(email, hash, 'OSR Administrator');
     console.log(`[DB] Seeded the initial admin account for ${email}.`);
+  } else if (process.env.ADMIN_PASSWORD) {
+    // The seed password only applies to an empty admins table. Logging this
+    // saves a confusing "Invalid credentials" loop when the server is started
+    // against an existing database file.
+    console.log(`[DB] ${adminCount} admin account(s) already exist in ${dbPath}; ADMIN_PASSWORD is ignored on this startup. To recover a lost local password, run: npm run reset:admin -- --confirm`);
+  } else {
+    console.log(`[DB] Opened existing database at ${dbPath} (${adminCount} admin account(s)).`);
   }
 
   // Seed guide_steps if empty

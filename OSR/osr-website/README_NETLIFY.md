@@ -58,6 +58,13 @@ the admin password in Netlify.
 - Upload a test file and make sure its `/uploads/...` URL loads from the Netlify
   domain.
 
+If `/admin` still shows the “backend not connected” page after the redeploy,
+work through the troubleshooting checklist in
+[`../server/DEPLOY.md`](../server/DEPLOY.md#troubleshooting). In particular: the
+variable alone is not enough — Netlify must run a fresh build afterwards — and
+the fallback page itself offers a direct-backend shortcut plus a “Check again”
+button once the proxy is live.
+
 ## Manual and drag-and-drop deploys
 
 The Git build runs `netlify-build.mjs` automatically. For a one-off CLI deployment

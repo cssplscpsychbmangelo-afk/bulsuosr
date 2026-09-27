@@ -121,18 +121,19 @@ export function seedFromFrontend(db) {
         office_hours: 'Monday to Friday, within office hours',
         office_hours_short: 'Office hours • Within office hours',
         official_page: 'https://www.facebook.com/BulSUSG1983/',
-        footer_credit: 'OSR 2026-2027™'
+        footer_credit: 'OSR™ 2026–2027 • Made by Angelo Alvarado'
       };
       const stmt = db.prepare('INSERT OR IGNORE INTO site_settings (key, value) VALUES (?,?)');
       for (const [k, v] of Object.entries(defaults)) stmt.run(k, v);
       console.log('[Seed] Site settings: defaults');
     }
 
-    // Update only the bundled legacy default; preserve any footer text an admin customized.
+    // Restore the author credit on databases that still carry the stripped
+    // default; preserve any footer text an admin customized.
     db.prepare('UPDATE site_settings SET value=? WHERE key=? AND value=?').run(
-      'OSR 2026-2027™',
+      'OSR™ 2026–2027 • Made by Angelo Alvarado',
       'footer_credit',
-      'OSR™ 2025–2026 • Made by Angelo Alvarado'
+      'OSR 2026-2027™'
     );
 
     // Pages - About
