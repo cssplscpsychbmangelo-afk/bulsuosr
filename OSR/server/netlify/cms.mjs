@@ -12,10 +12,10 @@ export function createHandler({ database = getDatabase, mediaStore, checkLogin =
     try {
       const secret = process.env.JWT_SECRET || '';
       if (secret.length < 32 || secret !== secret.trim()) {
-        return json(503, 'Set JWT_SECRET (32+ random characters) in Netlify environment variables, then redeploy.');
+        return json(503, 'JWT_SECRET is missing or too short. Set it to 32+ random characters in Netlify environment variables, then redeploy.');
       }
       if (!process.env.DATABASE_URL) {
-        return json(503, 'Set DATABASE_URL in Netlify environment variables with Functions scope, then redeploy.');
+        return json(503, 'DATABASE_URL is missing. Set your Neon connection string in Netlify environment variables with Functions scope, then redeploy.');
       }
       const db = await database();
       if (event.path === '/api/auth/login' && event.httpMethod === 'POST') {
@@ -28,8 +28,27 @@ export function createHandler({ database = getDatabase, mediaStore, checkLogin =
       response.headers = { ...response.headers, 'cache-control': 'no-store' };
       return response;
     } catch (error) {
-      console.error('[CMS] Database/function request failed', { code: error.code || 'CONFIG_OR_STORAGE' });
-      return json(503, 'CMS is unavailable. Check DATABASE_URL, ADMIN_PASSWORD and JWT_SECRET in Netlify Functions settings.');
+      const code = error.code || '';
+      console.error('[CMS] Function error:', { code, message: error.message });
+
+      // Give the user a specific, actionable error instead of a generic catch-all.
+      if (!process.env.DATABASE_URL) {
+        return json(503, 'DATABASE_URL is missing. Set your Neon connection string in Netlify environment variables with Functions scope, then redeploy.');
+      }
+      if (code === 'ECONNREFUSED' || code === 'ENOTFOUND' || code === 'ETIMEDOUT' || code === 'ECONNRESET') {
+        return json(503, 'Cannot connect to the database. Check that DATABASE_URL is correct and the database is reachable.');
+      }
+      if (code === '28P01') {
+        return json(503, 'Database authentication failed. Check the username and password in DATABASE_URL.');
+      }
+      if (code === '3D000') {
+        return json(503, 'Database does not exist. Check the database name in DATABASE_URL.');
+      }
+      if (error.message && error.message.includes('ADMIN_EMAIL')) {
+        return json(503, error.message);
+      }
+      // Fallback — include the actual error message so the user has something actionable.
+      return json(503, 'CMS error: ' + (error.message || 'Unknown error') + '. Check Netlify function logs for details.');
     }
   };
 }

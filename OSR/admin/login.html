@@ -101,6 +101,22 @@ $('#form').onsubmit = async (e)=>{
 };
 // if already logged in, go to dashboard
 fetch('/api/auth/me', {credentials:'include'}).then(r=>{ if(r.ok) location.href='/admin/'; }).catch(()=>{});
+// Quick health check — show CMS status below the form
+(function(){
+  const el = document.createElement('p');
+  el.className = 'muted';
+  el.style.marginTop = '8px';
+  el.style.fontSize = '11px';
+  el.style.textAlign = 'center';
+  el.innerHTML = 'Checking CMS…';
+  document.querySelector('.card').appendChild(el);
+  fetch('/api/health').then(r=>{
+    if(r.ok) { el.innerHTML = '<span style="color:#115E34">✓ CMS is online</span>'; el.style.color='#115E34'; setTimeout(()=>el.remove(), 3000); }
+    else { el.innerHTML = '<span style="color:var(--red)">CMS is not responding — check Netlify function logs</span>'; }
+  }).catch(()=>{
+    el.innerHTML = '<span style="color:var(--red)">Cannot reach CMS — check that Netlify Functions are deployed</span>';
+  });
+})();
 </script>
 </body>
 </html>

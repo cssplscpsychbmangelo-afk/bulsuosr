@@ -5,16 +5,30 @@ directory empty. The build installs the server dependencies, copies `OSR/admin/`
 into the published site, and routes `/api/*` and `/uploads/*` to Netlify Functions.
 `/admin` is available directly, without Render or a separate API hosting service.
 
+## Required environment variables
+
 Set these Netlify environment variables with **Functions** scope, then redeploy:
 
 - `DATABASE_URL`: your Neon pooled connection string (keep private).
-- `ADMIN_EMAIL`: initial admin email.
-- `ADMIN_PASSWORD`: unique initial password, at least 12 characters.
 - `JWT_SECRET`: persistent random session secret, at least 32 characters.
+
+## Optional environment variables
+
+- `ADMIN_EMAIL`: initial admin email (defaults to `admin@osr.bulsu.edu.ph`).
+- `ADMIN_PASSWORD`: initial admin password. **If not set**, the server auto-generates
+  a secure password and prints it in the Netlify function logs on first startup.
+  You can then log in and change your password from **Settings → Account**.
+
+## How it works
 
 CMS data lives in Neon; uploaded media lives in Netlify Blobs. The first API
 request automatically creates an isolated `osr` schema and seeds the account and
 initial content. There is no separate database installation command.
+
+After your first deploy:
+1. Open your Netlify function logs to find the auto-generated admin password (if you didn't set `ADMIN_PASSWORD`).
+2. Go to `/admin/login.html` and log in with your admin email and the password.
+3. Go to **Settings → Account** to change your email and password to something you'll remember.
 
 Full setup, limits, and troubleshooting: [deployment guide](../server/DEPLOY.md).
 

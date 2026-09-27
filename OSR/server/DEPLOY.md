@@ -12,12 +12,12 @@ files. No Render service, separate backend host, or paid disk is required.
 2. In Netlify → Site configuration → Environment variables, set these for the
    production context and **Functions** scope (or all scopes):
 
-   | Variable | Value |
-   |---|---|
-   | `DATABASE_URL` | Your Neon **pooled** Postgres connection string, with SSL enabled |
-   | `ADMIN_EMAIL` | Your initial administrator email |
-   | `ADMIN_PASSWORD` | A unique initial password of at least 12 characters |
-   | `JWT_SECRET` | A persistent random string of at least 32 characters |
+   | Variable | Required | Value |
+   |---|---|---|
+   | `DATABASE_URL` | ✅ | Your Neon **pooled** Postgres connection string, with SSL enabled |
+   | `JWT_SECRET` | ✅ | A persistent random string of at least 32 characters |
+   | `ADMIN_EMAIL` | Optional | Your initial administrator email (defaults to `admin@osr.bulsu.edu.ph`) |
+   | `ADMIN_PASSWORD` | Optional | Initial password. If not set, the server auto-generates one and prints it in the function logs on first startup. |
 
    Copy the connection string directly from Neon. It must not contain Markdown
    links, `mailto:`, surrounding backticks, or HTML `&amp;` in place of `&`.
@@ -30,8 +30,11 @@ files. No Render service, separate backend host, or paid disk is required.
 3. Remove the obsolete `OSR_BACKEND_URL` variable if present. It is not used.
 4. Trigger a fresh deployment of the branch containing these changes. Visit
    `/admin` and sign in. `/admin/login` and `/admin/login.html` also work.
-5. Change the password under **Settings → Account** if desired. Environment
-   credentials seed the first account only; editing them later does not reset it.
+   - If you didn't set `ADMIN_PASSWORD`, check the Netlify function logs for
+     the auto-generated password after the first deploy.
+5. Change the password under **Settings → Account** to something you'll remember.
+   Environment credentials seed the first account only; editing them later does
+   not reset it.
 
 The first API call initializes the private `osr` Postgres schema and content in
 one transaction. A database advisory lock prevents concurrent cold starts from
@@ -86,12 +89,21 @@ accounts' limits and configure usage alerts.
 
 ## Troubleshooting
 
-- 503: verify `DATABASE_URL`, `JWT_SECRET`, and the initial `ADMIN_PASSWORD` are
-  available to **Functions**, not just the build. Redeploy after changing them.
-  Check function logs and the Neon project's status/role permissions. Never
-  paste connection strings into logs or support chat.
+- 503 with "JWT_SECRET is missing": set `JWT_SECRET` (32+ characters) in
+  Netlify environment variables with Functions scope, then redeploy.
+- 503 with "DATABASE_URL is missing": set `DATABASE_URL` to your Neon pooled
+  connection string in Netlify environment variables with Functions scope.
+- 503 with "Cannot connect to the database": verify the `DATABASE_URL` is
+  correct and the Neon database is running. Check the Neon project's status
+  and role permissions.
+- 503 with "Database authentication failed": the username/password in
+  `DATABASE_URL` is incorrect. Update it in Netlify and redeploy.
+- 503 with a specific error message: read the message — it tells you exactly
+  what failed. Check Netlify function logs for more details.
 - 401 on login: use the account currently stored in `osr.admins`, not a newly
-  edited seed password. There is intentionally no public password-reset bypass.
+  edited seed password. If you didn't set `ADMIN_PASSWORD`, check the Netlify
+  function logs for the auto-generated password from the first deploy.
+  There is intentionally no public password-reset bypass.
 - 429: wait for the 15-minute login attempt window to expire.
 - Missing functions/admin files: deploy through Git with the repository-root
   config. Drag-and-drop of the public folder/old ZIP cannot deploy the API.
@@ -104,10 +116,14 @@ accounts' limits and configure usage alerts.
 cd OSR/server
 npm ci
 cp .env.example .env
-# Fill ADMIN_PASSWORD, then:
+# Edit .env if needed, then:
 npm start
 ```
 
 Leave `DATABASE_URL` empty for local SQLite and files. Set it only to a dedicated
 test Neon database if you want to test Postgres connectivity locally. Local media
 still uses the filesystem; production media uses Netlify Blobs.
+
+The admin password is auto-generated on first startup if `ADMIN_PASSWORD` is not
+set. Check the console output for the generated password. Change it from
+**Settings → Account** after logging in.
