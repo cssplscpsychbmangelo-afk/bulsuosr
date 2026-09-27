@@ -1,70 +1,56 @@
-# Deploy /admin with Netlify + Neon (no Render)
+# Deploy /admin with Netlify + Neon (Standalone, no env admin)
 
-Netlify serves the website, admin pages, and API functions. Your existing Neon
-Postgres database stores CMS content and accounts. Netlify Blobs stores uploaded
-files. No Render service, separate backend host, or paid disk is required.
+Netlify serves the website, admin pages, and API functions. Your Neon Postgres database stores CMS content and accounts. Netlify Blobs stores uploaded files. No Render service, separate backend host, or paid disk is required.
+
+**Standalone mode:** Only `DATABASE_URL` is required. Admin credentials live in Neon, JWT secret is auto-generated and persisted in `site_settings.jwt_secret`. No `ADMIN_EMAIL`, `ADMIN_PASSWORD`, or `JWT_SECRET` env vars needed.
 
 ## One-time setup
 
-1. Deploy this repository using Netlify's **Git integration**. Leave **Base
-   directory** empty. The root `netlify.toml` supplies the build command, publish
-   directory, function directory, and Node 22 selection.
-2. In Netlify → Site configuration → Environment variables, set these for the
-   production context and **Functions** scope (or all scopes):
+1. Deploy this repository using Netlify's **Git integration**. Leave **Base directory** empty. The root `netlify.toml` supplies build command, publish dir, function dir, Node 22.
+2. In Netlify → Site configuration → Environment variables, set **only** this for production context and **Functions** scope (or all scopes):
 
    | Variable | Required | Value |
    |---|---|---|
    | `DATABASE_URL` | ✅ | Your Neon **pooled** Postgres connection string, with SSL enabled |
-   | `JWT_SECRET` | ✅ | A persistent random string of at least 32 characters |
 
-   That's the minimum. `ADMIN_EMAIL` and `ADMIN_PASSWORD` are optional — the
-   default admin account is created automatically on first startup.
+   That's it. No `JWT_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` needed.
 
-   Copy the connection string directly from Neon. It must not contain Markdown
-   links, `mailto:`, surrounding backticks, or HTML `&amp;` in place of `&`.
-   The database role must be able to create a schema and tables.
+   Copy the connection string directly from Neon. It must not contain Markdown links, `mailto:`, backticks, or HTML `&amp;` in place of `&`. The role must be able to create schema and tables.
 
-   Generate a session secret locally with:
-   `node -e "console.log(require('node:crypto').randomBytes(48).toString('hex'))"`.
-   Never put passwords or connection strings in Git, HTML, or chat.
-3. Remove the obsolete `OSR_BACKEND_URL` variable if present. It is not used.
-4. Trigger a fresh deployment. Visit `/admin/login.html` and sign in with:
+   Example: `postgresql://neondb_owner:npg_xxx@ep-xxx-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require`
 
-   - **Email:** `admin@osr.bulsu.edu.ph`
-   - **Password:** `Admin123456!`
+   **Optional overrides:**
+   - `JWT_SECRET` — if you want to force a specific secret (32+ chars). If omitted, one is generated and stored in `site_settings.jwt_secret` so sessions survive cold starts.
+   - `ALLOWED_ORIGINS` — for cross-origin API if public site on different domain.
 
-5. Go to **Settings → Account** to change your email and password immediately.
+3. Remove obsolete vars if present: `OSR_BACKEND_URL`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` are ignored now.
+4. Trigger fresh deployment. Visit `/admin/login.html`:
 
-The first API call initializes the private `osr` Postgres schema and content in
-one transaction. A database advisory lock prevents concurrent cold starts from
-creating duplicate accounts/content. The first request can take longer while
-Neon wakes and the initial content is seeded.
+   - If DB empty: setup form appears → create first admin (stored in Neon only)
+   - If DB already seeded: default login `admin@osr.bulsu.edu.ph / Admin123456!` works
+
+5. Go to **Settings → Account** to change email/password immediately.
+
+First API call initializes private `osr` Postgres schema and content in one transaction. Advisory lock prevents concurrent cold starts from duplicating. First request can take longer while Neon wakes and seeds.
 
 ## Verify after deployment
 
-- `/admin` displays the login, not "backend not connected."
-- `/api/health` returns `{"ok":true,...}` after the database is ready.
-- Sign in with the default credentials, create a draft, publish it, check in a
-  logged-out browser.
-- Upload a small PNG/PDF in Media and open its `/uploads/...` URL.
-- Redeploy and confirm published content, account changes, and uploads remain.
+- `/admin` displays login or setup, not "backend not connected"
+- `/api/health` returns `{"ok":true,...}` after DB ready
+- `GET /api/auth/setup-status` returns `{"needsSetup":false}` after first admin exists
+- Sign in, create draft, publish, check logged-out browser
+- Upload small PNG/PDF in Media and open its `/uploads/...` URL
+- Redeploy and confirm published content, account changes, uploads remain
 
 ## Troubleshooting
 
-- **503 with "JWT_SECRET is missing"** — set `JWT_SECRET` (32+ characters) in
-  Netlify environment variables with Functions scope, then redeploy.
-- **503 with "DATABASE_URL is missing"** — set `DATABASE_URL` to your Neon
-  pooled connection string in Netlify environment variables.
-- **503 with "Cannot connect to the database"** — verify the `DATABASE_URL` is
-  correct and the Neon database is running.
-- **503 with "Database authentication failed"** — wrong username/password in
-  `DATABASE_URL`. Update it in Netlify and redeploy.
-- **503 with another message** — read it; it tells you exactly what failed.
-- **401 on login** — make sure you're using the default credentials above.
-  If you changed them and forgot, there is no public password-reset bypass.
-- **429** — wait 15 minutes for the login rate limit to reset.
-- **Missing functions/admin files** — deploy through Git with the repository-root
-  config. Drag-and-drop of the public folder cannot deploy the API.
+- **503 "DATABASE_URL is missing"** — set `DATABASE_URL` to Neon pooled string in Netlify env (Functions scope) and redeploy. Only this var is required.
+- **503 "Cannot connect to the database"** — verify `DATABASE_URL` correct and Neon running.
+- **503 "Database authentication failed"** — wrong user/pass in `DATABASE_URL`.
+- **503 other message** — read it; it tells exactly what failed.
+- **401 on login** — use default `admin@osr.bulsu.edu.ph / Admin123456!` or your setup-created admin. If forgot, use SQL to delete admins or `DELETE FROM osr.admins` then re-setup via `/admin/login.html`.
+- **429** — wait 15 min for login rate limit reset.
+- **Missing functions/admin files** — deploy through Git with root config. Drag-and-drop cannot deploy API.
 
 ## Local development
 
@@ -72,11 +58,18 @@ Neon wakes and the initial content is seeded.
 cd OSR/server
 npm ci
 cp .env.example .env
-# Edit .env if needed (or leave defaults), then:
+# Set DATABASE_URL to Neon URL for Postgres test, or leave empty for SQLite
 npm start
 ```
 
-Default login: `admin@osr.bulsu.edu.ph` / `Admin123456!`
+Default login: `admin@osr.bulsu.edu.ph / Admin123456!` OR setup form on fresh DB.
 
-Leave `DATABASE_URL` empty for local SQLite. Set it only to a dedicated test
-Neon database if you want to test Postgres locally.
+## How standalone works (like rcloudcssp2.netlify.app/admin)
+
+- `schema.js` seeds default admin only if `admins` empty — no env reading.
+- `site_settings.jwt_secret` persists JWT secret across Netlify cold starts.
+- `netlify/cms.mjs` loads secret from DB if `JWT_SECRET` env missing, generates if not exists.
+- `auth.js` provides `/api/auth/setup` to create first admin without auth when count==0.
+- Login page checks `/api/auth/setup-status` and shows setup if needed.
+
+Only Neon connection required. No admin email/password in environment variables.

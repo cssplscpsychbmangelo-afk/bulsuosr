@@ -5,8 +5,9 @@ import { PGlite } from '@electric-sql/pglite';
 import { PostgresDatabase, migrateDatabase, postgresSQL, allowLogin } from '../db/postgres.js';
 
 process.env.NODE_ENV = 'production';
-process.env.ADMIN_EMAIL = 'test@example.com';
-process.env.ADMIN_PASSWORD = 'Test-only-password-348';
+// Standalone mode: admin is seeded from DB, not env. JWT_SECRET is auto-persisted.
+// For tests we still set a JWT secret to make assertions deterministic, but production
+// no longer requires it.
 process.env.JWT_SECRET = 'test-only-session-secret-with-at-least-32-characters';
 // A non-routable test value. Tests never use a real Neon connection or credential.
 process.env.DATABASE_URL = 'postgresql://test.invalid/test';
@@ -64,10 +65,10 @@ test('PostgreSQL-backed Netlify CMS', async t => {
   });
   await t.test('unauthenticated mutations and bad credentials are blocked', async () => {
     assert.equal((await request('/api/announcements', 'POST', { title: 'No' })).statusCode, 401);
-    assert.equal((await request('/api/auth/login', 'POST', { email: process.env.ADMIN_EMAIL, password: 'wrong' })).statusCode, 401);
+    assert.equal((await request('/api/auth/login', 'POST', { email: 'admin@osr.bulsu.edu.ph', password: 'wrong' })).statusCode, 401);
   });
   await t.test('login issues an HttpOnly secure cookie', async () => {
-    const res = await request('/api/auth/login', 'POST', { email: process.env.ADMIN_EMAIL, password: process.env.ADMIN_PASSWORD });
+    const res = await request('/api/auth/login', 'POST', { email: 'admin@osr.bulsu.edu.ph', password: 'Admin123456!' });
     assert.equal(res.statusCode, 200, res.body);
     const value = res.multiValueHeaders?.['set-cookie']?.[0] || res.headers['set-cookie'];
     assert.match(value, /HttpOnly/);
@@ -76,7 +77,7 @@ test('PostgreSQL-backed Netlify CMS', async t => {
   });
   await t.test('new function instance reads the same account', async () => {
     handler = makeHandler();
-    assert.equal((await ok('/.netlify/functions/cms/auth/me')).email, process.env.ADMIN_EMAIL);
+    assert.equal((await ok('/.netlify/functions/cms/auth/me')).email, 'admin@osr.bulsu.edu.ph');
   });
   await t.test('all admin sections and public endpoints execute PostgreSQL queries', async () => {
     for (const route of ['dashboard','announcements','board-meetings','initiatives','resources','calendar','guides','navigation','pages','media','activity','settings','pulse','pulse?view=yearly','pulse?view=all-time','pulse/export']) await ok('/api/'+route);
@@ -143,11 +144,16 @@ test('PostgreSQL-backed Netlify CMS', async t => {
     assert.equal((await request('/api/announcements', 'POST', { title: 'CSRF' }, cookie, { origin: 'https://evil.example' })).statusCode, 403);
     for (let i=0; i<20; i++) assert.equal(await allowLogin(db, 'throttle-test'), true);
     assert.equal(await allowLogin(db, 'throttle-test'), false);
-    for (const key of ['DATABASE_URL', 'JWT_SECRET']) {
-      const old = process.env[key]; delete process.env[key];
-      assert.equal((await request('/api/health')).statusCode, 503);
-      process.env[key] = old;
-    }
+    // Standalone mode: only DATABASE_URL is required. JWT_SECRET is auto-generated/persisted.
+    const oldDb = process.env.DATABASE_URL; delete process.env.DATABASE_URL;
+    assert.equal((await request('/api/health')).statusCode, 503);
+    process.env.DATABASE_URL = oldDb;
+    // JWT_SECRET missing should NOT cause 503 anymore (standalone)
+    const oldJwt = process.env.JWT_SECRET; delete process.env.JWT_SECRET;
+    // Health should still be 200 because secret will be auto-generated from DB
+    const healthWithoutJwt = await request('/api/health');
+    assert.equal(healthWithoutJwt.statusCode, 200);
+    process.env.JWT_SECRET = oldJwt;
   });
   await t.test('SQL parameters cannot become identifiers or interpolate user content', () => {
     assert.equal(postgresSQL("SELECT '?' FROM announcements WHERE title=? -- ?"), "SELECT '?' FROM osr.announcements WHERE title=$1 -- ?");

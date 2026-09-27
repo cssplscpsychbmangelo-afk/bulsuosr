@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Admin Login — OSR BulSU</title>
+<title>Admin — OSR BulSU</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-  :root{ --red:#A6192E; --red-2:#8F1428; --ink:#111214; --stone:#6B6560; --paper:#F7F5F2; --line:#E9E6E1; --white:#FFFFFF; }
+  :root{ --red:#A6192E; --red-2:#8F1428; --ink:#111214; --stone:#6B6560; --paper:#F7F5F2; --line:#E9E6E1; --white:#FFFFFF; --ok:#115E34; }
   *{box-sizing:border-box}
   body{margin:0; font-family:'IBM Plex Sans',sans-serif; background:var(--paper); color:var(--ink); display:grid; place-items:center; min-height:100vh; padding:20px}
-  .card{width:min(420px,100%); background:var(--white); border:1px solid var(--line); border-radius:16px; padding:28px; box-shadow:0 20px 50px rgba(0,0,0,.08)}
+  .card{width:min(440px,100%); background:var(--white); border:1px solid var(--line); border-radius:16px; padding:28px; box-shadow:0 20px 50px rgba(0,0,0,.08)}
   .brand{display:flex; gap:12px; align-items:center; margin-bottom:20px}
   .brand img{width:44px; height:44px; border-radius:8px; object-fit:cover; border:1px solid var(--line)}
   .brand h1{font:600 16px/1.2 'Fraunces',serif; margin:0}
@@ -25,11 +25,21 @@
   .btn{width:100%; background:var(--red); color:white; border:none; border-radius:999px; padding:12px; font:600 13px 'IBM Plex Sans',sans-serif; cursor:pointer; transition:background .15s}
   .btn:hover{background:var(--red-2)}
   .btn:disabled{opacity:.6; cursor:not-allowed}
+  .btn--ghost{background:white; color:var(--ink); border:1px solid var(--line)}
   .err{background:#FFF0F2; border:1px solid #FFD0D6; color:var(--red); padding:10px 12px; border-radius:10px; font-size:13px; margin:12px 0; display:none}
   .err.show{display:block}
+  .ok{background:#E6F4EA; border:1px solid #B7E1C6; color:var(--ok); padding:10px 12px; border-radius:10px; font-size:13px; margin:12px 0; display:none}
+  .ok.show{display:block}
   .muted{font-size:12px; color:var(--stone); text-align:center; margin-top:14px}
   .muted a{color:var(--red); text-decoration:none}
   .muted a:hover{text-decoration:underline}
+  .badge{display:inline-flex; padding:4px 8px; border-radius:999px; font:700 10px 'IBM Plex Mono',monospace; letter-spacing:.06em; text-transform:uppercase; border:1px solid var(--line); background:var(--paper)}
+  .badge--green{background:#E6F4EA; color:var(--ok); border-color:#B7E1C6}
+  .setup{display:none}
+  .setup.show{display:block}
+  .login.show{display:block}
+  .login{display:none}
+  .divider{height:1px; background:var(--line); margin:16px 0}
 </style>
 </head>
 <body>
@@ -40,45 +50,99 @@
       <h1>OSR Admin</h1>
       <p>Office of the Student Regent — BulSU</p>
     </div>
+    <span id="statusBadge" class="badge" style="margin-left:auto">Checking…</span>
   </div>
+
   <div id="err" class="err"></div>
-  <form id="form">
-    <label for="email">Email</label>
-    <input id="email" type="email" required autocomplete="username" placeholder="name@example.com" value="admin@osr.bulsu.edu.ph">
-    <label for="password">Password</label>
-    <div class="row">
-      <input id="password" type="password" required autocomplete="current-password" placeholder="Enter your password">
-      <button type="button" class="toggle" id="toggle">Show</button>
+  <div id="ok" class="ok"></div>
+
+  <!-- LOGIN -->
+  <div id="loginBox" class="login">
+    <form id="form">
+      <label for="email">Email</label>
+      <input id="email" type="email" required autocomplete="username" placeholder="name@example.com" value="admin@osr.bulsu.edu.ph">
+      <label for="password">Password</label>
+      <div class="row">
+        <input id="password" type="password" required autocomplete="current-password" placeholder="Enter your password">
+        <button type="button" class="toggle" id="toggle">Show</button>
+      </div>
+      <div class="actions">
+        <label><input type="checkbox" id="remember"> Remember session</label>
+        <a href="#" id="forgot" style="color:var(--red); text-decoration:none">Forgot password?</a>
+      </div>
+      <button id="submit" class="btn" type="submit">Log in →</button>
+    </form>
+    <p class="muted" style="margin-top:10px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:var(--paper); font-size:11px; text-align:left">
+      <b>Standalone mode:</b> Admin credentials are stored only in Neon. No <code>ADMIN_EMAIL</code> / <code>ADMIN_PASSWORD</code> env vars required.<br>
+      <span style="color:var(--stone)">Default if seeded: <code>admin@osr.bulsu.edu.ph</code> / <code>Admin123456!</code> — change after login.</span>
+    </p>
+  </div>
+
+  <!-- SETUP FIRST ADMIN -->
+  <div id="setupBox" class="setup">
+    <div style="padding:12px; background:var(--paper); border:1px solid var(--line); border-radius:10px; font-size:13px; margin-bottom:12px">
+      <b style="font-family:'Fraunces',serif">Welcome — create the first admin</b><br>
+      <span style="color:var(--stone)">No admin found in Neon. This happens on a fresh database. Create your admin account now. It will be stored only in Neon — no env vars needed.</span>
     </div>
-    <div class="actions">
-      <label><input type="checkbox" id="remember"> Remember session</label>
-      <a href="#" id="forgot" style="color:var(--red); text-decoration:none">Forgot password?</a>
-    </div>
-    <button id="submit" class="btn" type="submit">Log in →</button>
-  </form>
-  <p class="muted">Secure admin access. Sessions last 8 hours, or 30 days if remembered.</p>
-  <p class="muted" style="margin-top:4px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:var(--paper); font-size:11px; text-align:left">
-    <b>Default login:</b> <code style="background:#F7F5F2; padding:1px 4px; border-radius:4px; font-size:11px">admin@osr.bulsu.edu.ph</code> / <code style="background:#F7F5F2; padding:1px 4px; border-radius:4px; font-size:11px">Admin123456!</code><br>
-    <span style="color:var(--stone)">Change these from Settings → Account after logging in.</span>
-  </p>
-  <p class="muted"><a href="/">← Back to public website</a></p>
+    <form id="setupForm">
+      <label for="setupName">Name</label>
+      <input id="setupName" type="text" placeholder="OSR Administrator" value="OSR Administrator">
+      <label for="setupEmail">Email</label>
+      <input id="setupEmail" type="email" required placeholder="admin@osr.bulsu.edu.ph" value="admin@osr.bulsu.edu.ph">
+      <label for="setupPass">Password (min 8 chars)</label>
+      <input id="setupPass" type="password" required placeholder="••••••••">
+      <label for="setupPass2">Confirm password</label>
+      <input id="setupPass2" type="password" required placeholder="••••••••">
+      <button id="setupSubmit" class="btn" type="submit" style="margin-top:14px">Create admin →</button>
+    </form>
+    <div class="divider"></div>
+    <p class="muted" style="margin:0">Already seeded? <a href="#" id="toLogin">Go to login</a></p>
+  </div>
+
+  <p class="muted" style="margin-top:12px"><a href="/">← Back to public website</a></p>
+  <p id="health" class="muted" style="font-size:11px"></p>
 </div>
+
 <script>
 const $ = s=>document.querySelector(s);
 const errEl = $('#err');
-function showErr(m){ errEl.textContent=m; errEl.classList.add('show'); }
-function clearErr(){ errEl.textContent=''; errEl.classList.remove('show'); }
+const okEl = $('#ok');
+const badge = $('#statusBadge');
+const loginBox = $('#loginBox');
+const setupBox = $('#setupBox');
+
+function showErr(m){ errEl.textContent=m; errEl.classList.add('show'); okEl.classList.remove('show'); }
+function showOk(m){ okEl.textContent=m; okEl.classList.add('show'); errEl.classList.remove('show'); }
+function clearMsg(){ errEl.textContent=''; errEl.classList.remove('show'); okEl.textContent=''; okEl.classList.remove('show'); }
+
+function setMode(mode){
+  if(mode==='setup'){
+    loginBox.classList.remove('show');
+    setupBox.classList.add('show');
+    badge.textContent='Setup required';
+    badge.className='badge';
+    badge.style.background='#FFF0F2'; badge.style.color='#A6192E'; badge.style.borderColor='#FFD0D6';
+  } else {
+    setupBox.classList.remove('show');
+    loginBox.classList.add('show');
+    badge.textContent='Neon • Standalone';
+    badge.className='badge badge--green';
+    badge.style.background=''; badge.style.color=''; badge.style.borderColor='';
+  }
+}
+
 $('#toggle').onclick = ()=>{
   const p = $('#password');
   const isText = p.type==='text';
   p.type = isText?'password':'text';
   $('#toggle').textContent = isText?'Show':'Hide';
 };
+
 $('#forgot').onclick = async (e)=>{
   e.preventDefault();
   const email = $('#email').value.trim();
   if(!email) return showErr('Enter your email first.');
-  clearErr();
+  clearMsg();
   try{
     const r = await fetch('/api/auth/forgot', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email})});
     const j = await r.json();
@@ -86,9 +150,10 @@ $('#forgot').onclick = async (e)=>{
     errEl.style.background='var(--paper)'; errEl.style.borderColor='var(--line)'; errEl.style.color='var(--stone)';
   }catch{ showErr('Network error'); }
 };
+
 $('#form').onsubmit = async (e)=>{
   e.preventDefault();
-  clearErr();
+  clearMsg();
   const btn=$('#submit');
   btn.disabled=true; btn.textContent='Signing in…';
   try{
@@ -104,24 +169,78 @@ $('#form').onsubmit = async (e)=>{
   }catch(err){ showErr(err.message); }
   finally{ btn.disabled=false; btn.textContent='Log in →'; }
 };
-// if already logged in, go to dashboard
-fetch('/api/auth/me', {credentials:'include'}).then(r=>{ if(r.ok) location.href='/admin/'; }).catch(()=>{});
-// Quick health check — show CMS status below the form
-(function(){
-  const el = document.createElement('p');
-  el.className = 'muted';
-  el.style.marginTop = '8px';
-  el.style.fontSize = '11px';
-  el.style.textAlign = 'center';
-  el.innerHTML = 'Checking CMS…';
-  document.querySelector('.card').appendChild(el);
-  fetch('/api/health').then(r=>{
-    if(r.ok) { el.innerHTML = '<span style="color:#115E34">✓ CMS is online</span>'; el.style.color='#115E34'; setTimeout(()=>el.remove(), 3000); }
-    else { el.innerHTML = '<span style="color:var(--red)">CMS is not responding — check Netlify function logs</span>'; }
-  }).catch(()=>{
-    el.innerHTML = '<span style="color:var(--red)">Cannot reach CMS — check that Netlify Functions are deployed</span>';
-  });
-})();
+
+$('#setupForm').onsubmit = async (e)=>{
+  e.preventDefault();
+  clearMsg();
+  const email = $('#setupEmail').value.trim();
+  const pass = $('#setupPass').value;
+  const pass2 = $('#setupPass2').value;
+  const name = $('#setupName').value.trim() || 'OSR Administrator';
+  if(pass !== pass2) return showErr('Passwords do not match');
+  if(pass.length < 8) return showErr('Password must be at least 8 characters');
+  const btn = $('#setupSubmit');
+  btn.disabled=true; btn.textContent='Creating…';
+  try{
+    const r = await fetch('/api/auth/setup', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      credentials:'include',
+      body: JSON.stringify({ email, password: pass, name })
+    });
+    const j = await r.json();
+    if(!r.ok) throw new Error(j.error||'Setup failed');
+    showOk('Admin created: '+j.email+'. Redirecting to login…');
+    setTimeout(()=>{
+      $('#email').value = j.email;
+      setMode('login');
+      clearMsg();
+      showOk('Admin created. Please log in with your new credentials.');
+    }, 900);
+  }catch(err){ showErr(err.message); }
+  finally{ btn.disabled=false; btn.textContent='Create admin →'; }
+};
+
+$('#toLogin').onclick = (e)=>{ e.preventDefault(); setMode('login'); clearMsg(); };
+
+async function init(){
+  // If already logged in, go to dashboard
+  try{
+    const me = await fetch('/api/auth/me', {credentials:'include'});
+    if(me.ok){ location.href='/admin/'; return; }
+  }catch{}
+
+  // Check if setup needed (no admin in DB)
+  try{
+    const r = await fetch('/api/auth/setup-status', {credentials:'include'});
+    const j = await r.json();
+    if(j.needsSetup){
+      setMode('setup');
+    } else {
+      setMode('login');
+    }
+  }catch{
+    setMode('login');
+  }
+
+  // Health check
+  const health = $('#health');
+  health.textContent='Checking CMS…';
+  try{
+    const r = await fetch('/api/health');
+    if(r.ok){
+      health.innerHTML='<span style="color:#115E34">✓ CMS is online • Neon standalone • No env admin required</span>';
+      setTimeout(()=>{ if(health.textContent.includes('online')) health.textContent=''; }, 4000);
+    } else {
+      const j = await r.json().catch(()=>({}));
+      health.innerHTML='<span style="color:var(--red)">CMS error: '+(j.error||r.status)+'</span>';
+    }
+  }catch{
+    health.innerHTML='<span style="color:var(--red)">Cannot reach CMS — check Netlify Functions / DATABASE_URL</span>';
+  }
+}
+
+init();
 </script>
 </body>
 </html>

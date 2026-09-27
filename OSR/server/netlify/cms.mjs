@@ -10,14 +10,31 @@ export function createHandler({ database = getDatabase, mediaStore, checkLogin =
   return async (event, context) => {
     event = { ...event, path: event.path.replace(/^\/\.netlify\/functions\/cms(?=\/|$)/, '/api') };
     try {
-      const secret = process.env.JWT_SECRET || '';
-      if (secret.length < 32 || secret !== secret.trim()) {
-        return json(503, 'JWT_SECRET is missing or too short. Set it to 32+ random characters in Netlify environment variables, then redeploy.');
-      }
+      // Standalone mode: only DATABASE_URL is required (Neon). JWT_SECRET is
+      // auto-generated and persisted in site_settings if missing.
       if (!process.env.DATABASE_URL) {
-        return json(503, 'DATABASE_URL is missing. Set your Neon connection string in Netlify environment variables with Functions scope, then redeploy.');
+        return json(503, 'DATABASE_URL is missing. Set your Neon connection string in Netlify environment variables with Functions scope, then redeploy. Only DATABASE_URL is required — admin credentials live in Neon.');
       }
       const db = await database();
+
+      // Ensure JWT_SECRET env is populated from DB for standalone sessions
+      if (!process.env.JWT_SECRET || process.env.JWT_SECRET.trim().length < 16) {
+        try {
+          const row = await db.prepare('SELECT value FROM osr.site_settings WHERE key=$1').get('jwt_secret');
+          if (row?.value) {
+            process.env.JWT_SECRET = row.value;
+          } else {
+            const { randomBytes } = await import('node:crypto');
+            const gen = randomBytes(48).toString('hex');
+            await db.prepare('INSERT INTO osr.site_settings (key, value) VALUES ($1,$2) ON CONFLICT(key) DO UPDATE SET value=EXCLUDED.value').run('jwt_secret', gen);
+            process.env.JWT_SECRET = gen;
+            console.log('[CMS] Generated and persisted jwt_secret (standalone)');
+          }
+        } catch (e) {
+          console.warn('[CMS] Could not ensure jwt_secret:', e.message);
+        }
+      }
+
       if (event.path === '/api/auth/login' && event.httpMethod === 'POST') {
         const ip = event.headers?.['x-nf-client-connection-ip'] || event.requestContext?.identity?.sourceIp || 'unknown';
         const key = createHash('sha256').update(ip).digest('hex');
@@ -33,7 +50,7 @@ export function createHandler({ database = getDatabase, mediaStore, checkLogin =
 
       // Give the user a specific, actionable error instead of a generic catch-all.
       if (!process.env.DATABASE_URL) {
-        return json(503, 'DATABASE_URL is missing. Set your Neon connection string in Netlify environment variables with Functions scope, then redeploy.');
+        return json(503, 'DATABASE_URL is missing. Set your Neon connection string in Netlify environment variables with Functions scope, then redeploy. Only DATABASE_URL is required — admin credentials live in Neon.');
       }
       if (code === 'ECONNREFUSED' || code === 'ENOTFOUND' || code === 'ETIMEDOUT' || code === 'ECONNRESET') {
         return json(503, 'Cannot connect to the database. Check that DATABASE_URL is correct and the database is reachable.');
@@ -43,9 +60,6 @@ export function createHandler({ database = getDatabase, mediaStore, checkLogin =
       }
       if (code === '3D000') {
         return json(503, 'Database does not exist. Check the database name in DATABASE_URL.');
-      }
-      if (error.message && error.message.includes('ADMIN_EMAIL')) {
-        return json(503, error.message);
       }
       // Fallback — include the actual error message so the user has something actionable.
       return json(503, 'CMS error: ' + (error.message || 'Unknown error') + '. Check Netlify function logs for details.');

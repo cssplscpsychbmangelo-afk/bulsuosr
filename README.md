@@ -2,30 +2,30 @@
 
 The public website and `/admin` CMS deploy together on **Netlify**, using your
 existing **Neon Postgres** database. No Render service or paid persistent disk
-is required.
+is required. **Standalone mode: only Neon required.**
 
 - `OSR/osr-website/`: public site; the build copies the admin into this folder.
-- `OSR/admin/`: admin login and dashboard source.
+- `OSR/admin/`: admin login and dashboard source (standalone, Neon-only).
 - `OSR/server/`: authenticated API, Netlify Functions, and local server.
-- Neon: persistent CMS content, admin accounts, activity logs, and Pulse data.
+- Neon: persistent CMS content, admin accounts, activity logs, Pulse data, and JWT secret.
 - Netlify Blobs: uploaded media (uses the existing Netlify account).
 
-## Deploy
+## Deploy (Standalone — like https://rcloudcssp2.netlify.app/admin)
 
 Use the repository-root `netlify.toml` (leave Netlify's base directory empty).
-Set these Netlify environment variables with **Functions** scope:
 
+**Only required env var (Functions scope):**
 - `DATABASE_URL`: your Neon pooled connection string, copied directly from Neon.
-- `ADMIN_EMAIL`: the initial administrator's email.
-- `ADMIN_PASSWORD`: a unique initial password, 12+ characters.
-- `JWT_SECRET`: a persistent random session secret, 32+ characters.
+  Example: `postgresql://neondb_owner:npg_I87tszbCRuwf@ep-little-smoke-b5vq9v7q-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require`
 
-Redeploy, then open `https://your-site.netlify.app/admin`. The first API request
-creates the isolated `osr` schema and seeds the content/admin account in Neon.
-Existing tables in other schemas are not modified.
+That's it. No `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `JWT_SECRET` required:
+- Admin credentials live only in Neon (`admins` table)
+- JWT secret auto-generates and persists in `site_settings.jwt_secret` → sessions survive cold starts
+- Fresh DB: open `/admin` → setup form creates first admin in Neon, or default `admin@osr.bulsu.edu.ph / Admin123456!` is seeded automatically
 
-See [deployment instructions](OSR/server/DEPLOY.md) for setup, limitations, and
-verification. Netlify and Neon usage limits still apply.
+Redeploy, then open `https://your-site.netlify.app/admin`.
+
+See [deployment instructions](OSR/server/DEPLOY.md) for setup, verification, and troubleshooting. Netlify and Neon usage limits still apply.
 
 ## Local development
 
@@ -35,14 +35,13 @@ Requires Node **22.16+ (22.x)**.
 cd OSR/server
 npm ci
 cp .env.example .env
-# Set ADMIN_PASSWORD in .env. Never commit passwords.
+# Set DATABASE_URL to your Neon URL (or leave empty for SQLite)
 npm start
 ```
 
 Open `http://localhost:4000/admin`. Without `DATABASE_URL`, local development
-uses SQLite and local files. If you set `DATABASE_URL`, use a separate test Neon
-database: starting the server can initialize its OSR schema. No default password
-is shipped.
+uses SQLite and local files. With `DATABASE_URL`, it uses Neon directly.
+Default login on fresh DB: `admin@osr.bulsu.edu.ph / Admin123456!` OR setup form at `/admin/login.html`.
 
 ## Tests
 
@@ -53,3 +52,13 @@ npm test --prefix OSR/server
 
 Integration tests execute PostgreSQL queries in PGlite (a local PostgreSQL engine)
 and use an in-memory media store; they do not connect to your live Neon account.
+Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
+
+## What changed for standalone
+
+- `OSR/server/db/schema.js`: no longer reads `ADMIN_EMAIL`/`ADMIN_PASSWORD` env. Seeds default admin if empty, generates `jwt_secret` in `site_settings`.
+- `OSR/server/db/postgres.js`: loads `jwt_secret` from DB into env, ensures persistence.
+- `OSR/server/middleware/auth.js`: `getJwtSecret()` no longer throws in production; generates ephemeral if missing, persists via DB.
+- `OSR/server/netlify/cms.mjs`: removed 503 for missing `JWT_SECRET`; only `DATABASE_URL` required. Loads secret from DB if env missing.
+- `OSR/server/routes/auth.js`: added `GET /setup-status` and `POST /setup` for first-admin creation without env.
+- `OSR/admin/login.html`: new standalone UI with setup form, health check showing "Neon standalone".

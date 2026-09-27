@@ -2,14 +2,20 @@ import jwt from 'jsonwebtoken';
 import crypto from 'node:crypto';
 
 function getJwtSecret() {
-  if (process.env.JWT_SECRET) return process.env.JWT_SECRET;
-  if ((process.env.NODE_ENV === 'production' || !!process.env.AWS_LAMBDA_FUNCTION_NAME)) {
-    throw new Error('JWT_SECRET must be configured in production.');
-  }
+  if (process.env.JWT_SECRET && process.env.JWT_SECRET.trim().length >= 16) return process.env.JWT_SECRET.trim();
 
-  // Local development convenience only. Production startup rejects this path.
-  process.env.JWT_SECRET = crypto.randomBytes(32).toString('hex');
-  console.warn('[OSR CMS] JWT_SECRET is not set; using an ephemeral development secret. Set JWT_SECRET in OSR/server/.env to keep local sessions across restarts.');
+  // Standalone mode: if no JWT_SECRET env var, generate an ephemeral one.
+  // In production with Neon, the persistent secret is loaded from site_settings
+  // by schema.js / postgres.js before this is called, so this path only runs
+  // when that load hasn't happened yet (e.g., very first cold start race).
+  // Sessions survive because the secret is persisted in DB after first generation.
+  const generated = crypto.randomBytes(48).toString('hex');
+  process.env.JWT_SECRET = generated;
+  if (process.env.NODE_ENV === 'production' || !!process.env.AWS_LAMBDA_FUNCTION_NAME) {
+    console.warn('[OSR CMS] JWT_SECRET not set — using generated ephemeral secret (will be persisted to site_settings on next DB init). For stronger persistence set JWT_SECRET in Netlify env, but not required.');
+  } else {
+    console.warn('[OSR CMS] JWT_SECRET is not set; using an ephemeral development secret. Set JWT_SECRET in OSR/server/.env to keep local sessions across restarts.');
+  }
   return process.env.JWT_SECRET;
 }
 

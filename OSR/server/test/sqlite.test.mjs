@@ -7,7 +7,7 @@ import { initDb } from '../db/init.js';
 import { seedFromFrontend } from '../db/seed.js';
 
 test('local SQLite initialization, seed and async rollback still work', async () => {
-  process.env.ADMIN_PASSWORD = 'Local-test-only-password';
+  // Standalone mode: no ADMIN_PASSWORD env needed
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'osr-local-test-'));
   let db;
   try {

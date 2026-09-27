@@ -69,7 +69,18 @@ export async function migrateDatabase(db, sourcePath) {
     await db.query('SELECT pg_advisory_xact_lock(1869836850)');
     await db.query('CREATE SCHEMA IF NOT EXISTS osr');
     await db.query('CREATE TABLE IF NOT EXISTS osr.schema_migrations (version INTEGER PRIMARY KEY)');
-    if (await db.prepare('SELECT version FROM osr.schema_migrations WHERE version=1').get()) return;
+    const alreadyMigrated = await db.prepare('SELECT version FROM osr.schema_migrations WHERE version=1').get();
+    if (alreadyMigrated) {
+      // Ensure jwt_secret is loaded into env for standalone mode even after migration
+      try {
+        const row = await db.prepare('SELECT value FROM osr.site_settings WHERE key=$1').get('jwt_secret');
+        if (row?.value && !process.env.JWT_SECRET) {
+          process.env.JWT_SECRET = row.value;
+          console.log('[DB] Loaded existing jwt_secret from site_settings');
+        }
+      } catch {}
+      return;
+    }
     await initializeDatabase(db);
     await seedFromFrontend(db, sourcePath);
     await db.query(`CREATE TABLE IF NOT EXISTS osr.login_attempts (
@@ -79,6 +90,17 @@ export async function migrateDatabase(db, sourcePath) {
     )`);
     await db.query('INSERT INTO osr.schema_migrations (version) VALUES (1)');
   })();
+  // Outside transaction: ensure JWT_SECRET env is set from DB for standalone mode
+  // (schema.js already sets it, but we double-check after migration)
+  try {
+    if (!process.env.JWT_SECRET) {
+      const row = await db.prepare('SELECT value FROM osr.site_settings WHERE key=$1').get('jwt_secret');
+      if (row?.value) {
+        process.env.JWT_SECRET = row.value;
+        console.log('[DB] Loaded jwt_secret post-migration');
+      }
+    }
+  } catch {}
 }
 
 export async function allowLogin(db, key) {
