@@ -1,51 +1,105 @@
-# Office of the Student Regent — BulSU — Netlify Deployment
+# Netlify deployment — Office of the Student Regent (BulSU)
 
-Static, no build. Premium, accessible, anti-slop filtered.
+Static site, no build step. Premium, accessible, anti-slop filtered.
 
-## Deploy to Netlify (3 ways)
+## Why you saw "Page Not Found"
 
-**Drag & drop**
-1. Run `zip -r osr.zip . -x "*.git*"` inside `osr-website/`
-2. Netlify dashboard → Add new site → Deploy manually → drop `osr.zip`
+Netlify reads `netlify.toml` from the **base directory** (the repository root by
+default) and publishes that directory. This repository's root contains only the
+`OSR/` folder — no `index.html`, no config — so Netlify published an empty root
+and answered every URL with its 404 page.
 
-**Git**
-1. Push `osr-website/` to your repo root (or set publish directory to `osr-website`)
-2. Netlify → Add new site → Import from Git
-3. Build command: `echo 'Static site - no build required'`  Publish directory: `.` (or `osr-website`)
+The site itself lives in `OSR/osr-website/`. That is now wired up in
+[`/netlify.toml`](../../netlify.toml):
 
-**Netlify CLI**
+```toml
+[build]
+  publish = "OSR/osr-website"
+  command = "echo 'Static site - no build step required'"
+```
+
+## Deploy from Git (recommended)
+
+1. Netlify → *Add new site* → *Import an existing project* → pick this repo.
+2. Leave **Base directory empty** (repo root) — `/netlify.toml` does the rest.
+3. Build command / publish directory are picked up automatically. Click *Deploy*.
+4. Netlify deploys the branch in *Site configuration → Build & deploy → Branch
+   deployments* (`main` by default), so merge your changes there.
+
+**Equivalent manual setting:** if you'd rather not rely on the root config, set
+*Base directory* to `OSR/osr-website` — Netlify then reads
+`OSR/osr-website/netlify.toml` (`publish = "."`). Both files are kept in sync.
+
+## Deploy by drag & drop
+
+Zip the **contents of `osr-website/`**, not the repo and not the `OSR/` folder:
+
+```bash
+cd OSR/osr-website
+zip -r osr.zip . -x "*.git*"
+```
+
+Netlify dashboard → *Add new site* → *Deploy manually* → drop `osr.zip`.
+`_redirects` and `_headers` in that folder are the fallbacks Netlify uses when
+`netlify.toml` isn't processed.
+
+## Netlify CLI
+
 ```bash
 npm i -g netlify-cli
 netlify login
-netlify deploy --dir=.          # draft
-netlify deploy --dir=. --prod   # production
+netlify deploy --dir=OSR/osr-website --prod
 ```
 
-## How Netlify routing works
-- `netlify.toml` handles SPA fallback: `/* → /index.html 200` so direct links like `/` `/#board-meetings` work on refresh and deep links.
-- `_redirects` is the fallback for older Netlify deploys.
-- Headers are set in `netlify.toml`: security headers + cache (HTML no-cache, assets immutable).
+## Routing on Netlify
 
-## Performance
-- Single `index.html` (103KB), 1 Google Fonts request, no heavy JS libs.
-- Client-side filtering, localStorage for saved resources + concern draft.
-- Works offline as static; no backend required until you wire the concern form.
+- `/api/*` → `api-unavailable.json` (200). The Express + SQLite backend in
+  `OSR/server` cannot run on Netlify, so the page detects "no backend" in one
+  ~180-byte request and renders its built-in content. Without this rule the
+  single-page fallback would answer every API call with the 374 KB `index.html`
+  (~3 MB of wasted downloads per page view) and log JSON parse errors.
+- `/*` → `/index.html` (200) so unknown paths and deep links still render.
+- Headers: security headers + cache policy (HTML and `/js/*` always revalidate —
+  there is no build step to hash filenames, so `immutable` would pin visitors to
+  stale JS for a year).
 
-## Wiring the concern form
-In `index.html` search `concernForm` submit handler. Replace demo toast with:
-```js
-fetch("https://your-endpoint", {method:"POST", body: JSON.stringify(Object.fromEntries(new FormData(e.target)))})
+## What works on Netlify, and what doesn't
+
+| | Netlify (static) | `OSR/server` (Express, port 4000) |
+|---|---|---|
+| Public site, all sections, search, command palette, guides, PDF export, saved resources | Yes | Yes |
+| Content comes from | Built-in arrays in `index.html` | SQLite via `/api/public/*` |
+| `/admin` CMS dashboard | **No** — not part of the published folder | Yes |
+| Pulse submissions stored | No (local draft only) | Yes |
+| Media uploads | No | Yes |
+
+To point the Netlify-hosted public site at an API running elsewhere (a VPS,
+Render, Fly.io…), add this **before** `js/cms-integration.js` loads:
+
+```html
+<script>window.OSR_CONFIG = { apiBase: 'https://api.your-domain.tld' };</script>
 ```
-Add consent checkbox and server-side validation.
 
-## CMS hook
-All content is in top-level arrays: `ANNOUNCEMENTS`, `BOARD_MEETINGS`, `INITIATIVES`, `RESOURCES`. Replace with fetch from your CMS or Netlify Blobs / Decap CMS.
+or `<meta name="osr-api-base" content="https://api.your-domain.tld">`. The API
+must send CORS headers allowing your Netlify origin (`OSR/server` already uses
+`cors({ origin: true, credentials: true })`).
 
-## Fix log — what was wrong and what was fixed
-- **Spaces:** Sections were 18px padding with tight rhythm — fixed to 40px/48px with RHYTHM 3 variation, hero 28px padded, quick access 18px, sticky filters give breathing.
-- **Premium:** Header flat, no depth — added scroll shadow + 44px mark + subtle hover lifts + red underline on hero title. Cards now lift 2px with soft shadow only on hover (purposeful).
-- **Interactive:** Only basic filters — added command palette (Ctrl+K / /), search highlighting, save/bookmark (localStorage), share + calendar .ics, timeline toggle, sticky filter bar, concern stepper with autosave + review, toast, back-to-top, scroll progress, reveal on view.
-- **Animations:** Was MOTION 1 static — upgraded to MOTION 2 choreographed (documented in DESIGN.md): scroll progress, reveal, drawer/modal slide+fade, hover lift. All respect `prefers-reduced-motion`.
-- **Netlify:** Missing — added `netlify.toml`, `_redirects`, `_headers`, publish `.` no build.
+Running the whole CMS on Netlify itself would mean porting `OSR/server` to
+Netlify Functions and swapping `better-sqlite3` for a hosted Postgres — the API
+contract stays the same, but it's a separate piece of work.
+
+## Content
+
+All content is in top-level arrays in `index.html`: `ANNOUNCEMENTS`,
+`BOARD_MEETINGS`, `INITIATIVES`, `RESOURCES`. Edit those for a static deploy, or
+manage them in `/admin` when the backend is running.
+
+## Housekeeping
+
+- `osr-netlify.zip` sits inside the published folder, so it is deployed and
+  publicly downloadable. Delete it (or move it out of `osr-website/`) if you
+  don't want it served — regenerate it any time with the `zip` command above.
+- `osr-logo-original.png` (577 KB) is the unoptimised source of `osr-logo.png`
+  and isn't referenced by the page; it also ships to Netlify as-is.
 
 Dial: ENERGY 2 / RHYTHM 3 / MOTION 2 — premium institutional.
