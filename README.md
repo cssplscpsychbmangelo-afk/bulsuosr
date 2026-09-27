@@ -74,3 +74,19 @@ Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
 - `OSR/server/netlify/cms.mjs`: removed 503 for missing `JWT_SECRET`; only `DATABASE_URL` required. Loads secret from DB if env missing.
 - `OSR/server/routes/auth.js`: added `GET /setup-status` and `POST /setup` for first-admin creation without env.
 - `OSR/admin/index.html`: standalone login/setup/dashboard UI, including a health check showing "Neon standalone".
+
+## Recent fixes
+
+- **`/admin` no longer shows a blank white page.** The admin page is one inline
+  `<script>`; a stray `\"` inside the escape helper was invalid JavaScript, so
+  the entire script failed to parse and both `#authScreen` and `#adminScreen`
+  stayed `display:none` — an empty page with no error in the UI. Fixed in
+  `OSR/admin/index.html`. `OSR/server/test/admin-page.test.mjs` now parses that
+  inline script on every `npm test`, so this cannot ship again.
+- **Login works behind a TLS-terminating proxy.** The API's CSRF guard compared
+  `req.protocol://host` with the browser's `Origin`; behind Netlify/preview URLs
+  the internal protocol is `http` while the browser sends `https`, so same-site
+  logins returned `403 Origin not allowed`. The guard now compares host names
+  (scheme-agnostic) and still rejects genuine cross-site origins.
+- The admin header now shows the signed-in email immediately after login
+  (it used to stay empty until a page reload).

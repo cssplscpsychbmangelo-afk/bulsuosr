@@ -51,6 +51,8 @@ First API call initializes private `osr` Postgres schema and content in one tran
 - **401 on login** — use default `admin@osr.bulsu.edu.ph / Admin123456!` or your setup-created admin. If forgot, use SQL to delete admins or `DELETE FROM osr.admins` then re-setup via `/admin`.
 - **429** — wait 15 min for login rate limit reset.
 - **Missing functions/admin files** — deploy through Git with root config. Drag-and-drop cannot deploy API.
+- **`/admin` is a blank white page** — a JavaScript syntax error in `OSR/admin/index.html` stops the whole inline script, so neither `#authScreen` nor `#adminScreen` ever becomes visible. Check the browser console for `Uncaught SyntaxError`. `npm test --prefix OSR/server` now parses that inline script and fails the build/test if this returns. Fix the source in `OSR/admin/index.html` (the Netlify build copies it to `osr-website/admin/`) and redeploy; a hard refresh clears a cached copy.
+- **403 "Origin not allowed" on login** — the API only accepts writes from its own host or from `ALLOWED_ORIGINS`. Same-host requests are detected by host name, so TLS-terminating proxies (Netlify, preview URLs, tunnels) work even when the internal protocol is `http`. Only add `ALLOWED_ORIGINS` when the admin page is served from a different host than the API.
 
 ## Local development
 
