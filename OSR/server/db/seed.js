@@ -71,9 +71,24 @@ export function seedFromFrontend(db) {
       if (ress && ress.length) {
         const stmt = db.prepare('INSERT INTO resources (id, title, description, category, file_url, external_link, status) VALUES (?,?,?,?,?,?,?)');
         for (const r of ress) {
-          stmt.run(r.id, r.title, r.description, r.category, r.fileUrl || '', r.externalLink || '', 'Published');
+          stmt.run(r.id, r.title, r.description, r.category, r.fileUrl || '', r.link || r.externalLink || '', 'Published');
         }
         console.log(`[Seed] Resources: ${ress.length}`);
+      }
+    } else {
+      // Keep existing databases in sync when the built-in resources gain real
+      // links. Only fills empty external_link values — rows edited through the
+      // admin CMS are never overwritten.
+      const ress = extractArray('RESOURCES');
+      if (ress && ress.length) {
+        const stmt = db.prepare('UPDATE resources SET external_link=? WHERE id=? AND (external_link IS NULL OR external_link=?)');
+        let filled = 0;
+        for (const r of ress) {
+          const link = r.link || r.externalLink || '';
+          if (!link) continue;
+          filled += stmt.run(link, r.id, '').changes;
+        }
+        if (filled) console.log(`[Seed] Resources: filled ${filled} missing link(s) from the website`);
       }
     }
 

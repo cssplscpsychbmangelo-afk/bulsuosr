@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Admin unavailable on this host — OSR BulSU</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{ --red:#A6192E; --ink:#111214; --stone:#6B6560; --paper:#F7F5F2; --line:#E9E6E1; }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:'IBM Plex Sans',sans-serif; background:var(--paper); color:var(--ink); display:grid; place-items:center; min-height:100vh; padding:20px}
+  .card{width:min(520px,100%); background:#fff; border:1px solid var(--line); border-radius:16px; padding:28px; box-shadow:0 20px 50px rgba(0,0,0,.08)}
+  .eyebrow{font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.06em; text-transform:uppercase; color:var(--red); margin:0 0 8px}
+  h1{font:600 22px/1.2 'Fraunces',serif; margin:0 0 10px}
+  p{font-size:14px; line-height:1.6; color:var(--stone); margin:0 0 12px}
+  code{font:500 12.5px 'IBM Plex Mono',monospace; background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:2px 6px}
+  ol{font-size:14px; line-height:1.7; color:var(--ink); padding-left:18px; margin:0 0 14px}
+  a.back{display:inline-block; margin-top:6px; font-size:13.5px; font-weight:600; color:var(--red); text-decoration:none}
+  a.back:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="card">
+  <p class="eyebrow">Admin CMS</p>
+  <h1>The admin dashboard is not available on this host</h1>
+  <p>This site is deployed as a <b>static</b> page. The admin CMS needs the OSR backend (Express + database), which does not run on static hosting.</p>
+  <p>To open the admin dashboard, run the full stack on a server:</p>
+  <ol>
+    <li><code>cd OSR/server &amp;&amp; npm install</code></li>
+    <li>Set <code>JWT_SECRET</code> in <code>OSR/server/.env</code> (see <code>.env.example</code>)</li>
+    <li><code>node index.js</code> then open <code>/admin/login.html</code></li>
+  </ol>
+  <a class="back" href="/">← Back to the public website</a>
+</div>
+</body>
+</html>

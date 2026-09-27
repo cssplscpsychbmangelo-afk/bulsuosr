@@ -26,6 +26,13 @@
   to     = "/api-unavailable.json"
   status = 200
 
+# The admin CMS needs the Express backend; on static hosting show a clear
+# explanation instead of silently rendering the public site.
+[[redirects]]
+  from   = "/admin/*"
+  to     = "/admin-unavailable.html"
+  status = 200
+
 # Single-page site with hash routes (#announcements, #board, ...): any unknown
 # path still renders the site instead of 404ing.
 [[redirects]]
