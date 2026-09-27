@@ -80,9 +80,18 @@ app.use(express.urlencoded({ extended: true }));
 const safeMethods = new Set(['GET', 'HEAD', 'OPTIONS']);
 app.use('/api', (req, res, next) => {
   if (safeMethods.has(req.method)) return next();
-  const requestOrigin = normalizeOrigin(`${req.protocol}://${req.get('host')}`);
   const sourceOrigin = normalizeOrigin(req.get('Origin'));
-  if (!sourceOrigin || sourceOrigin === requestOrigin || allowedOrigins.has(sourceOrigin)) return next();
+  if (!sourceOrigin || allowedOrigins.has(sourceOrigin)) return next();
+
+  // Same-site requests are always allowed. Compare the HOST (scheme-agnostic):
+  // behind a TLS-terminating proxy (Netlify, previews, tunnels) the browser
+  // sends https://… while req.protocol can still be http, which used to make
+  // same-origin logins fail with "Origin not allowed".
+  const requestHost = (req.get('host') || '').toLowerCase();
+  let sourceHost = '';
+  try { sourceHost = new URL(sourceOrigin).host.toLowerCase(); } catch { sourceHost = ''; }
+  if (sourceHost && requestHost && sourceHost === requestHost) return next();
+
   return res.status(403).json({ error: 'Origin not allowed' });
 });
 
