@@ -95,12 +95,12 @@ $('#form').onsubmit = async (e)=>{
     });
     const j = await r.json();
     if(!r.ok) throw new Error(j.error||'Login failed');
-    location.href='/admin/index.html';
+    location.href='/admin/';
   }catch(err){ showErr(err.message); }
   finally{ btn.disabled=false; btn.textContent='Log in →'; }
 };
 // if already logged in, go to dashboard
-fetch('/api/auth/me', {credentials:'include'}).then(r=>{ if(r.ok) location.href='/admin/index.html'; }).catch(()=>{});
+fetch('/api/auth/me', {credentials:'include'}).then(r=>{ if(r.ok) location.href='/admin/'; }).catch(()=>{});
 </script>
 </body>
 </html>

@@ -1,9 +1,9 @@
 # OSR Website — Full Backend + Admin CMS
 
-The project includes a static public website, an Express/SQLite CMS API, and an
+The project includes a static public website, an Express CMS API (Neon in production, SQLite locally), and an
 admin dashboard. **There is no default admin password in the source.** A fresh
 database requires an initial password from `ADMIN_PASSWORD` in the local `.env`
-or Render environment settings.
+or Netlify environment settings.
 
 - Public site (local): `http://localhost:4000/`
 - Admin login (local): `http://localhost:4000/admin/login.html`
@@ -13,9 +13,9 @@ or Render environment settings.
 ```
 Public OSR Website (`osr-website/index.html` + `cms-integration.js`)
   ↓ fetch /api/public/* (published only)
-API (Express 4, port 4000)
+API (Netlify Functions; Express 5 on port 4000 locally)
   ↓ JWT auth, bcrypt, rate-limit, validation
-Database (better-sqlite3, WAL)
+Database (Neon Postgres in production; Node SQLite locally)
   ↓ 14 tables: admins, announcements, board_meetings, initiatives, resources, calendar_events, pages, navigation_items, media, guide_steps, pulse_submissions, pulse_aggregates, activity_logs, site_settings
 
 Admin Dashboard (/admin)
@@ -105,18 +105,15 @@ npm start # → http://localhost:4000
 ```
 
 The example uses `server/db/local-osr.db` and `server/uploads/`, both local-only
-and ignored by Git. For production deployment, follow
-[`server/DEPLOY.md`](server/DEPLOY.md): it configures Render with persistent
-SQLite/uploads and connects Netlify using the `OSR_BACKEND_URL` build variable.
+and ignored by Git. For production, follow [`server/DEPLOY.md`](server/DEPLOY.md).
 
 ## Netlify
 
-The repository-root `netlify.toml` publishes `osr-website/` and generates
-redirects from `OSR_BACKEND_URL`. Without that variable Netlify intentionally
-serves static fallbacks. With a Render backend URL it proxies `/api/*`,
-`/admin/*`, and `/uploads/*` to the CMS. See
-[`osr-website/README_NETLIFY.md`](osr-website/README_NETLIFY.md) for the Netlify
-side and [`server/DEPLOY.md`](server/DEPLOY.md) for the full deployment steps.
+Use the repository-root `netlify.toml` with an empty base directory. `/admin` is
+published directly; the API runs on Netlify Functions, data lives in your Neon database, and media
+lives in Netlify Blobs. No Render service is required. Set `DATABASE_URL`,
+`ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `JWT_SECRET` in Netlify's Functions environment, then
+redeploy. See [`server/DEPLOY.md`](server/DEPLOY.md) for limits and verification.
 
 ## Guide Positioning Details
 - Uses `getBoundingClientRect()` + `window.innerWidth/Height` + `header.offsetHeight` + `window.scrollY`

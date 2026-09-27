@@ -6,20 +6,20 @@
 #   "Page Not Found".
 #   The public site actually lives in OSR/osr-website, so that is what we publish.
 #
-# If you prefer, you can instead set Netlify → Site configuration → Build & deploy
-# → Base directory to "OSR/osr-website"; this file still works either way.
+# Leave the Netlify base directory empty (repository root).
 
 [build]
   base    = "."
   publish = "OSR/osr-website"
-  command = "node OSR/osr-website/netlify-build.mjs"
+  command = "npm ci --prefix OSR/server && node OSR/osr-website/netlify-build.mjs"
 
 [build.environment]
   NODE_VERSION = "22"
 
-# netlify-build.mjs writes environment-specific /api, /admin, and /uploads
-# proxy rules to OSR/osr-website/_redirects. Keeping redirects there lets the build switch
-# between static fallback and the live backend without editing this file.
+[functions]
+  directory = "OSR/server/netlify"
+  node_bundler = "esbuild"
+  included_files = ["OSR/osr-website/index.html"]
 
 [[headers]]
   for = "/*"
@@ -38,7 +38,7 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# The build only writes redirect config and does not hash assets, so JS/CSS
+# The build copies admin files and writes redirect config and does not hash assets, so JS/CSS
 # revalidate too (Netlify answers 304 with an ETag, without pinning stale files).
 [[headers]]
   for = "/js/*"

@@ -3,22 +3,28 @@
   "version": "1.0.0",
   "type": "module",
   "engines": {
-    "node": ">=20 <23"
+    "node": ">=22.16 <23"
   },
   "scripts": {
     "start": "node index.js",
     "dev": "node --watch index.js",
-    "reset:admin": "node scripts/reset-admin.mjs"
+    "reset:admin": "node scripts/reset-admin.mjs",
+    "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
+    "@netlify/blobs": "^11.1.1",
     "bcryptjs": "^2.4.3",
-    "better-sqlite3": "^11.10.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.18.2",
+    "express": "^5.2.1",
     "express-rate-limit": "^7.4.1",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^2.4.0"
+    "multer": "^2.4.0",
+    "pg": "^8.23.0",
+    "serverless-http": "^4.0.0"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.5.8"
   }
 }

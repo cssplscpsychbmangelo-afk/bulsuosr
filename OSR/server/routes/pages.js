@@ -1,27 +1,27 @@
 import express from 'express';
 import { authRequired } from '../middleware/auth.js';
 const router=express.Router();
-router.get('/', (req,res)=>{
+router.get('/', async (req,res)=>{
   const db=req.app.locals.db;
-  res.json(db.prepare('SELECT * FROM pages').all());
+  res.json((await db.prepare('SELECT * FROM pages').all()));
 });
-router.get('/:slug', (req,res)=>{
+router.get('/:slug', async (req,res)=>{
   const db=req.app.locals.db;
-  const row=db.prepare('SELECT * FROM pages WHERE slug=?').get(req.params.slug);
+  const row=(await db.prepare('SELECT * FROM pages WHERE slug=?').get(req.params.slug));
   if(!row) return res.status(404).json({error:'Not found'});
   try{ row.data=JSON.parse(row.data)}catch{}
   res.json(row);
 });
-router.post('/', authRequired, (req,res)=>{
+router.post('/', authRequired, async (req,res)=>{
   const db=req.app.locals.db;
   const { slug, title, content, data }=req.body;
   if(!slug) return res.status(400).json({error:'slug required'});
-  db.prepare('INSERT INTO pages (id, slug, title, content, data) VALUES (?,?,?,?,?)').run(slug, slug, title||'', content||'', JSON.stringify(data||{}));
+  (await db.prepare('INSERT INTO pages (id, slug, title, content, data) VALUES (?,?,?,?,?)').run(slug, slug, title||'', content||'', JSON.stringify(data||{})));
   res.json({ok:true});
 });
-router.patch('/:slug', authRequired, (req,res)=>{
+router.patch('/:slug', authRequired, async (req,res)=>{
   const db=req.app.locals.db;
-  const ex=db.prepare('SELECT * FROM pages WHERE slug=?').get(req.params.slug);
+  const ex=(await db.prepare('SELECT * FROM pages WHERE slug=?').get(req.params.slug));
   if(!ex) return res.status(404).json({error:'Not found'});
   const { title, content, data }=req.body;
   const u=[]; const p=[];
@@ -31,8 +31,8 @@ router.patch('/:slug', authRequired, (req,res)=>{
   if(!u.length) return res.status(400).json({error:'No fields'});
   u.push("updated_at=datetime('now')");
   p.push(req.params.slug);
-  db.prepare(`UPDATE pages SET ${u.join(',')} WHERE slug=?`).run(...p);
-  try{ db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type, content_id) VALUES (?,?,?,?,?)').run(req.admin.id, req.admin.email, `Updated page: ${req.params.slug}`, 'page', req.params.slug);}catch{}
+  (await db.prepare(`UPDATE pages SET ${u.join(',')} WHERE slug=?`).run(...p));
+  try{ (await db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type, content_id) VALUES (?,?,?,?,?)').run(req.admin.id, req.admin.email, `Updated page: ${req.params.slug}`, 'page', req.params.slug));}catch{}
   res.json({ok:true});
 });
 export default router;

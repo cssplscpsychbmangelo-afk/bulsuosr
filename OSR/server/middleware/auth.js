@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 
 function getJwtSecret() {
   if (process.env.JWT_SECRET) return process.env.JWT_SECRET;
-  if (process.env.NODE_ENV === 'production') {
+  if ((process.env.NODE_ENV === 'production' || !!process.env.AWS_LAMBDA_FUNCTION_NAME)) {
     throw new Error('JWT_SECRET must be configured in production.');
   }
 
