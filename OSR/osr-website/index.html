@@ -9,6 +9,7 @@
 <meta property="og:title" content="Office of the Student Regent - Bulacan State University"/>
 <meta property="og:description" content="Student representation in the Board of Regents. Verified records, not marketing."/>
 <meta name="theme-color" content="#A6192E"/>
+<meta name="format-detection" content="telephone=no"/>
 <link rel="icon" type="image/png" href="/osr-logo.png"/>
 <link rel="apple-touch-icon" href="/osr-logo.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -405,6 +406,16 @@ a:hover{text-decoration:none}
 .footer__col ul li a{border:0}
 .footer__bar{max-width:var(--max); margin:20px auto 0; padding:14px 16px 18px; border-top:1px solid rgba(255,255,255,0.08); display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between; font-size:12px; color:#9A9590}
 .footer__bar .mono{color:#9A9590}
+/* footer polish — credit line, contact rhythm, phone links, bar alignment */
+.footer__inner p{margin:0 0 12px}
+.footer__inner p:last-child{margin-bottom:0}
+.footer__contact{overflow-wrap:break-word}
+.footer__contact a{color:#E8E0D6}
+.footer__contact a:hover{color:#fff}
+.phone-link{white-space:nowrap}
+#footerCredit{white-space:nowrap}
+.footer__bar{align-items:center}
+@media(max-width:640px){.footer__bar{flex-direction:column;justify-content:center;text-align:center;gap:6px}#footerCredit{white-space:normal}}
 
 
 /* ===== ENTIRETY — institutional direction, clean premium ===== */
@@ -1719,7 +1730,7 @@ img,svg{max-width:100%; height:auto}
             <h3>Contact OSR</h3>
             <div class="kv"><b>Email</b> <span><a id="hcEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a></span></div>
             <div class="kv"><b>Office</b> <span id="hcOffice">Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan</span></div>
-            <div class="kv"><b>Telephone</b> <span id="hcPhone">+63 44 796 3817</span></div>
+            <div class="kv"><b>Telephone</b> <span><a id="hcPhone" class="phone-link" href="tel:+63447963817">+63 44 796 3817</a></span></div>
             <div class="kv"><b>Hours</b> <span id="hcHours">Monday to Friday, within office hours</span></div>
             <div class="kv"><b>Official page</b> <span><a id="hcPage" href="https://www.facebook.com/BulSUSG1983/" target="_blank" rel="noopener">BulSU Student Government on Facebook</a></span></div>
             <div class="divider"></div>
@@ -1857,7 +1868,7 @@ img,svg{max-width:100%; height:auto}
           <div class="about-card">
             <h3>Contact information</h3>
             <div class="kv"><b>Email</b> <span><a id="acEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a></span></div>
-            <div class="kv"><b>Telephone</b> <span id="acPhone">+63 44 796 3817</span></div>
+            <div class="kv"><b>Telephone</b> <span><a id="acPhone" class="phone-link" href="tel:+63447963817">+63 44 796 3817</a></span></div>
             <div class="kv"><b>Office address</b> <span id="acAddress">Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan</span></div>
             <div class="kv"><b>Office hours</b> <span id="acHours">Monday to Friday, within office hours</span></div>
             <div class="kv"><b>Response time</b> <span>Within office hours</span></div>
@@ -2210,10 +2221,11 @@ img,svg{max-width:100%; height:auto}
         <li><a href="#about" data-nav>About OSR</a></li>
       </ul>
     </div>
-    <div>
+    <div class="footer__col">
       <h4>Office</h4>
-      <p><span id="foLine1">Student Government (SG) Office</span><br><span id="foLine2">BulSU Main Campus, Guinhawa</span><br><span id="foCity">City of Malolos, Bulacan</span><br><a id="foEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a> • <span id="foPhone">+63 44 796 3817</span></p>
-      <div class="mono" id="foHours" style="font-size:11px; color:#9A9590; margin-top:8px; letter-spacing:0.04em; text-transform:uppercase">Office hours • Within office hours</div>
+      <p class="footer__contact"><span id="foLine1">Student Government (SG) Office</span><br><span id="foLine2">BulSU Main Campus, Guinhawa</span><br><span id="foCity">City of Malolos, Bulacan</span></p>
+      <p class="footer__contact"><a id="foEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a><br><a id="foPhone" class="phone-link" href="tel:+63447963817">+63 44 796 3817</a></p>
+      <div class="mono" id="foHours" style="font-size:11px; color:#9A9590; margin-top:0; letter-spacing:0.04em; text-transform:uppercase">Office hours • Within office hours</div>
       <div class="row" style="margin-top:14px">
         <a class="btn btn--sm" href="#help" data-nav style="background:white; color:var(--ink); border-color:white">Raise a concern</a>
         <a class="btn btn--sm btn--ghost" href="#about" data-nav style="border-color:rgba(255,255,255,0.18); color:white">Contact</a>
@@ -2222,7 +2234,7 @@ img,svg{max-width:100%; height:auto}
   </div>
   <div class="footer__bar">
     <span>© <span id="year"></span> Office of the Student Regent, Bulacan State University. Verified content only.</span>
-    <span class="mono small" id="footerCredit">OSR 2026-2027™</span>
+    <span class="mono small" id="footerCredit">OSR™ 2026–2027 • Made by Angelo Alvarado</span>
   </div>
 </footer>
 

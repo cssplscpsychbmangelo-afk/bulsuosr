@@ -2,5 +2,6 @@
 # Static-only mode: keep the built-in site content and explain the missing CMS.
 /api/*  /api-unavailable.json  200
 /admin  /admin-unavailable.html  200
+/admin/ /admin-unavailable.html  200
 /admin/* /admin-unavailable.html 200
 /*      /index.html            200
