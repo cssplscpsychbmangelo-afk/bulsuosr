@@ -1,5 +1,7 @@
+import { randomUUID } from 'node:crypto';
 import express from 'express';
 import { authRequired } from '../middleware/auth.js';
+import { validateContent } from '../middleware/content.js';
 const router=express.Router();
 async function log(db,a,act,id){ try{(await db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type, content_id) VALUES (?,?,?,?,?)').run(a?.id||null,a?.email||'system',act,'calendar_event',id));}catch{} }
 router.get('/public',async (req,res)=>{
@@ -14,24 +16,24 @@ router.get('/',authRequired,async (req,res)=>{
   sql+=' ORDER BY iso ASC';
   res.json((await db.prepare(sql).all(...p)));
 });
-router.get('/:id',async (req,res)=>{
+router.get('/:id',authRequired,async (req,res)=>{
   const db=req.app.locals.db;
   const row=(await db.prepare('SELECT * FROM calendar_events WHERE id=?').get(req.params.id));
   if(!row) return res.status(404).json({error:'Not found'});
   res.json(row);
 });
-router.post('/',authRequired,async (req,res)=>{
+router.post('/',authRequired,validateContent,async (req,res)=>{
   const db=req.app.locals.db;
   const {id,title,activity,date,day,month,category,iso,start_time,end_time,location,description,link,status}=req.body;
   const act = activity||title;
   if(!act) return res.status(400).json({error:'Activity required'});
-  const newId=id||`cal-${Date.now()}`;
+  const newId=`cal-${randomUUID()}`;
   (await db.prepare('INSERT INTO calendar_events (id, title, activity, date, day, month, category, iso, start_time, end_time, location, description, link, status, created_by) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')
     .run(newId, act, act, date||'', day||'', month||'', category||'', iso||'', start_time||'', end_time||'', location||'', description||'', link||'', status||'Draft', req.admin.id));
   (await log(db,req.admin,`Created calendar event: ${act}`,newId));
   res.json({ok:true,id:newId});
 });
-router.patch('/:id',authRequired,async (req,res)=>{
+router.patch('/:id',authRequired,validateContent,async (req,res)=>{
   const db=req.app.locals.db;
   const ex=(await db.prepare('SELECT * FROM calendar_events WHERE id=?').get(req.params.id));
   if(!ex) return res.status(404).json({error:'Not found'});
@@ -59,7 +61,7 @@ router.delete('/:id',authRequired,async (req,res)=>{
   const db=req.app.locals.db;
   const row=(await db.prepare('SELECT * FROM calendar_events WHERE id=?').get(req.params.id));
   if(!row) return res.status(404).json({error:'Not found'});
-  (await db.prepare('DELETE FROM calendar_events WHERE id=?').run(req.params.id));
+  (await db.prepare("UPDATE calendar_events SET status='Archived', updated_at=datetime('now') WHERE id=?").run(req.params.id));
   (await log(db,req.admin,`Deleted calendar event: ${row.activity}`,req.params.id));
   res.json({ok:true});
 });

@@ -35,7 +35,7 @@ export function createHandler({ database = getDatabase, mediaStore, checkLogin =
         }
       }
 
-      if (event.path === '/api/auth/login' && event.httpMethod === 'POST') {
+      if (['/api/auth/login','/api/auth/setup'].includes(event.path) && event.httpMethod === 'POST') {
         const ip = event.headers?.['x-nf-client-connection-ip'] || event.requestContext?.identity?.sourceIp || 'unknown';
         const key = createHash('sha256').update(ip).digest('hex');
         if (!await checkLogin(db, key)) return json(429, 'Too many attempts, try again in 15 minutes.');
@@ -62,7 +62,7 @@ export function createHandler({ database = getDatabase, mediaStore, checkLogin =
         return json(503, 'Database does not exist. Check the database name in DATABASE_URL.');
       }
       // Fallback — include the actual error message so the user has something actionable.
-      return json(503, 'CMS error: ' + (error.message || 'Unknown error') + '. Check Netlify function logs for details.');
+      return json(503, 'CMS unavailable. Check Netlify function logs and database connection.');
     }
   };
 }

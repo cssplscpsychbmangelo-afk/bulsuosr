@@ -19,6 +19,7 @@ import activityRoutes from './routes/activity.js';
 import settingsRoutes from './routes/settings.js';
 import pagesRoutes from './routes/pages.js';
 import dashboardRoutes from './routes/dashboard.js';
+import adminUsersRoutes from './routes/admin-users.js';
 
 export function createApp(db, { mediaStore } = {}) {
 const app = express();
@@ -72,7 +73,7 @@ app.use(cors({
   optionsSuccessStatus: 204,
 }));
 app.use(cookieParser());
-app.use(express.json({ limit: '10mb' }));
+app.use(express.json({ limit: '128kb' }));
 app.use(express.urlencoded({ extended: true }));
 
 // CORS controls whether browsers can read a response; also reject untrusted
@@ -125,6 +126,7 @@ app.use('/api/activity', activityRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/pages', pagesRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/admin-users', adminUsersRoutes);
 
 // Public aggregated endpoint
 app.get('/api/public/:type', async (req, res) => {
@@ -136,6 +138,7 @@ app.get('/api/public/:type', async (req, res) => {
     'initiatives': 'initiatives',
     'resources': 'resources',
     'calendar': 'calendar_events',
+    'media': 'media',
     'guides': 'guide_steps',
     'navigation': 'navigation_items',
     'pulse-aggregates': 'pulse_aggregates'
@@ -148,6 +151,8 @@ app.get('/api/public/:type', async (req, res) => {
       rows = (await db.prepare('SELECT * FROM navigation_items WHERE is_visible=1 ORDER BY order_index').all());
     } else if (table === 'guide_steps') {
       rows = (await db.prepare('SELECT * FROM guide_steps WHERE is_enabled=1 ORDER BY page, step_number').all());
+    } else if (table === 'media') {
+      rows = (await db.prepare("SELECT id,title,caption,category,url,created_at FROM media WHERE status='Published' AND file_type LIKE 'image/%' ORDER BY created_at DESC LIMIT 100").all());
     } else if (table === 'pulse_aggregates') {
       rows = (await db.prepare('SELECT * FROM pulse_aggregates ORDER BY period DESC, category').all());
     } else {
