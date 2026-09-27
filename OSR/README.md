@@ -103,6 +103,11 @@ node index.js # → http://localhost:4000
 - For production, put SQLite on persistent volume or switch to Postgres by changing `better-sqlite3` → `pg` and `DB_PATH` → `DATABASE_URL`; API contract unchanged.
 - Never expose `JWT_SECRET` to frontend; use `httpOnly` cookies.
 
+### Netlify (public site only, static)
+- Repo-root `netlify.toml` publishes `OSR/osr-website` — Netlify reads config from the **base directory** (repo root by default), so a config inside `osr-website/` alone leaves you with "Page Not Found".
+- No backend on Netlify: `/api/*` is answered with `api-unavailable.json`, `cms-integration.js` detects it in one request and the page keeps its built-in content. `/admin` and media uploads need the Express server.
+- Full instructions: `osr-website/README_NETLIFY.md`.
+
 ## Guide Positioning Details
 - Uses `getBoundingClientRect()` + `window.innerWidth/Height` + `header.offsetHeight` + `window.scrollY`
 - Tries below → above → right → left → fallback, then clamps to viewport or preview container

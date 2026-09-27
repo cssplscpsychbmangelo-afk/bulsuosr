@@ -1,20 +1,75 @@
 // OSR CMS Integration — fetches published content from backend, fixes guide positioning, handles pulse
+//
+// Runs in two modes:
+//   1. Behind the Express API (local / VPS): hydrates published content from /api/public/*.
+//   2. On static hosting (Netlify): there is no API, so it detects that from the
+//      first response and stops. The page keeps its built-in content. No console
+//      errors, no wasted requests.
 (function(){
-  const API_BASE = '';
+  // Optional override — set window.OSR_CONFIG = { apiBase: 'https://api.example.org' }
+  // (or <meta name="osr-api-base" content="...">) before this script loads to point
+  // the public site at an API hosted somewhere else.
+  const cfg = window.OSR_CONFIG || {};
+  const metaApi = document.querySelector('meta[name="osr-api-base"]');
+  const API_BASE = (cfg.apiBase || (metaApi && metaApi.getAttribute('content')) || '').replace(/\/+$/, '');
+
+  // Flipped to false as soon as we learn there is no backend behind this host.
+  let backendAvailable = true;
+
+  function isJson(response){
+    const ct = (response.headers.get('content-type') || '').toLowerCase();
+    return ct.includes('application/json');
+  }
 
   async function fetchPublic(type){
+    if(!backendAvailable) return null;
+
+    let r;
     try{
       // Try the new /api/public/:type endpoint first, fallback to /api/:type/public
-      let r = await fetch(`${API_BASE}/api/public/${type}`, {credentials:'include'});
-      if(!r.ok){
-        r = await fetch(`${API_BASE}/api/${type}/public`, {credentials:'include'});
-      }
-      if(!r.ok) throw new Error('fetch failed '+r.status);
-      return await r.json();
+      r = await fetch(`${API_BASE}/api/public/${type}`, {credentials:'include'});
+      if(!r.ok) r = await fetch(`${API_BASE}/api/${type}/public`, {credentials:'include'});
     }catch(e){
-      console.warn('[CMS] fetchPublic failed for', type, e.message);
+      // Network / CORS failure: no backend reachable from this origin at all.
+      noBackend('unreachable — '+e.message);
       return null;
     }
+
+    if(!r.ok){
+      // The backend is there but this one type failed — log and keep going.
+      console.warn('[CMS] no data for', type, '(HTTP '+r.status+')');
+      return null;
+    }
+
+    // A SPA fallback answers 200 with index.html — that is not API data.
+    if(!isJson(r)){
+      noBackend('host answered '+type+' with '+(r.headers.get('content-type')||'a non-JSON response'));
+      return null;
+    }
+
+    let data;
+    try{
+      data = await r.json();
+    }catch(e){
+      noBackend('malformed JSON — '+e.message);
+      return null;
+    }
+
+    // Static hosts (Netlify) answer /api/* with api-unavailable.json.
+    if(data && data.available === false){
+      noBackend('this host serves the static stub');
+      return null;
+    }
+    return data;
+  }
+
+  // Called once, the first time we learn there is no API behind this host.
+  // Everything after it short-circuits, so the page renders its built-in content
+  // without firing seven more pointless requests.
+  function noBackend(reason){
+    if(!backendAvailable) return;
+    backendAvailable = false;
+    console.info('[CMS] No API here ('+reason+') — showing built-in content.');
   }
 
   // Patch DOM after original render
@@ -112,11 +167,13 @@
   }
 
   document.addEventListener('DOMContentLoaded', async ()=>{
-    console.log('[CMS] Integration starting');
-    
-    // Fetch all public data in parallel
+    // Probe with one request first. On static hosting (Netlify) this resolves
+    // immediately and we stop — the page keeps its built-in content.
+    const anns = await fetchPublic('announcements');
+    if(!backendAvailable) return;
+
+    // Backend is there: fetch the rest in parallel.
     const results = await Promise.allSettled([
-      fetchPublic('announcements'),
       fetchPublic('board-meetings'),
       fetchPublic('initiatives'),
       fetchPublic('resources'),
@@ -124,9 +181,9 @@
       fetchPublic('guides'),
       fetchPublic('navigation')
     ]);
-    
-    const [anns, boards, inits, ress, cals, guides, navs] = results.map(r=> r.status==='fulfilled'? r.value : null);
-    
+
+    const [boards, inits, ress, cals, guides, navs] = results.map(r=> r.status==='fulfilled'? r.value : null);
+
     window.__CMS_DATA = {
       announcements: anns,
       board_meetings: boards,
@@ -139,7 +196,7 @@
 
     // Patch guides immediately
     if(guides) patchGuides(guides);
-    
+
     // Patch announcements etc after a delay to let original render finish
     setTimeout(()=>{
       if(anns) patchAnnouncements(anns);
@@ -147,7 +204,7 @@
       // For now, we store the data and let the public site keep its hardcoded fallback
       // The important part is that the data is available for any future render
       console.log('[CMS] Data hydrated', window.__CMS_DATA);
-      
+
       // Trigger a custom event so the original script could react if it listens
       window.dispatchEvent(new CustomEvent('cms:hydrated', {detail: window.__CMS_DATA}));
     }, 1000);

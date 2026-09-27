@@ -1,1 +1,8 @@
-/*  /index.html  200
+# Fallback for deploys where netlify.toml is not read (e.g. manual drag & drop).
+# Order matters: the first matching rule wins.
+
+# No API on static hosting — tiny JSON stub, not the 375 KB index.html.
+/api/*  /api-unavailable.json  200
+
+# Single-page site with hash routes — unknown paths still render the site.
+/*      /index.html            200
