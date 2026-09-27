@@ -97,6 +97,42 @@ router.patch('/account', authRequired, async (req,res)=>{
   res.json({ ok: true, email, changed });
 });
 
+// ── Standalone setup: check if first admin exists ──
+router.get('/setup-status', async (req, res) => {
+  const db = req.app.locals.db;
+  try {
+    const count = (await db.prepare('SELECT COUNT(*) as c FROM admins').get()).c;
+    res.json({ needsSetup: count === 0, count });
+  } catch (e) {
+    res.json({ needsSetup: false, count: 1 });
+  }
+});
+
+// Create first admin when none exists — no auth required, self-contained
+router.post('/setup', async (req, res) => {
+  const db = req.app.locals.db;
+  const count = (await db.prepare('SELECT COUNT(*) as c FROM admins').get()).c;
+  if (count > 0) return res.status(403).json({ error: 'Setup already completed — admin exists' });
+
+  const { email, password, name } = req.body;
+  if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
+  const normalizedEmail = String(email).trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) return res.status(400).json({ error: 'Invalid email' });
+  if (String(password).length < 8) return res.status(400).json({ error: 'Password must be at least 8 characters' });
+
+  const hash = bcrypt.hashSync(String(password), 10);
+  try {
+    (await db.prepare('INSERT INTO admins (email, password_hash, name) VALUES (?,?,?)').run(normalizedEmail, hash, name || 'OSR Administrator'));
+  } catch (e) {
+    if (String(e.message).toLowerCase().includes('unique') || String(e.code) === '23505') {
+      return res.status(409).json({ error: 'Admin already exists' });
+    }
+    throw e;
+  }
+  console.log(`[Auth] First admin created via setup: ${normalizedEmail}`);
+  res.json({ ok: true, email: normalizedEmail });
+});
+
 router.post('/forgot', (req, res) => {
   res.json({ ok: false, message: 'Password reset is not configured. Please contact the site administrator.' });
 });

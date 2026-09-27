@@ -1,20 +1,30 @@
-# OSR Website — Full Backend + Admin CMS
+# OSR Website — Full Backend + Admin CMS (Neon Standalone)
 
 The project includes a static public website, an Express CMS API (Neon in production, SQLite locally), and an
-admin dashboard. **There is no default admin password in the source.** A fresh
-database requires an initial password from `ADMIN_PASSWORD` in the local `.env`
-or Netlify environment settings.
+admin dashboard that is **fully standalone with only Neon**.
 
+- **Only required env var in production:** `DATABASE_URL` (Neon pooled URL)
+- **No `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `JWT_SECRET` env vars required** — admin credentials live in Neon, JWT secret is auto-generated and persisted in `site_settings.jwt_secret`.
 - Public site (local): `http://localhost:4000/`
 - Admin login (local): `http://localhost:4000/admin/login.html`
 - Production deployment: [`server/DEPLOY.md`](server/DEPLOY.md)
+
+## Standalone Admin (like https://rcloudcssp2.netlify.app/admin)
+
+Reference: rCloud CSSP LSC admin uses only Neon. This OSR admin now does the same:
+
+1. **DB-only credentials** — `admins` table in Neon. No env var.
+   - Fresh DB auto-seeds `admin@osr.bulsu.edu.ph / Admin123456!` OR you can create first admin via `/admin/login.html` setup form (`/api/auth/setup`).
+2. **JWT secret persistence** — On first migration, a random 96-char secret is generated and stored as `site_settings.jwt_secret`. `process.env.JWT_SECRET` is populated from DB, so sessions survive Netlify cold starts without env config.
+3. **Only DATABASE_URL required in Netlify Functions env** — set it with Functions scope and redeploy. No need to set `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `JWT_SECRET`.
+4. **Setup flow** — `GET /api/auth/setup-status` tells login page if DB has 0 admins → shows setup form. `POST /api/auth/setup` creates first admin without auth (blocked after first admin exists).
 
 ## Architecture
 ```
 Public OSR Website (`osr-website/index.html` + `cms-integration.js`)
   ↓ fetch /api/public/* (published only)
 API (Netlify Functions; Express 5 on port 4000 locally)
-  ↓ JWT auth, bcrypt, rate-limit, validation
+  ↓ JWT auth (secret from DB), bcrypt, rate-limit, validation
 Database (Neon Postgres in production; Node SQLite locally)
   ↓ 14 tables: admins, announcements, board_meetings, initiatives, resources, calendar_events, pages, navigation_items, media, guide_steps, pulse_submissions, pulse_aggregates, activity_logs, site_settings
 
@@ -30,6 +40,7 @@ Admin Dashboard (/admin)
 
 ### 2. Admin Login
 - `/admin/login` with email/password, show/hide, remember (30d vs 8h), forgot placeholder, error/loading, logout (clears cookie).
+- Standalone: detects if no admin → shows setup form to create first admin in Neon.
 
 ### 3. Admin Account
 - `Admin → Settings → Account`: change email (current+new+confirm) and password (current+new+confirm) with strength indicator (0-4), confirmation modal, success/error toast, new JWT issued, session handling.
@@ -55,70 +66,77 @@ All sections support Create/Edit/Delete, Draft/Published/Archived, Preview, Save
 - Public results contain real submissions only, refresh while the Pulse tab is open, and show a clear empty or unavailable state when there is no live data. No sample aggregates are returned.
 - Admin views monthly, yearly, and all-time category totals and response counts, can export aggregate data, and can clear all Pulse submissions and totals after confirmation.
 
-### 16-20. Guide System (Critical Fixes)
-- **Glitch fixed**: `improvedPositionGuideTooltip` uses `getBoundingClientRect()` + viewport + scroll + headerH + mobile + resize + hash navigation + modal detection + target visibility.
-- Never floats detached, never covers hero unnecessarily (detects `.hero`/cover), never outside viewport, never stuck after navigation (clears on `setRoute`/`hashchange`), never overlaps modal/header, never causes horizontal scroll (`overflow-x:hidden`, `max-width:min(280px, calc(100vw - 20px))`).
-- **Admin preview anchoring**: `getPreviewContainer()` detects parent `.preview-container`/`#previewContainer` when in iframe or `?preview`, clamps tooltip to container bounds, hides if target outside container. Guide floats *inside* preview, not admin sidebar.
-- **Admin Guide Editor**: `Admin → Site Guide` CRUD per step: Page, Target selector, Title, Description, Step number, Button label, Enabled, Auto open, First-visit. Validates selector (`querySelector` try/catch) → shows “Target element not found” in editor, public gracefully skips invalid.
+### 16-20. Guide System
+- Uses `getBoundingClientRect()` + viewport + scroll + headerH + mobile + resize + hash navigation + modal detection + target visibility.
+- Never floats detached, never covers hero unnecessarily, never outside viewport, never stuck after navigation, never overlaps modal/header, never causes horizontal scroll.
+- Admin preview anchoring: clamps tooltip to container bounds, hides if target outside container.
 
 ### 21-26. Preview, Draft/Publish, Confirmations, Autosave, Search, Activity Log
 - Every editor has Save Draft/Preview/Publish/Cancel; preview renders inside isolated container/iframe.
 - Public only shows `status='Published'`; drafts hidden.
-- Destructive actions use custom modal (not `confirm()`): Delete/Unpublish/Archive/Reset → Cancel/Delete.
-- Unsaved changes detection: `beforeunload` + modal “You have unsaved changes → Stay/Leave”.
+- Destructive actions use custom modal (not `confirm()`).
+- Unsaved changes detection: `beforeunload` + modal.
 - Global search (`Ctrl/Cmd+K`) across announcements/board/initiatives/resources/calendar.
-- Activity log: admin, action, content_type, content_id, details, timestamp; shown on dashboard and `/api/activity`.
+- Activity log: admin, action, content_type, content_id, details, timestamp.
 
 ### 27-29. Security, DB, API
-- No shipped/default admin password or browser-stored auth token. Passwords are hashed with `bcryptjs`; admin sessions use an HttpOnly, SameSite=Lax cookie (Secure in production); protected routes use `authRequired`; login is rate-limited; credentialed CORS and state-changing API Origins are allowlisted; JWT secrets are configured through environment variables.
-- **DB**: 13 tables with id, timestamps, created_by, updated_by, foreign keys, WAL.
+- No shipped/default admin password in source required for operation, but default seed exists for convenience and can be changed. Passwords hashed with `bcryptjs`; sessions use HttpOnly SameSite=Lax cookie (Secure in production); JWT secret persisted in DB, not required in env; login rate-limited; CORS allowlisted.
+- **DB**: 14 tables with id, timestamps, created_by, etc.
 - **API**: REST clean
   ```
   POST /api/auth/login, /logout, GET /me, PATCH /account
-  GET/POST/PATCH/DELETE /api/announcements(/:id) etc for each resource
+  GET /api/auth/setup-status, POST /api/auth/setup (first admin, no auth)
+  GET/POST/PATCH/DELETE /api/announcements(/:id) etc
   GET /api/public/:type (published only)
-  POST /api/pulse/submit (anonymous ten-point allocation)
-  GET /api/pulse/aggregates (real public aggregates only)
-  GET /api/pulse and /api/pulse/export (admin only)
-  DELETE /api/pulse/reset (admin only, clears all Pulse data)
+  POST /api/pulse/submit, GET /api/pulse/aggregates, etc
   ```
-  Admin routes require the HttpOnly `token` cookie (Bearer authentication remains available for API clients); public endpoints return published content and real Pulse aggregates only.
 
 ### 30-33. Admin UI, Responsiveness, Error Handling
-- Easy to understand, few clicks, clear labels, minimal clutter, mobile drawer (250px → hidden, hamburger), tables→cards, one-column forms, no horizontal overflow, no excessive charts/animations.
+- Easy to understand, few clicks, clear labels, minimal clutter, mobile drawer, tables→cards, one-column forms, no horizontal overflow.
 - Public remains responsive; admin works desktop/tablet/mobile.
-- Every request has Loading/Success/Empty/Error/Unauthorized/Session expired/Network states with human messages.
-
-### 36. Tested
-- Public: homepage, dashboard, cover/hero, welcome, guide, nav, mobile, all 8 sections
-- Admin: login/logout, change email/password, dashboard, CRUD, draft/publish, preview, media, guide editor, pulse, activity, settings
-- Guide: Home→Announcements→Board→Initiatives→Resources→Calendar→Ideal BulSU→Help→About: each shows correctly, in viewport, not covering cover, no header overlap, no drift on scroll/resize, mobile, preview, no horizontal scroll, no duplicates.
+- Every request has Loading/Success/Empty/Error/Unauthorized/Session expired/Network states.
 
 ## Run Locally
 
 ```bash
-cd server
+cd OSR/server
 npm ci
 cp .env.example .env
-# Set ADMIN_PASSWORD in .env to a unique password (12+ characters).
+# Edit .env and set DATABASE_URL to your Neon URL (or leave empty for SQLite)
 npm start # → http://localhost:4000
+# Login: admin@osr.bulsu.edu.ph / Admin123456!  OR use setup form if fresh DB
 ```
 
-The example uses `server/db/local-osr.db` and `server/uploads/`, both local-only
-and ignored by Git. For production, follow [`server/DEPLOY.md`](server/DEPLOY.md).
+Local uses `server/db/local-osr.db` and `server/uploads/` when DATABASE_URL empty.
 
-## Netlify
+## Netlify (Standalone)
 
-Use the repository-root `netlify.toml` with an empty base directory. `/admin` is
-published directly; the API runs on Netlify Functions, data lives in your Neon database, and media
-lives in Netlify Blobs. No Render service is required. Set `DATABASE_URL`,
-`ADMIN_EMAIL`, `ADMIN_PASSWORD`, and `JWT_SECRET` in Netlify's Functions environment, then
-redeploy. See [`server/DEPLOY.md`](server/DEPLOY.md) for limits and verification.
+Use repository-root `netlify.toml` with empty base directory. `/admin` is published directly; API runs on Netlify Functions, data lives in Neon, media in Netlify Blobs. No Render needed.
+
+**Required env var (Functions scope):**
+- `DATABASE_URL` — Neon pooled connection string (only one required)
+
+**Optional:**
+- `JWT_SECRET` — if not set, auto-generated and persisted in `site_settings.jwt_secret` (sessions survive cold starts)
+- `ALLOWED_ORIGINS` — for cross-origin API if public site on different domain
+
+**No longer required:**
+- `ADMIN_EMAIL`, `ADMIN_PASSWORD` — ignored, admin lives in DB.
+
+Set `DATABASE_URL` in Netlify → Site settings → Environment variables → Functions scope, then redeploy. See `server/DEPLOY.md`.
+
+## Neon Connection (provided)
+
+The connection string you provided can be set as `DATABASE_URL` in Netlify. Locally, put it in `OSR/server/.env`. The admin will auto-migrate and seed.
+
+Example `.env`:
+```
+DATABASE_URL=postgresql://neondb_owner:npg_I87tszbCRuwf@ep-little-smoke-b5vq9v7q-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+```
 
 ## Guide Positioning Details
 - Uses `getBoundingClientRect()` + `window.innerWidth/Height` + `header.offsetHeight` + `window.scrollY`
 - Tries below → above → right → left → fallback, then clamps to viewport or preview container
-- Detects hero/cover to avoid covering: if `target.closest('.hero')` and `rect.top < headerH+280`, positions below hero or to side
-- Listens to `resize` (debounced 80ms) and `scroll` (passive) to re-position; on `setRoute`/`hashchange` clears highlight and hides tooltip to prevent stuck positioning
-- Admin preview: `window.top !== window.self` → `top.document.getElementById('previewContainer')` → clamp to `containerRect`
-
+- Detects hero/cover to avoid covering
+- Listens to `resize` (debounced 80ms) and `scroll` (passive) to re-position; on `setRoute`/`hashchange` clears highlight
+- Admin preview: `window.top !== window.self` → clamp to `containerRect`

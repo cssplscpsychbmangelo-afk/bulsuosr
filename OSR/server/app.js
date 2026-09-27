@@ -24,15 +24,17 @@ export function createApp(db, { mediaStore } = {}) {
 const app = express();
 const isProduction = (process.env.NODE_ENV === 'production' || !!process.env.AWS_LAMBDA_FUNCTION_NAME);
 
-function validateProductionConfig() {
-  if (!isProduction) return;
-  const secret = process.env.JWT_SECRET || '';
-  if (secret.length < 32 || secret !== secret.trim()) {
-    throw new Error('Production requires JWT_SECRET to be a persistent random value of at least 32 characters.');
+function ensureJwtSecret() {
+  // Standalone mode: JWT_SECRET is optional. If missing, schema.js already
+  // tried to load/persist it from site_settings. As final fallback, generate.
+  // (Actual generation is done in middleware/auth.js which uses ESM crypto)
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET.trim().length < 16) {
+    // Intentionally left empty — auth middleware will generate and warn.
+    // We keep this function for future DB persistence hooks.
   }
 }
 
-validateProductionConfig();
+ensureJwtSecret();
 
 const normalizeOrigin = origin => {
   if (!origin) return '';

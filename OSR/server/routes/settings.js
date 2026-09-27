@@ -4,7 +4,10 @@ const router=express.Router();
 router.get('/', async (req,res)=>{
   const db=req.app.locals.db;
   const rows=(await db.prepare('SELECT * FROM site_settings').all());
-  const obj={}; rows.forEach(r=> obj[r.key]=r.value);
+  const obj={}; rows.forEach(r=> {
+    if(r.key==='jwt_secret') return; // never expose secret, even to admin API
+    obj[r.key]=r.value;
+  });
   res.json(obj);
 });
 router.get('/public', async (req,res)=>{
@@ -19,6 +22,7 @@ router.get('/public', async (req,res)=>{
 router.patch('/', authRequired, async (req,res)=>{
   const db=req.app.locals.db;
   for(const [k,v] of Object.entries(req.body)){
+    if(k==='jwt_secret') continue; // protected, managed internally
     (await db.prepare("INSERT INTO site_settings (key, value, updated_at) VALUES (?,?,datetime('now')) ON CONFLICT(key) DO UPDATE SET value=excluded.value, updated_at=datetime('now')").run(k, String(v)));
   }
   try{ (await db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type) VALUES (?,?,?,?)').run(req.admin.id, req.admin.email, 'Updated site settings', 'settings')); }catch{}

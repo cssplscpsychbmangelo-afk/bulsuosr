@@ -203,27 +203,47 @@ export async function initializeDatabase(db) {
     );
   `));
 
-  // Seed the first admin. Uses env vars if set, otherwise falls back to
-  // a default email/password the admin can change from Settings → Account.
+  // ── Standalone admin: no env dependency ──
+  // The admin account lives entirely in Neon (or SQLite locally). We seed a
+  // default account only when the admins table is empty, so the site works
+  // out-of-the-box without ADMIN_EMAIL / ADMIN_PASSWORD env vars.
+  // After first login, change credentials from Settings → Account.
   const adminCount = (await db.prepare('SELECT COUNT(*) as c FROM admins').get()).c;
   if (adminCount === 0) {
-    const email = (process.env.ADMIN_EMAIL || 'admin@osr.bulsu.edu.ph').trim().toLowerCase();
-    const atIndex = email.indexOf('@');
-    if (atIndex <= 0 || !email.slice(atIndex + 1).includes('.') || email.includes(' ')) {
-      throw new Error('ADMIN_EMAIL is not a valid email address. Set a valid ADMIN_EMAIL in environment variables.');
-    }
-    // Use configured password, or fall back to the default starter password.
-    const password = process.env.ADMIN_PASSWORD || 'Admin123456!';
+    const email = 'admin@osr.bulsu.edu.ph';
+    const password = 'Admin123456!';
     const hash = bcrypt.hashSync(password, 10);
-    (await db.prepare('INSERT INTO admins (email, password_hash, name) VALUES (?,?,?)').run(email, hash, 'OSR Administrator'));
-    console.log(`[DB] Seeded admin account for ${email}. Change the password from Settings → Account.`);
-  } else if (process.env.ADMIN_PASSWORD) {
-    // The seed password only applies to an empty admins table. Logging this
-    // saves a confusing "Invalid credentials" loop when the server is started
-    // against an existing database file.
-    console.log(`[DB] ${adminCount} admin account(s) already exist in the database; ADMIN_PASSWORD is ignored on this startup. To recover a lost local password, run: npm run reset:admin -- --confirm`);
+    try {
+      (await db.prepare('INSERT INTO admins (email, password_hash, name) VALUES (?,?,?)').run(email, hash, 'OSR Administrator'));
+      console.log(`[DB] Seeded default admin ${email} — change password from Settings → Account after first login.`);
+    } catch (e) {
+      // Race: another cold start seeded first — ignore unique violation
+      if (!String(e.message).toLowerCase().includes('duplicate') && !String(e.message).toLowerCase().includes('unique') && !String(e.code).includes('23505')) {
+        throw e;
+      }
+      console.log('[DB] Admin already seeded by concurrent instance');
+    }
   } else {
-    console.log(`[DB] Opened existing database (${adminCount} admin account(s)).`);
+    console.log(`[DB] Found ${adminCount} admin account(s) — standalone mode, no env needed.`);
+  }
+
+  // ── Standalone JWT secret: persist in site_settings so sessions survive
+  // cold starts even when JWT_SECRET env var is not set (Netlify Functions).
+  // This makes the admin self-contained with only DATABASE_URL required.
+  try {
+    const existingSecret = (await db.prepare('SELECT value FROM site_settings WHERE key=?').get('jwt_secret'))?.value;
+    if (!existingSecret) {
+      const { randomBytes } = await import('node:crypto');
+      const generated = randomBytes(48).toString('hex'); // 96 chars
+      (await db.prepare('INSERT INTO site_settings (key, value) VALUES (?,?) ON CONFLICT(key) DO NOTHING').run('jwt_secret', generated));
+      if (!process.env.JWT_SECRET) process.env.JWT_SECRET = generated;
+      console.log('[DB] Generated persistent jwt_secret in site_settings (standalone mode)');
+    } else if (!process.env.JWT_SECRET) {
+      process.env.JWT_SECRET = existingSecret;
+      console.log('[DB] Loaded jwt_secret from site_settings into env');
+    }
+  } catch (e) {
+    console.warn('[DB] Could not ensure jwt_secret in site_settings:', e.message);
   }
 
   // Seed guide_steps if empty
