@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>OSR Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{ --red:#A6192E; --red-2:#8F1428; --red-3:#FFF0F2; --ink:#111214; --ink-2:#2B2D31; --stone:#6B6560; --line:#E9E6E1; --paper:#F7F5F2; --white:#fff; --ok:#115E34; --ok-bg:#E6F4EA; }
+  *{box-sizing:border-box} body{margin:0; font-family:'IBM Plex Sans',sans-serif; background:var(--paper); color:var(--ink)}
+  a{color:var(--red); text-decoration:none} a:hover{text-decoration:underline}
+  /* layout */
+  .app{display:grid; grid-template-columns:250px 1fr; min-height:100vh}
+  .sidebar{background:var(--ink); color:#fff; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; overflow:auto}
+  .brand{padding:18px 16px; border-bottom:1px solid #222; display:flex; gap:10px; align-items:center}
+  .brand img{width:32px; height:32px; border-radius:6px; background:white; padding:2px}
+  .brand b{font:600 13px 'Fraunces',serif} .brand span{font:400 11px 'IBM Plex Sans',sans-serif; color:#B8B2AC; display:block}
+  .nav{padding:10px 8px; flex:1}
+  .nav-section{font:700 10px 'IBM Plex Mono',monospace; letter-spacing:.08em; text-transform:uppercase; color:#9A9590; padding:14px 8px 6px}
+  .nav a{display:flex; gap:10px; align-items:center; padding:8px 10px; border-radius:8px; color:#E9E6E1; font:500 13px 'IBM Plex Sans',sans-serif; text-decoration:none}
+  .nav a:hover{background:#1e1f22; color:white}
+  .nav a.active{background:var(--red); color:white}
+  .nav a svg{width:16px; height:16px; stroke:currentColor; fill:none; stroke-width:1.6}
+  .sidebar-foot{padding:12px; border-top:1px solid #222; display:grid; gap:8px}
+  .btn{border:none; border-radius:999px; padding:9px 12px; font:600 12px 'IBM Plex Sans',sans-serif; cursor:pointer; display:inline-flex; gap:6px; align-items:center; justify-content:center}
+  .btn--red{background:var(--red); color:white} .btn--red:hover{background:var(--red-2)}
+  .btn--ghost{background:white; color:var(--ink); border:1px solid var(--line)}
+  .btn--ghost:hover{background:var(--paper)}
+  /* header */
+  .main{display:flex; flex-direction:column; min-width:0}
+  .top{position:sticky; top:0; z-index:10; background:rgba(255,255,255,.92); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); display:flex; gap:12px; align-items:center; padding:10px 16px}
+  .top h1{font:600 16px 'Fraunces',serif; margin:0; flex:1}
+  .search{position:relative; flex:0 1 420px}
+  .search input{width:100%; padding:9px 12px 9px 36px; border:1px solid var(--line); border-radius:999px; background:white; font:400 13px 'IBM Plex Sans',sans-serif; outline:none}
+  .search input:focus{border-color:var(--red); box-shadow:0 0 0 3px rgba(166,25,46,.08)}
+  .search svg{position:absolute; left:11px; top:50%; transform:translateY(-50%); width:14px; height:14px; stroke:var(--stone); fill:none}
+  .top-actions{display:flex; gap:8px; align-items:center}
+  /* content */
+  .content{padding:18px; max-width:1200px; width:100%; margin:0 auto; display:grid; gap:16px}
+  .cards{display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:12px}
+  .card{background:white; border:1px solid var(--line); border-radius:12px; padding:14px; display:grid; gap:6px}
+  .card b{font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.06em; text-transform:uppercase; color:var(--stone)}
+  .card strong{font:700 22px 'Fraunces',serif}
+  .card p{font:400 12px 'IBM Plex Sans',sans-serif; color:var(--stone); margin:0}
+  .grid2{display:grid; grid-template-columns:1.4fr .9fr; gap:16px}
+  @media(max-width:900px){ .app{grid-template-columns:1fr} .sidebar{position:fixed; inset:0 40% 0 0; z-index:40; transform:translateX(-100%); transition:transform .2s} .sidebar.open{transform:none} .grid2{grid-template-columns:1fr} .search{flex:1} }
+  .panel{background:white; border:1px solid var(--line); border-radius:12px; overflow:hidden}
+  .panel-head{padding:12px 14px; border-bottom:1px solid var(--line); display:flex; gap:10px; align-items:center; justify-content:space-between}
+  .panel-head h2{font:600 13px 'Fraunces',serif; margin:0}
+  .panel-body{padding:14px; display:grid; gap:12px}
+  .empty{padding:24px; text-align:center; color:var(--stone); font-size:13px; border:1px dashed var(--line); border-radius:10px; background:var(--paper)}
+  .list{display:grid; gap:8px}
+  .row{display:flex; gap:10px; align-items:center; padding:10px; border:1px solid var(--line); border-radius:10px; background:white}
+  .row:hover{border-color:#DDD8D1}
+  .row b{font:600 13px 'IBM Plex Sans',sans-serif}
+  .row span{font:400 12px 'IBM Plex Sans',sans-serif; color:var(--stone)}
+  .badge{font:700 10px 'IBM Plex Mono',monospace; letter-spacing:.06em; text-transform:uppercase; padding:3px 7px; border-radius:999px; border:1px solid var(--line); background:white}
+  .badge--green{background:var(--ok-bg); color:var(--ok); border-color:#B7E1C6}
+  .badge--red{background:var(--red-3); color:var(--red); border-color:#FFD0D6}
+  .badge--draft{background:#FEF3C7; color:#7A4C00; border-color:#FDE68A}
+  .form{display:grid; gap:10px}
+  .form label{font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.06em; text-transform:uppercase}
+  .form input, .form textarea, .form select{width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:10px; font:400 13px 'IBM Plex Sans',sans-serif; background:white; outline:none}
+  .form input:focus, .form textarea:focus, .form select:focus{border-color:var(--red); box-shadow:0 0 0 3px rgba(166,25,46,.08)}
+  .form textarea{resize:vertical; min-height:80px}
+  .form-row{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  @media(max-width:640px){ .form-row{grid-template-columns:1fr} }
+  .preview{border:1px solid var(--line); border-radius:10px; overflow:hidden; background:white}
+  .preview-head{padding:8px 12px; background:var(--paper); border-bottom:1px solid var(--line); font:600 11px 'IBM Plex Mono',monospace; display:flex; justify-content:space-between; align-items:center}
+  /* modal */
+  .modal{position:fixed; inset:0; background:rgba(0,0,0,.42); display:none; place-items:center; z-index:50; padding:16px}
+  .modal.open{display:grid}
+  .modal-box{background:white; border-radius:12px; padding:18px; width:min(520px,100%); display:grid; gap:12px; border:1px solid var(--line)}
+  .modal-box h3{margin:0; font:600 15px 'Fraunces',serif}
+  .modal-actions{display:flex; gap:8px; justify-content:flex-end}
+  /* toast */
+  .toasts{position:fixed; bottom:16px; right:16px; z-index:60; display:grid; gap:8px}
+  .toast{background:var(--ink); color:white; padding:10px 14px; border-radius:999px; font:500 13px 'IBM Plex Sans',sans-serif; box-shadow:0 8px 20px rgba(0,0,0,.18)}
+  /* table -> cards on mobile */
+  table{width:100%; border-collapse:collapse; font-size:13px}
+  th{font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.06em; text-transform:uppercase; color:var(--stone); text-align:left; padding:8px; border-bottom:1px solid var(--line)}
+  td{padding:8px; border-bottom:1px solid #F0EDE9}
+  @media(max-width:640px){ table, thead, tbody, th, td, tr{display:block} thead{display:none} tr{border:1px solid var(--line); border-radius:10px; padding:10px; margin-bottom:8px} td{border:none; padding:4px 0} td::before{content:attr(data-label) ": "; font:600 11px 'IBM Plex Mono',monospace; color:var(--stone)} }
+  /* guide preview container */
+  .preview-container{position:relative; border:1px solid var(--line); border-radius:12px; overflow:hidden; height:520px; background:white}
+  .preview-container iframe{width:100%; height:100%; border:none; display:block}
+  .guide-anchored{position:absolute !important; z-index:5}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <img src="/osr-logo.png" alt="OSR">
+      <div><b>OSR Admin</b><span>Office of the Student Regent</span></div>
+    </div>
+    <nav class="nav">
+      <div class="nav-section">Dashboard</div>
+      <a href="#dashboard" class="active" data-nav="dashboard"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg> Overview</a>
+      <div class="nav-section">Content</div>
+      <a href="#announcements" data-nav="announcements"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/></svg> Announcements</a>
+      <a href="#board" data-nav="board"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 10h8M8 14h5"/></svg> Board Meetings</a>
+      <a href="#initiatives" data-nav="initiatives"><svg viewBox="0 0 24 24"><path d="M12 8v8M8 12h8"/><circle cx="12" cy="12" r="9"/></svg> Initiatives</a>
+      <a href="#resources" data-nav="resources"><svg viewBox="0 0 24 24"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg> Resources</a>
+      <a href="#calendar" data-nav="calendar"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg> Academic Calendar</a>
+      <a href="#about" data-nav="about"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg> About / OSR Info</a>
+      <a href="#help" data-nav="help"><svg viewBox="0 0 24 24"><path d="M12 18h.01M8 10a4 4 0 0 1 7 2c0 2-3 1.5-3 4"/><circle cx="12" cy="12" r="9"/></svg> Help / Contact</a>
+      <div class="nav-section">BulSU Pulse</div>
+      <a href="#pulse" data-nav="pulse"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg> Pulse Dashboard</a>
+      <div class="nav-section">Media & Guide</div>
+      <a href="#media" data-nav="media"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5-4 4-2-2-4 4"/></svg> Media</a>
+      <a href="#guides" data-nav="guides"><svg viewBox="0 0 24 24"><path d="M12 6a4 4 0 1 0 0 8 4 4 0 0 0 0-8z"/><path d="M12 14v4M9 18h6"/></svg> Site Guide</a>
+      <div class="nav-section">Settings & Logs</div>
+      <a href="#navigation" data-nav="navigation"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg> Navigation</a>
+      <a href="#settings" data-nav="settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.4 1.4M18.36 18.36l1.4 1.4M1 12h2M21 12h2M4.22 19.78l1.4-1.4M18.36 5.64l1.4-1.4"/></svg> Settings</a>
+      <a href="#activity" data-nav="activity"><svg viewBox="0 0 24 24"><path d="M12 8v4l3 3"/><circle cx="12" cy="12" r="9"/></svg> Activity Log</a>
+    </nav>
+    <div class="sidebar-foot">
+      <a href="/" target="_blank" class="btn btn--red">View Public Website →</a>
+      <button id="logout" class="btn btn--ghost">Log out</button>
+      <div style="font:400 11px 'IBM Plex Sans',sans-serif; color:#9A9590; text-align:center" id="adminEmail"></div>
+    </div>
+  </aside>
+  <main class="main">
+    <div class="top">
+      <button id="menu" class="btn btn--ghost" style="display:none; padding:8px">☰</button>
+      <h1 id="pageTitle">Overview</h1>
+      <div class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="globalSearch" placeholder="Search — announcements, meetings, resources… (Ctrl+K)"></div>
+      <div class="top-actions">
+        <button class="btn btn--ghost" onclick="location.href='/admin/login.html'" id="loginBtn" style="display:none">Log in</button>
+      </div>
+    </div>
+    <div class="content" id="content">
+      <!-- injected -->
+    </div>
+  </main>
+</div>
+
+<!-- modal -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <h3 id="modalTitle">Confirm</h3>
+    <p id="modalDesc" style="font-size:13px; color:var(--stone); margin:0"></p>
+    <div class="modal-actions">
+      <button class="btn btn--ghost" id="modalCancel">Cancel</button>
+      <button class="btn btn--red" id="modalConfirm">Delete</button>
+    </div>
+  </div>
+</div>
+<div class="toasts" id="toasts"></div>
+
+<script>
+const API = '';
+const $ = s=>document.querySelector(s);
+const $$ = s=>[...document.querySelectorAll(s)];
+let admin = null;
+let searchIndex = [];
+
+function toast(m){ const t=document.createElement('div'); t.className='toast'; t.textContent=m; $('#toasts').appendChild(t); setTimeout(()=>t.remove(), 2800); }
+function fmtDate(s){ try{ return new Date(s).toLocaleString('en-PH', {dateStyle:'medium', timeStyle:'short'}); }catch{return s} }
+
+async function api(path, opts={}){
+  const headers = opts.headers||{};
+  headers['Content-Type'] = headers['Content-Type']||'application/json';
+  const token = localStorage.getItem('osr_admin_token');
+  if(token) headers['Authorization'] = 'Bearer '+token;
+  const r = await fetch(path, { ...opts, headers, credentials:'include' });
+  if(r.status===401){ location.href='/admin/login.html'; throw new Error('Unauthorized'); }
+  const j = await r.json().catch(()=> ({}));
+  if(!r.ok) throw new Error(j.error||'Request failed');
+  return j;
+}
+
+// Auth check
+async function checkAuth(){
+  try{ admin = await api('/api/auth/me'); $('#adminEmail').textContent = admin.email; }catch{ location.href='/admin/login.html'; }
+}
+$('#logout').onclick = async ()=>{
+  await fetch('/api/auth/logout', {method:'POST', credentials:'include'});
+  localStorage.removeItem('osr_admin_token');
+  location.href='/admin/login.html';
+};
+$('#menu').onclick = ()=> $('#sidebar').classList.toggle('open');
+// Responsive menu visibility
+if(innerWidth<900) $('#menu').style.display='inline-flex';
+addEventListener('resize', ()=> $('#menu').style.display = innerWidth<900 ? 'inline-flex' : 'none');
+
+// Global search
+$('#globalSearch').addEventListener('keydown', e=>{
+  if(e.key==='Enter'){
+    const q=e.target.value.trim();
+    if(q) location.hash='#search:'+encodeURIComponent(q);
+  }
+});
+addEventListener('keydown', e=>{
+  if((e.ctrlKey||e.metaKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); $('#globalSearch').focus(); }
+});
+
+// Nav active
+function setActive(){
+  const hash = location.hash.replace('#','').split(':')[0] || 'dashboard';
+  $$('.nav a').forEach(a=> a.classList.toggle('active', a.dataset.nav===hash));
+  $('#pageTitle').textContent = ({dashboard:'Overview', board:'Board Meetings', guides:'Site Guide', navigation:'Navigation', settings:'Settings → Account'})[hash] || hash.charAt(0).toUpperCase()+hash.slice(1);
+}
+addEventListener('hashchange', ()=>{ setActive(); render(); });
+
+// Modal helper
+let modalResolve=null;
+function confirmModal({title, desc, confirmText='Delete', danger=true}){
+  return new Promise(res=>{
+    $('#modalTitle').textContent=title;
+    $('#modalDesc').textContent=desc;
+    $('#modalConfirm').textContent=confirmText;
+    $('#modalConfirm').style.background = danger? 'var(--red)' : 'var(--ink)';
+    $('#modal').classList.add('open');
+    modalResolve=res;
+  });
+}
+$('#modalCancel').onclick=()=>{ $('#modal').classList.remove('open'); modalResolve?.(false); };
+$('#modalConfirm').onclick=()=>{ $('#modal').classList.remove('open'); modalResolve?.(true); };
+$('#modal').onclick=e=>{ if(e.target===$('#modal')){ $('#modal').classList.remove('open'); modalResolve?.(false); }};
+
+// Render dispatcher
+async function render(){
+  const hash = location.hash.replace('#','') || 'dashboard';
+  const [page, param] = hash.split(':');
+  const c = $('#content');
+  c.innerHTML = '<div class="empty">Loading…</div>';
+  try{
+    if(page==='dashboard') await renderDashboard();
+    else if(page==='announcements') await renderAnnouncements();
+    else if(page==='board') await renderBoard();
+    else if(page==='initiatives') await renderInitiatives();
+    else if(page==='resources') await renderResources();
+    else if(page==='calendar') await renderCalendar();
+    else if(page==='about') await renderAbout();
+    else if(page==='pulse') await renderPulse();
+    else if(page==='media') await renderMedia();
+    else if(page==='guides') await renderGuides();
+    else if(page==='navigation') await renderNavigation();
+    else if(page==='settings') await renderSettings();
+    else if(page==='activity') await renderActivity();
+    else if(page==='help') await renderHelp();
+    else if(page==='search') await renderSearch(decodeURIComponent(param||''));
+    else c.innerHTML = `<div class="empty">Section "${page}" coming soon — use the sidebar.</div>`;
+  }catch(e){ c.innerHTML = `<div class="empty" style="color:var(--red)">Error: ${e.message}</div>`; }
+}
+
+// Dashboard
+async function renderDashboard(){
+  const data = await api('/api/dashboard');
+  const { cards, recent } = data;
+  $('#content').innerHTML = `
+    <div class="cards">
+      <div class="card"><b>Published Announcements</b><strong>${cards.publishedAnn}</strong><p>Live on public site</p></div>
+      <div class="card"><b>Draft Announcements</b><strong>${cards.draftAnn}</strong><p>Needs review</p></div>
+      <div class="card"><b>Upcoming Board Meetings</b><strong>${cards.upcomingBoard}</strong><p>Scheduled</p></div>
+      <div class="card"><b>Active Initiatives</b><strong>${cards.activeInit}</strong><p>Ongoing / Planned</p></div>
+      <div class="card"><b>Resources</b><strong>${cards.resources}</strong><p>Published</p></div>
+      <div class="card"><b>Upcoming Calendar Events</b><strong>${cards.upcomingCal}</strong><p>Next 30 days</p></div>
+      <div class="card"><b>Pulse Responses</b><strong>${cards.pulseResponses}</strong><p>Total submissions</p></div>
+      <div class="card"><b>Last Updated</b><strong style="font-size:14px">${cards.lastUpdated? fmtDate(cards.lastUpdated): '—'}</strong><p>Most recent change</p></div>
+    </div>
+    <div class="grid2">
+      <div class="panel">
+        <div class="panel-head"><h2>Recent Activity</h2><a href="#activity">View all →</a></div>
+        <div class="panel-body">
+          ${recent.length? `<div class="list">${recent.map(r=>`<div class="row"><div style="flex:1"><b>${r.action}</b><br><span>${r.admin_email} • ${r.content_type||''} ${r.content_id||''} • ${fmtDate(r.created_at)}</span></div></div>`).join('')}</div>` : `<div class="empty">No activity yet</div>`}
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h2>Quick actions</h2></div>
+        <div class="panel-body" style="gap:8px">
+          <a href="#announcements" class="btn btn--red">+ New Announcement</a>
+          <a href="#board" class="btn btn--ghost">+ New Board Meeting</a>
+          <a href="#initiatives" class="btn btn--ghost">+ New Initiative</a>
+          <a href="#calendar" class="btn btn--ghost">+ New Calendar Event</a>
+          <div style="margin-top:8px; padding:10px; background:var(--paper); border-radius:10px; font-size:12px; color:var(--stone)">What needs attention? Check drafts and upcoming calendar events.</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// Generic CRUD helpers
+function editor({title, fields, onSave, initial={}, previewFn}){
+  const id = 'form-'+Date.now();
+  const previewId='preview-'+Date.now();
+  $('#content').innerHTML = `
+    <div class="panel">
+      <div class="panel-head"><h2>${title}</h2><div style="display:flex; gap:8px"><button class="btn btn--ghost" id="cancel">Cancel</button><button class="btn btn--ghost" id="previewBtn">Preview</button><button class="btn btn--red" id="save">Save</button></div></div>
+      <div class="panel-body">
+        <form class="form" id="${id}">
+          ${fields.map(f=>{
+            if(f.type==='textarea') return `<label>${f.label}<textarea name="${f.name}" placeholder="${f.placeholder||''}">${initial[f.name]||''}</textarea></label>`;
+            if(f.type==='select') return `<label>${f.label}<select name="${f.name}">${f.options.map(o=>`<option value="${o.value}" ${initial[f.name]==o.value?'selected':''}>${o.label}</option>`).join('')}</select></label>`;
+            return `<label>${f.label}<input name="${f.name}" type="${f.type||'text'}" value="${(initial[f.name]||'').toString().replace(/"/g,'&quot;')}" placeholder="${f.placeholder||''}"></label>`;
+          }).join('')}
+        </form>
+        <div id="${previewId}" class="preview" style="display:none"></div>
+        <div style="font-size:12px; color:var(--stone)">Draft vs Published: choose status below. Public site shows only Published.</div>
+      </div>
+    </div>
+  `;
+  let dirty=false;
+  $('#'+id).addEventListener('input', ()=> dirty=true);
+  $('#cancel').onclick = async ()=>{
+    if(dirty && !await confirmModal({title:'Unsaved changes?', desc:'You have unsaved changes. Leave without saving?', confirmText:'Leave', danger:false})) return;
+    history.back();
+  };
+  $('#previewBtn').onclick = ()=>{
+    const fd = new FormData(document.getElementById(id));
+    const data = Object.fromEntries(fd.entries());
+    const p = document.getElementById(previewId);
+    p.style.display='block';
+    p.innerHTML = previewFn? previewFn(data) : `<div style="padding:16px"><h3>${data.title||'Untitled'}</h3><p>${data.summary||data.description||''}</p></div>`;
+  };
+  $('#save').onclick = async ()=>{
+    const fd = new FormData(document.getElementById(id));
+    const data = Object.fromEntries(fd.entries());
+    // auto-save handling
+    try{ await onSave(data); toast('Saved'); dirty=false; location.hash='#'+title.toLowerCase().replace(/\s+/g,''); }catch(e){ toast('Error: '+e.message); }
+  };
+  window.addEventListener('beforeunload', e=>{ if(dirty){ e.preventDefault(); e.returnValue=''; }});
+}
+
+// Announcements
+async function renderAnnouncements(){
+  const rows = await api('/api/announcements');
+  $('#content').innerHTML = `
+    <div class="panel">
+      <div class="panel-head"><h2>Announcements</h2><button class="btn btn--red" id="newAnn">+ New</button></div>
+      <div class="panel-body">
+        <div style="display:flex; gap:8px; flex-wrap:wrap"><input id="annQ" placeholder="Search…" style="flex:1; min-width:180px; padding:9px 12px; border:1px solid var(--line); border-radius:999px"><select id="annStatus" style="padding:9px 12px; border:1px solid var(--line); border-radius:999px"><option value="all">All statuses</option><option>Draft</option><option>Published</option><option>Archived</option></select></div>
+        <div class="list" id="annList">${rows.map(r=>`
+          <div class="row">
+            <div style="flex:1; min-width:0"><b>${r.title}</b> <span class="badge ${r.status==='Published'?'badge--green': r.status==='Draft'?'badge--draft':'badge--red'}">${r.status}</span><br><span>${r.category} • ${r.date} • ${r.summary?.slice(0,80)||''}</span></div>
+            <div style="display:flex; gap:6px"><button class="btn btn--ghost" data-edit="${r.id}">Edit</button><button class="btn btn--ghost" data-del="${r.id}">Delete</button></div>
+          </div>`).join('') || '<div class="empty">No announcements</div>'}
+        </div>
+      </div>
+    </div>
+  `;
+  $('#newAnn').onclick = ()=> editor({
+    title:'New Announcement',
+    fields:[
+      {label:'Title', name:'title'},
+      {label:'Category', name:'category', type:'select', options:[{value:'Accomplishment Report',label:'Accomplishment Report'},{value:'Announcement & Letter',label:'Announcement & Letter'},{value:'Student Advisory',label:'Student Advisory'},{value:'Statement',label:'Statement'},{value:'Update from the BOR',label:'Update from the BOR'}]},
+      {label:'Date', name:'date', type:'date'},
+      {label:'Summary', name:'summary', type:'textarea'},
+      {label:'Full content', name:'content', type:'textarea'},
+      {label:'External link', name:'external_link'},
+      {label:'Status', name:'status', type:'select', options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'},{value:'Archived',label:'Archived'}]},
+    ],
+    onSave: async data=>{ await api('/api/announcements', {method:'POST', body:JSON.stringify(data)}); },
+    previewFn: d=> `<div style="padding:14px"><span class="badge">${d.category}</span><h3>${d.title}</h3><p style="color:var(--stone)">${d.date}</p><p>${d.summary}</p><div style="white-space:pre-wrap">${d.content}</div></div>`
+  });
+  $$('[data-edit]').forEach(b=> b.onclick= async ()=>{
+    const id=b.dataset.edit;
+    const row = await api('/api/announcements/'+id);
+    editor({
+      title:'Edit Announcement',
+      initial: row,
+      fields:[
+        {label:'Title', name:'title'},
+        {label:'Category', name:'category'},
+        {label:'Date', name:'date', type:'date'},
+        {label:'Summary', name:'summary', type:'textarea'},
+        {label:'Full content', name:'content', type:'textarea'},
+        {label:'External link', name:'external_link'},
+        {label:'Status', name:'status', type:'select', options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'},{value:'Archived',label:'Archived'}]},
+      ],
+      onSave: async data=>{ await api('/api/announcements/'+id, {method:'PATCH', body:JSON.stringify(data)}); },
+      previewFn: d=> `<div style="padding:14px"><h3>${d.title}</h3><p>${d.summary}</p></div>`
+    });
+  });
+  $$('[data-del]').forEach(b=> b.onclick= async ()=>{
+    if(!await confirmModal({title:'Delete announcement?', desc:'This action cannot be undone.', confirmText:'Delete'})) return;
+    await api('/api/announcements/'+b.dataset.del, {method:'DELETE'});
+    toast('Deleted'); renderAnnouncements();
+  });
+  $('#annQ').oninput = async e=>{
+    const q=e.target.value.trim();
+    const rows2 = await api('/api/announcements?q='+encodeURIComponent(q)+'&status='+$('#annStatus').value);
+    $('#annList').innerHTML = rows2.map(r=>`<div class="row"><div style="flex:1"><b>${r.title}</b> <span class="badge">${r.status}</span><br><span>${r.category} • ${r.date}</span></div><div style="display:flex; gap:6px"><button class="btn btn--ghost" data-edit="${r.id}">Edit</button><button class="btn btn--ghost" data-del="${r.id}">Delete</button></div></div>`).join('') || '<div class="empty">No results</div>';
+  };
+}
+
+async function renderBoard(){
+  const rows = await api('/api/board-meetings');
+  $('#content').innerHTML = `
+    <div class="panel"><div class="panel-head"><h2>Board Meetings</h2><button class="btn btn--red" id="newBoard">+ New</button></div>
+    <div class="panel-body"><div class="list" id="boardList">${rows.map(r=>`<div class="row"><div style="flex:1"><b>${r.title}</b> <span class="badge">${r.status}</span><br><span>${r.meeting_number} • ${r.date} • ${r.type}</span></div><div style="display:flex; gap:6px"><button class="btn btn--ghost" data-edit="${r.id}">Edit</button><button class="btn btn--ghost" data-del="${r.id}">Delete</button></div></div>`).join('') || '<div class="empty">No meetings</div>'}</div></div></div>`;
+  $('#newBoard').onclick = ()=> editor({
+    title:'New Board Meeting',
+    fields:[
+      {label:'Meeting number', name:'meeting_number'},
+      {label:'Date', name:'date', type:'date'},
+      {label:'Title', name:'title'},
+      {label:'Description', name:'description', type:'textarea'},
+      {label:'Type', name:'type', type:'select', options:[{value:'Regular Meeting',label:'Regular Meeting'},{value:'Special Meeting',label:'Special Meeting'}]},
+      {label:'Academic Year', name:'academic_year'},
+      {label:'Minutes link', name:'minutes_link'},
+      {label:'Status', name:'status', type:'select', options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'}]},
+    ],
+    onSave: async d=>{ await api('/api/board-meetings', {method:'POST', body:JSON.stringify(d)}); }
+  });
+  $$('[data-edit]').forEach(b=> b.onclick= async ()=>{
+    const id=b.dataset.edit; const row=await api('/api/board-meetings/'+id);
+    editor({
+      title:'Edit Board Meeting', initial:row,
+      fields:[
+        {label:'Meeting number', name:'meeting_number'},
+        {label:'Date', name:'date', type:'date'},
+        {label:'Title', name:'title'},
+        {label:'Description', name:'description', type:'textarea'},
+        {label:'Type', name:'type'},
+        {label:'Academic Year', name:'academic_year'},
+        {label:'Minutes link', name:'minutes_link'},
+        {label:'Status', name:'status', type:'select', options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'}]},
+      ],
+      onSave: async d=>{ await api('/api/board-meetings/'+id, {method:'PATCH', body:JSON.stringify(d)}); }
+    });
+  });
+  $$('[data-del]').forEach(b=> b.onclick= async ()=>{
+    if(!await confirmModal({title:'Delete meeting?', desc:'Cannot be undone.'})) return;
+    await api('/api/board-meetings/'+b.dataset.del, {method:'DELETE'}); toast('Deleted'); renderBoard();
+  });
+}
+
+async function renderInitiatives(){
+  const rows = await api('/api/initiatives');
+  $('#content').innerHTML = `<div class="panel"><div class="panel-head"><h2>Initiatives</h2><button class="btn btn--red" id="newInit">+ New</button></div><div class="panel-body"><div class="list">${rows.map(r=>`<div class="row"><div style="flex:1"><b>${r.title}</b> <span class="badge ${r.status==='COMPLETED'?'badge--green': r.status==='ONGOING'?'badge--red':'badge--draft'}">${r.status}</span><br><span>${r.category} • ${r.date}</span></div><div style="display:flex; gap:6px"><button class="btn btn--ghost" data-edit="${r.id}">Edit</button><button class="btn btn--ghost" data-del="${r.id}">Delete</button></div></div>`).join('') || '<div class="empty">No initiatives</div>'}</div></div></div>`;
+  $('#newInit').onclick = ()=> editor({
+    title:'New Initiative',
+    fields:[
+      {label:'Title', name:'title'},
+      {label:'Description', name:'description', type:'textarea'},
+      {label:'Purpose', name:'purpose', type:'textarea'},
+      {label:'Status', name:'status', type:'select', options:[{value:'ONGOING',label:'Ongoing'},{value:'PLANNED',label:'Planned'},{value:'COMPLETED',label:'Completed'},{value:'ON_HOLD',label:'On Hold'}]},
+      {label:'Date', name:'date', type:'date'},
+      {label:'Category', name:'category'},
+      {label:'Status public', name:'status_public', type:'select', options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'}]},
+    ],
+    onSave: async d=>{ await api('/api/initiatives', {method:'POST', body:JSON.stringify(d)}); }
+  });
+  $$('[data-edit]').forEach(b=> b.onclick= async ()=>{
+    const id=b.dataset.edit; const row=await api('/api/initiatives/'+id);
+    editor({title:'Edit Initiative', initial:row, fields:[
+      {label:'Title', name:'title'},
+      {label:'Description', name:'description', type:'textarea'},
+      {label:'Purpose', name:'purpose', type:'textarea'},
+      {label:'Status', name:'status', type:'select', options:[{value:'ONGOING',label:'Ongoing'},{value:'PLANNED',label:'Planned'},{value:'COMPLETED',label:'Completed'},{value:'ON_HOLD',label:'On Hold'}]},
+      {label:'Date', name:'date', type:'date'},
+      {label:'Category', name:'category'},
+      {label:'Status public', name:'status_public', type:'select', options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'}]},
+    ], onSave: async d=>{ await api('/api/initiatives/'+id, {method:'PATCH', body:JSON.stringify(d)}); }});
+  });
+  $$('[data-del]').forEach(b=> b.onclick= async ()=>{
+    if(!await confirmModal({title:'Delete?', desc:'Cannot be undone.'})) return;
+    await api('/api/initiatives/'+b.dataset.del, {method:'DELETE'}); toast('Deleted'); renderInitiatives();
+  });
+}
+
+async function renderResources(){
+  const rows = await api('/api/resources');
+  $('#content').innerHTML = `<div class="panel"><div class="panel-head"><h2>Resources</h2><button class="btn btn--red" id="newRes">+ New</button></div><div class="panel-body"><div class="list">${rows.map(r=>`<div class="row"><div style="flex:1"><b>${r.title}</b> <span class="badge">${r.status}</span><br><span>${r.category} • ${r.description?.slice(0,60)||''}</span></div><div style="display:flex; gap:6px"><button class="btn btn--ghost" data-edit="${r.id}">Edit</button><button class="btn btn--ghost" data-del="${r.id}">Delete</button></div></div>`).join('') || '<div class="empty">No resources</div>'}</div></div></div>`;
+  $('#newRes').onclick = ()=> editor({
+    title:'New Resource',
+    fields:[
+      {label:'Title', name:'title'},
+      {label:'Description', name:'description', type:'textarea'},
+      {label:'Category', name:'category', type:'select', options:[{value:'General',label:'General'},{value:'Handbook',label:'Handbook'},{value:'Policy',label:'Policy'}]},
+      {label:'File URL', name:'file_url'},
+      {label:'External link', name:'external_link'},
+      {label:'Status', name:'status', type:'select', options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'}]},
+    ],
+    onSave: async d=>{ await api('/api/resources', {method:'POST', body:JSON.stringify(d)}); }
+  });
+  $$('[data-edit]').forEach(b=> b.onclick= async ()=>{
+    const id=b.dataset.edit; const row=await api('/api/resources/'+id);
+    editor({title:'Edit Resource', initial:row, fields:[
+      {label:'Title', name:'title'},
+      {label:'Description', name:'description', type:'textarea'},
+      {label:'Category', name:'category'},
+      {label:'File URL', name:'file_url'},
+      {label:'External link', name:'external_link'},
+      {label:'Status', name:'status', type:'select', options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'}]},
+    ], onSave: async d=>{ await api('/api/resources/'+id, {method:'PATCH', body:JSON.stringify(d)}); }});
+  });
+  $$('[data-del]').forEach(b=> b.onclick= async ()=>{
+    if(!await confirmModal({title:'Delete?', desc:'Cannot be undone.'})) return;
+    await api('/api/resources/'+b.dataset.del, {method:'DELETE'}); toast('Deleted'); renderResources();
+  });
+}
+
+async function renderCalendar(){
+  const rows = await api('/api/calendar');
+  $('#content').innerHTML = `<div class="panel"><div class="panel-head"><h2>Academic Calendar</h2><div style="display:flex; gap:8px"><button class="btn btn--ghost" id="calSearchBtn">Search</button><button class="btn btn--red" id="newCal">+ Add Event</button></div></div><div class="panel-body"><div class="list" style="max-height:60vh; overflow:auto">${rows.slice(0,50).map(r=>`<div class="row"><div style="flex:1"><b>${r.activity}</b> <span class="badge">${r.category}</span><br><span>${r.iso} • ${r.date} • ${r.status}</span></div><div style="display:flex; gap:6px"><button class="btn btn--ghost" data-dup="${r.id}">Duplicate</button><button class="btn btn--ghost" data-edit="${r.id}">Edit</button><button class="btn btn--ghost" data-del="${r.id}">Delete</button></div></div>`).join('') || '<div class="empty">No events</div>'}<p style="font-size:12px; color:var(--stone)">Showing 50 of ${rows.length} — use search to filter.</p></div></div></div>`;
+  $('#newCal').onclick = ()=> editor({
+    title:'New Calendar Event',
+    fields:[
+      {label:'Activity / Title', name:'activity'},
+      {label:'Date (e.g. 6 - 10)', name:'date'},
+      {label:'Day', name:'day'},
+      {label:'Month', name:'month'},
+      {label:'Category', name:'category', type:'select', options:[{value:'General',label:'General'},{value:'Enrollment',label:'Enrollment'},{value:'Holiday',label:'Holiday'},{value:'Examinations',label:'Examinations'},{value:'Academic',label:'Academic'},{value:'Graduation',label:'Graduation'}]},
+      {label:'ISO date (YYYY-MM-DD)', name:'iso', type:'date'},
+      {label:'Status', name:'status', type:'select', options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'}]},
+    ],
+    onSave: async d=>{ await api('/api/calendar', {method:'POST', body:JSON.stringify(d)}); }
+  });
+  $$('[data-dup]').forEach(b=> b.onclick= async ()=>{ await api('/api/calendar/'+b.dataset.dup+'/duplicate', {method:'POST'}); toast('Duplicated'); renderCalendar(); });
+  $$('[data-edit]').forEach(b=> b.onclick= async ()=>{
+    const id=b.dataset.edit; const row=await api('/api/calendar/'+id);
+    editor({title:'Edit Calendar Event', initial:row, fields:[
+      {label:'Activity', name:'activity'},
+      {label:'Date', name:'date'},
+      {label:'Day', name:'day'},
+      {label:'Month', name:'month'},
+      {label:'Category', name:'category'},
+      {label:'ISO', name:'iso', type:'date'},
+      {label:'Status', name:'status', type:'select', options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'}]},
+    ], onSave: async d=>{ await api('/api/calendar/'+id, {method:'PATCH', body:JSON.stringify(d)}); }});
+  });
+  $$('[data-del]').forEach(b=> b.onclick= async ()=>{
+    if(!await confirmModal({title:'Delete event?', desc:'Cannot be undone.'})) return;
+    await api('/api/calendar/'+b.dataset.del, {method:'DELETE'}); toast('Deleted'); renderCalendar();
+  });
+}
+
+async function renderPulse(){
+  const data = await api('/api/pulse');
+  const monthly = await api('/api/pulse/aggregates?period=all');
+  $('#content').innerHTML = `
+    <div class="cards">
+      <div class="card"><b>Total Responses</b><strong>${data.totalResponses}</strong><p>All time</p></div>
+      <div class="card"><b>Monthly (latest)</b><strong>${data.monthly?.[0]?.count||0}</strong><p>${data.monthly?.[0]?.period||'—'}</p></div>
+      <div class="card"><b>Preview vs Live</b><strong style="font-size:14px">${data.isPreview? 'Preview Data' : 'Live Data'}</strong><p>${data.isPreview? 'No real submissions yet' : 'Real student submissions'}</p></div>
+    </div>
+    <div class="grid2">
+      <div class="panel"><div class="panel-head"><h2>Category totals — All time</h2><div style="display:flex; gap:6px"><select id="pulseView"><option value="monthly">Monthly</option><option value="yearly">Yearly</option><option value="all-time" selected>All time</option></select><button class="btn btn--ghost" id="pulseExport">Export</button></div></div>
+        <div class="panel-body">
+          <div class="list">${(data.aggregates||[]).map(r=>`<div class="row"><b style="flex:1">${r.category}</b><span class="badge">${r.total_points} pts</span><span class="badge--green badge">${r.response_count} responses</span></div>`).join('') || '<div class="empty">No data — showing preview when empty</div>'}
+          </div>
+          <div style="margin-top:8px; padding:8px; background:#FFF7ED; border:1px solid #FDE68A; border-radius:8px; font-size:12px">Privacy: Only aggregated totals are stored. No individual builds are exposed.</div>
+        </div>
+      </div>
+      <div class="panel"><div class="panel-head"><h2>Historical trends</h2></div>
+        <div class="panel-body">
+          <b style="font:600 11px 'IBM Plex Mono',monospace">Monthly</b>
+          <div class="list">${(data.monthly||[]).slice(0,6).map(m=>`<div class="row"><span>${m.period}</span><b style="margin-left:auto">${m.count}</b></div>`).join('') || '<div class="empty">No monthly data</div>'}</div>
+          <b style="font:600 11px 'IBM Plex Mono',monospace; margin-top:8px; display:block">Yearly</b>
+          <div class="list">${(data.yearly||[]).map(y=>`<div class="row"><span>${y.year}</span><b style="margin-left:auto">${y.count}</b></div>`).join('') || '<div class="empty">No yearly data</div>'}</div>
+          <button class="btn btn--ghost" id="pulseReset" style="margin-top:8px; width:100%">Reset data (admin)</button>
+        </div>
+      </div>
+    </div>
+  `;
+  $('#pulseExport').onclick = async ()=>{
+    const j = await api('/api/pulse/export');
+    const blob = new Blob([JSON.stringify(j,null,2)], {type:'application/json'});
+    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='pulse-export.json'; a.click(); URL.revokeObjectURL(url);
+  };
+  $('#pulseReset').onclick = async ()=>{
+    if(!await confirmModal({title:'Reset pulse data?', desc:'This will delete all submissions and aggregates. Cannot be undone.', confirmText:'Reset'})) return;
+    await api('/api/pulse/reset', {method:'DELETE'}); toast('Reset done'); renderPulse();
+  };
+}
+
+async function renderMedia(){
+  const rows = await api('/api/media');
+  $('#content').innerHTML = `
+    <div class="panel"><div class="panel-head"><h2>Media Library</h2><div style="display:flex; gap:8px; align-items:center"><input id="mediaQ" placeholder="Search…" style="padding:8px 12px; border:1px solid var(--line); border-radius:999px"><label class="btn btn--red" style="cursor:pointer"><input type="file" id="mediaFile" hidden> Upload</label></div></div>
+    <div class="panel-body"><div class="list" id="mediaList">${rows.map(r=>`<div class="row"><div style="flex:1"><b>${r.original_name}</b><br><span>${r.file_type} • ${(r.size/1024).toFixed(1)}KB • ${fmtDate(r.created_at)} • <a href="${r.url}" target="_blank">View</a></span></div><div style="display:flex; gap:6px"><button class="btn btn--ghost" data-copy="${r.url}">Copy URL</button><button class="btn btn--ghost" data-del="${r.id}">Delete</button></div></div>`).join('') || '<div class="empty">No files — upload image/PDF/document</div>'}</div></div></div>`;
+  $('#mediaFile').onchange = async e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const fd=new FormData(); fd.append('file', f);
+    const headers={}; const token=localStorage.getItem('osr_admin_token'); if(token) headers['Authorization']='Bearer '+token;
+    const r=await fetch('/api/media/upload', {method:'POST', body:fd, headers, credentials:'include'});
+    const j=await r.json(); if(!r.ok) return toast(j.error);
+    toast('Uploaded'); renderMedia();
+  };
+  $$('[data-copy]').forEach(b=> b.onclick= ()=>{ navigator.clipboard.writeText(location.origin + b.dataset.copy); toast('Copied URL'); });
+  $$('[data-del]').forEach(b=> b.onclick= async ()=>{
+    if(!await confirmModal({title:'Delete file?', desc:'Cannot be undone.'})) return;
+    await api('/api/media/'+b.dataset.del, {method:'DELETE'}); toast('Deleted'); renderMedia();
+  });
+  $('#mediaQ').oninput = async e=>{
+    const q=e.target.value.trim();
+    const rows2=await api('/api/media?q='+encodeURIComponent(q));
+    $('#mediaList').innerHTML = rows2.map(r=>`<div class="row"><div style="flex:1"><b>${r.original_name}</b><br><span>${r.file_type} • ${(r.size/1024).toFixed(1)}KB</span></div><div style="display:flex; gap:6px"><button class="btn btn--ghost" data-copy="${r.url}">Copy URL</button><button class="btn btn--ghost" data-del="${r.id}">Delete</button></div></div>`).join('') || '<div class="empty">No results</div>';
+  };
+}
+
+async function renderGuides(){
+  const rows = await api('/api/guides');
+  const grouped = rows.reduce((a,r)=>{ (a[r.page]=a[r.page]||[]).push(r); return a; }, {});
+  $('#content').innerHTML = `
+    <div class="panel"><div class="panel-head"><h2>Site Guide</h2><button class="btn btn--red" id="newGuide">+ Add step</button></div>
+    <div class="panel-body">
+      <div style="padding:10px; background:#FFF7ED; border:1px solid #FDE68A; border-radius:10px; font-size:12px; margin-bottom:8px">Guide positioning: Uses <code>getBoundingClientRect()</code> + viewport + header offset + scroll. In admin preview, guide is anchored to the preview container, not the admin viewport.</div>
+      ${Object.entries(grouped).map(([page, steps])=>`
+        <div style="border:1px solid var(--line); border-radius:10px; padding:10px; margin-bottom:8px">
+          <b style="font:600 12px 'Fraunces',serif; text-transform:capitalize">${page}</b> <span class="badge">${steps.length} steps</span>
+          <div class="list" style="margin-top:8px">${steps.map(s=>`
+            <div class="row" style="padding:8px">
+              <div style="flex:1"><b>#${s.step_number} ${s.title}</b><br><span style="font:400 11px 'IBM Plex Mono',monospace">${s.target_selector}</span><br><span>${s.description}</span> ${s.is_enabled?'':'<span class="badge--draft badge">Disabled</span>'}</div>
+              <div style="display:flex; gap:6px"><button class="btn btn--ghost" data-edit="${s.id}">Edit</button><button class="btn btn--ghost" data-del="${s.id}">Delete</button></div>
+            </div>`).join('')}
+          </div>
+        </div>
+      `).join('') || '<div class="empty">No guide steps</div>'}
+      <div class="preview-container" id="previewContainer">
+        <div class="preview-head">Website preview — guide floats inside preview container <span style="font:400 11px 'IBM Plex Sans',sans-serif; color:var(--stone)">Preview is isolated</span></div>
+        <iframe src="/" title="Preview" id="previewFrame"></iframe>
+        <div id="previewGuide" style="position:absolute; display:none; pointer-events:none"></div>
+      </div>
+    </div></div>
+  `;
+  $('#newGuide').onclick = ()=> editor({
+    title:'New Guide Step',
+    fields:[
+      {label:'Page', name:'page', type:'select', options:[{value:'home',label:'home'},{value:'announcements',label:'announcements'},{value:'board-meetings',label:'board-meetings'},{value:'initiatives',label:'initiatives'},{value:'resources',label:'resources'},{value:'academic-calendar',label:'academic-calendar'},{value:'ideal-bulsu',label:'ideal-bulsu'},{value:'help',label:'help'},{value:'about',label:'about'}]},
+      {label:'Target selector', name:'target_selector', placeholder:'e.g. a[href="#announcements"] or .quick a[href="#board-meetings"]'},
+      {label:'Title', name:'title'},
+      {label:'Description', name:'description', type:'textarea'},
+      {label:'Step number', name:'step_number', type:'number'},
+      {label:'Enabled', name:'is_enabled', type:'select', options:[{value:'1',label:'Enabled'},{value:'0',label:'Disabled'}]},
+      {label:'Auto open', name:'auto_open', type:'select', options:[{value:'1',label:'Yes'},{value:'0',label:'No'}]},
+    ],
+    onSave: async d=>{
+      // validate selector
+      try{ document.querySelector(d.target_selector); }catch{ throw new Error('Target element not found — invalid selector'); }
+      await api('/api/guides', {method:'POST', body:JSON.stringify(d)});
+    }
+  });
+  $$('[data-edit]').forEach(b=> b.onclick= async ()=>{
+    const id=b.dataset.edit; const row=await api('/api/guides/'+id);
+    editor({
+      title:'Edit Guide Step', initial:{...row, is_enabled:String(row.is_enabled), auto_open:String(row.auto_open)},
+      fields:[
+        {label:'Page', name:'page'},
+        {label:'Target selector', name:'target_selector'},
+        {label:'Title', name:'title'},
+        {label:'Description', name:'description', type:'textarea'},
+        {label:'Step number', name:'step_number', type:'number'},
+        {label:'Enabled', name:'is_enabled', type:'select', options:[{value:'1',label:'Enabled'},{value:'0',label:'Disabled'}]},
+      ],
+      onSave: async d=>{ await api('/api/guides/'+id, {method:'PATCH', body:JSON.stringify(d)}); }
+    });
+  });
+  $$('[data-del]').forEach(b=> b.onclick= async ()=>{
+    if(!await confirmModal({title:'Delete guide step?', desc:'Cannot be undone.'})) return;
+    await api('/api/guides/'+b.dataset.del, {method:'DELETE'}); toast('Deleted'); renderGuides();
+  });
+  // Explain preview anchoring
+  const frame = document.getElementById('previewFrame');
+  if(frame){
+    frame.onload = ()=>{
+      try{
+        // The preview's guide will be positioned relative to its own viewport, but we demonstrate that admin guide stays inside container
+        const container = document.getElementById('previewContainer');
+        // Visual demo: show that guide is inside container bounds
+        container.style.outline = '2px dashed var(--red)';
+        setTimeout(()=> container.style.outline='none', 2000);
+      }catch{}
+    };
+  }
+}
+
+async function renderNavigation(){
+  const rows = await api('/api/navigation');
+  $('#content').innerHTML = `
+    <div class="panel"><div class="panel-head"><h2>Navigation</h2><button class="btn btn--red" id="newNav">+ Add</button></div>
+    <div class="panel-body"><p style="font-size:12px; color:var(--stone)">Drag-and-drop ordering (demo: use Reorder button). Show/hide without breaking routes — validation prevents invalid hrefs.</p>
+    <div class="list" id="navList">${rows.map((r,idx)=>`<div class="row" draggable="true" data-id="${r.id}"><span style="cursor:grab">⋮⋮</span><div style="flex:1"><b>${r.label}</b><br><span>${r.href} ${r.is_visible?'':'• Hidden'}</span></div><div style="display:flex; gap:6px"><button class="btn btn--ghost" data-edit="${r.id}">Edit</button><button class="btn btn--ghost" data-del="${r.id}">Delete</button></div></div>`).join('')}</div>
+    <button class="btn btn--ghost" id="saveOrder" style="margin-top:8px">Save order</button>
+    </div></div>`;
+  $('#newNav').onclick = ()=> editor({
+    title:'New Navigation Item',
+    fields:[
+      {label:'Label', name:'label'},
+      {label:'Href', name:'href', placeholder:'#home or /about or https://...'},
+      {label:'Order', name:'order_index', type:'number'},
+      {label:'Visible', name:'is_visible', type:'select', options:[{value:'1',label:'Visible'},{value:'0',label:'Hidden'}]},
+    ],
+    onSave: async d=>{ await api('/api/navigation', {method:'POST', body:JSON.stringify(d)}); }
+  });
+  $$('[data-edit]').forEach(b=> b.onclick= async ()=>{
+    const id=b.dataset.edit; const row=rows.find(r=> String(r.id)===String(id));
+    editor({title:'Edit Navigation', initial:row, fields:[
+      {label:'Label', name:'label'},
+      {label:'Href', name:'href'},
+      {label:'Order', name:'order_index', type:'number'},
+      {label:'Visible', name:'is_visible', type:'select', options:[{value:'1',label:'Visible'},{value:'0',label:'Hidden'}]},
+    ], onSave: async d=>{ await api('/api/navigation/'+id, {method:'PATCH', body:JSON.stringify(d)}); }});
+  });
+  $$('[data-del]').forEach(b=> b.onclick= async ()=>{
+    if(!await confirmModal({title:'Delete navigation?', desc:'Cannot be undone.'})) return;
+    await api('/api/navigation/'+b.dataset.del, {method:'DELETE'}); toast('Deleted'); renderNavigation();
+  });
+  $('#saveOrder').onclick = async ()=>{
+    const order=[...document.querySelectorAll('#navList [data-id]')].map(el=> el.dataset.id);
+    await api('/api/navigation/reorder', {method:'POST', body:JSON.stringify({order})});
+    toast('Order saved');
+  };
+  // simple drag reorder
+  let dragSrc=null;
+  document.querySelectorAll('#navList [draggable]').forEach(el=>{
+    el.addEventListener('dragstart', e=>{ dragSrc=el; e.dataTransfer.effectAllowed='move'; });
+    el.addEventListener('dragover', e=>{ e.preventDefault(); e.dataTransfer.dropEffect='move'; });
+    el.addEventListener('drop', e=>{
+      e.preventDefault();
+      if(dragSrc && dragSrc!==el){
+        const list=$('#navList');
+        const srcIdx=[...list.children].indexOf(dragSrc);
+        const tgtIdx=[...list.children].indexOf(el);
+        if(srcIdx< tgtIdx) list.insertBefore(dragSrc, el.nextSibling); else list.insertBefore(dragSrc, el);
+      }
+    });
+  });
+}
+
+async function renderSettings(){
+  const me = await api('/api/auth/me');
+  const settings = await api('/api/settings');
+  $('#content').innerHTML = `
+    <div class="grid2">
+      <div class="panel"><div class="panel-head"><h2>Account → Email & Password</h2></div>
+        <div class="panel-body">
+          <form class="form" id="accountForm">
+            <label>Current email <span style="color:var(--stone); font:400 11px 'IBM Plex Sans',sans-serif">— ${me.email}</span></label>
+            <label>Current password <input name="currentPassword" type="password" required></label>
+            <label>New email <input name="newEmail" type="email" placeholder="new@osr.bulsu.edu.ph"></label>
+            <label>Confirm new email <input name="confirmEmail" type="email" placeholder="confirm new email"></label>
+            <label>New password <input name="newPassword" type="password" id="newPass" placeholder="••••••••"><div id="strength" style="height:4px; background:var(--line); border-radius:999px; margin-top:6px; overflow:hidden"><div id="strengthBar" style="height:100%; width:0; background:var(--red); transition:width .2s"></div></div><span id="strengthText" style="font:400 11px 'IBM Plex Sans',sans-serif; color:var(--stone)"></span></label>
+            <label>Confirm new password <input name="confirmPassword" type="password" placeholder="••••••••"></label>
+            <button class="btn btn--red" type="submit">Update account</button>
+          </form>
+        </div>
+      </div>
+      <div class="panel"><div class="panel-head"><h2>Website settings</h2></div>
+        <div class="panel-body">
+          <form class="form" id="siteForm">
+            <label>Site title <input name="site_title" value="${settings.site_title||'Office of the Student Regent - Bulacan State University'}"></label>
+            <label>Footer text <textarea name="footer_text">${settings.footer_text||''}</textarea></label>
+            <label>Contact email <input name="contact_email" value="${settings.contact_email||''}"></label>
+            <label>Contact phone <input name="contact_phone" value="${settings.contact_phone||''}"></label>
+            <button class="btn btn--red" type="submit">Save settings</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  `;
+  $('#newPass').oninput = e=>{
+    const v=e.target.value;
+    let s=0;
+    if(v.length>=8) s++;
+    if(/[A-Z]/.test(v)) s++;
+    if(/[0-9]/.test(v)) s++;
+    if(/[^A-Za-z0-9]/.test(v)) s++;
+    const pct=s/4*100;
+    $('#strengthBar').style.width=pct+'%';
+    $('#strengthBar').style.background = pct<50? 'var(--red)' : pct<75? '#F59E0B' : 'var(--ok)';
+    $('#strengthText').textContent = ['Very weak','Weak','Fair','Good','Strong'][s] || '';
+  };
+  $('#accountForm').onsubmit = async e=>{
+    e.preventDefault();
+    const fd=new FormData(e.target);
+    const data=Object.fromEntries(fd.entries());
+    if((data.newEmail || data.newPassword) && !data.currentPassword) return toast('Current password required');
+    if(data.newEmail && data.newEmail!==data.confirmEmail) return toast('Emails do not match');
+    if(data.newPassword && data.newPassword!==data.confirmPassword) return toast('Passwords do not match');
+    if(data.newPassword || data.newEmail){
+      if(!await confirmModal({title:'Confirm account change?', desc:'This will update your login credentials. You may need to log in again.', confirmText:'Confirm'})) return;
+    }
+    try{
+      const r=await api('/api/auth/account', {method:'PATCH', body:JSON.stringify(data)});
+      toast('Account updated: '+(r.changed?.join(', ')||'ok'));
+      if(r.changed?.includes('password')) { toast('Please log in again'); setTimeout(()=> location.href='/admin/login.html', 1200); }
+    }catch(err){ toast(err.message); }
+  };
+  $('#siteForm').onsubmit = async e=>{
+    e.preventDefault();
+    const fd=new FormData(e.target);
+    const data=Object.fromEntries(fd.entries());
+    await api('/api/settings', {method:'PATCH', body:JSON.stringify(data)});
+    toast('Settings saved');
+  };
+}
+
+async function renderAbout(){
+  const page = await api('/api/pages/about').catch(()=> null);
+  const data = page?.data ? (typeof page.data==='string'? JSON.parse(page.data) : page.data) : {};
+  $('#content').innerHTML = `
+    <div class="panel"><div class="panel-head"><h2>About / OSR Information</h2></div>
+    <div class="panel-body">
+      <form class="form" id="aboutForm">
+        <label>OSR Mandate <textarea name="mandate">${data.mandate||''}</textarea></label>
+        <label>Vision <textarea name="vision">${data.vision||''}</textarea></label>
+        <label>Mission <textarea name="mission">${data.mission||''}</textarea></label>
+        <label>Core Values <textarea name="coreValues">${data.coreValues||''}</textarea></label>
+        <label>Contact information <textarea name="contact">${data.contact||''}</textarea></label>
+        <button class="btn btn--red" type="submit">Save About</button>
+      </form>
+      <div class="preview"><div class="preview-head">Preview</div><div style="padding:12px"><h3>About OSR</h3><p>${(data.mandate||'No mandate yet').slice(0,200)}</p></div></div>
+    </div></div>`;
+  $('#aboutForm').onsubmit = async e=>{
+    e.preventDefault();
+    const fd=new FormData(e.target);
+    const data2=Object.fromEntries(fd.entries());
+    await api('/api/pages/about', {method:'PATCH', body:JSON.stringify({data:data2})});
+    toast('Saved');
+  };
+}
+
+async function renderHelp(){
+  $('#content').innerHTML = `<div class="panel"><div class="panel-head"><h2>Help / Contact</h2></div><div class="panel-body"><p style="font-size:13px; color:var(--stone)">Manage Help and contact information via Pages and Settings. This section mirrors About editing.</p><a href="#about" class="btn btn--ghost">Go to About editor</a></div></div>`;
+}
+
+async function renderActivity(){
+  const rows = await api('/api/activity?limit=100');
+  $('#content').innerHTML = `<div class="panel"><div class="panel-head"><h2>Activity Log</h2><span class="badge">${rows.length} entries</span></div><div class="panel-body"><div class="list">${rows.map(r=>`<div class="row"><div style="flex:1"><b>${r.action}</b> <span class="badge">${r.content_type||''}</span><br><span>${r.admin_email} • ${r.content_id||''} • ${fmtDate(r.created_at)}</span><br><span style="font:400 11px 'IBM Plex Mono',monospace">${r.details||''}</span></div></div>`).join('') || '<div class="empty">No activity</div>'}</div></div></div>`;
+}
+
+async function renderSearch(q){
+  if(!q) return $('#content').innerHTML=`<div class="empty">Enter a query in the top search</div>`;
+  const [anns, boards, inits, ress] = await Promise.all([
+    api('/api/announcements?q='+encodeURIComponent(q)).catch(()=>[]),
+    api('/api/board-meetings?q='+encodeURIComponent(q)).catch(()=>[]),
+    api('/api/initiatives?q='+encodeURIComponent(q)).catch(()=>[]),
+    api('/api/resources?q='+encodeURIComponent(q)).catch(()=>[]),
+  ]);
+  $('#content').innerHTML = `<div class="panel"><div class="panel-head"><h2>Search: "${q}"</h2></div><div class="panel-body">
+    <h3 style="font:600 12px 'Fraunces',serif">Announcements (${anns.length})</h3><div class="list">${anns.map(r=>`<div class="row"><b>${r.title}</b></div>`).join('') || '<div class="empty">—</div>'}</div>
+    <h3 style="font:600 12px 'Fraunces',serif; margin-top:12px">Board Meetings (${boards.length})</h3><div class="list">${boards.map(r=>`<div class="row"><b>${r.title}</b></div>`).join('') || '<div class="empty">—</div>'}</div>
+    <h3 style="font:600 12px 'Fraunces',serif; margin-top:12px">Initiatives (${inits.length})</h3><div class="list">${inits.map(r=>`<div class="row"><b>${r.title}</b></div>`).join('') || '<div class="empty">—</div>'}</div>
+    <h3 style="font:600 12px 'Fraunces',serif; margin-top:12px">Resources (${ress.length})</h3><div class="list">${ress.map(r=>`<div class="row"><b>${r.title}</b></div>`).join('') || '<div class="empty">—</div>'}</div>
+  </div></div>`;
+}
+
+// init
+checkAuth().then(()=>{ setActive(); render(); });
+</script>
+</body>
+</html>

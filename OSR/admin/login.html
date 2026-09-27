@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Admin Login — OSR BulSU</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{ --red:#A6192E; --red-2:#8F1428; --ink:#111214; --stone:#6B6560; --paper:#F7F5F2; --line:#E9E6E1; --white:#FFFFFF; }
+  *{box-sizing:border-box}
+  body{margin:0; font-family:'IBM Plex Sans',sans-serif; background:var(--paper); color:var(--ink); display:grid; place-items:center; min-height:100vh; padding:20px}
+  .card{width:min(420px,100%); background:var(--white); border:1px solid var(--line); border-radius:16px; padding:28px; box-shadow:0 20px 50px rgba(0,0,0,.08)}
+  .brand{display:flex; gap:12px; align-items:center; margin-bottom:20px}
+  .brand img{width:44px; height:44px; border-radius:8px; object-fit:cover; border:1px solid var(--line)}
+  .brand h1{font:600 16px/1.2 'Fraunces',serif; margin:0}
+  .brand p{font:400 12px/1.4 'IBM Plex Sans',sans-serif; color:var(--stone); margin:0}
+  label{font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.06em; text-transform:uppercase; color:var(--ink); display:block; margin:14px 0 6px}
+  input{width:100%; padding:11px 12px; border:1px solid var(--line); border-radius:10px; font:400 14px 'IBM Plex Sans',sans-serif; background:white; outline:none; transition:border-color .15s}
+  input:focus{border-color:var(--red); box-shadow:0 0 0 3px rgba(166,25,46,.08)}
+  .row{position:relative; display:flex; align-items:center}
+  .row input{padding-right:44px}
+  .toggle{position:absolute; right:8px; top:50%; transform:translateY(-50%); background:transparent; border:none; cursor:pointer; color:var(--stone); font:600 11px 'IBM Plex Mono',monospace; padding:6px}
+  .actions{display:flex; align-items:center; justify-content:space-between; margin:12px 0 16px; font-size:13px}
+  .actions label{margin:0; font:400 13px 'IBM Plex Sans',sans-serif; text-transform:none; letter-spacing:0; display:flex; gap:6px; align-items:center}
+  .btn{width:100%; background:var(--red); color:white; border:none; border-radius:999px; padding:12px; font:600 13px 'IBM Plex Sans',sans-serif; cursor:pointer; transition:background .15s}
+  .btn:hover{background:var(--red-2)}
+  .btn:disabled{opacity:.6; cursor:not-allowed}
+  .err{background:#FFF0F2; border:1px solid #FFD0D6; color:var(--red); padding:10px 12px; border-radius:10px; font-size:13px; margin:12px 0; display:none}
+  .err.show{display:block}
+  .muted{font-size:12px; color:var(--stone); text-align:center; margin-top:14px}
+  .muted a{color:var(--red); text-decoration:none}
+  .muted a:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="brand">
+    <img src="/osr-logo.png" alt="OSR" onerror="this.style.display='none'">
+    <div>
+      <h1>OSR Admin</h1>
+      <p>Office of the Student Regent — BulSU</p>
+    </div>
+  </div>
+  <div id="err" class="err"></div>
+  <form id="form">
+    <label for="email">Email</label>
+    <input id="email" type="email" required autocomplete="email" placeholder="admin@osr.bulsu.edu.ph" value="admin@osr.bulsu.edu.ph">
+    <label for="password">Password</label>
+    <div class="row">
+      <input id="password" type="password" required autocomplete="current-password" placeholder="••••••••" value="Admin123!">
+      <button type="button" class="toggle" id="toggle">Show</button>
+    </div>
+    <div class="actions">
+      <label><input type="checkbox" id="remember"> Remember session</label>
+      <a href="#" id="forgot" style="color:var(--red); text-decoration:none">Forgot password?</a>
+    </div>
+    <button id="submit" class="btn" type="submit">Log in →</button>
+  </form>
+  <p class="muted">Secure admin access. Session expires in 8 hours.<br><a href="/">← Back to public website</a></p>
+</div>
+<script>
+const $ = s=>document.querySelector(s);
+const errEl = $('#err');
+function showErr(m){ errEl.textContent=m; errEl.classList.add('show'); }
+function clearErr(){ errEl.textContent=''; errEl.classList.remove('show'); }
+$('#toggle').onclick = ()=>{
+  const p = $('#password');
+  const isText = p.type==='text';
+  p.type = isText?'password':'text';
+  $('#toggle').textContent = isText?'Show':'Hide';
+};
+$('#forgot').onclick = async (e)=>{
+  e.preventDefault();
+  const email = $('#email').value.trim();
+  if(!email) return showErr('Enter your email first.');
+  clearErr();
+  try{
+    const r = await fetch('/api/auth/forgot', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email})});
+    const j = await r.json();
+    showErr(j.message || 'If the email exists, a reset link will be sent (demo).');
+    errEl.style.background='#E6F4EA'; errEl.style.borderColor='#B7E1C6'; errEl.style.color='#115E34';
+  }catch{ showErr('Network error'); }
+};
+$('#form').onsubmit = async (e)=>{
+  e.preventDefault();
+  clearErr();
+  const btn=$('#submit');
+  btn.disabled=true; btn.textContent='Signing in…';
+  try{
+    const r = await fetch('/api/auth/login', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      credentials:'include',
+      body: JSON.stringify({ email: $('#email').value.trim(), password: $('#password').value, remember: $('#remember').checked })
+    });
+    const j = await r.json();
+    if(!r.ok) throw new Error(j.error||'Login failed');
+    localStorage.setItem('osr_admin_token', j.token);
+    location.href='/admin/index.html';
+  }catch(err){ showErr(err.message); }
+  finally{ btn.disabled=false; btn.textContent='Log in →'; }
+};
+// if already logged in, go to dashboard
+fetch('/api/auth/me', {credentials:'include'}).then(r=>{ if(r.ok) location.href='/admin/index.html'; }).catch(()=>{});
+</script>
+</body>
+</html>
