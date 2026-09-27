@@ -1,13 +1,10 @@
 import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { frontendSource } from '../paths.js';
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-export function seedFromFrontend(db) {
+export async function seedFromFrontend(db, sourcePath) {
   try {
-    const frontendPath = path.join(__dirname, '../../osr-website/index.html');
-    if (!fs.existsSync(frontendPath)) return;
+    const frontendPath = sourcePath || frontendSource;
+    if (!fs.existsSync(frontendPath)) throw new Error('Bundled frontend seed source is missing');
     const html = fs.readFileSync(frontendPath, 'utf8');
 
     // Helper to extract const array
@@ -26,52 +23,52 @@ export function seedFromFrontend(db) {
     }
 
     // Announcements
-    const annCount = db.prepare('SELECT COUNT(*) as c FROM announcements').get().c;
+    const annCount = (await db.prepare('SELECT COUNT(*) as c FROM announcements').get()).c;
     if (annCount === 0) {
       const anns = extractArray('ANNOUNCEMENTS');
       if (anns && anns.length) {
         const stmt = db.prepare('INSERT INTO announcements (id, title, category, date, summary, content, external_link, image, status) VALUES (?,?,?,?,?,?,?,?,?)');
         for (const a of anns) {
-          stmt.run(a.id, a.title, a.category, a.date, a.summary, a.content, a.externalLink || '', a.image || '', a._placeholder ? 'Draft' : 'Published');
+          (await stmt.run(a.id, a.title, a.category, a.date, a.summary, a.content, a.externalLink || '', a.image || '', a._placeholder ? 'Draft' : 'Published'));
         }
         console.log(`[Seed] Announcements: ${anns.length}`);
       }
     }
 
     // Board Meetings
-    const boardCount = db.prepare('SELECT COUNT(*) as c FROM board_meetings').get().c;
+    const boardCount = (await db.prepare('SELECT COUNT(*) as c FROM board_meetings').get()).c;
     if (boardCount === 0) {
       const boards = extractArray('BOARD_MEETINGS');
       if (boards && boards.length) {
         const stmt = db.prepare('INSERT INTO board_meetings (id, meeting_number, date, title, description, type, academic_year, status, minutes_link, related_documents) VALUES (?,?,?,?,?,?,?,?,?,?)');
         for (const b of boards) {
-          stmt.run(b.id, b.meetingNumber, b.date, b.title, b.description, b.type, b.academicYear, b._placeholder ? 'Draft' : 'Published', b.minutesLink || '', JSON.stringify(b.relatedDocuments || []));
+          (await stmt.run(b.id, b.meetingNumber, b.date, b.title, b.description, b.type, b.academicYear, b._placeholder ? 'Draft' : 'Published', b.minutesLink || '', JSON.stringify(b.relatedDocuments || [])));
         }
         console.log(`[Seed] Board Meetings: ${boards.length}`);
       }
     }
 
     // Initiatives
-    const initCount = db.prepare('SELECT COUNT(*) as c FROM initiatives').get().c;
+    const initCount = (await db.prepare('SELECT COUNT(*) as c FROM initiatives').get()).c;
     if (initCount === 0) {
       const inits = extractArray('INITIATIVES');
       if (inits && inits.length) {
         const stmt = db.prepare('INSERT INTO initiatives (id, title, description, purpose, status, date, category, image, links, status_public) VALUES (?,?,?,?,?,?,?,?,?,?)');
         for (const i of inits) {
-          stmt.run(i.id, i.title, i.description, i.purpose, i.status, i.date, i.category, i.image || '', JSON.stringify(i.links || []), i._placeholder ? 'Draft' : 'Published');
+          (await stmt.run(i.id, i.title, i.description, i.purpose, i.status, i.date, i.category, i.image || '', JSON.stringify(i.links || []), i._placeholder ? 'Draft' : 'Published'));
         }
         console.log(`[Seed] Initiatives: ${inits.length}`);
       }
     }
 
     // Resources
-    const resCount = db.prepare('SELECT COUNT(*) as c FROM resources').get().c;
+    const resCount = (await db.prepare('SELECT COUNT(*) as c FROM resources').get()).c;
     if (resCount === 0) {
       const ress = extractArray('RESOURCES');
       if (ress && ress.length) {
         const stmt = db.prepare('INSERT INTO resources (id, title, description, category, file_url, external_link, status) VALUES (?,?,?,?,?,?,?)');
         for (const r of ress) {
-          stmt.run(r.id, r.title, r.description, r.category, r.fileUrl || '', r.link || r.externalLink || '', 'Published');
+          (await stmt.run(r.id, r.title, r.description, r.category, r.fileUrl || '', r.link || r.externalLink || '', 'Published'));
         }
         console.log(`[Seed] Resources: ${ress.length}`);
       }
@@ -86,20 +83,20 @@ export function seedFromFrontend(db) {
         for (const r of ress) {
           const link = r.link || r.externalLink || '';
           if (!link) continue;
-          filled += stmt.run(link, r.id, '').changes;
+          filled += (await stmt.run(link, r.id, '')).changes;
         }
         if (filled) console.log(`[Seed] Resources: filled ${filled} missing link(s) from the website`);
       }
     }
 
     // Calendar - extract const ACADEMIC_CALENDAR
-    const calCount = db.prepare('SELECT COUNT(*) as c FROM calendar_events').get().c;
+    const calCount = (await db.prepare('SELECT COUNT(*) as c FROM calendar_events').get()).c;
     if (calCount === 0) {
       const cals = extractArray('ACADEMIC_CALENDAR');
       if (cals && cals.length) {
         const stmt = db.prepare('INSERT INTO calendar_events (id, title, activity, date, day, month, category, iso, status) VALUES (?,?,?,?,?,?,?,?,?)');
         for (const c of cals) {
-          stmt.run(c.id, c.activity || c.title, c.activity, c.date, c.day, c.month, c.category, c.iso, 'Published');
+          (await stmt.run(c.id, c.activity || c.title, c.activity, c.date, c.day, c.month, c.category, c.iso, 'Published'));
         }
         console.log(`[Seed] Calendar: ${cals.length}`);
       }
@@ -107,7 +104,7 @@ export function seedFromFrontend(db) {
 
     // Site settings — prefill the verified office/contact details so the
     // admin Settings form starts with real values (all editable from the CMS).
-    const settingsCount = db.prepare('SELECT COUNT(*) as c FROM site_settings').get().c;
+    const settingsCount = (await db.prepare('SELECT COUNT(*) as c FROM site_settings').get()).c;
     if (settingsCount === 0) {
       const defaults = {
         site_title: 'Office of the Student Regent - Bulacan State University',
@@ -124,28 +121,28 @@ export function seedFromFrontend(db) {
         footer_credit: 'OSR™ 2026–2027 • Made by Angelo Alvarado'
       };
       const stmt = db.prepare('INSERT OR IGNORE INTO site_settings (key, value) VALUES (?,?)');
-      for (const [k, v] of Object.entries(defaults)) stmt.run(k, v);
+      for (const [k, v] of Object.entries(defaults)) (await stmt.run(k, v));
       console.log('[Seed] Site settings: defaults');
     }
 
     // Restore the author credit on databases that still carry the stripped
     // default; preserve any footer text an admin customized.
-    db.prepare('UPDATE site_settings SET value=? WHERE key=? AND value=?').run(
+    (await db.prepare('UPDATE site_settings SET value=? WHERE key=? AND value=?').run(
       'OSR™ 2026–2027 • Made by Angelo Alvarado',
       'footer_credit',
       'OSR 2026-2027™'
-    );
+    ));
 
     // Pages - About
-    const pageCount = db.prepare('SELECT COUNT(*) as c FROM pages WHERE slug=?').get('about')?.c || 0;
+    const pageCount = (await db.prepare('SELECT COUNT(*) as c FROM pages WHERE slug=?').get('about'))?.c || 0;
     // Use a simple check
-    const aboutExists = db.prepare('SELECT COUNT(*) as c FROM pages WHERE slug=?').get('about');
+    const aboutExists = (await db.prepare('SELECT COUNT(*) as c FROM pages WHERE slug=?').get('about'));
     if ((aboutExists?.c || 0) === 0) {
-      db.prepare('INSERT INTO pages (id, slug, title, content, data) VALUES (?,?,?,?,?)').run('page-about', 'about', 'About OSR', 'Office of the Student Regent institutional information', JSON.stringify({ mandate: 'The Student Regent represents the student body in the Bulacan State University Board of Regents.' }));
+      (await db.prepare('INSERT INTO pages (id, slug, title, content, data) VALUES (?,?,?,?,?)').run('page-about', 'about', 'About OSR', 'Office of the Student Regent institutional information', JSON.stringify({ mandate: 'The Student Regent represents the student body in the Bulacan State University Board of Regents.' })));
       console.log('[Seed] Pages: about');
     }
 
   } catch (e) {
-    console.log('[Seed] Error:', e.message);
+    throw e;
   }
 }

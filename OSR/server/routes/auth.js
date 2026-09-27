@@ -6,7 +6,7 @@ import { authRequired, signToken } from '../middleware/auth.js';
 const router = express.Router();
 const cookieOptions = {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production',
+  secure: (process.env.NODE_ENV === 'production' || !!process.env.AWS_LAMBDA_FUNCTION_NAME),
   sameSite: 'lax',
   path: '/',
 };
@@ -19,11 +19,11 @@ const loginLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-router.post('/login', loginLimiter, (req, res) => {
+router.post('/login', loginLimiter, async (req, res) => {
   const db = req.app.locals.db;
   const { email, password, remember } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
-  const admin = db.prepare('SELECT * FROM admins WHERE email=?').get(email.trim().toLowerCase());
+  const admin = (await db.prepare('SELECT * FROM admins WHERE email=?').get(email.trim().toLowerCase()));
   if (!admin) return res.status(401).json({ error: 'Invalid credentials' });
   const ok = bcrypt.compareSync(password, admin.password_hash);
   if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
@@ -32,7 +32,7 @@ router.post('/login', loginLimiter, (req, res) => {
   const maxAge = keepSession ? 30 * 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000;
   res.cookie('token', token, { ...cookieOptions, maxAge });
   // log activity
-  try { db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type) VALUES (?,?,?,?)').run(admin.id, admin.email, 'Login', 'auth'); } catch {}
+  try { (await db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type) VALUES (?,?,?,?)').run(admin.id, admin.email, 'Login', 'auth')); } catch {}
   // The credential is sent only as an HttpOnly cookie, never exposed to JS.
   res.json({ ok: true, admin: { id: admin.id, email: admin.email, name: admin.name } });
 });
@@ -42,16 +42,16 @@ router.post('/logout', (req, res) => {
   res.json({ ok: true });
 });
 
-router.get('/me', authRequired, (req,res)=>{
+router.get('/me', authRequired, async (req,res)=>{
   const db = req.app.locals.db;
-  const admin = db.prepare('SELECT id, email, name, created_at FROM admins WHERE id=?').get(req.admin.id);
+  const admin = (await db.prepare('SELECT id, email, name, created_at FROM admins WHERE id=?').get(req.admin.id));
   if (!admin) return res.status(401).json({ error: 'Not found' });
   res.json(admin);
 });
 
-router.patch('/account', authRequired, (req,res)=>{
+router.patch('/account', authRequired, async (req,res)=>{
   const db = req.app.locals.db;
-  const admin = db.prepare('SELECT * FROM admins WHERE id=?').get(req.admin.id);
+  const admin = (await db.prepare('SELECT * FROM admins WHERE id=?').get(req.admin.id));
   if (!admin) return res.status(401).json({ error: 'Not found' });
   const { currentPassword, newEmail, confirmEmail, newPassword, confirmPassword } = req.body;
 
@@ -71,7 +71,7 @@ router.patch('/account', authRequired, (req,res)=>{
     const normalizedEmail = newEmail.trim().toLowerCase();
     if (normalizedEmail !== String(confirmEmail || '').trim().toLowerCase()) return res.status(400).json({ error: 'Emails do not match' });
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) return res.status(400).json({ error: 'Invalid email' });
-    const exists = db.prepare('SELECT id FROM admins WHERE email=? AND id != ?').get(normalizedEmail, admin.id);
+    const exists = (await db.prepare('SELECT id FROM admins WHERE email=? AND id != ?').get(normalizedEmail, admin.id));
     if (exists) return res.status(409).json({ error: 'Email already in use' });
     email = normalizedEmail;
     changed.push('email');
@@ -87,8 +87,8 @@ router.patch('/account', authRequired, (req,res)=>{
 
   if (changed.length === 0) return res.status(400).json({ error: 'No changes' });
 
-  db.prepare("UPDATE admins SET email=?, password_hash=?, updated_at=datetime('now') WHERE id=?").run(email, password_hash, admin.id);
-  try { db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type, details) VALUES (?,?,?,?,?)').run(admin.id, admin.email, `Updated account: ${changed.join(', ')}`, 'admin', JSON.stringify({ newEmail: email })); } catch {}
+  (await db.prepare("UPDATE admins SET email=?, password_hash=?, updated_at=datetime('now') WHERE id=?").run(email, password_hash, admin.id));
+  try { (await db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type, details) VALUES (?,?,?,?,?)').run(admin.id, admin.email, `Updated account: ${changed.join(', ')}`, 'admin', JSON.stringify({ newEmail: email }))); } catch {}
 
   // Refresh the HttpOnly session after the account email changes.
   const newToken = signToken({ id: admin.id, email });

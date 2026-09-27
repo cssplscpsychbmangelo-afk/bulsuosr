@@ -1,6 +1,0 @@
-{
-  "available": false,
-  "items": [],
-  "reason": "static-hosting",
-  "message": "The OSR API is not running on this static host. The site is showing its built-in content."
-}

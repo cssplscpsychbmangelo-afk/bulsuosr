@@ -7,3 +7,7 @@ node_modules/
 OSR/server/.env
 OSR/server/db/*.db*
 OSR/server/uploads/
+
+# Admin static output is copied by the Netlify build.
+OSR/osr-website/admin/
+.netlify/

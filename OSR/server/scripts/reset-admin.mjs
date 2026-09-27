@@ -11,7 +11,7 @@
 // The script never prints or changes passwords itself; it only removes the
 // stored hashes so the normal first-startup seed can run again.
 import 'dotenv/config';
-import Database from 'better-sqlite3';
+import Database from '../db/sqlite.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
