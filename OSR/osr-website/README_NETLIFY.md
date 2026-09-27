@@ -14,7 +14,7 @@ That's it. `ADMIN_EMAIL` and `ADMIN_PASSWORD` are optional.
 
 ## Default login
 
-After your first deploy, go to `/admin/login.html` and sign in with:
+After your first deploy, go to `/admin` and sign in with:
 
 - **Email:** `admin@osr.bulsu.edu.ph`
 - **Password:** `Admin123456!`
