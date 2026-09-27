@@ -12,34 +12,14 @@
 [build]
   base    = "."
   publish = "OSR/osr-website"
-  command = "echo 'Static site - no build step required'"
+  command = "node OSR/osr-website/netlify-build.mjs"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "22"
 
-# The Express + SQLite API in OSR/server cannot run on Netlify (no long-lived
-# Node process, no writable disk). Serve a tiny JSON stub for /api/* so the
-# public page detects "no backend" in one cheap request and shows its built-in
-# content — instead of downloading the 375 KB index.html once per API call.
-[[redirects]]
-  from   = "/api/*"
-  to     = "/api-unavailable.json"
-  status = 200
-
-# The admin CMS needs the Express backend; on static hosting show a clear
-# explanation instead of silently rendering the public site.
-[[redirects]]
-  from   = "/admin/*"
-  to     = "/admin-unavailable.html"
-  status = 200
-
-# Single-page site with hash routes (#announcements, #board, ...): any unknown
-# path still renders the site instead of 404ing.
-[[redirects]]
-  from   = "/*"
-  to     = "/index.html"
-  status = 200
-  force  = false
+# netlify-build.mjs writes environment-specific /api, /admin, and /uploads
+# proxy rules to OSR/osr-website/_redirects. Keeping redirects there lets the build switch
+# between static fallback and the live backend without editing this file.
 
 [[headers]]
   for = "/*"
@@ -58,8 +38,8 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# No build step means no content hashing, so JS/CSS revalidate too (Netlify
-# answers 304 with an ETag — cheap, but never stale for a year).
+# The build only writes redirect config and does not hash assets, so JS/CSS
+# revalidate too (Netlify answers 304 with an ETag, without pinning stale files).
 [[headers]]
   for = "/js/*"
   [headers.values]

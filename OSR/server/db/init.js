@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import bcrypt from 'bcryptjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const dbPath = process.env.DB_PATH || path.join(__dirname, 'osr.db');
+const dbPath = process.env.DB_PATH ? path.resolve(process.env.DB_PATH) : path.join(__dirname, 'osr.db');
 
 // ensure dir
 fs.mkdirSync(path.dirname(dbPath), { recursive: true });
@@ -216,14 +216,21 @@ export function initDb() {
     );
   `);
 
-  // Seed admin if not exists
+  // Seed the first admin only from explicitly configured credentials.
   const adminCount = db.prepare('SELECT COUNT(*) as c FROM admins').get().c;
   if (adminCount === 0) {
-    const email = process.env.ADMIN_EMAIL || 'admin@osr.bulsu.edu.ph';
-    const password = process.env.ADMIN_PASSWORD || 'Admin123!';
+    const email = (process.env.ADMIN_EMAIL || 'admin@osr.bulsu.edu.ph').trim().toLowerCase();
+    const password = process.env.ADMIN_PASSWORD;
+    const atIndex = email.indexOf('@');
+    if (atIndex <= 0 || !email.slice(atIndex + 1).includes('.') || email.includes(' ')) {
+      throw new Error('Set a valid ADMIN_EMAIL before first startup.');
+    }
+    if (!password || password.length < 12) {
+      throw new Error('Set ADMIN_PASSWORD to a unique password of at least 12 characters before first startup.');
+    }
     const hash = bcrypt.hashSync(password, 10);
     db.prepare('INSERT INTO admins (email, password_hash, name) VALUES (?,?,?)').run(email, hash, 'OSR Administrator');
-    console.log(`[DB] Seeded admin: ${email} / ${password}`);
+    console.log(`[DB] Seeded the initial admin account for ${email}.`);
   }
 
   // Seed guide_steps if empty

@@ -1,99 +1,170 @@
 import express from 'express';
 import { authRequired } from '../middleware/auth.js';
-const router=express.Router();
-function log(db,a,act,id){ try{db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type, content_id) VALUES (?,?,?,?,?)').run(a?.id||null,a?.email||'system',act,'pulse',id);}catch{} }
 
-// Public: submit anonymous pulse (10 points distributed)
-router.post('/submit', (req,res)=>{
-  const db=req.app.locals.db;
-  const { allocation } = req.body; // { "Academic Support": 3, "Student Services": 2, ... }
-  if(!allocation || typeof allocation !== 'object') return res.status(400).json({error:'Allocation required'});
-  const total = Object.values(allocation).reduce((s,v)=> s+ Number(v||0),0);
-  if(total !== 10) return res.status(400).json({error:'Must distribute exactly 10 points'});
-  const categories = Object.keys(allocation);
-  if(categories.length===0) return res.status(400).json({error:'No categories'});
-  const id=`pulse-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;
-  const period = new Date().toISOString().slice(0,7); // 2026-09
-  db.prepare('INSERT INTO pulse_submissions (id, allocation, total_points, period) VALUES (?,?,?,?)').run(id, JSON.stringify(allocation), total, period);
-  // update aggregates
-  for(const [cat, pts] of Object.entries(allocation)){
-    const existing=db.prepare('SELECT * FROM pulse_aggregates WHERE period=? AND category=?').get(period, cat);
-    if(existing){
-      db.prepare("UPDATE pulse_aggregates SET total_points=total_points+?, response_count=response_count+1, updated_at=datetime('now') WHERE period=? AND category=?").run(Number(pts), period, cat);
-    } else {
-      db.prepare('INSERT INTO pulse_aggregates (period, category, total_points, response_count) VALUES (?,?,?,?)').run(period, cat, Number(pts), 1);
+const router = express.Router();
+const PULSE_CATEGORIES = [
+  'learning',
+  'campus',
+  'mobility',
+  'connectivity',
+  'wellbeing',
+  'cultureCommunity',
+  'studentVoice'
+];
+
+function log(db, admin, action, id) {
+  try {
+    db.prepare(
+      'INSERT INTO activity_logs (admin_id, admin_email, action, content_type, content_id) VALUES (?,?,?,?,?)'
+    ).run(admin?.id || null, admin?.email || 'system', action, 'pulse', id);
+  } catch {}
+}
+
+function currentPeriod() {
+  const parts = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Manila',
+    year: 'numeric',
+    month: '2-digit'
+  }).formatToParts(new Date());
+  const year = parts.find(part => part.type === 'year')?.value;
+  const month = parts.find(part => part.type === 'month')?.value;
+  return `${year}-${month}`;
+}
+
+function countSubmissions(db, period) {
+  if (!period || period === 'all' || period === 'all-time') {
+    return db.prepare('SELECT COUNT(*) AS count FROM pulse_submissions').get().count;
+  }
+  return db.prepare('SELECT COUNT(*) AS count FROM pulse_submissions WHERE period=?').get(period).count;
+}
+
+// Public: submit one anonymous, exactly ten-point allocation.
+router.post('/submit', (req, res) => {
+  const db = req.app.locals.db;
+  const allocation = req.body?.allocation;
+  if (!allocation || typeof allocation !== 'object' || Array.isArray(allocation)) {
+    return res.status(400).json({ error: 'Allocation required' });
+  }
+
+  const keys = Object.keys(allocation);
+  if (keys.length !== PULSE_CATEGORIES.length || !PULSE_CATEGORIES.every(key => Object.hasOwn(allocation, key))) {
+    return res.status(400).json({ error: 'Allocation must include all seven Pulse categories' });
+  }
+  if (PULSE_CATEGORIES.some(key => !Number.isInteger(allocation[key]) || allocation[key] < 0 || allocation[key] > 10)) {
+    return res.status(400).json({ error: 'Each category must receive a whole number from 0 to 10' });
+  }
+
+  const total = PULSE_CATEGORIES.reduce((sum, key) => sum + allocation[key], 0);
+  if (total !== 10) return res.status(400).json({ error: 'Must distribute exactly 10 points' });
+
+  const id = `pulse-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+  const period = currentPeriod();
+  const insertSubmission = db.prepare(
+    'INSERT INTO pulse_submissions (id, allocation, total_points, period) VALUES (?,?,?,?)'
+  );
+  const updateMonthly = db.prepare(`
+    INSERT INTO pulse_aggregates (period, category, total_points, response_count)
+    VALUES (?, ?, ?, 1)
+    ON CONFLICT(period, category) DO UPDATE SET
+      total_points = pulse_aggregates.total_points + excluded.total_points,
+      response_count = pulse_aggregates.response_count + 1,
+      updated_at = datetime('now')
+  `);
+  const updateAllTime = db.prepare(`
+    INSERT INTO pulse_aggregates (period, category, total_points, response_count)
+    VALUES ('all-time', ?, ?, 1)
+    ON CONFLICT(period, category) DO UPDATE SET
+      total_points = pulse_aggregates.total_points + excluded.total_points,
+      response_count = pulse_aggregates.response_count + 1,
+      updated_at = datetime('now')
+  `);
+
+  db.transaction(() => {
+    insertSubmission.run(id, JSON.stringify(allocation), total, period);
+    for (const category of PULSE_CATEGORIES) {
+      updateMonthly.run(period, category, allocation[category]);
+      updateAllTime.run(category, allocation[category]);
     }
-    // all-time
-    const allExisting=db.prepare('SELECT * FROM pulse_aggregates WHERE period=? AND category=?').get('all-time', cat);
-    if(allExisting){
-      db.prepare('UPDATE pulse_aggregates SET total_points=total_points+?, response_count=response_count+1 WHERE period=? AND category=?').run(Number(pts), 'all-time', cat);
-    } else {
-      db.prepare('INSERT INTO pulse_aggregates (period, category, total_points, response_count) VALUES (?,?,?,?)').run('all-time', cat, Number(pts), 1);
-    }
-  }
-  res.json({ok:true, id});
+  })();
+
+  res.set('Cache-Control', 'no-store');
+  res.status(201).json({ ok: true, id });
 });
 
-// Public: get aggregates (only aggregated, not individual)
-router.get('/aggregates', (req,res)=>{
-  const db=req.app.locals.db;
-  const { period='all-time' } = req.query;
+// Public: return real aggregates only. An empty result stays empty.
+router.get('/aggregates', (req, res) => {
+  const db = req.app.locals.db;
+  const { period = 'all-time' } = req.query;
   let rows;
-  if(period==='all'){
-    rows=db.prepare('SELECT * FROM pulse_aggregates ORDER BY period DESC').all();
+
+  if (period === 'all') {
+    rows = db.prepare("SELECT * FROM pulse_aggregates WHERE period!='all-time' ORDER BY period DESC, total_points DESC").all();
   } else {
-    rows=db.prepare('SELECT * FROM pulse_aggregates WHERE period=? ORDER BY total_points DESC').all(period);
+    rows = db.prepare('SELECT * FROM pulse_aggregates WHERE period=? ORDER BY total_points DESC').all(period);
   }
-  // If no real data, return demo preview flag
-  const totalResponses = rows.reduce((s,r)=> s+ r.response_count,0);
-  // For demo: if no data, return sample preview
-  let isPreview = false;
-  if(rows.length===0){
-    isPreview = true;
-    rows = [
-      { period: 'preview', category: 'Academic Support', total_points: 42, response_count: 18 },
-      { period: 'preview', category: 'Student Services', total_points: 38, response_count: 18 },
-      { period: 'preview', category: 'Facilities', total_points: 35, response_count: 18 },
-      { period: 'preview', category: 'Governance', total_points: 30, response_count: 18 },
-    ];
-  }
-  const totalPoints = rows.reduce((s,r)=> s+ r.total_points,0);
-  const withPct = rows.map(r=> ({...r, percentage: totalPoints? Math.round(r.total_points/totalPoints*100):0 }));
-  res.json({ period, isPreview, totalResponses: isPreview? 0: totalResponses, totalPoints, categories: withPct });
+
+  const totalResponses = countSubmissions(db, period);
+  const totalPoints = rows.reduce((sum, row) => sum + row.total_points, 0);
+  const categories = rows.map(row => ({
+    ...row,
+    percentage: totalPoints ? Math.round((row.total_points / totalPoints) * 100) : 0
+  }));
+
+  res.set('Cache-Control', 'no-store');
+  res.json({ period, totalResponses, totalPoints, categories });
 });
 
-// Admin: list submissions (aggregated only, not individual builds for privacy)
-router.get('/', authRequired, (req,res)=>{
-  const db=req.app.locals.db;
-  const { period, view='monthly' } = req.query;
+// Admin: aggregates and submission counts only; individual builds stay private.
+router.get('/', authRequired, (req, res) => {
+  const db = req.app.locals.db;
+  const { period, view = 'monthly' } = req.query;
   let rows;
-  if(view==='all-time' || period==='all-time'){
-    rows=db.prepare("SELECT * FROM pulse_aggregates WHERE period='all-time' ORDER BY total_points DESC").all();
-  } else if(view==='yearly'){
-    const year = period || new Date().getFullYear().toString();
-    rows=db.prepare("SELECT category, SUM(total_points) as total_points, SUM(response_count) as response_count FROM pulse_aggregates WHERE period LIKE ? AND period!='all-time' GROUP BY category ORDER BY total_points DESC").all(`${year}%`);
+
+  if (view === 'all-time' || period === 'all-time') {
+    rows = db.prepare("SELECT * FROM pulse_aggregates WHERE period='all-time' ORDER BY total_points DESC").all();
+  } else if (view === 'yearly') {
+    const year = period || currentPeriod().slice(0, 4);
+    rows = db.prepare(`
+      SELECT category, SUM(total_points) AS total_points, SUM(response_count) AS response_count
+      FROM pulse_aggregates
+      WHERE period LIKE ? AND period!='all-time'
+      GROUP BY category
+      ORDER BY total_points DESC
+    `).all(`${year}%`);
   } else {
-    const p = period || new Date().toISOString().slice(0,7);
-    rows=db.prepare('SELECT * FROM pulse_aggregates WHERE period=? ORDER BY total_points DESC').all(p);
+    const selectedPeriod = period || currentPeriod();
+    rows = db.prepare('SELECT * FROM pulse_aggregates WHERE period=? ORDER BY total_points DESC').all(selectedPeriod);
   }
-  const totalResponses = db.prepare('SELECT COUNT(*) as c FROM pulse_submissions').get().c;
-  const monthly = db.prepare("SELECT period, COUNT(*) as count FROM pulse_submissions GROUP BY period ORDER BY period DESC LIMIT 12").all();
-  const yearly = db.prepare("SELECT substr(period,1,4) as year, COUNT(*) as count FROM pulse_submissions GROUP BY year ORDER BY year DESC").all();
-  res.json({ aggregates: rows, totalResponses, monthly, yearly, isPreview: rows.length===0 });
+
+  const totalResponses = countSubmissions(db);
+  const monthly = db.prepare(
+    'SELECT period, COUNT(*) AS count FROM pulse_submissions GROUP BY period ORDER BY period DESC LIMIT 12'
+  ).all();
+  const yearly = db.prepare(
+    'SELECT substr(period,1,4) AS year, COUNT(*) AS count FROM pulse_submissions GROUP BY year ORDER BY year DESC'
+  ).all();
+
+  res.set('Cache-Control', 'no-store');
+  res.json({ aggregates: rows, totalResponses, monthly, yearly, hasData: totalResponses > 0 });
 });
 
-// Admin: export
-router.get('/export', authRequired, (req,res)=>{
-  const db=req.app.locals.db;
-  const rows=db.prepare('SELECT * FROM pulse_aggregates ORDER BY period, total_points DESC').all();
+// Admin: export aggregate records only.
+router.get('/export', authRequired, (req, res) => {
+  const db = req.app.locals.db;
+  const rows = db.prepare('SELECT * FROM pulse_aggregates ORDER BY period, total_points DESC').all();
+  res.set('Cache-Control', 'no-store');
   res.json(rows);
 });
 
-router.delete('/reset', authRequired, (req,res)=>{
-  const db=req.app.locals.db;
-  db.exec("DELETE FROM pulse_submissions; DELETE FROM pulse_aggregates;");
+// Admin: atomically clear submissions and derived aggregates.
+router.delete('/reset', authRequired, (req, res) => {
+  const db = req.app.locals.db;
+  db.transaction(() => {
+    db.exec('DELETE FROM pulse_submissions; DELETE FROM pulse_aggregates;');
+  })();
   log(db, req.admin, 'Reset BulSU Pulse data', 'reset');
-  res.json({ok:true});
+  res.set('Cache-Control', 'no-store');
+  res.json({ ok: true });
 });
 
 export default router;

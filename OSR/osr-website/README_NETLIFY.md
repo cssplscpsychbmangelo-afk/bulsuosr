@@ -1,105 +1,107 @@
-# Netlify deployment — Office of the Student Regent (BulSU)
+# Deploy the OSR BulSU website and CMS
 
-Static site, no build step. Premium, accessible, anti-slop filtered.
+The frontend is a static Netlify site; the CMS/API runs separately as a Node
+service. The repository includes a Render Blueprint, a persistent SQLite/upload
+configuration, and a Netlify build script that wires the two hosts together.
 
-## Why you saw "Page Not Found"
+## 1. Netlify setup
 
 Netlify reads `netlify.toml` from the **base directory** (the repository root by
-default) and publishes that directory. This repository's root contains only the
-`OSR/` folder — no `index.html`, no config — so Netlify published an empty root
-and answered every URL with its 404 page.
+default). The root config publishes `OSR/osr-website`; it has a small Node build
+step that generates `_redirects` from the `OSR_BACKEND_URL` environment variable.
+There is no asset bundling or package-install step.
 
-The site itself lives in `OSR/osr-website/`. That is now wired up in
-[`/netlify.toml`](../../netlify.toml):
+### Deploy from Git (recommended)
 
-```toml
-[build]
-  publish = "OSR/osr-website"
-  command = "echo 'Static site - no build step required'"
+1. Push or merge this repository version to the branch you want Netlify to
+   deploy.
+2. Netlify → **Add new site → Import an existing project** → choose this repo.
+3. Leave **Base directory** empty (repository root). Netlify reads `/netlify.toml`
+   automatically. If you use `OSR/osr-website` as the base directory instead,
+   its local `netlify.toml` is configured to do the same job.
+4. Deploy. Without a backend URL, the public site uses its built-in content and
+   `/admin` displays a clear “backend not connected” page.
+
+## 2. Deploy and connect the backend
+
+Follow [`../server/DEPLOY.md`](../server/DEPLOY.md) to deploy the Express CMS to
+Render. That guide covers the paid persistent disk, initial admin password,
+production secrets, CORS origin, and health check.
+
+Once Render is healthy, add this **public URL** in Netlify → **Site configuration
+→ Environment variables**:
+
+```text
+OSR_BACKEND_URL=https://<your-render-service>.onrender.com
 ```
 
-## Deploy from Git (recommended)
+Use only the service origin—no `/api`, path, or trailing slash. Redeploy Netlify.
+The build automatically proxies:
 
-1. Netlify → *Add new site* → *Import an existing project* → pick this repo.
-2. Leave **Base directory empty** (repo root) — `/netlify.toml` does the rest.
-3. Build command / publish directory are picked up automatically. Click *Deploy*.
-4. Netlify deploys the branch in *Site configuration → Build & deploy → Branch
-   deployments* (`main` by default), so merge your changes there.
+- `/admin` and `/admin/*` → the Express admin pages
+- `/api/*` → the CMS API
+- `/uploads/*` → uploaded media on Render's persistent disk
 
-**Equivalent manual setting:** if you'd rather not rely on the root config, set
-*Base directory* to `OSR/osr-website` — Netlify then reads
-`OSR/osr-website/netlify.toml` (`publish = "."`). Both files are kept in sync.
+This same-origin proxy keeps the browser on the Netlify domain for the admin
+cookie and API calls. Put the exact Netlify site origin in Render's
+`ALLOWED_ORIGINS` variable; if the proxy forwards the browser's `Origin` header,
+the CORS and CSRF checks depend on that allowlist. Do not put `JWT_SECRET` or
+the admin password in Netlify.
 
-## Deploy by drag & drop
+### Verify the connection
 
-Zip the **contents of `osr-website/`**, not the repo and not the `OSR/` folder:
+- `https://<your-netlify-site>/api/health` should return JSON containing
+  `"ok": true`.
+- `https://<your-netlify-site>/admin/login.html` should show the real CMS login.
+- Sign in with the initial email/password configured on Render, then change the
+  password in **Admin → Settings → Account**.
+- Upload a test file and make sure its `/uploads/...` URL loads from the Netlify
+  domain.
+
+## Manual and drag-and-drop deploys
+
+The Git build runs `netlify-build.mjs` automatically. For a one-off CLI deployment
+with the backend enabled, generate proxy rules before publishing:
 
 ```bash
-cd OSR/osr-website
-zip -r osr.zip . -x "*.git*"
-```
-
-Netlify dashboard → *Add new site* → *Deploy manually* → drop `osr.zip`.
-`_redirects` and `_headers` in that folder are the fallbacks Netlify uses when
-`netlify.toml` isn't processed.
-
-## Netlify CLI
-
-```bash
-npm i -g netlify-cli
-netlify login
+OSR_BACKEND_URL=https://<your-render-service>.onrender.com \
+  node OSR/osr-website/netlify-build.mjs
 netlify deploy --dir=OSR/osr-website --prod
 ```
 
-## Routing on Netlify
+For a static-only manual deploy, run the build script without `OSR_BACKEND_URL`
+before deploying. It writes the static fallback rules to `_redirects`. If you
+drag and drop a zip, zip the **contents** of `OSR/osr-website/` so `_redirects`
+and `_headers` are at the published root.
 
-- `/api/*` → `api-unavailable.json` (200). The Express + SQLite backend in
-  `OSR/server` cannot run on Netlify, so the page detects "no backend" in one
-  ~180-byte request and renders its built-in content. Without this rule the
-  single-page fallback would answer every API call with the 374 KB `index.html`
-  (~3 MB of wasted downloads per page view) and log JSON parse errors.
-- `/*` → `/index.html` (200) so unknown paths and deep links still render.
-- Headers: security headers + cache policy (HTML and `/js/*` always revalidate —
-  there is no build step to hash filenames, so `immutable` would pin visitors to
-  stale JS for a year).
+## What works where
 
-## What works on Netlify, and what doesn't
-
-| | Netlify (static) | `OSR/server` (Express, port 4000) |
+| Feature | Netlify static-only | Netlify + Render backend |
 |---|---|---|
-| Public site, all sections, search, command palette, guides, PDF export, saved resources | Yes | Yes |
-| Content comes from | Built-in arrays in `index.html` | SQLite via `/api/public/*` |
-| `/admin` CMS dashboard | **No** — not part of the published folder | Yes |
-| Pulse submissions stored | No (local draft only) | Yes |
-| Media uploads | No | Yes |
+| Public site, search, guides, PDF export, saved resources | Yes, built-in content | Yes, live published CMS content |
+| `/admin` CMS | Explanatory fallback | Full admin dashboard |
+| Pulse submissions | Local draft only | Stored in the backend database |
+| Media uploads | No | Persisted on Render disk and proxied through Netlify |
 
-To point the Netlify-hosted public site at an API running elsewhere (a VPS,
-Render, Fly.io…), add this **before** `js/cms-integration.js` loads:
+## Local development
 
-```html
-<script>window.OSR_CONFIG = { apiBase: 'https://api.your-domain.tld' };</script>
+The full stack can run from `OSR/server`:
+
+```bash
+cd OSR/server
+npm ci
+cp .env.example .env
+# Set ADMIN_PASSWORD in .env (12+ unique characters), then:
+npm start
 ```
 
-or `<meta name="osr-api-base" content="https://api.your-domain.tld">`. The API
-must send CORS headers allowing your Netlify origin (`OSR/server` already uses
-`cors({ origin: true, credentials: true })`).
-
-Running the whole CMS on Netlify itself would mean porting `OSR/server` to
-Netlify Functions and swapping `better-sqlite3` for a hosted Postgres — the API
-contract stays the same, but it's a separate piece of work.
-
-## Content
-
-All content is in top-level arrays in `index.html`: `ANNOUNCEMENTS`,
-`BOARD_MEETINGS`, `INITIATIVES`, `RESOURCES`. Edit those for a static deploy, or
-manage them in `/admin` when the backend is running.
+See [`../server/DEPLOY.md`](../server/DEPLOY.md) for local and production
+configuration details. A fresh database requires an explicit initial admin
+password; there is no default login shipped in the source.
 
 ## Housekeeping
 
-- `osr-netlify.zip` sits inside the published folder, so it is deployed and
-  publicly downloadable. Delete it (or move it out of `osr-website/`) if you
-  don't want it served — regenerate it any time with the `zip` command above.
-- `osr-logo-original.png` (577 KB) is the unoptimised source of `osr-logo.png`
-  and isn't referenced by the page; it also ships to Netlify as-is.
-
-Dial: ENERGY 2 / RHYTHM 3 / MOTION 2 — premium institutional.
+- `osr-netlify.zip` is currently inside the published folder, so it is publicly
+  downloadable. Move it outside `OSR/osr-website/` if that is not intended.
+- `osr-logo-original.png` is the unoptimised source of `osr-logo.png` and is not
+  referenced by the page; it is still included in the static deploy.

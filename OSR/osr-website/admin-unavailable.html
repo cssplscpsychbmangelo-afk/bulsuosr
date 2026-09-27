@@ -3,34 +3,49 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Admin unavailable on this host — OSR BulSU</title>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<meta name="color-scheme" content="light"/>
+<title>OSR Admin CMS — backend required</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
 <style>
-  :root{ --red:#A6192E; --ink:#111214; --stone:#6B6560; --paper:#F7F5F2; --line:#E9E6E1; }
+  :root{--red:#A6192E;--red-2:#8F1428;--ink:#111214;--stone:#6B6560;--paper:#F7F5F2;--line:#E9E6E1;--white:#fff}
   *{box-sizing:border-box}
-  body{margin:0; font-family:'IBM Plex Sans',sans-serif; background:var(--paper); color:var(--ink); display:grid; place-items:center; min-height:100vh; padding:20px}
-  .card{width:min(520px,100%); background:#fff; border:1px solid var(--line); border-radius:16px; padding:28px; box-shadow:0 20px 50px rgba(0,0,0,.08)}
-  .eyebrow{font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.06em; text-transform:uppercase; color:var(--red); margin:0 0 8px}
-  h1{font:600 22px/1.2 'Fraunces',serif; margin:0 0 10px}
-  p{font-size:14px; line-height:1.6; color:var(--stone); margin:0 0 12px}
-  code{font:500 12.5px 'IBM Plex Mono',monospace; background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:2px 6px}
-  ol{font-size:14px; line-height:1.7; color:var(--ink); padding-left:18px; margin:0 0 14px}
-  a.back{display:inline-block; margin-top:6px; font-size:13.5px; font-weight:600; color:var(--red); text-decoration:none}
-  a.back:hover{text-decoration:underline}
+  body{margin:0;min-height:100vh;padding:20px;display:grid;place-items:center;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif}
+  .card{width:min(540px,100%);padding:28px;background:var(--white);border:1px solid var(--line);border-radius:16px;box-shadow:0 18px 44px rgba(0,0,0,.08)}
+  .eyebrow{margin:0 0 9px;color:var(--red);font:600 10px 'IBM Plex Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
+  h1{margin:0 0 10px;font:600 clamp(23px,5vw,28px)/1.15 'Fraunces',serif;letter-spacing:-.02em}
+  p{margin:0 0 12px;color:var(--stone);font-size:13.5px;line-height:1.55}
+  .steps{margin:16px 0;padding:14px 16px;background:var(--paper);border:1px solid var(--line);border-radius:11px}
+  .steps h2{margin:0 0 8px;font:600 11px 'IBM Plex Mono',monospace;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+  ol{margin:0;padding-left:18px;color:var(--ink);font-size:13px;line-height:1.65}
+  li+li{margin-top:3px}
+  code{padding:2px 5px;border:1px solid var(--line);border-radius:5px;background:#fff;font:500 11px 'IBM Plex Mono',monospace;overflow-wrap:anywhere}
+  .local-url{margin:9px 0 0;color:var(--stone);font-size:12px}
+  .deploy-note{margin:14px 0;color:var(--stone);font-size:12px;line-height:1.5}
+  .back{display:inline-flex;align-items:center;gap:6px;margin-top:3px;color:var(--red);font-size:13px;font-weight:600;text-decoration:none}
+  .back:hover{color:var(--red-2);text-decoration:underline}
+  @media(max-width:480px){body{padding:12px}.card{padding:20px;border-radius:13px}.steps{padding:12px}}
 </style>
 </head>
 <body>
-<div class="card">
-  <p class="eyebrow">Admin CMS</p>
-  <h1>The admin dashboard is not available on this host</h1>
-  <p>This site is deployed as a <b>static</b> page. The admin CMS needs the OSR backend (Express + database), which does not run on static hosting.</p>
-  <p>To open the admin dashboard, run the full stack on a server:</p>
-  <ol>
-    <li><code>cd OSR/server &amp;&amp; npm install</code></li>
-    <li>Set <code>JWT_SECRET</code> in <code>OSR/server/.env</code> (see <code>.env.example</code>)</li>
-    <li><code>node index.js</code> then open <code>/admin/login.html</code></li>
-  </ol>
-  <a class="back" href="/">← Back to the public website</a>
-</div>
+<main class="card">
+  <p class="eyebrow">OSR Admin CMS</p>
+  <h1>The CMS backend is not connected here</h1>
+  <p>This public site is hosted as static files on Netlify. The admin dashboard requires the OSR Express server and database, so this host cannot sign you in.</p>
+
+  <section class="steps" aria-labelledby="local-setup-title">
+    <h2 id="local-setup-title">Run the CMS locally</h2>
+    <ol>
+      <li>From the repository root, run <code>cd OSR/server</code> and <code>npm ci</code>.</li>
+      <li>Copy <code>.env.example</code> to <code>.env</code>.</li>
+      <li>Set a unique <code>ADMIN_PASSWORD</code> (12+ characters) and <code>JWT_SECRET</code>, then run <code>npm start</code>.</li>
+    </ol>
+    <p class="local-url">Then open <code>http://localhost:4000/admin/login.html</code>.</p>
+  </section>
+
+  <p class="deploy-note">To use the CMS on the live domain, the Express server must be deployed to a Node host and Netlify must proxy the admin and API routes to it.</p>
+  <a class="back" href="/" aria-label="Return to the public OSR website">← Return to the public website</a>
+</main>
 </body>
 </html>

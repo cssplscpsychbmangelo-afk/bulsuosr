@@ -2,3 +2,8 @@ node_modules/
 .env
 *.log
 .DS_Store
+
+# Local OSR CMS data must not enter Git.
+OSR/server/.env
+OSR/server/db/*.db*
+OSR/server/uploads/

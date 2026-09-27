@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 import { authRequired } from '../middleware/auth.js';
 const router=express.Router();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const uploadDir = path.join(__dirname, '../uploads');
+const uploadDir = path.resolve(process.env.UPLOAD_DIR || path.join(__dirname, '../uploads'));
 fs.mkdirSync(uploadDir, { recursive:true });
 
 const storage = multer.diskStorage({

@@ -6,29 +6,13 @@
 
 [build]
   publish = "."
-  command = "echo 'Static site - no build required'"
+  command = "node netlify-build.mjs"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "22"
 
-# No backend on static hosting: answer /api/* with a tiny JSON stub so the page
-# skips CMS hydration in one cheap request and shows its built-in content.
-[[redirects]]
-  from   = "/api/*"
-  to     = "/api-unavailable.json"
-  status = 200
-
-# Admin CMS needs the backend — explain instead of showing the public site.
-[[redirects]]
-  from   = "/admin/*"
-  to     = "/admin-unavailable.html"
-  status = 200
-
-[[redirects]]
-  from   = "/*"
-  to     = "/index.html"
-  status = 200
-  force  = false
+# The build script writes backend proxy rules (or static-only fallbacks) to
+# _redirects based on the OSR_BACKEND_URL environment variable.
 
 [[headers]]
   for = "/*"
