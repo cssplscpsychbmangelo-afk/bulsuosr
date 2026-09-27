@@ -14,6 +14,18 @@ is required. **Standalone mode: only Neon required.**
 
 Use the repository-root `netlify.toml` (leave Netlify's base directory empty).
 
+**Base directory — either setting now works:**
+
+| Netlify Base directory | Config file used |
+|---|---|
+| *(empty / repository root)* | `netlify.toml` |
+| `OSR` | `OSR/netlify.toml` |
+
+Netlify only reads the `netlify.toml` inside the Base directory. Setting Base
+directory to `OSR` used to leave the site with no build config and no
+`index.html` in the publish directory, so every URL failed to open. Both
+configurations are now supported, so the site deploys either way.
+
 **Only required env var (Functions scope):**
 - `DATABASE_URL`: your Neon pooled connection string, copied directly from Neon.
   Example: `postgresql://neondb_owner:npg_I87tszbCRuwf@ep-little-smoke-b5vq9v7q-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require`

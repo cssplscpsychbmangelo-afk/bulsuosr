@@ -1,0 +1,61 @@
+# ── Netlify configuration for Base directory = "OSR" ─────────────────────────
+# Why this second file exists:
+#   Netlify reads netlify.toml from the site's *Base directory*. Everything in
+#   this project lives inside OSR/, so setting Base directory = "OSR" in the
+#   Netlify UI is the obvious thing to do — but then Netlify looks for
+#   OSR/netlify.toml, does not find it, falls back to auto-detection, and
+#   publishes a directory with no index.html. Every URL then fails to open.
+#   This file makes that layout work too.
+#
+#   Base directory empty (repo root) -> the root ../netlify.toml is used.
+#   Base directory "OSR"             -> this file is used.
+#
+# Paths below are relative to THIS directory (OSR/).
+
+[build]
+  base    = "."
+  publish = "osr-website"
+  command = "npm ci --prefix server && node osr-website/netlify-build.mjs"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  directory = "server/netlify"
+  node_bundler = "esbuild"
+  included_files = ["osr-website/index.html"]
+
+# Headers intentionally mirror ../netlify.toml so the effective policy is the
+# same whichever config Netlify happens to read.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options           = "DENY"
+    X-Content-Type-Options    = "nosniff"
+    Referrer-Policy           = "strict-origin-when-cross-origin"
+    Permissions-Policy        = "camera=(), microphone=(), geolocation=()"
+    # cdn.jsdelivr.net is required: index.html injects jsPDF from there for the
+    # "download as PDF" action. Without it the script is blocked by CSP.
+    Content-Security-Policy   = "default-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+
+# HTML must always revalidate, otherwise visitors keep seeing an old page.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/js/*"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Images change rarely — one week is a safe cache window.
+[[headers]]
+  for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"

@@ -1,7 +1,7 @@
 // OSR CMS — local admin recovery helper (standalone mode).
 //
 // Clears the `admins` table so the NEXT server startup re-creates the default
-// admin (admin@osr.bulsu.edu.ph / Admin123456!) or lets you use /admin/login.html
+// admin (admin@osr.bulsu.edu.ph / Admin123456!) or lets you use the /admin
 // setup form. Content tables (announcements, calendar, media, settings, …) are untouched.
 // For Neon (production), use the /api/auth/setup endpoint or delete admins via SQL.
 //
@@ -40,7 +40,7 @@ try {
   db.prepare("DELETE FROM admins").run();
   console.log(`[reset:admin] Removed ${row.c} admin account(s) from ${dbPath}. Content was kept.`);
   console.log('[reset:admin] Next step: run `npm start` and log in with admin@osr.bulsu.edu.ph / Admin123456!');
-  console.log('[reset:admin] Or open /admin/login.html and use the setup form to create a new admin.');
+  console.log('[reset:admin] Or open /admin and use the setup form to create a new admin.');
 } finally {
   db.close();
 }
