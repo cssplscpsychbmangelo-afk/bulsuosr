@@ -1,10 +1,15 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import rateLimit from 'express-rate-limit';
 import { authRequired, signToken } from '../middleware/auth.js';
 
 const router = express.Router();
+const cookieOptions = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax',
+  path: '/',
+};
 
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -22,16 +27,18 @@ router.post('/login', loginLimiter, (req, res) => {
   if (!admin) return res.status(401).json({ error: 'Invalid credentials' });
   const ok = bcrypt.compareSync(password, admin.password_hash);
   if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
-  const token = signToken(admin);
-  const maxAge = remember ? 30*24*60*60*1000 : 8*60*60*1000;
-  res.cookie('token', token, { httpOnly: true, secure: false, sameSite: 'lax', maxAge, path: '/' });
+  const keepSession = remember === true || remember === 'true';
+  const token = signToken(admin, keepSession);
+  const maxAge = keepSession ? 30 * 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000;
+  res.cookie('token', token, { ...cookieOptions, maxAge });
   // log activity
   try { db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type) VALUES (?,?,?,?)').run(admin.id, admin.email, 'Login', 'auth'); } catch {}
-  res.json({ ok: true, admin: { id: admin.id, email: admin.email, name: admin.name }, token });
+  // The credential is sent only as an HttpOnly cookie, never exposed to JS.
+  res.json({ ok: true, admin: { id: admin.id, email: admin.email, name: admin.name } });
 });
 
-router.post('/logout', (req,res)=>{
-  res.clearCookie('token', { path: '/' });
+router.post('/logout', (req, res) => {
+  res.clearCookie('token', cookieOptions);
   res.json({ ok: true });
 });
 
@@ -61,11 +68,12 @@ router.patch('/account', authRequired, (req,res)=>{
   let changed = [];
 
   if (newEmail) {
-    if (newEmail !== confirmEmail) return res.status(400).json({ error: 'Emails do not match' });
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) return res.status(400).json({ error: 'Invalid email' });
-    const exists = db.prepare('SELECT id FROM admins WHERE email=? AND id != ?').get(newEmail.toLowerCase(), admin.id);
+    const normalizedEmail = newEmail.trim().toLowerCase();
+    if (normalizedEmail !== String(confirmEmail || '').trim().toLowerCase()) return res.status(400).json({ error: 'Emails do not match' });
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) return res.status(400).json({ error: 'Invalid email' });
+    const exists = db.prepare('SELECT id FROM admins WHERE email=? AND id != ?').get(normalizedEmail, admin.id);
     if (exists) return res.status(409).json({ error: 'Email already in use' });
-    email = newEmail.toLowerCase();
+    email = normalizedEmail;
     changed.push('email');
   }
 
@@ -82,16 +90,15 @@ router.patch('/account', authRequired, (req,res)=>{
   db.prepare("UPDATE admins SET email=?, password_hash=?, updated_at=datetime('now') WHERE id=?").run(email, password_hash, admin.id);
   try { db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type, details) VALUES (?,?,?,?,?)').run(admin.id, admin.email, `Updated account: ${changed.join(', ')}`, 'admin', JSON.stringify({ newEmail: email })); } catch {}
 
-  // Issue new token if email changed
-  const newToken = jwt.sign({ id: admin.id, email }, process.env.JWT_SECRET, { expiresIn: '8h' });
-  res.cookie('token', newToken, { httpOnly: true, secure: false, sameSite: 'lax', maxAge: 8*60*60*1000, path: '/' });
+  // Refresh the HttpOnly session after the account email changes.
+  const newToken = signToken({ id: admin.id, email });
+  res.cookie('token', newToken, { ...cookieOptions, maxAge: 8 * 60 * 60 * 1000 });
 
   res.json({ ok: true, email, changed });
 });
 
-router.post('/forgot', (req,res)=>{
-  // Placeholder: In production, send reset email
-  res.json({ ok: true, message: 'If the email exists, a reset link will be sent (demo: contact system admin).' });
+router.post('/forgot', (req, res) => {
+  res.json({ ok: false, message: 'Password reset is not configured. Please contact the site administrator.' });
 });
 
 export default router;

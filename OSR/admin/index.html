@@ -178,10 +178,8 @@ function toast(m){ const t=document.createElement('div'); t.className='toast'; t
 function fmtDate(s){ try{ return new Date(s).toLocaleString('en-PH', {dateStyle:'medium', timeStyle:'short'}); }catch{return s} }
 
 async function api(path, opts={}){
-  const headers = opts.headers||{};
-  headers['Content-Type'] = headers['Content-Type']||'application/json';
-  const token = localStorage.getItem('osr_admin_token');
-  if(token) headers['Authorization'] = 'Bearer '+token;
+  const headers = { ...(opts.headers||{}) };
+  if(!headers['Content-Type'] && !(opts.body instanceof FormData)) headers['Content-Type'] = 'application/json';
   const r = await fetch(path, { ...opts, headers, credentials:'include' });
   if(r.status===401){ location.href='/admin/login.html'; throw new Error('Unauthorized'); }
   const j = await r.json().catch(()=> ({}));
@@ -195,7 +193,6 @@ async function checkAuth(){
 }
 $('#logout').onclick = async ()=>{
   await fetch('/api/auth/logout', {method:'POST', credentials:'include'});
-  localStorage.removeItem('osr_admin_token');
   location.href='/admin/login.html';
 };
 // Mobile drawer with backdrop — closes on backdrop tap or nav selection
@@ -557,42 +554,83 @@ async function renderCalendar(){
   });
 }
 
-async function renderPulse(){
-  const data = await api('/api/pulse');
-  const monthly = await api('/api/pulse/aggregates?period=all');
-  $('#content').innerHTML = `
+const PULSE_ADMIN_LABELS={
+  learning:'Learning',
+  campus:'Campus',
+  mobility:'Mobility',
+  connectivity:'Connectivity',
+  wellbeing:'Well-being',
+  cultureCommunity:'Culture & Community',
+  studentVoice:'Student Voice'
+};
+function pulseAdminEscape(value){
+  return String(value??'').replace(/[&<>"']/g, char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+}
+async function renderPulse(view='all-time'){
+  const data=await api('/api/pulse?view='+encodeURIComponent(view));
+  const label=view==='yearly' ? 'Current year' : view==='monthly' ? 'Current month' : 'All time';
+  const total=Number(data.totalResponses)||0;
+  const rows=Array.isArray(data.aggregates) ? data.aggregates : [];
+  const latestMonth=data.monthly?.[0];
+  const emptyMessage=rows.length ? '' : total===0
+    ? 'No real submissions yet. The public Pulse remains empty until a student submits an allocation.'
+    : `No submissions are recorded for ${label.toLowerCase()} yet.`;
+  $('#content').innerHTML=`
     <div class="cards">
-      <div class="card"><b>Total Responses</b><strong>${data.totalResponses}</strong><p>All time</p></div>
-      <div class="card"><b>Monthly (latest)</b><strong>${data.monthly?.[0]?.count||0}</strong><p>${data.monthly?.[0]?.period||'—'}</p></div>
-      <div class="card"><b>Preview vs Live</b><strong style="font-size:14px">${data.isPreview? 'Preview Data' : 'Live Data'}</strong><p>${data.isPreview? 'No real submissions yet' : 'Real student submissions'}</p></div>
+      <div class="card"><b>Total responses</b><strong>${total}</strong><p>All time</p></div>
+      <div class="card"><b>Latest month</b><strong>${latestMonth?.count||0}</strong><p>${pulseAdminEscape(latestMonth?.period||'—')}</p></div>
+      <div class="card"><b>Submission status</b><strong style="font-size:14px">${total ? 'Real submissions' : 'No submissions yet'}</strong><p>${total ? 'Aggregated from stored student responses' : 'No preview or sample data is shown'}</p></div>
     </div>
     <div class="grid2">
-      <div class="panel"><div class="panel-head"><h2>Category totals — All time</h2><div style="display:flex; gap:6px"><select id="pulseView"><option value="monthly">Monthly</option><option value="yearly">Yearly</option><option value="all-time" selected>All time</option></select><button class="btn btn--ghost" id="pulseExport">Export</button></div></div>
+      <div class="panel"><div class="panel-head"><h2>Category totals · ${label}</h2><div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center"><select id="pulseView" aria-label="Aggregate period"><option value="monthly" ${view==='monthly'?'selected':''}>Monthly</option><option value="yearly" ${view==='yearly'?'selected':''}>Yearly</option><option value="all-time" ${view==='all-time'?'selected':''}>All time</option></select><button class="btn btn--ghost" id="pulseRefresh" type="button">Refresh</button><button class="btn btn--ghost" id="pulseExport" type="button">Export</button></div></div>
         <div class="panel-body">
-          <div class="list">${(data.aggregates||[]).map(r=>`<div class="row"><b style="flex:1">${r.category}</b><span class="badge">${r.total_points} pts</span><span class="badge--green badge">${r.response_count} responses</span></div>`).join('') || '<div class="empty">No data — showing preview when empty</div>'}
-          </div>
-          <div style="margin-top:8px; padding:8px; background:#FFF7ED; border:1px solid #FDE68A; border-radius:8px; font-size:12px">Privacy: Only aggregated totals are stored. No individual builds are exposed.</div>
+          <div class="list">${rows.map(row=>{
+            const category=PULSE_ADMIN_LABELS[row.category]||pulseAdminEscape(row.category);
+            return `<div class="row"><b style="flex:1">${category}</b><span class="badge">${Number(row.total_points)||0} pts</span><span class="badge--green badge">${Number(row.response_count)||0} responses</span></div>`;
+          }).join('') || `<div class="empty">${emptyMessage}</div>`}</div>
+          <div style="margin-top:8px; padding:8px; background:#F7F5F2; border:1px solid var(--line); border-radius:8px; font-size:12px">This dashboard shows aggregate totals and counts only. Individual allocations are not displayed.</div>
         </div>
       </div>
       <div class="panel"><div class="panel-head"><h2>Historical trends</h2></div>
         <div class="panel-body">
           <b style="font:600 11px 'IBM Plex Mono',monospace">Monthly</b>
-          <div class="list">${(data.monthly||[]).slice(0,6).map(m=>`<div class="row"><span>${m.period}</span><b style="margin-left:auto">${m.count}</b></div>`).join('') || '<div class="empty">No monthly data</div>'}</div>
+          <div class="list">${(data.monthly||[]).slice(0,6).map(month=>`<div class="row"><span>${pulseAdminEscape(month.period)}</span><b style="margin-left:auto">${Number(month.count)||0}</b></div>`).join('') || '<div class="empty">No monthly submissions yet</div>'}</div>
           <b style="font:600 11px 'IBM Plex Mono',monospace; margin-top:8px; display:block">Yearly</b>
-          <div class="list">${(data.yearly||[]).map(y=>`<div class="row"><span>${y.year}</span><b style="margin-left:auto">${y.count}</b></div>`).join('') || '<div class="empty">No yearly data</div>'}</div>
-          <button class="btn btn--ghost" id="pulseReset" style="margin-top:8px; width:100%">Reset data (admin)</button>
+          <div class="list">${(data.yearly||[]).map(year=>`<div class="row"><span>${pulseAdminEscape(year.year)}</span><b style="margin-left:auto">${Number(year.count)||0}</b></div>`).join('') || '<div class="empty">No yearly submissions yet</div>'}</div>
+          <button class="btn btn--ghost" id="pulseReset" type="button" style="margin-top:8px; width:100%">Clear all Pulse data</button>
         </div>
       </div>
     </div>
   `;
-  $('#pulseExport').onclick = async ()=>{
-    const j = await api('/api/pulse/export');
-    const blob = new Blob([JSON.stringify(j,null,2)], {type:'application/json'});
-    const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='pulse-export.json'; a.click(); URL.revokeObjectURL(url);
+  $('#pulseView').onchange=event=>renderPulse(event.target.value);
+  $('#pulseRefresh').onclick=async event=>{
+    const button=event.currentTarget;
+    button.disabled=true;
+    button.textContent='Refreshing…';
+    await renderPulse($('#pulseView').value||view);
   };
-  $('#pulseReset').onclick = async ()=>{
-    if(!await confirmModal({title:'Reset pulse data?', desc:'This will delete all submissions and aggregates. Cannot be undone.', confirmText:'Reset'})) return;
-    await api('/api/pulse/reset', {method:'DELETE'}); toast('Reset done'); renderPulse();
+  $('#pulseExport').onclick=async ()=>{
+    const result=await api('/api/pulse/export');
+    const blob=new Blob([JSON.stringify(result,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const anchor=document.createElement('a');
+    anchor.href=url;
+    anchor.download='pulse-export.json';
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
+  $('#pulseReset').onclick=async event=>{
+    if(!await confirmModal({title:'Clear all Pulse data?',desc:'This permanently deletes stored submissions and aggregate totals. It does not affect other site content.',confirmText:'Clear Pulse data'})) return;
+    const button=event.currentTarget;
+    button.disabled=true;
+    try{
+      await api('/api/pulse/reset',{method:'DELETE'});
+      toast('Pulse data cleared');
+      await renderPulse($('#pulseView').value||view);
+    }catch(error){
+      button.disabled=false;
+      toast(error.message||'Could not clear Pulse data');
+    }
   };
 }
 
@@ -604,8 +642,7 @@ async function renderMedia(){
   $('#mediaFile').onchange = async e=>{
     const f=e.target.files[0]; if(!f) return;
     const fd=new FormData(); fd.append('file', f);
-    const headers={}; const token=localStorage.getItem('osr_admin_token'); if(token) headers['Authorization']='Bearer '+token;
-    const r=await fetch('/api/media/upload', {method:'POST', body:fd, headers, credentials:'include'});
+    const r=await fetch('/api/media/upload', {method:'POST', body:fd, credentials:'include'});
     const j=await r.json(); if(!r.ok) return toast(j.error);
     toast('Uploaded'); renderMedia();
   };

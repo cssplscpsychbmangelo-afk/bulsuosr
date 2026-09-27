@@ -2,13 +2,13 @@
 //
 // Runs in two modes:
 //   1. Behind the Express API (local / VPS): hydrates published content from /api/public/*.
-//   2. On static hosting (Netlify): there is no API, so it detects that from the
-//      first response and stops. The page keeps its built-in content. No console
-//      errors, no wasted requests.
+//   2. On static hosting (Netlify): it detects the missing API and keeps the
+//      built-in content. The Pulse panel may retry its one endpoint while open
+//      so a recovered backend appears without a page reload.
 (function(){
-  // Optional override — set window.OSR_CONFIG = { apiBase: 'https://api.example.org' }
-  // (or <meta name="osr-api-base" content="...">) before this script loads to point
-  // the public site at an API hosted somewhere else.
+  // Optional direct-API override — set window.OSR_CONFIG = { apiBase: 'https://api.example.org' }
+  // (or <meta name="osr-api-base" content="...">) before this script loads. For
+  // cross-origin use, that API must allow this site's exact origin via ALLOWED_ORIGINS.
   const cfg = window.OSR_CONFIG || {};
   const metaApi = document.querySelector('meta[name="osr-api-base"]');
   const API_BASE = (cfg.apiBase || (metaApi && metaApi.getAttribute('content')) || '').replace(/\/+$/, '');
@@ -21,8 +21,8 @@
     return ct.includes('application/json');
   }
 
-  async function fetchPublic(type){
-    if(!backendAvailable) return null;
+  async function fetchPublic(type, allowRetry=false){
+    if(!backendAvailable && !allowRetry) return null;
 
     let r;
     try{
@@ -60,12 +60,29 @@
       noBackend('this host serves the static stub');
       return null;
     }
+    backendAvailable = true;
     return data;
   }
 
-  // Called once, the first time we learn there is no API behind this host.
-  // Everything after it short-circuits, so the page renders its built-in content
-  // without firing seven more pointless requests.
+  function publishPulseAggregates(rows){
+    const available=Array.isArray(rows);
+    window.__CMS_PULSE=available ? rows : null;
+    window.dispatchEvent(new CustomEvent('cms:pulse-updated', {
+      detail:{available, rows:available ? rows : [], updatedAt:new Date().toISOString()}
+    }));
+    return available;
+  }
+
+  async function refreshPulseAggregates(){
+    // Pulse is live: retry transiently unavailable backends when the user refreshes or polls.
+    const rows=await fetchPublic('pulse-aggregates', true);
+    return publishPulseAggregates(rows);
+  }
+
+  window.__cmsRefreshPulse=refreshPulseAggregates;
+
+  // Remember that regular CMS hydration has no backend and short-circuit its
+  // remaining requests. Explicit Pulse refreshes pass allowRetry=true.
   function noBackend(reason){
     if(!backendAvailable) return;
     backendAvailable = false;
@@ -243,8 +260,9 @@
   }
 
   document.addEventListener('DOMContentLoaded', async ()=>{
-    // Probe with one request first. On static hosting (Netlify) this resolves
-    // immediately and we stop — the page keeps its built-in content.
+    // Wire Pulse submission even when the public-content probe finds no backend.
+    patchPulse();
+    // Probe with one request first; static hosting keeps the built-in content.
     const anns = await fetchPublic('announcements');
     if(!backendAvailable) return;
 
@@ -290,16 +308,6 @@
       window.dispatchEvent(new CustomEvent('cms:hydrated', {detail: window.__CMS_DATA}));
     }, 1000);
 
-    patchPulse();
-
-    // Also fetch pulse aggregates for display
-    try{
-      const pulseAgg = await fetchPublic('pulse-aggregates');
-      if(pulseAgg){
-        window.__CMS_PULSE = pulseAgg;
-        console.log('[CMS] Pulse aggregates', pulseAgg);
-      }
-    }catch{}
   });
 
   // --- GUIDE POSITIONING FIX (robust) ---
@@ -523,8 +531,8 @@
   // Prevent guide from causing horizontal scroll
   const style = document.createElement('style');
   style.textContent = `
-    #guideTooltip{ max-width:min(280px, calc(100vw - 20px)) !important; box-sizing:border-box !important; }
-    @media(max-width:640px){ #guideTooltip{ left:10px !important; right:10px !important; width:auto !important; transform:none !important; } }
+    #guideTooltip{ width:min(260px, calc(100vw - 24px)) !important; max-width:min(260px, calc(100vw - 24px)) !important; box-sizing:border-box !important; }
+    @media(max-width:640px){ #guideTooltip{ width:min(260px, calc(100vw - 20px)) !important; max-width:min(260px, calc(100vw - 20px)) !important; } }
     html{ overflow-x:hidden; }
     body{ overflow-x:hidden; }
     .guide-highlight{ position:relative !important; z-index:2 !important; }

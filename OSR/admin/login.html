@@ -44,10 +44,10 @@
   <div id="err" class="err"></div>
   <form id="form">
     <label for="email">Email</label>
-    <input id="email" type="email" required autocomplete="email" placeholder="admin@osr.bulsu.edu.ph" value="admin@osr.bulsu.edu.ph">
+    <input id="email" type="email" required autocomplete="username" placeholder="name@example.com">
     <label for="password">Password</label>
     <div class="row">
-      <input id="password" type="password" required autocomplete="current-password" placeholder="••••••••" value="Admin123!">
+      <input id="password" type="password" required autocomplete="current-password" placeholder="Enter your password">
       <button type="button" class="toggle" id="toggle">Show</button>
     </div>
     <div class="actions">
@@ -56,7 +56,7 @@
     </div>
     <button id="submit" class="btn" type="submit">Log in →</button>
   </form>
-  <p class="muted">Secure admin access. Session expires in 8 hours.<br><a href="/">← Back to public website</a></p>
+  <p class="muted">Secure admin access. Sessions last 8 hours, or 30 days if remembered.<br><a href="/">← Back to public website</a></p>
 </div>
 <script>
 const $ = s=>document.querySelector(s);
@@ -77,8 +77,8 @@ $('#forgot').onclick = async (e)=>{
   try{
     const r = await fetch('/api/auth/forgot', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email})});
     const j = await r.json();
-    showErr(j.message || 'If the email exists, a reset link will be sent (demo).');
-    errEl.style.background='#E6F4EA'; errEl.style.borderColor='#B7E1C6'; errEl.style.color='#115E34';
+    showErr(j.message || 'Password reset is not configured. Contact the site administrator.');
+    errEl.style.background='var(--paper)'; errEl.style.borderColor='var(--line)'; errEl.style.color='var(--stone)';
   }catch{ showErr('Network error'); }
 };
 $('#form').onsubmit = async (e)=>{
@@ -95,7 +95,6 @@ $('#form').onsubmit = async (e)=>{
     });
     const j = await r.json();
     if(!r.ok) throw new Error(j.error||'Login failed');
-    localStorage.setItem('osr_admin_token', j.token);
     location.href='/admin/index.html';
   }catch(err){ showErr(err.message); }
   finally{ btn.disabled=false; btn.textContent='Log in →'; }

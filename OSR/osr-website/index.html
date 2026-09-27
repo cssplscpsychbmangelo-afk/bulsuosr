@@ -43,20 +43,20 @@ img{max-width:100%}
 .scroll-progress{position:fixed; top:0; left:0; height:2px; background:var(--red); width:0; z-index:100; transition:width .1s linear}
 
 
-/* header — premium: taller, more breathing, subtle border */
-.header{position:sticky; top:0; z-index:40; background:rgba(255,255,255,0.92); backdrop-filter:blur(12px) saturate(1.05); border-bottom:1px solid var(--line); transition:box-shadow .2s var(--ease)}
-.header.is-scrolled{box-shadow:var(--shadow-soft); background:rgba(255,255,255,0.96)}
-.header__inner{max-width:var(--max); margin:0 auto; padding:14px 16px; display:flex; align-items:center; gap:20px}
-.brand{display:flex; align-items:center; gap:13px; min-width:0; flex:0 0 auto}
+/* Header: keep the frequent destinations in one line; the labeled menu holds the rest. */
+.header{position:sticky; top:0; z-index:40; background:var(--paper); border-bottom:1px solid var(--line); transition:box-shadow .2s var(--ease)}
+.header.is-scrolled{box-shadow:var(--shadow-soft)}
+.header__inner{max-width:1280px; margin:0 auto; padding:12px 16px; display:flex; align-items:center; gap:14px; min-width:0}
+.brand{display:flex; align-items:center; gap:10px; min-width:0; flex:0 0 auto}
 .brand__mark{width:44px; height:44px; background:var(--red); color:white; display:grid; place-items:center; font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:11px; line-height:1; text-align:center; border-radius:6px; flex:0 0 auto; letter-spacing:0.04em; box-shadow:0 1px 0 rgba(0,0,0,0.08)}
-.brand__text{line-height:1.08}
-.brand__text b{display:block; font-size:13.5px; letter-spacing:0.02em; font-weight:700}
-.brand__text span{display:block; font-size:11px; color:var(--stone); font-weight:500; letter-spacing:0.035em; text-transform:uppercase}
-.nav{margin-left:auto; display:flex; align-items:center; gap:3px}
-.nav a{padding:8px 12px; font-size:13.5px; font-weight:500; color:var(--ink-2); border-radius:999px; border:1px solid transparent; transition:all .15s var(--ease)}
+.brand__text{line-height:1.12; max-width:250px; min-width:0}
+.brand__text b{display:block; font-size:12.5px; letter-spacing:0.015em; font-weight:700; overflow-wrap:anywhere}
+.brand__text span{display:block; font-size:10.5px; color:var(--stone); font-weight:500; letter-spacing:0.025em; text-transform:uppercase; overflow-wrap:anywhere}
+.nav{margin-left:auto; display:flex; align-items:center; gap:8px; min-width:0; flex:0 1 auto}
+.nav a{padding:8px 10px; font-size:12.5px; line-height:1.3; font-weight:500; color:var(--ink-2); border-radius:8px; border:1px solid transparent; white-space:nowrap; transition:background .15s, border-color .15s, color .15s}
 .nav a[aria-current="page"]{background:var(--ink); color:white; border-color:var(--ink)}
 .nav a:hover{border-color:var(--line); background:var(--paper-2)}
-.nav__actions{display:flex; gap:8px; align-items:center; margin-left:10px}
+.nav__actions{display:flex; gap:8px; align-items:center; margin-left:10px; flex:0 0 auto}
 .btn{appearance:none; border:1px solid var(--ink); background:var(--ink); color:white; padding:10px 16px; border-radius:999px; font-weight:600; font-size:13.5px; cursor:pointer; display:inline-flex; align-items:center; gap:7px; justify-content:center; transition:transform .12s var(--ease), background .15s, border-color .15s, box-shadow .15s; white-space:nowrap}
 .btn:hover{transform:translateY(-1px); box-shadow:var(--shadow-soft)}
 .btn:active{transform:translateY(0)}
@@ -66,13 +66,17 @@ img{max-width:100%}
 .btn--red:hover{background:var(--red-2); border-color:var(--red-2)}
 .btn--sm{padding:7px 12px; font-size:12.5px}
 .btn--block{width:100%}
-.icon-btn{width:40px; height:40px; border:1px solid var(--line); background:white; border-radius:999px; display:grid; place-items:center; cursor:pointer; transition:all .15s}
-.icon-btn:hover{border-color:var(--line-2); background:var(--paper-2); transform:translateY(-1px)}
-.hamburger{display:none}
-.search-inline{display:flex; align-items:center; gap:0; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:white; min-width:260px; transition:border-color .15s, box-shadow .15s}
+.icon-btn{width:40px; height:40px; border:1px solid var(--line); background:white; border-radius:8px; display:grid; place-items:center; cursor:pointer; transition:background .15s, border-color .15s, color .15s}
+.icon-btn:hover{border-color:var(--line-2); background:var(--paper-2)}
+.header__menu{display:flex; align-items:center; gap:8px; flex:0 0 auto; margin-left:2px}
+.header-menu-btn{min-height:40px; display:inline-flex; align-items:center; justify-content:center; gap:7px; padding:0 10px; border:1px solid var(--line); border-radius:8px; background:white; color:var(--ink); font:600 12px "IBM Plex Sans",sans-serif; cursor:pointer; transition:background .15s, border-color .15s}
+.header-menu-btn:hover{border-color:var(--line-2); background:var(--paper-2)}
+.header-menu-btn svg{width:16px; height:16px; flex:0 0 auto}
+.search-toggle{display:none; flex:0 0 auto}
+.search-inline{display:flex; align-items:center; gap:0; border:1px solid var(--line); border-radius:999px; overflow:hidden; background:white; width:clamp(150px, 14vw, 190px); min-width:0; transition:border-color .15s, box-shadow .15s}
 .search-inline:focus-within{border-color:var(--red); box-shadow:0 0 0 3px var(--red-3)}
-.search-inline input{border:0; padding:10px 14px; font-size:13.5px; flex:1; min-width:0; outline:0; background:transparent}
-.search-inline button{border:0; background:var(--ink); color:white; width:36px; height:36px; border-radius:999px; margin:3px; display:grid; place-items:center; cursor:pointer; transition:background .15s}
+.search-inline input{border:0; padding:9px 12px; font-size:12.5px; flex:1; min-width:0; outline:0; background:transparent}
+.search-inline button{border:0; background:var(--ink); color:white; width:36px; height:36px; border-radius:8px; margin:2px; display:grid; place-items:center; cursor:pointer; transition:background .15s}
 .search-inline button:hover{background:var(--red)}
 
 /* drawer */
@@ -92,11 +96,36 @@ img{max-width:100%}
 .mobile-search{display:flex; gap:8px}
 .mobile-search input{flex:1; border:1px solid var(--line); border-radius:999px; padding:11px 14px}
 
-@media(max-width:1020px){
+/* Switch to the labeled drawer before the full row crowds a laptop viewport. */
+@media(max-width:1240px){
   .nav{display:none}
-  .hamburger{display:grid}
   .search-inline{display:none}
-  .header__inner{padding:12px 14px}
+  .search-toggle{display:grid; width:44px; height:44px}
+  .header-menu-btn{min-height:44px}
+  .header__inner{padding:10px 16px; gap:10px}
+  .header__menu{margin-left:0}
+}
+@media(max-width:640px){
+  .header__inner{padding:9px 12px; gap:8px}
+  .brand{gap:8px; flex:1 1 auto}
+  .brand__text{max-width:230px}
+  .header__menu{margin-left:0}
+}
+@media(max-width:380px){
+  .header__inner{padding:8px 12px}
+  .brand img{width:36px !important; height:36px !important}
+  .brand__text{max-width:170px}
+  .brand__text b{font-size:10.5px; line-height:1.15}
+  .brand__text span{font-size:8.5px; line-height:1.2; letter-spacing:0}
+  .search-toggle{display:none}
+  .header-menu-btn{padding:0 9px}
+}
+@media(min-width:900px){
+  .drawer__panel{width:min(520px, 50vw); padding:24px}
+  .drawer__head{padding-bottom:18px}
+  .drawer__nav{grid-template-columns:repeat(2, minmax(0, 1fr)); gap:8px}
+  .drawer__nav a{min-height:54px; padding:12px}
+  .drawer__section{margin-top:20px}
 }
 
 /* layout */
@@ -292,9 +321,13 @@ img{max-width:100%}
 
 .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
 @media(max-width:700px){.grid-2{grid-template-columns:1fr}}
-.fab{position:fixed; right:16px; bottom:16px; z-index:60; width:44px; height:44px; border-radius:999px; border:1px solid var(--line-2); background:white; color:var(--ink); display:grid; place-items:center; box-shadow:var(--shadow); cursor:pointer; opacity:0; pointer-events:none; transform:translateY(6px); transition:opacity .2s var(--ease), transform .2s var(--ease)}
+.fab{position:fixed; right:16px; bottom:calc(76px + env(safe-area-inset-bottom, 0px)); z-index:49; width:44px; height:44px; border-radius:999px; border:1px solid var(--line-2); background:white; color:var(--ink); display:grid; place-items:center; box-shadow:var(--shadow); cursor:pointer; opacity:0; visibility:hidden; pointer-events:none; transform:translateY(6px); transition:opacity .2s var(--ease), transform .2s var(--ease), visibility .2s}
 .fab:hover{border-color:var(--stone-3); color:var(--red)}
-.fab.is-visible{opacity:1; pointer-events:auto; transform:none}
+.fab.is-visible{opacity:1; visibility:visible; pointer-events:auto; transform:none}
+.fab:focus-visible{outline:2px solid var(--red); outline-offset:3px}
+.local-storage-note{position:fixed; left:16px; bottom:16px; z-index:49; display:flex; align-items:center; gap:10px; max-width:min(340px, calc(100vw - 32px)); padding:7px 10px; border:1px solid var(--line); border-radius:9px; background:rgba(255,255,255,.96); box-shadow:0 4px 14px rgba(17,18,20,.08); color:var(--stone); font:500 11px/1.35 "IBM Plex Sans",sans-serif}
+.local-storage-note__dismiss{flex:0 0 auto; border:0; padding:0 2px; background:transparent; color:var(--stone); font:500 15px/1 "IBM Plex Sans",sans-serif; cursor:pointer}
+.local-storage-note__dismiss:hover{color:var(--ink)}
 .skeleton{height:12px; border-radius:6px; background:linear-gradient(90deg, var(--paper-2) 25%, var(--paper-3) 50%, var(--paper-2) 75%); background-size:200% 100%; animation:shimmer 1.1s infinite}
 @keyframes shimmer{to{background-position:-200% 0}}
 .highlight{background:#FFF1A8; padding:1px 2px; border-radius:3px}
@@ -769,7 +802,7 @@ img,svg{max-width:100%; height:auto}
 .cal-event__date{font:700 11px "IBM Plex Mono",monospace; color:var(--ink); line-height:1.25; overflow-wrap:anywhere; word-break:break-word}
 .cal-event__date small{font:500 10px "IBM Plex Mono",monospace; color:var(--stone); display:block; margin-top:1px}
 .cal-badge{font:600 9.5px "IBM Plex Mono",monospace; letter-spacing:0.05em; text-transform:uppercase; padding:2px 6px; border-radius:999px; border:1px solid var(--line); background:var(--paper-2); color:var(--stone); display:inline-flex; align-items:center; gap:4px; white-space:nowrap; line-height:1}
-.cal-badge svg{width:10px; height:10px; flex:0 0 auto; opacity:0.9}
+.cal-badge svg{width:12px; height:12px; flex:0 0 auto; opacity:0.9}
 .cal-badge--holiday{background:var(--red-3); border-color:#FFD0D6; color:var(--red)}
 .cal-badge--enroll{background:var(--red-3); border-color:#FFD0D6; color:var(--red)}
 .cal-badge--exam{background:var(--red-3); border-color:#FFD0D6; color:var(--red)}
@@ -807,64 +840,57 @@ img,svg{max-width:100%; height:auto}
 .pulse-tabs{display:flex; gap:6px; border:1px solid var(--line); background:var(--paper-2); padding:6px; border-radius:999px; width:fit-content; margin-top:8px}
 .pulse-tab{padding:7px 12px; border-radius:999px; border:1px solid transparent; background:white; font:600 12.5px "IBM Plex Sans",sans-serif; cursor:pointer; transition:all .14s; color:var(--ink-2)}
 .pulse-tab.is-active{background:var(--red); color:white; border-color:var(--red); box-shadow:0 2px 8px rgba(166,25,46,0.18)}
-.pulse-pointsbar{position:sticky; top:68px; z-index:4; background:white; border:1px solid var(--line); border-radius:14px; padding:12px 14px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; box-shadow:0 6px 20px rgba(17,18,20,0.06); margin-bottom:2px}
-.pulse-points-track{height:8px; background:var(--paper-2); border-radius:999px; overflow:hidden; border:1px solid var(--line)}
-.pulse-points-fill{height:100%; background:var(--red); width:0%; transition:width .25s var(--ease)}
+.pulse-pointsbar{position:sticky; top:68px; z-index:4; background:white; border:1px solid var(--line); border-radius:14px; padding:12px 14px; display:flex; gap:14px; align-items:center; flex-wrap:wrap; box-shadow:0 1px 4px rgba(17,18,20,0.05); margin-bottom:2px}
+.pulse-points-track{height:12px; background:var(--paper-3); border-radius:4px; overflow:hidden; border:1px solid var(--line-2)}
+.pulse-points-fill{height:100%; background:var(--red); width:0%; transition:width .2s ease}
 .pulse-alloc{display:grid; gap:12px; margin-top:14px; position:relative; z-index:1}
-.pulse-alloc-row{border:1px solid var(--line); border-radius:12px; background:white; padding:12px 14px; transition:all .12s}
+.pulse-alloc-row{border:1px solid var(--line); border-radius:8px; background:white; padding:12px 14px; transition:border-color .15s, box-shadow .15s}
 .pulse-alloc-row:hover{border-color:#DDD8D1; box-shadow:0 4px 12px rgba(0,0,0,0.03)}
-.pulse-alloc-row__head{display:flex; gap:12px; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; min-width:0}
-.pulse-alloc-row__cat{font:700 10.5px "IBM Plex Mono",monospace; letter-spacing:0.06em; text-transform:uppercase; color:var(--red); display:inline-flex; align-items:center; gap:6px}
-.pulse-alloc-row__title{font:700 14px "Fraunces",serif; letter-spacing:-0.015em; margin:2px 0 2px; line-height:1.1}
-.pulse-alloc-row__desc{font-size:12.5px; line-height:1.45; color:var(--stone); margin:0; max-width:48ch; overflow-wrap:anywhere; word-break:break-word}
-.pulse-counter{display:flex; align-items:center; gap:8px; flex:0 0 auto; background:var(--paper-2); border:1px solid var(--line); padding:4px 6px; border-radius:999px}
-.pulse-num{font:700 20px "Fraunces",serif; width:32px; text-align:center; line-height:1; color:var(--ink)}
-.pulse-btn{width:30px; height:30px; border-radius:999px; border:1px solid var(--line); background:white; display:grid; place-items:center; font:700 16px "IBM Plex Sans",sans-serif; cursor:pointer; transition:all .12s; line-height:1}
-.pulse-btn:hover:not(:disabled){border-color:var(--red); color:var(--red); transform:translateY(-1px)}
-.pulse-btn:disabled{opacity:0.32; cursor:not-allowed; transform:none}
-.pulse-bar{height:8px; background:var(--paper-2); border-radius:999px; overflow:hidden; border:1px solid var(--line); margin-top:10px; flex-shrink:0}
-.pulse-bar__fill{height:100%; background:var(--red); width:0%; transition:width .28s var(--ease)}
-.pulse-alloc-row.is-max .pulse-bar__fill{background:var(--ink)}
+.pulse-alloc-row__head{display:flex; gap:14px; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; min-width:0}
+.pulse-alloc-row__meta{flex:1 1 220px; min-width:0}
+.pulse-alloc-row__title{display:flex; align-items:center; gap:8px; min-width:0; font:600 14px/1.3 "IBM Plex Sans",sans-serif; letter-spacing:0; margin:0}
+.pulse-alloc-row__title > span:last-child{min-width:0; overflow-wrap:anywhere}
+.pulse-alloc-row__icon{width:26px; height:26px; border-radius:6px; background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); display:inline-grid; place-items:center; flex:0 0 26px}
+.pulse-alloc-row__desc{font-size:12.5px; line-height:1.45; color:var(--stone); margin:5px 0 0 34px; max-width:48ch; overflow-wrap:anywhere}
+.pulse-counter{display:flex; align-items:center; gap:6px; flex:0 0 auto; background:var(--paper-2); border:1px solid var(--line); padding:4px 6px; border-radius:8px}
+.pulse-num{font:700 20px "Fraunces",serif; width:28px; text-align:center; line-height:1; color:var(--ink)}
+.pulse-btn{width:44px; height:44px; border-radius:6px; border:1px solid var(--line); background:white; display:grid; place-items:center; font:700 18px "IBM Plex Sans",sans-serif; cursor:pointer; transition:background .12s, border-color .12s, color .12s; line-height:1}
+.pulse-btn:hover:not(:disabled){border-color:var(--red); background:var(--red-3); color:var(--red)}
+.pulse-btn:disabled{opacity:0.42; cursor:not-allowed}
+.pulse-btn:focus-visible{outline:2px solid var(--red); outline-offset:2px}
+.pulse-bar{height:12px; background:var(--paper-3); border-radius:4px; overflow:hidden; border:1px solid var(--line-2); margin-top:10px; flex-shrink:0}
+.pulse-bar__fill{height:100%; background:var(--red); width:0%; transition:width .2s ease}
+.pulse-share-track{display:block; height:10px; background:var(--paper-3); border-radius:4px; overflow:hidden; border:1px solid var(--line-2); min-width:0}
+.pulse-share-fill{display:block; height:100%; background:var(--red); transition:width .2s ease}
+.pulse-category-row{display:grid; grid-template-columns:minmax(125px, 0.9fr) minmax(72px, 2fr) 70px; gap:10px; align-items:center; min-width:0}
+.pulse-category-row__label{min-width:0; color:var(--ink-2); line-height:1.25; overflow-wrap:anywhere}
+.pulse-category-row__value{min-width:0; text-align:right; white-space:nowrap; color:var(--stone)}
 .pulse-map{border:1px solid var(--line); border-radius:12px; background:white; padding:14px; margin-top:16px; position:relative; z-index:1}
 .pulse-livebars{display:grid; gap:8px}
-.pulse-live-row{display:grid; grid-template-columns:118px minmax(0,1fr) auto; gap:10px; align-items:center; font-size:12.5px; min-height:22px} .pulse-live-row__label{overflow-wrap:anywhere; word-break:break-word; line-height:1.25}
-.pulse-live-row__label{font:600 11px "IBM Plex Mono",monospace; letter-spacing:0.04em; text-transform:uppercase; color:var(--stone); white-space:nowrap}
-.pulse-live-row__bar{height:8px; background:var(--paper-2); border-radius:999px; overflow:hidden; border:1px solid var(--line); min-width:40px}
-.pulse-live-row__fill{height:100%; background:var(--red); width:0%; transition:width .25s var(--ease)}
-.pulse-live-row__val{font:600 11px "IBM Plex Mono",monospace; color:var(--stone); min-width:28px; text-align:right}
+.pulse-live-row{display:grid; grid-template-columns:minmax(96px, 1fr) minmax(48px, 2fr) auto; gap:8px; align-items:center; font-size:12.5px; min-height:28px; min-width:0}
+.pulse-live-row__label{font:500 11px "IBM Plex Sans",sans-serif; color:var(--ink-2); line-height:1.25; min-width:0; overflow-wrap:anywhere}
+.pulse-live-row__bar{height:10px; background:var(--paper-3); border-radius:4px; overflow:hidden; border:1px solid var(--line-2); min-width:0}
+.pulse-live-row__fill{height:100%; background:var(--red); width:0%; transition:width .2s ease}
+.pulse-live-row__val{font:600 11px "IBM Plex Mono",monospace; color:var(--ink-2); min-width:40px; text-align:right}
 .pulse-result{margin-top:14px}
 .pulse-subtabs{display:flex; gap:6px; flex-wrap:wrap}
 .pulse-subtab{padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:white; font:600 11.5px "IBM Plex Sans",sans-serif; cursor:pointer; transition:all .12s}
 .pulse-subtab.is-active{background:var(--ink); color:white; border-color:var(--ink)}
 .pulse-view{border:1px solid var(--line); border-radius:12px; background:white; padding:14px; margin-top:10px}
+.pulse-period-summary{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px}
 .pulse-howgrid{grid-template-columns:1fr 1fr}
 .ideal-empty{border:1px dashed var(--line); background:var(--paper-2); border-radius:10px; padding:14px; text-align:center; color:var(--stone); font-size:13px}
 
-@media(max-width:640px){.pulse-howgrid{grid-template-columns:1fr} .pulse-pointsbar{top:58px; gap:10px} .pulse-alloc-row__head{flex-direction:column} .pulse-counter{align-self:flex-end} .pulse-live-row{grid-template-columns:90px 1fr auto} .pulse-tabs{width:100%} .pulse-tab{flex:1; text-align:center}}
-/* cute interactive enhancements */
-.pulse-alloc-row{position:relative; overflow:hidden; cursor:default}
-.pulse-alloc-row:before{content:""; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--red) 0%, #FFB3C1 50%, var(--red) 100%); opacity:0; transition:opacity .2s}
-.pulse-alloc-row:hover:before{opacity:1}
-.pulse-alloc-row__cat{font-size:10.5px}
-.pulse-counter{box-shadow:0 2px 8px rgba(0,0,0,0.04)}
-.pulse-btn:active{transform:scale(0.92)} .pulse-btn:focus-visible{outline:2px solid var(--red); outline-offset:2px}
-.pulse-live-row__fill{background:linear-gradient(90deg, var(--red), #FF6B8A)}
-@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
-/* interactive voting - fun but not sloppy */
-.pulse-alloc-row{transition:transform .15s var(--ease), box-shadow .15s var(--ease), border-color .15s}
-.pulse-alloc-row:hover{transform:translateY(-1px); box-shadow:0 6px 18px rgba(17,18,20,0.06); border-color:#E0DDD8}
-.pulse-alloc-row:active{transform:translateY(0)}
+@media(max-width:760px){.pulse-period-summary{grid-template-columns:1fr}}
+@media(max-width:640px){.pulse-howgrid{grid-template-columns:1fr} .pulse-pointsbar{top:68px; gap:10px; box-shadow:0 1px 4px rgba(17,18,20,0.06)} .pulse-alloc-row__head{flex-direction:column; align-items:stretch} .pulse-counter{align-self:flex-end} .pulse-live-row{grid-template-columns:minmax(82px, 1fr) minmax(44px, 2fr) auto; gap:7px} .pulse-category-row{grid-template-columns:minmax(92px, 1fr) minmax(44px, 1.6fr) 58px; gap:7px} .pulse-category-row__label{font-size:11px} .pulse-category-row__value{font-size:10.5px} .pulse-tabs{width:100%} .pulse-tab{flex:1; text-align:center}}
+/* Allocation controls use restrained state feedback. */
+.pulse-alloc-row{position:relative; cursor:default; transition:border-color .15s, box-shadow .15s}
+.pulse-alloc-row:hover{box-shadow:0 3px 10px rgba(17,18,20,0.05); border-color:var(--line-2)}
 .pulse-counter{transition:border-color .15s}
-.pulse-alloc-row.is-max{border-color:var(--red); background:linear-gradient(0deg, #FFF0F2, white)}
-.pulse-bar__fill{position:relative; overflow:hidden}
-.pulse-bar__fill:after{content:""; position:absolute; top:0; left:0; right:0; bottom:0; background:linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent); transform:translateX(-100%); animation:shimmer 1.6s ease-in-out infinite; opacity:0}
-.pulse-alloc-row.is-max .pulse-bar__fill:after{opacity:1}
-@keyframes shimmer{100%{transform:translateX(100%)}}
 .pulse-num{transition:transform .15s var(--ease), color .15s}
 .pulse-num.bump{transform:scale(1.15); color:var(--red)}
 
 .pulse-tabs{box-shadow:0 2px 10px rgba(0,0,0,0.04)}
-.pulse-point-dot{width:8px; height:8px; background:var(--red); border-radius:50%; display:inline-block; animation:floaty 2s ease-in-out infinite}
 
 
 /* ideal — reduce clutter, no emojis, better icons */
@@ -915,22 +941,24 @@ img,svg{max-width:100%; height:auto}
 .guide-highlight{position:relative !important; z-index:3 !important; background:var(--red-3) !important; border-color:#FFD0D6 !important; outline:2px solid var(--red) !important; outline-offset:2px !important; box-shadow:0 0 0 6px rgba(171,19,34,.10), 0 6px 18px rgba(0,0,0,.08) !important; border-radius:10px !important; transition:all .22s ease !important}
 .guide-highlight--pulse{animation:guidePulse 1.8s ease 2}
 @keyframes guidePulse{0%{box-shadow:0 0 0 6px rgba(171,19,34,.10), 0 6px 18px rgba(0,0,0,.08)} 50%{box-shadow:0 0 0 9px rgba(171,19,34,.14), 0 8px 22px rgba(0,0,0,.10)} 100%{box-shadow:0 0 0 6px rgba(171,19,34,.10), 0 6px 18px rgba(0,0,0,.08)}}
-#guideTooltip{position:absolute; animation:guideIn .26s cubic-bezier(.22,1,.36,1); z-index:9999; width:min(280px, calc(100vw - 24px)); background:white; border:1px solid #E6E2DD; border-top:3px solid var(--red); border-radius:10px; box-shadow:0 12px 32px rgba(16,12,10,.14), 0 2px 8px rgba(16,12,10,.06); padding:11px 12px 10px; display:grid; gap:8px; font-family:'Instrument Sans',sans-serif; transition:opacity .18s, transform .18s}
+#guideTooltip{position:absolute; animation:guideIn .22s cubic-bezier(.22,1,.36,1); z-index:49; width:min(260px, calc(100vw - 24px)); background:white; border:1px solid #E6E2DD; border-left:3px solid var(--red); border-radius:9px; box-shadow:0 7px 20px rgba(16,12,10,.11), 0 2px 6px rgba(16,12,10,.04); padding:9px 10px; display:grid; gap:6px; font-family:'Instrument Sans',sans-serif; transition:opacity .18s, transform .18s}
 #guideTooltip[hidden]{display:none !important}
 .guide-eyebrow{font:700 9px 'IBM Plex Mono',monospace; letter-spacing:.08em; text-transform:uppercase; color:var(--red); display:flex; align-items:center; gap:6px}
-.guide-title{font:600 13px/1.3 'Fraunces',serif; margin:0; color:#1A1A1A}
-.guide-desc{font:400 11.5px/1.45 'Instrument Sans',sans-serif; color:#6B7280; margin:0}
-.guide-actions{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:2px}
+.guide-title{font:600 12.5px/1.3 'Instrument Sans',sans-serif; margin:0; color:#1A1A1A}
+.guide-desc{font:400 11px/1.4 'Instrument Sans',sans-serif; color:#6B7280; margin:0}
+.guide-actions{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:0}
 .guide-progress{font:600 10px 'IBM Plex Mono',monospace; color:var(--stone); display:flex; gap:4px; align-items:center}
 .guide-progress i{width:6px; height:6px; border-radius:999px; background:var(--line); display:inline-block; transition:background .2s}
 .guide-progress i.is-active{background:var(--red)}
-.guide-dismiss{position:absolute; top:6px; right:6px; width:22px; height:22px; border-radius:999px; border:1px solid var(--line); background:white; color:var(--stone); font:600 12px/1 sans-serif; display:grid; place-items:center; cursor:pointer}
+.guide-dismiss{position:absolute; top:5px; right:5px; width:20px; height:20px; border-radius:999px; border:1px solid var(--line); background:white; color:var(--stone); font:600 12px/1 sans-serif; display:grid; place-items:center; cursor:pointer}
 .guide-dismiss:hover{background:var(--paper-2); color:var(--ink)}
-.guide-dontshow{font:400 10.5px 'Instrument Sans',sans-serif; color:var(--stone); display:flex; gap:6px; align-items:center; margin-top:2px; cursor:pointer}
-.guide-dontshow input{accent-color:var(--red)}
-.guide-show-btn{position:fixed; bottom:18px; left:18px; z-index:9998; background:var(--ink); color:white; border:1px solid var(--ink); border-radius:999px; padding:8px 12px; font:600 11px 'IBM Plex Mono',monospace; display:inline-flex; gap:6px; align-items:center; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,.14)}
+.guide-dontshow{font:400 10px 'Instrument Sans',sans-serif; color:var(--stone); display:flex; gap:5px; align-items:center; margin-top:0; cursor:pointer}
+.guide-dontshow input{accent-color:var(--red); margin:0}
+.guide-show-btn{position:fixed; bottom:calc(76px + env(safe-area-inset-bottom, 0px)); left:16px; z-index:49; width:42px; height:42px; padding:0; border:1px solid var(--line-2); border-radius:50%; background:white; color:var(--ink); display:grid; place-items:center; cursor:pointer; box-shadow:0 5px 16px rgba(0,0,0,.12); transition:background .15s, border-color .15s, color .15s, transform .15s}
+.guide-show-btn:hover{border-color:var(--red); color:var(--red); background:var(--red-3); transform:translateY(-1px)}
+.guide-show-btn svg{width:18px; height:18px; display:block}
 .guide-show-btn[hidden]{display:none !important}
-@media (max-width:640px){ #guideTooltip{width:calc(100vw - 20px); left:10px !important; right:10px !important; transform:none !important} .guide-show-btn{bottom:14px; left:14px; padding:7px 10px; font-size:10.5px} }
+@media (max-width:640px){ #guideTooltip{width:min(260px, calc(100vw - 20px))} .guide-show-btn{left:12px; width:40px; height:40px} .fab{right:12px; width:42px; height:42px} }
 @keyframes guideIn{from{opacity:0; transform:translateY(6px) scale(.98)} to{opacity:1; transform:none}}
 @media (prefers-reduced-motion:reduce){ .guide-highlight, #guideTooltip{transition:none; animation:none} }
 
@@ -954,10 +982,6 @@ img,svg{max-width:100%; height:auto}
       <a href="#board-meetings" data-nav>Board Meetings</a>
       <a href="#initiatives" data-nav>Initiatives</a>
       <a href="#resources" data-nav>Resources</a>
-      <a href="#help" data-nav>Student Help</a>
-      <a href="#about" data-nav>About OSR</a>
-      <a href="#ideal-bulsu" data-nav style="background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:6px 10px; border-radius:999px; font-weight:700; font-size:12.5px; display:inline-flex; align-items:center; gap:5px"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5 4.5 2 7-7-5-7 5 2-7L2 9h7z"/></svg> Ideal BulSU</a>
-      <a href="#academic-calendar" data-nav style="background:white; border:1px solid var(--line); color:var(--ink); padding:6px 10px; border-radius:999px; font-weight:600; font-size:12.5px; display:inline-flex; align-items:center; gap:5px"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/><path d="M8 14h8M8 18h8"/></svg> Calendar</a>
       <div class="nav__actions">
         <button id="replayTourBtn" type="button" title="Guide" style="border:1px solid var(--line); background:white; color:var(--ink); border-radius:999px; padding:6px 10px; font:600 12px 'IBM Plex Mono',monospace; display:inline-flex; align-items:center; gap:6px; cursor:pointer">
           <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 12 a3.5 3.5 0 0 0 5 3.2"/><path d="M12 9v3h3"/></svg> Tour
@@ -966,13 +990,13 @@ img,svg{max-width:100%; height:auto}
           <input id="headerSearch" type="search" placeholder="Search announcements, meetings…" aria-label="Search site"/>
           <button type="submit" aria-label="Search"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg></button>
         </form>
-        <button class="icon-btn" id="cmdBtn" aria-label="Open command palette" title="Command palette (Ctrl+K)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/><path d="M8 11h6"/></svg></button>
+        <button class="icon-btn" id="cmdBtn" aria-label="Open command palette" title="Command palette (Ctrl/Command+K)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/><path d="M8 11h6"/></svg></button>
       </div>
     </nav>
 
-    <div class="row" style="margin-left:auto">
-      <button class="icon-btn" id="searchToggle" aria-label="Open search" style="display:none">⌕</button>
-      <button class="icon-btn hamburger" id="menuBtn" aria-expanded="false" aria-controls="drawer" aria-label="Open menu"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg></button>
+    <div class="header__menu">
+      <button class="icon-btn search-toggle" id="searchToggle" type="button" aria-label="Search the site" title="Search the site"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></button>
+      <button class="header-menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="drawer" aria-label="Open navigation menu" title="Open navigation menu"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg><span>Menu</span></button>
     </div>
   </div>
 </header>
@@ -1006,10 +1030,10 @@ img,svg{max-width:100%; height:auto}
       <h4>Quick actions</h4>
       <a class="btn btn--red btn--block" href="#help" data-nav>Raise a concern</a>
       <a class="btn btn--ghost btn--block" href="#board-meetings" data-nav style="margin-top:8px; border-color:var(--line)">Board archive</a>
-      <button class="btn btn--ghost btn--block" id="drawerCmd" style="margin-top:8px">⌘ Command palette</button>
+      <button class="btn btn--ghost btn--block" id="drawerCmd" style="margin-top:8px">Command palette <span class="mono" style="font-size:10px; margin-left:auto">Ctrl/Command+K</span></button>
     </div>
     <div class="drawer__section">
-      <p class="small muted">Press <span class="mono" style="background:var(--paper-2); padding:2px 6px; border-radius:6px; border:1px solid var(--line)">/</span> to search, <span class="mono" style="background:var(--paper-2); padding:2px 6px; border-radius:6px; border:1px solid var(--line)">Ctrl+K</span> for commands.</p>
+      <p class="small muted">Press <span class="mono" style="background:var(--paper-2); padding:2px 6px; border-radius:6px; border:1px solid var(--line)">/</span> to search, or <span class="mono" style="background:var(--paper-2); padding:2px 6px; border-radius:6px; border:1px solid var(--line)">Ctrl/Command+K</span> for commands.</p>
     </div>
   </div>
 </div>
@@ -1037,7 +1061,7 @@ img,svg{max-width:100%; height:auto}
         <div class="hero__actions">
           <a class="btn btn--red" href="#announcements" data-nav>View announcements <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
           <a class="btn btn--ghost" href="#board-meetings" data-nav><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 8h10"/></svg> Board archive <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
-          <button class="btn btn--ghost" id="heroCmd"><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/><path d="M8 11h6"/><path d="M11 8v6"/></svg> Jump to anything <span class="mono" style="font-size:10px; background:var(--paper-2); border:1px solid var(--line); padding:2px 6px; border-radius:6px; margin-left:4px">⌘K</span></button>
+          <button class="btn btn--ghost" id="heroCmd"><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/><path d="M8 11h6"/><path d="M11 8v6"/></svg> Jump to anything <span class="mono" style="font-size:10px; background:var(--paper-2); border:1px solid var(--line); padding:2px 6px; border-radius:6px; margin-left:4px">Ctrl/Command+K</span></button>
         </div>
         <div class="hero__meta" aria-label="Office facts">
           <span><b>Location</b> City of Malolos, Bulacan</span>
@@ -1084,7 +1108,7 @@ img,svg{max-width:100%; height:auto}
     <div class="dash-stats reveal" aria-label="Dashboard at a glance">
       <a class="dash-stat" href="#announcements" data-nav>
         <span><b id="dashAnn">0</b><span>Announcements</span></span>
-        <span class="dash-stat__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M18 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/><path d="M15 14v4"/></svg></span>
+        <span class="dash-stat__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></span>
       </a>
       <a class="dash-stat" href="#board-meetings" data-nav>
         <span><b id="dashBoard">0</b><span>Board Meetings</span></span>
@@ -1092,7 +1116,7 @@ img,svg{max-width:100%; height:auto}
       </a>
       <a class="dash-stat" href="#initiatives" data-nav>
         <span><b id="dashInit">0</b><span>Initiatives</span></span>
-        <span class="dash-stat__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/><path d="M7 19a5 5 0 0 1 10 0"/><path d="M12 8v1"/></svg></span>
+        <span class="dash-stat__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 22h4M8.5 15.5a6 6 0 1 1 7 0c-.8.6-1.5 1.4-1.5 2.5h-4c0-1.1-.7-1.9-1.5-2.5Z"/></svg></span>
       </a>
       <button class="dash-stat" id="dashSavedBtn" type="button">
         <span><b id="dashSaved">0</b><span>Saved Resources</span></span>
@@ -1912,7 +1936,7 @@ img,svg{max-width:100%; height:auto}
             </div>
           </div>
           <div style="flex:1; min-width:180px; max-width:340px">
-            <div class="pulse-points-track"><div id="pulsePointsFill" class="pulse-points-fill" style="width:0%"></div></div>
+            <div id="pulsePointsTrack" class="pulse-points-track" role="progressbar" aria-label="Points allocated" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" aria-valuetext="0 of 10 points allocated"><div id="pulsePointsFill" class="pulse-points-fill" aria-hidden="true" style="width:0%"></div></div>
             <div class="mono" style="font-size:10px; color:var(--stone); margin-top:4px; display:flex; justify-content:space-between"><span>0 used</span><span>10 used</span></div>
           </div>
           <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-left:auto">
@@ -1925,7 +1949,7 @@ img,svg{max-width:100%; height:auto}
 
         <div class="pulse-map reveal is-visible" id="pulseLiveMap" style="margin-top:14px; border:1px solid var(--line); border-radius:12px; background:white; padding:14px">
           <h3 style="margin:0; font-size:13px; font-weight:700">Where did you put your 10 points?</h3>
-          <p class="small muted" style="margin:2px 0 10px">Live preview — bars grow as you allocate. No submission yet — local only.</p>
+          <p class="small muted" style="margin:2px 0 10px">Personal preview only. Your build joins the public Pulse only if you submit it.</p>
           <div id="pulseLiveBars" class="pulse-livebars" style="min-height:40px"></div>
           <div class="mono" style="font-size:10.5px; color:var(--stone); margin-top:8px">Visual weight shows your priorities. No chart library — just bars.</div>
         </div>
@@ -1965,12 +1989,14 @@ img,svg{max-width:100%; height:auto}
 
         <div id="pulseGeneralStatus" style="margin-top:10px; border:1px solid var(--line); border-radius:12px; background:white; padding:14px; display:flex; gap:12px; align-items:center; justify-content:space-between">
           <div>
-            <div class="mono" style="font:700 10.5px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase; color:var(--red)">Pulse Status — Live</div>
-            <div class="mono" style="font-size:12.5px; color:var(--ink); margin-top:3px; font-weight:600">Updated this period</div>
+            <div class="mono" style="font:700 10.5px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase; color:var(--red)">Data status</div>
+            <div id="pulseLiveState" class="mono" role="status" aria-live="polite" style="font-size:12.5px; color:var(--ink); margin-top:3px; font-weight:600">Checking for submissions</div>
+            <div id="pulseLiveDetail" class="small muted" style="margin-top:3px">Only real stored submissions are shown.</div>
           </div>
           <div style="text-align:right">
             <div class="mono" style="font:700 22px 'Fraunces',serif; line-height:1" id="pulseGeneralStatusNumber">0</div>
             <div class="mono" style="font-size:10.5px; color:var(--stone)">builds</div>
+            <button id="pulseRefreshButton" class="btn btn--sm btn--ghost" type="button" style="margin-top:6px">Refresh</button>
           </div>
         </div>
 
@@ -2075,7 +2101,6 @@ img,svg{max-width:100%; height:auto}
           <div class="small muted" style="margin-top:10px; line-height:1.6">
             <p style="margin:0">Each participant receives 10 points and decides how to distribute them across the 7 areas. Submissions are anonymous and aggregated. Results are a student pulse — voluntary consultation, not a binding vote, election, or scientifically representative survey, and should not be assumed to represent every BulSU student.</p>
             <p style="margin:8px 0 0">Periods and percentages depend only on actual stored responses. The dashboard never downloads raw responses — only small aggregate objects per period are loaded and percentages are calculated locally.</p>
-            <p style="margin:8px 0 0" class="mono" style="font-size:11px">Example: <code style="background:var(--paper-2); padding:2px 6px; border-radius:6px; border:1px solid var(--line)">{ "period":"2026-09","responses":428,"points":{"learning":821,"campus":410,"mobility":291,"connectivity":612,"wellbeing":735,"cultureCommunity":301,"studentVoice":410} }</code></p>
           </div>
         </details>
 
@@ -2197,11 +2222,11 @@ img,svg{max-width:100%; height:auto}
   </div>
   <div class="footer__bar">
     <span>© <span id="year"></span> Office of the Student Regent, Bulacan State University. Verified content only.</span>
-    <span class="mono small" id="footerCredit">OSR™ 2025–2026 • Made by Angelo Alvarado</span>
+    <span class="mono small" id="footerCredit">OSR 2026-2027™</span>
   </div>
 </footer>
 
-<button class="fab" id="fabTop" aria-label="Back to top"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg></button>
+<button class="fab" id="fabTop" type="button" aria-label="Back to top" title="Back to top" aria-hidden="true" tabindex="-1"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg></button>
 <div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
 
 <div class="modal" id="detailModal" aria-hidden="true">
@@ -2402,9 +2427,10 @@ function setRoute(hash){
 window.addEventListener("hashchange", ()=> setRoute());
 window.addEventListener("DOMContentLoaded", ()=> setRoute(location.hash));
 setTimeout(()=> setRoute(location.hash), 120);
-$$("[data-nav]").forEach(a=> a.addEventListener("click", e=>{
+$$("[data-nav]").forEach(a=> a.addEventListener("click", ()=>{
   const href=a.getAttribute("href");
   if(href && href.startsWith("#")){
+    closeDrawer();
     const filter=a.dataset.filter;
     if(filter && href==="#resources"){ setTimeout(()=>{ $("#resCategory").value=filter; renderResources(); }, 50); }
     const help=a.dataset.help;
@@ -2415,6 +2441,10 @@ const drawer=$("#drawer");
 function openDrawer(){ drawer.setAttribute("open",""); drawer.setAttribute("aria-hidden","false"); $("#menuBtn").setAttribute("aria-expanded","true"); $("#drawerClose").focus(); document.body.style.overflow="hidden"; }
 function closeDrawer(){ drawer.removeAttribute("open"); drawer.setAttribute("aria-hidden","true"); $("#menuBtn").setAttribute("aria-expanded","false"); document.body.style.overflow=""; }
 $("#menuBtn").addEventListener("click", openDrawer);
+$("#searchToggle").addEventListener("click", ()=>{
+  location.hash="#search";
+  setTimeout(()=>document.getElementById("siteSearch")?.focus(), 100);
+});
 $("#drawerClose").addEventListener("click", closeDrawer);
 $("#drawerBackdrop").addEventListener("click", closeDrawer);
 // command palette
@@ -2475,10 +2505,15 @@ $("#year").textContent=new Date().getFullYear();
 // scroll progress + header shadow + fab + reveal
 const progress=$("#scrollProgress"), header=$("#header"), fab=$("#fabTop");
 function onScroll(){
-  const h=document.documentElement, st=h.scrollTop, sh=h.scrollHeight - h.clientHeight;
+  const h=document.documentElement;
+  const st=Math.max(window.scrollY||0, h.scrollTop||0, document.body.scrollTop||0);
+  const sh=Math.max(h.scrollHeight, document.body.scrollHeight) - h.clientHeight;
   progress.style.width = sh ? (st/sh*100)+"%" : "0";
   header.classList.toggle("is-scrolled", st>8);
-  fab.classList.toggle("is-visible", st>420);
+  const showFab=st>160;
+  fab.classList.toggle("is-visible", showFab);
+  fab.setAttribute("aria-hidden", String(!showFab));
+  fab.tabIndex=showFab ? 0 : -1;
 }
 window.addEventListener("scroll", onScroll, {passive:true});
 fab.addEventListener("click", ()=> window.scrollTo({top:0, behavior:"smooth"}));
@@ -2733,15 +2768,23 @@ function renderInitiatives(){
     wrap.innerHTML=list.map(i=> initiativeCard(i,q)).join("");
   }
 }
+function initiativeStatusIcon(status){
+  const icons={
+    ONGOING:`<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>`,
+    PLANNED:`<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></svg>`,
+    COMPLETED:`<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>`,
+    ON_HOLD:`<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9 8v8M15 8v8"/></svg>`
+  };
+  return icons[status] || icons.ON_HOLD;
+}
 function initiativeCard(i,q){
   const statusClass = i.status==="ONGOING"?"status--ongoing": i.status==="PLANNED"?"status--planned": i.status==="COMPLETED"?"status--completed":"status--hold";
-  const statusIcon = i.status==="ONGOING" ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/><circle cx="12" cy="12" r="8"/></svg>` : i.status==="PLANNED" ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>` : i.status==="COMPLETED" ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>` : `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 8v4"/><path d="M12 16h.01"/><circle cx="12" cy="12" r="8"/></svg>`;
-  const catIcon = i.category==="Consultation" ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M21 11.5a8.5 8.5 0 0 1-12 7.7"/><path d="M8 14a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/></svg>` : `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/></svg>`;
+  const statusIcon = initiativeStatusIcon(i.status);
   const badge = "";
   const links = i.links?.length ? i.links.map(l=> `<a class="tag" href="${l.href}" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:5px"><svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M10 13a5 5 0 0 0 7.54.54l2-2a5 5 0 0 0 0-7.07"/><path d="M14 11a5 5 0 0 0-7.54-.54l-2-2a5 5 0 0 0 0 7.07"/></svg> ${escapeHtml(l.label)}</a>`).join("") : `<span class="small muted">No links yet</span>`;
   return `<article class="initiative" role="listitem">
     <div class="initiative__top">
-      <span class="mono small muted" style="display:inline-flex; align-items:center; gap:5px">${catIcon} ${fmtDate(i.date)} • ${escapeHtml(i.category)} ${badge}</span>
+      <span class="mono small muted" style="display:inline-flex; align-items:center; gap:5px">${fmtDate(i.date)} • ${escapeHtml(i.category)} ${badge}</span>
       <span class="status ${statusClass}" style="display:inline-flex; align-items:center; gap:4px">${statusIcon} ${escapeHtml(i.status)}</span>
     </div>
     ${i.image?`<div style="height:120px; background:var(--paper-2); border-bottom:1px solid var(--line); display:grid; place-items:center; color:var(--stone); font-size:12px">Image: ${escapeHtml(i.image)}</div>`:""}
@@ -2759,7 +2802,7 @@ function initiativeCard(i,q){
 
 function initiativeCardCompact(i,q){
   const statusClass = i.status==="ONGOING"?"status--ongoing": i.status==="PLANNED"?"status--planned": i.status==="COMPLETED"?"status--completed":"status--hold";
-  const statusIcon = i.status==="ONGOING" ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/><circle cx="12" cy="12" r="8"/></svg>` : i.status==="PLANNED" ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>` : i.status==="COMPLETED" ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>` : `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 8v4"/><path d="M12 16h.01"/><circle cx="12" cy="12" r="8"/></svg>`;
+  const statusIcon = initiativeStatusIcon(i.status);
   const badge = "";
   return `<article class="initiative initiative--compact" role="listitem">
     <div class="initiative__top">
@@ -2804,13 +2847,24 @@ function renderResources(){
   wrap.innerHTML=list.map(r=> resourceRow(r,q)).join("");
   attachResourceActions(wrap);
 }
+function resourceCategoryIcon(category){
+  const cat=String(category||"").toUpperCase();
+  const start='<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">';
+  const end='</svg>';
+  if(cat.includes("RIGHTS")) return start+'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/>'+end;
+  if(cat.includes("ACADEMIC")) return start+'<path d="M4 5a2 2 0 0 1 2-2h14v18H6a2 2 0 0 0-2 2z"/><path d="M4 5v16a2 2 0 0 1 2-2h14"/>'+end;
+  if(cat.includes("GOVERNANCE")) return start+'<path d="m3 9 9-6 9 6H3Z"/><path d="M5 10v8M9 10v8M15 10v8M19 10v8M3 20h18M2 22h20"/>'+end;
+  if(cat.includes("SUPPORT")) return start+'<path d="M20.8 8.7c0 5.5-8.8 10.5-8.8 10.5S3.2 14.2 3.2 8.7a4.5 4.5 0 0 1 7.6-3.2L12 6.7l1.2-1.2a4.5 4.5 0 0 1 7.6 3.2Z"/><path d="M12 8v6M9 11h6"/>'+end;
+  return start+'<path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/>'+end;
+}
 function resourceRow(r,q){
   const disabled = !r.link || r.link==="#";
   const isSaved=saved.has(r.id);
-  const catIcon = r.category.includes("RIGHTS") ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg>` : r.category.includes("ACADEMIC") ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 19V5a2 2 0 0 1 2-2h8l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/></svg>` : r.category.includes("GOVERNANCE") ? `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>` : `<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M19 21 12 17 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/></svg>`;
+  const category=String(r.category||"GENERAL");
+  const catIcon=resourceCategoryIcon(category);
   return `<div class="resource ${isSaved?"is-saved":""}" role="listitem">
     <div>
-      <div class="resource__cat" style="display:inline-flex; align-items:center; gap:5px">${catIcon} ${highlight(r.category, q)}</div>
+      <div class="resource__cat" style="display:inline-flex; align-items:center; gap:5px">${catIcon} ${highlight(category, q)}</div>
       <div class="resource__title">${highlight(r.title, q)}</div>
       <p class="resource__desc">${highlight(r.description, q)}</p>
     </div>
@@ -2928,7 +2982,7 @@ END:VCALENDAR`;
     openModal({eyebrow:`Initiative • ${i.category}`, title:i.title, meta:`${i.status} • ${fmtDate(i.date)}`, body:`<p>${escapeHtml(i.description)}</p><div class="initiative__purpose" style="margin-top:10px"><b>Purpose:</b> ${escapeHtml(i.purpose)}</div><div class="kv"><b>Status</b> <span>${escapeHtml(i.status)}</span></div><div class="kv"><b>Category</b> <span>${escapeHtml(i.category)}</span></div><div class="kv"><b>Date</b> <span>${fmtDate(i.date)}</span></div>`});
   }
 });
-function goSiteSearch(q){ if(!q) return; $("#siteSearch").value=q; location.hash="#search"; renderSearch(); }
+function goSiteSearch(q){ if(!q) return; closeDrawer(); $("#siteSearch").value=q; location.hash="#search"; renderSearch(); }
 $("#headerSearchForm").addEventListener("submit", e=>{ e.preventDefault(); goSiteSearch($("#headerSearch").value.trim()); });
 $("#drawerSearchForm").addEventListener("submit", e=>{ e.preventDefault(); goSiteSearch($("#drawerSearch").value.trim()); });
 $("#siteSearch").addEventListener("input", renderSearch);
@@ -2950,9 +3004,7 @@ renderHomeAnnouncements(); renderAnnouncements(); renderBoard(); renderInitiativ
 
 
 
-// ===== BUILD YOUR IDEAL BULSU — local, no DB, exportable =====
-
-// ===== BUILD YOUR IDEAL BULSU + BULSU PULSE =====
+// ===== BUILD YOUR IDEAL BULSU + LIVE BULSU PULSE =====
 const PULSE_CATEGORIES = [
   {key:"learning", label:"Learning", short:"LEARNING", desc:"Classes, profs, curriculum, labs & academic help — learn better.", icon:'<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>'},
   {key:"campus", label:"Campus", short:"CAMPUS", desc:"Classrooms, libraries, tambayans, comfort & safe spaces.", icon:'<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M9 22V12h6v10"/></svg>'},
@@ -2963,72 +3015,174 @@ const PULSE_CATEGORIES = [
   {key:"studentVoice", label:"Student Voice", short:"STUDENT VOICE", desc:"Boses mo! Representation, feedback & transparency.", icon:'<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3z"/><path d="M19 10a7 7 0 0 1-14 0"/><path d="M12 19v4"/><path d="M8 23h8"/></svg>'},
 ];
 const PULSE_STORE_KEY = "osr-pulse-alloc-v1";
-const PULSE_AGG_KEY = "osr-pulse-aggregates-v1";
-const PULSE_SUBMITTED_KEY = "osr-pulse-submitted-v1";
 
 let pulsePoints = {learning:0, campus:0, mobility:0, connectivity:0, wellbeing:0, cultureCommunity:0, studentVoice:0};
-let pulseAggregates = {}; // period -> {period, responses, points:{...}}
+let pulseAggregates = {}; // Real monthly aggregates loaded from the public API.
 let pulseCurrentPeriod = "";
+let pulseDataState = "loading";
+let pulseLastUpdated = null;
+let pulseRefreshInFlight = null;
+let pulsePollTimer = null;
 
 function pulsePeriodNow(){
-  const d=new Date();
-  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0");
+  const parts=new Intl.DateTimeFormat("en-US", {timeZone:"Asia/Manila", year:"numeric", month:"2-digit"}).formatToParts(new Date());
+  const year=parts.find(part=>part.type==="year")?.value;
+  const month=parts.find(part=>part.type==="month")?.value;
+  return `${year}-${month}`;
 }
 function pulseLoad(){
   try{
     const raw=safeGet(PULSE_STORE_KEY, null);
-    if(raw){ const o=JSON.parse(raw); if(o && typeof o==="object") pulsePoints=o; }
-    const aggRaw=safeGet(PULSE_AGG_KEY, null);
-    if(aggRaw){ const o=JSON.parse(aggRaw); if(o && typeof o==="object") pulseAggregates=o; }
+    if(raw){
+      const saved=JSON.parse(raw);
+      if(saved && typeof saved==="object" && !Array.isArray(saved)){
+        const next={};
+        PULSE_CATEGORIES.forEach(c=>{
+          const value=Number(saved[c.key]);
+          next[c.key]=Number.isInteger(value) ? Math.max(0, Math.min(10, value)) : 0;
+        });
+        if(Object.values(next).reduce((sum,value)=>sum+value,0)<=10) pulsePoints=next;
+      }
+    }
   }catch(e){}
-  // ensure keys
   PULSE_CATEGORIES.forEach(c=>{ if(!(c.key in pulsePoints)) pulsePoints[c.key]=0; });
   pulseCurrentPeriod = pulsePeriodNow();
-  // preview sample data — shown until real submissions exist; uses clearly aggregate sample
-  if(Object.keys(pulseAggregates).length===0){
-    const sample = {
-      "2026-07": {period:"2026-07", responses:127, points:{learning:342,campus:138,mobility:89,connectivity:211,wellbeing:267,cultureCommunity:98,studentVoice:125}},
-      "2026-08": {period:"2026-08", responses:203, points:{learning:512,campus:241,mobility:134,connectivity:368,wellbeing:389,cultureCommunity:156,studentVoice:230}},
-      "2026-09": {period:"2026-09", responses:94, points:{learning:268,campus:102,mobility:71,connectivity:158,wellbeing:198,cultureCommunity:74,studentVoice:69}}
-    };
-    pulseAggregates = sample;
-    // do not auto-save sample as user data — keep in memory for preview only
-    // but allow dashboard to render; real submissions will add to current period on top of sample
-  }
+  // Discard old client-side sample aggregates; only the server is authoritative.
+  safeRemove("osr-pulse-aggregates-v1");
+  safeRemove("osr-pulse-submitted-v1");
 }
 function pulseSavePoints(){ safeSet(PULSE_STORE_KEY, JSON.stringify(pulsePoints)); }
-function pulseSaveAggregates(){ safeSet(PULSE_AGG_KEY, JSON.stringify(pulseAggregates)); }
 function pulseTotal(){ return Object.values(pulsePoints).reduce((a,b)=>a+(b||0),0); }
 function pulseLeft(){ return 10 - pulseTotal(); }
+
+function pulseProgressMarkup(label, value, max, valueText, trackClass, fillClass){
+  const safeValue=Math.max(0, Math.min(max, Number(value)||0));
+  const width=max ? Math.max(0, Math.min(100, (safeValue/max)*100)) : 0;
+  return `<div class="${trackClass}" role="progressbar" aria-label="${escapeHtml(label)}" aria-valuemin="0" aria-valuemax="${max}" aria-valuenow="${safeValue}" aria-valuetext="${escapeHtml(valueText)}"><div class="${fillClass}" aria-hidden="true" style="width:${width}%"></div></div>`;
+}
+
+function pulseShareBar(label, percentage, valueText){
+  return pulseProgressMarkup(label, percentage, 100, valueText, "pulse-share-track", "pulse-share-fill");
+}
+
+function pulseNoDataCopy(){
+  if(pulseDataState==="unavailable") return '<b>Live Pulse data is unavailable.</b><p class="small muted" style="margin:6px 0 0">Try refreshing when the OSR submissions service is available. No sample results are displayed.</p>';
+  if(pulseDataState==="loading") return '<b>Checking for student submissions.</b><p class="small muted" style="margin:6px 0 0">Only stored student submissions appear here.</p>';
+  return '<b>No student submissions have been recorded yet.</b><p class="small muted" style="margin:6px 0 0">Submit an allocation to start the Pulse. Individual builds are never shown.</p>';
+}
+function pulseNoDataMarkup(){
+  return `<div class="ideal-empty" role="status">${pulseNoDataCopy()}</div>`;
+}
+
+function pulseCategoryRow(entry, valueText){
+  const label=escapeHtml(entry.label);
+  return `<div class="pulse-category-row">
+    <span class="pulse-category-row__label">${label}</span>
+    ${pulseShareBar(`${entry.label} share of aggregate points`,entry.pct,`${entry.pts} points · ${entry.pct}% of all points`)}
+    <span class="pulse-category-row__value mono" aria-label="${escapeHtml(valueText)}">${escapeHtml(valueText)}</span>
+  </div>`;
+}
+
+function pulseCategoryKey(value){
+  const name=String(value||"").trim().toLowerCase();
+  const match=PULSE_CATEGORIES.find(category=> category.key.toLowerCase()===name || category.label.toLowerCase()===name || category.short.toLowerCase()===name);
+  return match?.key || null;
+}
+
+function pulseApplyRemoteAggregates(rows, available=true){
+  if(!available || !Array.isArray(rows)){
+    pulseDataState="unavailable";
+  } else {
+    const next={};
+    rows.forEach(row=>{
+      const period=String(row.period||"");
+      const key=pulseCategoryKey(row.category);
+      if(!/^\d{4}-\d{2}$/.test(period) || !key) return;
+      const responses=Math.max(0, Math.floor(Number(row.response_count)||0));
+      const points=Math.max(0, Math.floor(Number(row.total_points)||0));
+      if(!responses) return;
+      if(!next[period]){
+        next[period]={period, responses:0, points:Object.fromEntries(PULSE_CATEGORIES.map(category=>[category.key,0]))};
+      }
+      next[period].responses=Math.max(next[period].responses, responses);
+      next[period].points[key]=points;
+    });
+    pulseAggregates=next;
+    pulseDataState=Object.keys(next).length ? "live" : "empty";
+  }
+  pulseLastUpdated=new Date();
+  pulseRenderPulse();
+}
+
+window.addEventListener("cms:pulse-updated", event=>{
+  const detail=event.detail||{};
+  pulseApplyRemoteAggregates(detail.rows, detail.available===true);
+});
+
+async function pulseRefreshLive(){
+  if(pulseRefreshInFlight) return pulseRefreshInFlight;
+  pulseRefreshInFlight=(async()=>{
+    try{
+      if(typeof window.__cmsRefreshPulse==="function") return await window.__cmsRefreshPulse();
+      const response=await fetch("/api/public/pulse-aggregates", {headers:{Accept:"application/json"}, cache:"no-store"});
+      const data=await response.json().catch(()=>null);
+      if(!response.ok || !Array.isArray(data) || data.available===false) throw new Error("Pulse API unavailable");
+      pulseApplyRemoteAggregates(data, true);
+      return true;
+    }catch(error){
+      pulseApplyRemoteAggregates(null, false);
+      return false;
+    }
+  })().finally(()=>{ pulseRefreshInFlight=null; });
+  return pulseRefreshInFlight;
+}
+
+function pulsePulseTabIsActive(){
+  const page=document.getElementById("page-ideal-bulsu");
+  const panel=document.getElementById("pulsePulseTab");
+  return page?.getAttribute("aria-current")==="true" && panel && !panel.hidden;
+}
+
+function pulseStartLiveUpdates(){
+  if(pulsePollTimer) return;
+  pulsePollTimer=setInterval(()=>{
+    if(!document.hidden && pulsePulseTabIsActive()) pulseRefreshLive();
+  }, 30000);
+}
+
+window.addEventListener("DOMContentLoaded", ()=>pulseRefreshLive(), {once:true});
+window.addEventListener("hashchange", ()=>{
+  if(pulsePulseTabIsActive()) pulseRefreshLive();
+});
+document.addEventListener("visibilitychange", ()=>{
+  if(!document.hidden && pulsePulseTabIsActive()) pulseRefreshLive();
+});
 
 function pulseRenderAlloc(){
   const wrap=document.getElementById("pulseAlloc");
   if(!wrap) return;
-  const left = pulseLeft();
-  wrap.innerHTML = PULSE_CATEGORIES.map(cat=>{
-    const v=pulsePoints[cat.key]||0;
-    const pct = v*10;
-    const max = v>=5 ? " is-max" : "";
-    const cute = v>=5 ? "" : v>=3 ? "" : "";
-    return `<div class="pulse-alloc-row${max}" data-cat="${cat.key}">
+  const left=pulseLeft();
+  wrap.innerHTML=PULSE_CATEGORIES.map(cat=>{
+    const value=pulsePoints[cat.key]||0;
+    const percent=value*10;
+    return `<div class="pulse-alloc-row" data-cat="${cat.key}">
       <div class="pulse-alloc-row__head">
         <div class="pulse-alloc-row__meta">
-          <div class="pulse-alloc-row__cat"><span style="width:22px; height:22px; border-radius:6px; background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); display:inline-grid; place-items:center; flex:0 0 auto">${cat.icon}</span> ${cat.short}${cute}</div>
-          <div class="pulse-alloc-row__title">${cat.label}</div>
-          <p class="pulse-alloc-row__desc">${cat.desc}</p>
+          <div class="pulse-alloc-row__title"><span class="pulse-alloc-row__icon" aria-hidden="true">${cat.icon}</span><span>${escapeHtml(cat.label)}</span></div>
+          <p class="pulse-alloc-row__desc">${escapeHtml(cat.desc)}</p>
         </div>
-        <div class="pulse-counter" aria-label="${cat.label} points">
-          <button class="pulse-btn" data-minus="${cat.key}" aria-label="Decrease ${cat.label}" ${v<=0?"disabled":""}>−</button>
-          <span class="pulse-num" aria-live="polite">${v}</span>
-          <button class="pulse-btn" data-plus="${cat.key}" aria-label="Increase ${cat.label}" ${left<=0 || v>=10?"disabled":""}>+</button>
+        <div class="pulse-counter" role="group" aria-label="${escapeHtml(cat.label)} point allocation controls">
+          <button class="pulse-btn" type="button" data-minus="${cat.key}" aria-label="Decrease ${escapeHtml(cat.label)} allocation" ${value<=0?"disabled":""}>−</button>
+          <span class="pulse-num" aria-live="polite">${value}</span>
+          <button class="pulse-btn" type="button" data-plus="${cat.key}" aria-label="Increase ${escapeHtml(cat.label)} allocation" ${left<=0 || value>=10?"disabled":""}>+</button>
         </div>
       </div>
-      <div class="pulse-bar" aria-hidden="true"><div class="pulse-bar__fill" style="width:${pct}%"></div></div>
-      <div class="mono" style="font-size:10.5px; color:var(--stone); margin-top:4px; display:flex; justify-content:space-between"><span>${v} point${v===1?"":"s"} • ${pct}% ${v>0?"— you got this!":""}</span><span>${v>=5?"high priority":v>=3?"":""}</span></div>
+      ${pulseProgressMarkup(`${cat.label} allocation`, value, 10, `${value} of 10 points`, "pulse-bar", "pulse-bar__fill")}
+      <div class="mono" style="font-size:10.5px; color:var(--stone); margin-top:4px; display:flex; justify-content:space-between; gap:8px"><span>${value} of 10 points in this area</span><span>${percent}% of category scale</span></div>
     </div>`;
   }).join("");
-  wrap.querySelectorAll("[data-minus]").forEach(b=> b.addEventListener("click", ()=> pulseChange(b.dataset.minus, -1)));
-  wrap.querySelectorAll("[data-plus]").forEach(b=> b.addEventListener("click", ()=> pulseChange(b.dataset.plus, 1)));
+  wrap.querySelectorAll("[data-minus]").forEach(button=>button.addEventListener("click", ()=>pulseChange(button.dataset.minus,-1)));
+  wrap.querySelectorAll("[data-plus]").forEach(button=>button.addEventListener("click", ()=>pulseChange(button.dataset.plus,1)));
 }
 
 function pulseChange(key, delta){
@@ -3044,41 +3198,39 @@ function pulseChange(key, delta){
   }
   pulseSavePoints();
   pulseUpdateChrome();
-  // bump animation — skill-based subtle motion, no emoji
   requestAnimationFrame(()=>{
     const row=document.querySelector(`.pulse-alloc-row[data-cat="${key}"] .pulse-num`);
     if(row){ row.classList.remove("bump"); void row.offsetWidth; row.classList.add("bump"); setTimeout(()=> row.classList.remove("bump"), 220); }
   });
-  if(navigator.vibrate) try{ navigator.vibrate(10); }catch(e){}
 }
 
 function pulseUpdateChrome(){
   const left=pulseLeft();
   const total=pulseTotal();
   const leftEl=document.getElementById("pulsePointsLeft");
+  const track=document.getElementById("pulsePointsTrack");
   const fill=document.getElementById("pulsePointsFill");
   const btn=document.getElementById("pulseShowResult");
   if(leftEl) leftEl.textContent=left;
-  if(leftEl) leftEl.style.color = left===0 ? "var(--ink)" : "var(--red)";
-  if(fill) fill.style.width = (total*10)+"%";
+  if(leftEl) leftEl.style.color=left===0 ? "var(--ink)" : "var(--red)";
+  if(track){
+    track.setAttribute("aria-valuenow", String(total));
+    track.setAttribute("aria-valuetext", `${total} of 10 points allocated`);
+  }
+  if(fill) fill.style.width=(total*10)+"%";
   if(btn){
-    const ready = total===10;
+    const ready=total===10;
     btn.disabled=!ready;
-    btn.style.opacity = ready ? "1" : "0.45";
-    btn.textContent = ready ? "Show my build" : `Show my build — ${left} point${left===1?"":"s"} left`;
-    if(ready) btn.style.transform="scale(1.02)";
-    else btn.style.transform="scale(1)";
+    btn.style.opacity=ready ? "1" : "0.45";
+    btn.textContent=ready ? "Show my build" : `Show my build — ${left} point${left===1?"":"s"} left`;
   }
   pulseRenderAlloc();
   pulseRenderLiveMap();
   // hide result if no longer 10
   const res=document.getElementById("pulseResult");
   if(res && total!==10) res.hidden=true;
-  // cute feedback when completed
-  if(total===10 && left===0){
-    const ptsBar=document.querySelector('.pulse-pointsbar');
-    if(ptsBar) ptsBar.style.borderColor="var(--red)";
-  }
+  const pointsBar=document.querySelector(".pulse-pointsbar");
+  if(pointsBar) pointsBar.style.borderColor=total===10 ? "var(--red)" : "var(--line)";
 }
 
 function pulseRenderLiveMap(){
@@ -3086,42 +3238,42 @@ function pulseRenderLiveMap(){
   if(!wrap) return;
   const total=pulseTotal();
   if(total===0){
-    wrap.innerHTML='<div class="mono" style="font-size:11px; color:var(--stone); padding:6px 0">Allocate points to see weight — e.g. <span class="mono" style="background:var(--paper-2); border:1px solid var(--line); padding:2px 6px; border-radius:6px">LEARNING ██████ 6</span></div>';
+    wrap.innerHTML='<div class="small muted" style="padding:6px 0">Allocate points to preview your distribution.</div>';
     return;
   }
-  wrap.innerHTML = PULSE_CATEGORIES.map(c=>{
-    const v=pulsePoints[c.key]||0;
-    const pct=v*10;
+  wrap.innerHTML=PULSE_CATEGORIES.map(category=>{
+    const value=pulsePoints[category.key]||0;
     return `<div class="pulse-live-row">
-      <span class="pulse-live-row__label">${c.short}</span>
-      <span class="pulse-live-row__bar"><span class="pulse-live-row__fill" style="width:${pct}%"></span></span>
-      <span class="pulse-live-row__val">${v}</span>
+      <span class="pulse-live-row__label">${escapeHtml(category.label)}</span>
+      ${pulseProgressMarkup(`${category.label} allocation`, value, 10, `${value} of 10 points`, "pulse-live-row__bar", "pulse-live-row__fill")}
+      <span class="pulse-live-row__val">${value}/10</span>
     </div>`;
   }).join("");
 }
 
 function pulseRenderResult(){
   const body=document.getElementById("pulseResultBody");
-  if(!body) return;
-  const total=pulseTotal();
-  if(total!==10) return;
-  const entries = PULSE_CATEGORIES.map(c=> ({...c, v:pulsePoints[c.key]||0, pct:(pulsePoints[c.key]||0)*10})).sort((a,b)=> b.v - a.v);
-  const top = entries[0];
-  const second = entries[1];
-  const maxV = top.v;
-  body.innerHTML = `
-    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px">
-      <span class="mono" style="background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:4px 8px; border-radius:999px; font-size:11px">Highest: ${top.label} — ${top.v} pts (${top.pct}%)</span>
-      <span class="mono" style="background:var(--paper-2); border:1px solid var(--line); color:var(--ink); padding:4px 8px; border-radius:999px; font-size:11px">Second: ${second.label} — ${second.v} pts (${second.pct}%)</span>
+  if(!body || pulseTotal()!==10) return;
+  const entries=PULSE_CATEGORIES.map(category=>({
+    ...category,
+    value:pulsePoints[category.key]||0,
+    percent:(pulsePoints[category.key]||0)*10
+  })).sort((a,b)=>b.value-a.value);
+  const top=entries[0];
+  const second=entries[1];
+  body.innerHTML=`
+    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px">
+      <span class="mono" style="background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:4px 8px; border-radius:6px; font-size:11px">Highest: ${escapeHtml(top.label)} · ${top.value} points</span>
+      <span class="mono" style="background:var(--paper-2); border:1px solid var(--line); color:var(--ink); padding:4px 8px; border-radius:6px; font-size:11px">Next: ${escapeHtml(second.label)} · ${second.value} points</span>
     </div>
     <div style="display:grid; gap:8px">
-      ${entries.map(e=> `<div class="pulse-live-row">
-        <span class="pulse-live-row__label">${e.short}</span>
-        <span class="pulse-live-row__bar"><span class="pulse-live-row__fill" style="width:${e.pct}%"></span></span>
-        <span class="pulse-live-row__val">${e.v} • ${e.pct}%</span>
+      ${entries.map(entry=>`<div class="pulse-live-row">
+        <span class="pulse-live-row__label">${escapeHtml(entry.label)}</span>
+        ${pulseProgressMarkup(`${entry.label} allocation`,entry.value,10,`${entry.value} of 10 points`,"pulse-live-row__bar","pulse-live-row__fill")}
+        <span class="pulse-live-row__val">${entry.value}/10</span>
       </div>`).join("")}
     </div>
-    <div class="mono" style="font-size:11px; color:var(--stone); margin-top:10px">Your 10-point allocation. No personality inference — just where you put your points.</div>
+    <div class="small muted" style="margin-top:10px">Your allocation of 10 points across the seven areas.</div>
   `;
 }
 
@@ -3169,29 +3321,48 @@ function pulseDistribution(a){
   }).sort((x,y)=> y.pts - x.pts);
   return {total, entries, top:entries[0], second:entries[1]};
 }
+function pulseResponseCount(){
+  return pulseAllPeriods().reduce((sum,period)=>sum+(pulseAggregates[period]?.responses||0),0);
+}
+function pulseUpdatedLabel(){
+  return pulseLastUpdated ? `Last checked ${pulseLastUpdated.toLocaleTimeString("en-PH",{hour:"numeric",minute:"2-digit"})}` : "Waiting for live data";
+}
 function pulseUpdateGeneralStatus(){
-  const periods=pulseAllPeriods();
-  const totalResponses = periods.reduce((s,p)=> s + (pulseAggregates[p]?.responses||0), 0);
-  const elNum=document.getElementById("pulseGeneralStatusNumber");
-  if(elNum) elNum.textContent = totalResponses;
+  const number=document.getElementById("pulseGeneralStatusNumber");
+  const state=document.getElementById("pulseLiveState");
+  const detail=document.getElementById("pulseLiveDetail");
+  const responses=pulseResponseCount();
+  if(number) number.textContent=pulseDataState==="loading" ? "…" : pulseDataState==="unavailable" ? "—" : String(responses);
+  if(state){
+    const labels={loading:"Checking for submissions", live:"Real submissions recorded", empty:"No real submissions yet", unavailable:"Live data unavailable"};
+    state.textContent=labels[pulseDataState]||labels.loading;
+  }
+  if(detail) detail.textContent=pulseUpdatedLabel();
 }
 function pulseRenderPulse(){
-  // counts
   const countEl=document.getElementById("pulsePulseCount");
   const labelEl=document.getElementById("pulsePulsePeriodLabel");
   const periods=pulseAllPeriods();
-  const totalResponses = periods.reduce((s,p)=> s + (pulseAggregates[p]?.responses||0), 0);
-  if(countEl) countEl.textContent = `${totalResponses} build${totalResponses===1?"":"s"}`;
+  const responses=pulseResponseCount();
+  if(countEl){
+    if(pulseDataState==="loading") countEl.textContent="Checking…";
+    else if(pulseDataState==="unavailable") countEl.textContent="Unavailable";
+    else countEl.textContent=`${responses} build${responses===1?"":"s"}`;
+  }
   const latest=pulseLatestPeriod();
-  if(labelEl) labelEl.textContent = periods.length ? `Latest: ${latest} • ${periods.length} period${periods.length===1?"":"s"}` : `No responses yet — ${pulseCurrentPeriod}`;
-  // period view
+  if(labelEl){
+    if(periods.length) labelEl.textContent=`Latest period: ${latest} · ${periods.length} period${periods.length===1?"":"s"}`;
+    else if(pulseDataState==="empty") labelEl.textContent=`No submissions yet · ${pulseCurrentPeriod}`;
+    else if(pulseDataState==="unavailable") labelEl.textContent="No cached sample data is shown";
+    else labelEl.textContent="Checking the public submissions endpoint";
+  }
+  pulseUpdateGeneralStatus();
   pulseRenderPeriodView();
   pulseRenderMonthlyView();
   pulseRenderYearlyView();
   pulseRenderTrend();
   pulseRenderAttention();
   pulseRenderSnapshot();
-  pulseUpdateGeneralStatus();
   pulseRenderIntegrity();
   pulseReportPopulate();
 }
@@ -3206,7 +3377,7 @@ function pulseRenderPeriodView(){
     topWrap.innerHTML="";
     barsWrap.innerHTML="";
     empty.hidden=false;
-    empty.innerHTML='<b>No student responses have been recorded for this period yet.</b><p class="small muted" style="margin:6px 0 0">Allocate 10 points and add your build — the Pulse will appear here. No individual builds are ever shown.</p>';
+    empty.innerHTML=pulseNoDataCopy();
     return;
   }
   empty.hidden=true;
@@ -3215,18 +3386,18 @@ function pulseRenderPeriodView(){
   const dist=pulseDistribution(agg);
   if(!dist){ topWrap.innerHTML=""; barsWrap.innerHTML=""; return; }
   topWrap.innerHTML = `
-    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px">
-      <div style="border:1px solid var(--line); border-radius:10px; background:var(--paper-2); padding:10px">
+    <div class="pulse-period-summary">
+      <div style="border:1px solid var(--line); border-radius:8px; background:var(--paper-2); padding:10px">
         <div class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone)">Top priority</div>
         <div style="font:700 14px 'Fraunces',serif; margin-top:2px">${dist.top.label}</div>
         <div class="mono" style="font-size:11px; color:var(--stone)">${dist.top.pts} pts • ${dist.top.pct}%</div>
       </div>
-      <div style="border:1px solid var(--line); border-radius:10px; background:white; padding:10px">
+      <div style="border:1px solid var(--line); border-radius:8px; background:white; padding:10px">
         <div class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone)">Second priority</div>
         <div style="font:600 13px 'Fraunces',serif; margin-top:2px">${dist.second.label}</div>
         <div class="mono" style="font-size:11px; color:var(--stone)">${dist.second.pts} pts • ${dist.second.pct}%</div>
       </div>
-      <div style="border:1px solid var(--line); border-radius:10px; background:white; padding:10px">
+      <div style="border:1px solid var(--line); border-radius:8px; background:white; padding:10px">
         <div class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone)">Total builds</div>
         <div style="font:700 18px 'Fraunces',serif; margin-top:2px">${agg.responses}</div>
         <div class="mono" style="font-size:11px; color:var(--stone)">${latest}</div>
@@ -3235,14 +3406,10 @@ function pulseRenderPeriodView(){
     <div class="mono" style="font-size:11px; color:var(--stone); margin-top:8px">Current student priorities — aggregate points share (not a vote)</div>
   `;
   barsWrap.innerHTML = `
-    <div style="display:grid; gap:6px; margin-top:8px">
-      ${dist.entries.map(e=> `<div style="display:grid; grid-template-columns:140px 1fr auto; gap:10px; align-items:center; font-size:12.5px">
-        <span class="mono" style="font:600 10.5px 'IBM Plex Mono',monospace; letter-spacing:0.04em; text-transform:uppercase; color:var(--stone)">${e.short}</span>
-        <span style="height:7px; background:var(--paper-2); border:1px solid var(--line); border-radius:999px; overflow:hidden"><span style="display:block; height:100%; width:${e.pct}%; background:var(--red)"></span></span>
-        <span class="mono" style="font-size:11px; color:var(--stone); min-width:64px; text-align:right">${e.pct}% • ${e.pts}</span>
-      </div>`).join("")}
+    <div style="display:grid; gap:8px; margin-top:8px">
+      ${dist.entries.map(entry=>pulseCategoryRow(entry,`${entry.pct}% · ${entry.pts} pts`)).join("")}
     </div>
-    <div class="mono" style="font-size:10.5px; color:var(--stone); margin-top:6px">Based on ${agg.responses} build${agg.responses===1?"":"s"} • ${dist.total} points allocated</div>
+    <div class="small muted" style="margin-top:8px">Based on ${agg.responses} build${agg.responses===1?"":"s"} · ${dist.total} points allocated</div>
   `;
 }
 
@@ -3260,7 +3427,7 @@ function pulseRenderMonthlyView(){
   } else {
     sel.innerHTML = `<option value="">No data yet</option>`;
     if(topWrap) topWrap.innerHTML="";
-    if(barsWrap) barsWrap.innerHTML='<div class="ideal-empty" style="border-style:solid; background:white; border-color:var(--line)"><b>No student responses have been recorded for this period yet.</b></div>';
+    if(barsWrap) barsWrap.innerHTML=pulseNoDataMarkup();
     if(meta) meta.textContent="";
     if(changeEl) changeEl.textContent="";
     return;
@@ -3275,7 +3442,7 @@ function pulseRenderMonthlyView(){
       <span class="mono" style="background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:4px 8px; border-radius:999px; font-size:11px">Top: ${dist.top.label} • ${dist.top.pct}%</span>
       <span class="mono" style="background:var(--paper-2); border:1px solid var(--line); padding:4px 8px; border-radius:999px; font-size:11px">Second: ${dist.second.label} • ${dist.second.pct}%</span>
     </div>`;
-  barsWrap.innerHTML = `<div style="display:grid; gap:6px; margin-top:8px">${dist.entries.map(e=> `<div style="display:grid; grid-template-columns:140px 1fr auto; gap:10px; align-items:center"><span class="mono" style="font:600 10.5px 'IBM Plex Mono',monospace; text-transform:uppercase; color:var(--stone)">${e.short}</span><span style="height:7px; background:var(--paper-2); border:1px solid var(--line); border-radius:999px; overflow:hidden"><span style="display:block; height:100%; width:${e.pct}%; background:var(--red)"></span></span><span class="mono" style="font-size:11px; color:var(--stone); min-width:64px; text-align:right">${e.pct}%</span></div>`).join("")}</div>`;
+  barsWrap.innerHTML=`<div style="display:grid; gap:8px; margin-top:8px">${dist.entries.map(entry=>pulseCategoryRow(entry,`${entry.pct}%`)).join("")}</div>`;
   // change from previous
   if(changeEl){
     const idx=periods.indexOf(period);
@@ -3319,7 +3486,7 @@ function pulseRenderYearlyView(){
   } else {
     sel.innerHTML='<option>No data</option>';
     if(topWrap) topWrap.innerHTML="";
-    if(barsWrap) barsWrap.innerHTML='<div class="ideal-empty" style="border-style:solid; background:white; border-color:var(--line)">No yearly data yet.</div>';
+    if(barsWrap) barsWrap.innerHTML=pulseNoDataMarkup();
     if(meta) meta.textContent="";
     if(compareEl) compareEl.textContent="";
     return;
@@ -3335,7 +3502,7 @@ function pulseRenderYearlyView(){
   const dist=pulseDistribution(agg);
   if(meta) meta.textContent=`${agg.responses} builds • ${agg.sourcePeriods.length} month${agg.sourcePeriods.length===1?"":"s"}`;
   if(topWrap) topWrap.innerHTML=`<div style="display:flex; gap:8px; flex-wrap:wrap"><span class="mono" style="background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:4px 8px; border-radius:999px; font-size:11px">Top ${year}: ${dist.top.label} • ${dist.top.pct}%</span></div>`;
-  if(barsWrap) barsWrap.innerHTML=`<div style="display:grid; gap:6px; margin-top:8px">${dist.entries.map(e=> `<div style="display:grid; grid-template-columns:140px 1fr auto; gap:10px; align-items:center"><span class="mono" style="font:600 10.5px 'IBM Plex Mono',monospace; text-transform:uppercase; color:var(--stone)">${e.short}</span><span style="height:7px; background:var(--paper-2); border:1px solid var(--line); border-radius:999px; overflow:hidden"><span style="display:block; height:100%; width:${e.pct}%; background:var(--red)"></span></span><span class="mono" style="font-size:11px; color:var(--stone)">${e.pct}%</span></div>`).join("")}</div>`;
+  if(barsWrap) barsWrap.innerHTML=`<div style="display:grid; gap:8px; margin-top:8px">${dist.entries.map(entry=>pulseCategoryRow(entry,`${entry.pct}%`)).join("")}</div>`;
   if(compareEl){
     if(years.length>1){
       const otherYears = years.filter(y=> y!==year);
@@ -3359,7 +3526,7 @@ function pulseRenderTrend(){
   const periods=pulseAllPeriods();
   const key=sel.value;
   if(!periods.length){
-    chart.innerHTML='<div class="mono" style="font-size:11px; color:var(--stone); text-align:center">No data yet — add your build to see trend.<br><span style="font-size:10.5px">Choose a category after responses exist.</span></div>';
+    chart.innerHTML=pulseNoDataMarkup();
     if(note) note.textContent="";
     return;
   }
@@ -3410,7 +3577,7 @@ function pulseRenderAttention(){
   if(!wrap) return;
   const periods=pulseAllPeriods();
   if(!periods.length){
-    wrap.innerHTML='<div class="mono" style="font-size:11px; color:var(--stone); border:1px dashed var(--line); background:var(--paper-2); padding:10px; border-radius:8px">No periods yet.</div>';
+    wrap.innerHTML=pulseNoDataMarkup();
     return;
   }
   wrap.innerHTML = periods.slice().reverse().map(p=>{
@@ -3430,14 +3597,14 @@ function pulseRenderSnapshot(){
   const latest = periods.length ? periods[periods.length-1] : pulseCurrentPeriod;
   const agg = periods.length ? pulseGetPeriod(latest) : null;
   if(!agg || !agg.responses){
-    periodEl.textContent = latest + " — no data yet";
-    barsEl.innerHTML = '<div class="mono" style="font-size:11px; color:var(--stone); border:1px dashed var(--line); background:var(--paper-2); padding:10px; border-radius:8px">No student responses have been recorded for this period yet.</div>';
-    if(metaEl) metaEl.textContent="Based on 0 builds • Student priorities for this period.";
+    periodEl.textContent=pulseDataState==="loading" ? "Checking submissions" : pulseDataState==="unavailable" ? "Live data unavailable" : "No student submissions yet";
+    barsEl.innerHTML=pulseNoDataMarkup();
+    if(metaEl) metaEl.textContent=pulseUpdatedLabel();
     return;
   }
   periodEl.textContent = latest;
   const dist=pulseDistribution(agg);
-  barsEl.innerHTML = `<div style="display:grid; gap:6px">${dist.entries.map(e=> `<div style="display:grid; grid-template-columns:110px 1fr auto; gap:8px; align-items:center"><span class="mono" style="font-size:10.5px; text-transform:uppercase; color:var(--stone)">${e.short}</span><span style="height:6px; background:var(--paper-2); border:1px solid var(--line); border-radius:999px; overflow:hidden"><span style="display:block; height:100%; width:${e.pct}%; background:var(--red)"></span></span><span class="mono" style="font-size:10.5px; color:var(--stone)">${e.pct}%</span></div>`).join("")}</div>`;
+  barsEl.innerHTML=`<div style="display:grid; gap:8px">${dist.entries.map(entry=>pulseCategoryRow(entry,`${entry.pct}%`)).join("")}</div>`;
   if(metaEl) metaEl.textContent=`Based on ${agg.responses} build${agg.responses===1?"":"s"} • Student-submitted priorities for this period.`;
 }
 
@@ -3638,7 +3805,7 @@ async function pulseGeneratePDF(){
     "Results are aggregated per period; browser receives only small aggregate objects (period, responses, points per category).",
     "Dashboard calculates percentages locally from totals; no raw response database is downloaded.",
     "Results are a student pulse/consultation — not a binding vote, election, or scientifically representative survey.",
-    "Preview is shown until submissions exist. Once submitted, your build is added to the total.",
+    "The dashboard shows an empty state until real submissions are stored. Once submitted, a build is added to the aggregate.",
     "Privacy: public report shows only totals and shares; individual builds never exposed."
   ];
   meth.forEach(line=>{
@@ -3660,31 +3827,43 @@ async function pulseGeneratePDF(){
   toast("PDF report downloaded — "+fname);
 }
 
-function pulseSubmit(){
-  const total=pulseTotal();
-  if(total!==10){ toast("Use exactly 10 points before submitting"); return; }
-  const payload={learning: pulsePoints.learning, campus:pulsePoints.campus, mobility:pulsePoints.mobility, connectivity:pulsePoints.connectivity, wellbeing:pulsePoints.wellbeing, cultureCommunity:pulsePoints.cultureCommunity, studentVoice:pulsePoints.studentVoice};
-  // local-first: aggregate locally
-  const period=pulseCurrentPeriod;
-  if(!pulseAggregates[period]){
-    pulseAggregates[period]={period, responses:0, points:{learning:0,campus:0,mobility:0,connectivity:0,wellbeing:0,cultureCommunity:0,studentVoice:0}};
+let pulseIsSubmitting=false;
+async function pulseSubmit(){
+  if(pulseIsSubmitting) return;
+  if(pulseTotal()!==10){ toast("Use exactly 10 points before submitting"); return; }
+  const allocation=Object.fromEntries(PULSE_CATEGORIES.map(category=>[category.key,pulsePoints[category.key]||0]));
+  const button=document.getElementById("pulseSubmit");
+  const feedback=document.getElementById("pulseSubmitFeedback");
+  pulseIsSubmitting=true;
+  if(button){ button.disabled=true; button.textContent="Submitting…"; }
+  if(feedback) feedback.textContent="Sending your anonymous allocation.";
+  try{
+    let result;
+    if(typeof window.__cmsSubmitPulse==="function"){
+      result=await window.__cmsSubmitPulse(allocation);
+    } else {
+      const response=await fetch("/api/pulse/submit", {
+        method:"POST",
+        headers:{"Content-Type":"application/json", Accept:"application/json"},
+        body:JSON.stringify({allocation})
+      });
+      result=await response.json().catch(()=>({}));
+      if(!response.ok) throw new Error(result.error||"Submission failed");
+    }
+    if(!result || result.available===false || result.ok!==true){
+      throw new Error(result?.error||"The submissions service is unavailable");
+    }
+    if(feedback) feedback.textContent="Submitted. Your allocation is included in the aggregate results.";
+    if(button){ button.textContent="Submitted"; button.style.opacity="0.7"; }
+    toast("Your build was submitted");
+    await pulseRefreshLive();
+  }catch(error){
+    if(feedback) feedback.textContent="Your build was not submitted. Check your connection and try again.";
+    if(button){ button.disabled=false; button.textContent="Add to BulSU Pulse"; button.style.opacity="1"; }
+    toast("Submission failed — please try again");
+  }finally{
+    pulseIsSubmitting=false;
   }
-  pulseAggregates[period].responses += 1;
-  Object.keys(payload).forEach(k=> pulseAggregates[period].points[k] += payload[k]);
-  pulseSaveAggregates();
-  safeSet(PULSE_SUBMITTED_KEY, "1");
-  const fb=document.getElementById("pulseSubmitFeedback");
-  if(fb) fb.textContent="Added — thank you. Your build is now part of the aggregate. One small request done.";
-  toast("Added to BulSU Pulse");
-  // Optional single network request (data-saver: only here)
-  // In production this would be: fetch("/.netlify/functions/pulse", {method:"POST", body:JSON.stringify(payload)})
-  // For this lightweight deployment we keep it local; uncomment below for real backend:
-  // try{ fetch("/api/pulse",{method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({period, ...payload})}); }catch(e){}
-  pulseRenderPulse();
-  pulseReportPopulate();
-  // disable submit to prevent double
-  const btn=document.getElementById("pulseSubmit");
-  if(btn){ btn.disabled=true; btn.textContent="Added — thank you"; btn.style.opacity="0.6"; }
 }
 
 function pulseBind(){
@@ -3700,9 +3879,21 @@ function pulseBind(){
       document.querySelectorAll(".pulse-tab").forEach(b=>{ b.classList.toggle("is-active", b===btn); b.setAttribute("aria-selected", b===btn?"true":"false"); });
       document.getElementById("pulseBuildTab").hidden = tab!=="build";
       document.getElementById("pulsePulseTab").hidden = tab!=="pulse";
-      if(tab==="pulse") pulseRenderPulse();
-  pulseReportPopulate();
+      if(tab==="pulse"){
+        pulseRenderPulse();
+        pulseRefreshLive();
+        pulseStartLiveUpdates();
+      }
+      pulseReportPopulate();
     });
+  });
+  document.getElementById("pulseRefreshButton")?.addEventListener("click", async event=>{
+    const button=event.currentTarget;
+    button.disabled=true;
+    button.textContent="Refreshing…";
+    await pulseRefreshLive();
+    button.disabled=false;
+    button.textContent="Refresh";
   });
   // subtabs
   document.querySelectorAll(".pulse-subtab").forEach(btn=>{
@@ -3789,12 +3980,12 @@ function calCatColor(cat){
 function calBadgeIcon(cat){
   const s='stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"';
   const icons={
-    Holiday:`<svg viewBox="0 0 24 24" width="10" height="10" ${s}><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></svg>`,
-    Enrollment:`<svg viewBox="0 0 24 24" width="10" height="10" ${s}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/></svg>`,
-    Examinations:`<svg viewBox="0 0 24 24" width="10" height="10" ${s}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><path d="M8 7h8"/><path d="M8 11h8"/></svg>`,
-    Academic:`<svg viewBox="0 0 24 24" width="10" height="10" ${s}><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/></svg>`,
-    Graduation:`<svg viewBox="0 0 24 24" width="10" height="10" ${s}><path d="M22 10v6"/><path d="M12 22l8-4-8-4-8 4 8 4z"/><path d="M12 18V14"/><path d="M2 10l10-5 10 5-10 5z"/></svg>`,
-    General:`<svg viewBox="0 0 24 24" width="10" height="10" ${s}><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M8 14h8"/><path d="M8 18h5"/></svg>`
+    Holiday:`<svg viewBox="0 0 24 24" width="12" height="12" ${s}><path d="m12 3 2.2 5.1L20 10l-5.8 1.9L12 17l-2.2-5.1L4 10l5.8-1.9L12 3Z"/><path d="M19 16v4M17 18h4"/></svg>`,
+    Enrollment:`<svg viewBox="0 0 24 24" width="12" height="12" ${s}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h4M8 17h3M15 15l1.5 1.5L20 13"/></svg>`,
+    Examinations:`<svg viewBox="0 0 24 24" width="12" height="12" ${s}><rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 2h6v4H9zM8 11h2M14 11h2M8 16h2M14 16h2"/></svg>`,
+    Academic:`<svg viewBox="0 0 24 24" width="12" height="12" ${s}><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>`,
+    Graduation:`<svg viewBox="0 0 24 24" width="12" height="12" ${s}><path d="m2 9 10-5 10 5-10 5-10-5Z"/><path d="M6 11v5c3.5 3 8.5 3 12 0v-5M22 10v6"/></svg>`,
+    General:`<svg viewBox="0 0 24 24" width="12" height="12" ${s}><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>`
   };
   return icons[cat]||icons.General;
 }
@@ -4080,10 +4271,19 @@ pulseBind();
 try{ localStorage.getItem("__test__"); }catch(e){
   console.warn("localStorage blocked — file:// may need a local server");
   const note=document.createElement("div");
-  note.style.cssText="position:fixed;bottom:12px;left:12px;right:12px;max-width:720px;margin:0 auto;background:#FFF7ED;border:1px solid #FDE68A;color:#78350F;padding:10px 12px;border-radius:10px;font:500 12px 'IBM Plex Sans',sans-serif;z-index:99;box-shadow:0 8px 20px rgba(0,0,0,0.08)";
-  note.innerHTML="<b>Tip:</b> You opened this file directly (<code>file://</code>). Some browsers block saving (localStorage) in that mode. For full save/vote, run a local server: <code>python -m http.server</code> or use Netlify preview. The site still works — ideas just won't persist after close.";
+  note.className="local-storage-note";
+  note.setAttribute("role","status");
+  const noteText=document.createElement("span");
+  noteText.textContent="Local-file preview — saved changes may not persist.";
+  const noteClose=document.createElement("button");
+  noteClose.type="button";
+  noteClose.className="local-storage-note__dismiss";
+  noteClose.setAttribute("aria-label","Dismiss notice");
+  noteClose.textContent="×";
+  noteClose.addEventListener("click", ()=> note.remove());
+  note.append(noteText,noteClose);
   document.body.appendChild(note);
-  setTimeout(()=> note.remove(), 9000);
+  setTimeout(()=> note.remove(), 7000);
 }
 
 (function gateSelfCheck(){
@@ -4250,7 +4450,9 @@ try{ localStorage.getItem("__test__"); }catch(e){
   guideShowBtn.id = 'guideShowBtn';
   guideShowBtn.className = 'guide-show-btn';
   guideShowBtn.type = 'button';
-  guideShowBtn.innerHTML = 'Guide • what does this do?';
+  guideShowBtn.setAttribute('aria-label', 'Open the site guide');
+  guideShowBtn.setAttribute('title', 'Open the site guide');
+  guideShowBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.8 9a2.3 2.3 0 1 1 3.9 1.7c-1.1 1-1.7 1.3-1.7 2.8"/><path d="M12 17h.01"/></svg>';
   guideShowBtn.hidden = true;
   document.body.appendChild(guideShowBtn);
   guideShowBtn.addEventListener('click', ()=> startGuide());

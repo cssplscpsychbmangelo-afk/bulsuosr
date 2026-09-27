@@ -4,45 +4,36 @@ Everything lives in [`OSR/`](OSR):
 
 | Path | What it is |
 |---|---|
-| `OSR/osr-website/` | **Public website** — single static `index.html` + `js/cms-integration.js`. This is what Netlify publishes. |
-| `OSR/admin/` | Admin CMS dashboard (`login.html`, `index.html`) — served by the backend, not part of the static deploy. |
-| `OSR/server/` | Express 4 API + `better-sqlite3` database (port 4000). Serves the public site, `/admin`, `/uploads` and `/api/*`. |
-| `OSR/uploads/` | Uploaded/seed files used by the backend. |
+| `OSR/osr-website/` | **Public website** — static `index.html` and CMS integration script. Netlify publishes this folder. |
+| `OSR/admin/` | Admin CMS dashboard — served by the backend and proxied through Netlify when connected. |
+| `OSR/server/` | Express API + SQLite CMS (port 4000). Serves the public site, admin, uploads, and `/api/*`. |
+| `OSR/uploads/` | Existing project files and resources. New CMS media uploads use the configurable backend upload directory. |
 | `OSR/anti-slop-website/` | Design & copy rules the site is built against. |
 
-## Deploying to Netlify
+## Deploy the full site and CMS
 
-[`netlify.toml`](netlify.toml) in this directory tells Netlify to publish
-`OSR/osr-website`:
+The repository includes a Render Blueprint at [`render.yaml`](render.yaml) and a
+Netlify build script. Render hosts the Express/SQLite backend on a persistent
+disk; Netlify continues to serve the static site and proxies `/api/*`, `/admin/*`,
+and `/uploads/*` to Render.
 
-```toml
-[build]
-  publish = "OSR/osr-website"
-  command = "echo 'Static site - no build step required'"
-```
+Follow [`OSR/server/DEPLOY.md`](OSR/server/DEPLOY.md) for the complete steps,
+including the Render environment variables, initial administrator setup,
+persistent storage, and Netlify connection. Netlify-specific notes are in
+[`OSR/osr-website/README_NETLIFY.md`](OSR/osr-website/README_NETLIFY.md).
 
-Netlify reads `netlify.toml` from the **base directory** — the repository root by
-default. Before this file existed, Netlify published the repo root, which holds
-only the `OSR/` folder and no `index.html`, so every URL returned
-**"Page Not Found"**.
-
-Details, drag-&-drop and CLI options, and what does/doesn't work without the
-backend: [`OSR/osr-website/README_NETLIFY.md`](OSR/osr-website/README_NETLIFY.md).
-
-## Running the full stack locally (public site + CMS + API)
+## Run locally
 
 ```bash
 cd OSR/server
-npm install
-node index.js          # → http://localhost:4000
+npm ci
+cp .env.example .env
+# Set ADMIN_PASSWORD in .env to a unique password of at least 12 characters.
+npm start
 ```
 
-Environment variables (optional locally — `OSR/server/.env`, read by `dotenv`,
-see `OSR/server/.env.example`):
-`JWT_SECRET` (32+ chars — if missing, a temporary secret is generated so admin
-login still works, but sessions reset on every restart), `DB_PATH`, `ADMIN_EMAIL`,
-`ADMIN_PASSWORD`, `PORT` (default 4000).
-
-Public site: `http://localhost:4000/` · Admin: `http://localhost:4000/admin/login.html`
-
-See [`OSR/README.md`](OSR/README.md) for the full feature and architecture notes.
+Open `http://localhost:4000/` for the public site and
+`http://localhost:4000/admin/login.html` for the admin CMS. A fresh database
+requires explicit `ADMIN_PASSWORD` configuration; there is no default admin
+credential in the source. `JWT_SECRET` can be generated locally for stable
+sessions; it is mandatory and must be persistent in production.

@@ -1,21 +1,25 @@
 # OSR Website — Full Backend + Admin CMS
 
-**Public site:** https://4000-<sandbox>.e2b.app (port 4000)
-**Admin login:** https://4000-<sandbox>.e2b.app/admin/login.html
-- Email: `admin@osr.bulsu.edu.ph`
-- Password: `Admin123!`
+The project includes a static public website, an Express/SQLite CMS API, and an
+admin dashboard. **There is no default admin password in the source.** A fresh
+database requires an initial password from `ADMIN_PASSWORD` in the local `.env`
+or Render environment settings.
+
+- Public site (local): `http://localhost:4000/`
+- Admin login (local): `http://localhost:4000/admin/login.html`
+- Production deployment: [`server/DEPLOY.md`](server/DEPLOY.md)
 
 ## Architecture
 ```
-Public OSR Website (index 10.html + cms-integration.js)
+Public OSR Website (`osr-website/index.html` + `cms-integration.js`)
   ↓ fetch /api/public/* (published only)
 API (Express 4, port 4000)
   ↓ JWT auth, bcrypt, rate-limit, validation
 Database (better-sqlite3, WAL)
-  ↓ 13 tables: admins, announcements, board_meetings, initiatives, resources, calendar_events, pages, navigation_items, media, guide_steps, pulse_submissions, pulse_aggregates, activity_logs, site_settings
+  ↓ 14 tables: admins, announcements, board_meetings, initiatives, resources, calendar_events, pages, navigation_items, media, guide_steps, pulse_submissions, pulse_aggregates, activity_logs, site_settings
 
 Admin Dashboard (/admin)
-  ↓ Bearer token + httpOnly cookie
+  ↓ HttpOnly session cookie (Secure in production)
   ↓ CRUD, draft/published, preview, confirm modals, autosave, search (Ctrl+K), activity log
 ```
 
@@ -47,9 +51,9 @@ All sections support Create/Edit/Delete, Draft/Published/Archived, Preview, Save
 - Upload image/PDF/doc (10MB, type validation), Delete, Copy URL, Preview, Search, displays filename/type/size/date/usedBy
 
 ### 14-15. Pulse Backend
-- Anonymous 10-point distribution stored as `pulse_submissions` (allocation JSON) + `pulse_aggregates` (period/category). No personal data.
-- Admin shows Total/Monthly/Yearly/Category totals/%/trends, export, monthly/yearly/all-time views, privacy note (aggregates only).
-- **Demo vs Real**: `/api/pulse/aggregates` returns `isPreview:true` with sample 4 categories when no real data; after first real submission `isPreview:false` and real aggregates. Admin clearly sees Preview vs Live.
+- Anonymous ten-point allocations are validated against the seven categories and stored with derived monthly/all-time aggregates in one transaction. No identifying information is collected.
+- Public results contain real submissions only, refresh while the Pulse tab is open, and show a clear empty or unavailable state when there is no live data. No sample aggregates are returned.
+- Admin views monthly, yearly, and all-time category totals and response counts, can export aggregate data, and can clear all Pulse submissions and totals after confirmation.
 
 ### 16-20. Guide System (Critical Fixes)
 - **Glitch fixed**: `improvedPositionGuideTooltip` uses `getBoundingClientRect()` + viewport + scroll + headerH + mobile + resize + hash navigation + modal detection + target visibility.
@@ -66,16 +70,19 @@ All sections support Create/Edit/Delete, Draft/Published/Archived, Preview, Save
 - Activity log: admin, action, content_type, content_id, details, timestamp; shown on dashboard and `/api/activity`.
 
 ### 27-29. Security, DB, API
-- No hardcoded passwords, no localStorage credentials, no exposed DB keys. Passwords hashed `bcryptjs`, JWT httpOnly `sameSite:lax`, protected routes via `authRequired`, `express-rate-limit` on login (20/15m), input sanitization, upload validation, env secrets.
+- No shipped/default admin password or browser-stored auth token. Passwords are hashed with `bcryptjs`; admin sessions use an HttpOnly, SameSite=Lax cookie (Secure in production); protected routes use `authRequired`; login is rate-limited; credentialed CORS and state-changing API Origins are allowlisted; JWT secrets are configured through environment variables.
 - **DB**: 13 tables with id, timestamps, created_by, updated_by, foreign keys, WAL.
 - **API**: REST clean
   ```
   POST /api/auth/login, /logout, GET /me, PATCH /account
   GET/POST/PATCH/DELETE /api/announcements(/:id) etc for each resource
   GET /api/public/:type (published only)
-  GET /api/pulse/submit, /aggregates, /export
+  POST /api/pulse/submit (anonymous ten-point allocation)
+  GET /api/pulse/aggregates (real public aggregates only)
+  GET /api/pulse and /api/pulse/export (admin only)
+  DELETE /api/pulse/reset (admin only, clears all Pulse data)
   ```
-  Admin routes require `Authorization: Bearer` or `token` cookie; public only returns published.
+  Admin routes require the HttpOnly `token` cookie (Bearer authentication remains available for API clients); public endpoints return published content and real Pulse aggregates only.
 
 ### 30-33. Admin UI, Responsiveness, Error Handling
 - Easy to understand, few clicks, clear labels, minimal clutter, mobile drawer (250px → hidden, hamburger), tables→cards, one-column forms, no horizontal overflow, no excessive charts/animations.
@@ -88,25 +95,28 @@ All sections support Create/Edit/Delete, Draft/Published/Archived, Preview, Save
 - Guide: Home→Announcements→Board→Initiatives→Resources→Calendar→Ideal BulSU→Help→About: each shows correctly, in viewport, not covering cover, no header overlap, no drift on scroll/resize, mobile, preview, no horizontal scroll, no duplicates.
 
 ## Run Locally
+
 ```bash
 cd server
-npm install
-cp .env.example .env # set JWT_SECRET, DB_PATH, ADMIN_EMAIL/PASSWORD
-node index.js # → http://localhost:4000
-# Public: http://localhost:4000/
-# Admin: http://localhost:4000/admin/login.html
+npm ci
+cp .env.example .env
+# Set ADMIN_PASSWORD in .env to a unique password (12+ characters).
+npm start # → http://localhost:4000
 ```
 
-## Deploy
-- Set env: `JWT_SECRET` (32+ chars), `DB_PATH`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `PORT`
-- `npm start` serves static `../osr-website` + `/admin` + `/uploads` + API
-- For production, put SQLite on persistent volume or switch to Postgres by changing `better-sqlite3` → `pg` and `DB_PATH` → `DATABASE_URL`; API contract unchanged.
-- Never expose `JWT_SECRET` to frontend; use `httpOnly` cookies.
+The example uses `server/db/local-osr.db` and `server/uploads/`, both local-only
+and ignored by Git. For production deployment, follow
+[`server/DEPLOY.md`](server/DEPLOY.md): it configures Render with persistent
+SQLite/uploads and connects Netlify using the `OSR_BACKEND_URL` build variable.
 
-### Netlify (public site only, static)
-- Repo-root `netlify.toml` publishes `OSR/osr-website` — Netlify reads config from the **base directory** (repo root by default), so a config inside `osr-website/` alone leaves you with "Page Not Found".
-- No backend on Netlify: `/api/*` is answered with `api-unavailable.json`, `cms-integration.js` detects it in one request and the page keeps its built-in content. `/admin` and media uploads need the Express server.
-- Full instructions: `osr-website/README_NETLIFY.md`.
+## Netlify
+
+The repository-root `netlify.toml` publishes `osr-website/` and generates
+redirects from `OSR_BACKEND_URL`. Without that variable Netlify intentionally
+serves static fallbacks. With a Render backend URL it proxies `/api/*`,
+`/admin/*`, and `/uploads/*` to the CMS. See
+[`osr-website/README_NETLIFY.md`](osr-website/README_NETLIFY.md) for the Netlify
+side and [`server/DEPLOY.md`](server/DEPLOY.md) for the full deployment steps.
 
 ## Guide Positioning Details
 - Uses `getBoundingClientRect()` + `window.innerWidth/Height` + `header.offsetHeight` + `window.scrollY`
