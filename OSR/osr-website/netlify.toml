@@ -18,6 +18,12 @@
   to     = "/api-unavailable.json"
   status = 200
 
+# Admin CMS needs the backend — explain instead of showing the public site.
+[[redirects]]
+  from   = "/admin/*"
+  to     = "/admin-unavailable.html"
+  status = 200
+
 [[redirects]]
   from   = "/*"
   to     = "/index.html"

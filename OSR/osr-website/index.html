@@ -249,9 +249,10 @@ img{max-width:100%}
 .badge--warn{background:var(--warn-bg); border-color:#FDE68A; color:var(--warn)}
 .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
 .small{font-size:12px}
-.toast-wrap{position:fixed; bottom:18px; left:50%; transform:translateX(-50%); z-index:80; display:grid; gap:8px; pointer-events:none}
-.toast{background:var(--ink); color:white; padding:10px 14px; border-radius:999px; font-size:13px; font-weight:500; box-shadow:var(--shadow); display:flex; gap:8px; align-items:center; opacity:0; transform:translateY(8px); transition:all .28s var(--ease)}
+.toast-wrap{position:fixed; bottom:18px; left:50%; transform:translateX(-50%); z-index:80; display:grid; gap:6px; pointer-events:none}
+.toast{background:rgba(255,255,255,0.94); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); color:var(--stone); border:1px solid var(--line); padding:6px 12px; border-radius:999px; font-size:12px; font-weight:500; letter-spacing:0.01em; box-shadow:0 4px 14px rgba(17,18,20,0.07); display:flex; gap:8px; align-items:center; opacity:0; transform:translateY(6px); transition:opacity .24s var(--ease), transform .24s var(--ease)}
 .toast.is-visible{opacity:1; transform:none}
+@media(prefers-reduced-motion:reduce){.toast{transition:none}}
 
 /* command palette */
 .cmd{position:fixed; inset:0; z-index:70; display:none}
@@ -291,8 +292,9 @@ img{max-width:100%}
 
 .grid-2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
 @media(max-width:700px){.grid-2{grid-template-columns:1fr}}
-.fab{position:fixed; right:16px; bottom:16px; z-index:30; width:44px; height:44px; border-radius:999px; border:1px solid var(--line); background:white; display:grid; place-items:center; box-shadow:var(--shadow-soft); cursor:pointer; opacity:0; pointer-events:none; transition:all .2s}
-.fab.is-visible{opacity:1; pointer-events:auto}
+.fab{position:fixed; right:16px; bottom:16px; z-index:60; width:44px; height:44px; border-radius:999px; border:1px solid var(--line-2); background:white; color:var(--ink); display:grid; place-items:center; box-shadow:var(--shadow); cursor:pointer; opacity:0; pointer-events:none; transform:translateY(6px); transition:opacity .2s var(--ease), transform .2s var(--ease)}
+.fab:hover{border-color:var(--stone-3); color:var(--red)}
+.fab.is-visible{opacity:1; pointer-events:auto; transform:none}
 .skeleton{height:12px; border-radius:6px; background:linear-gradient(90deg, var(--paper-2) 25%, var(--paper-3) 50%, var(--paper-2) 75%); background-size:200% 100%; animation:shimmer 1.1s infinite}
 @keyframes shimmer{to{background-position:-200% 0}}
 .highlight{background:#FFF1A8; padding:1px 2px; border-radius:3px}
@@ -926,9 +928,9 @@ img,svg{max-width:100%; height:auto}
 .guide-dismiss:hover{background:var(--paper-2); color:var(--ink)}
 .guide-dontshow{font:400 10.5px 'Instrument Sans',sans-serif; color:var(--stone); display:flex; gap:6px; align-items:center; margin-top:2px; cursor:pointer}
 .guide-dontshow input{accent-color:var(--red)}
-.guide-show-btn{position:fixed; bottom:18px; right:18px; z-index:9998; background:var(--ink); color:white; border:1px solid var(--ink); border-radius:999px; padding:8px 12px; font:600 11px 'IBM Plex Mono',monospace; display:inline-flex; gap:6px; align-items:center; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,.14)}
+.guide-show-btn{position:fixed; bottom:18px; left:18px; z-index:9998; background:var(--ink); color:white; border:1px solid var(--ink); border-radius:999px; padding:8px 12px; font:600 11px 'IBM Plex Mono',monospace; display:inline-flex; gap:6px; align-items:center; cursor:pointer; box-shadow:0 8px 20px rgba(0,0,0,.14)}
 .guide-show-btn[hidden]{display:none !important}
-@media (max-width:640px){ #guideTooltip{width:calc(100vw - 20px); left:10px !important; right:10px !important; transform:none !important} .guide-show-btn{bottom:14px; right:14px; padding:7px 10px; font-size:10.5px} }
+@media (max-width:640px){ #guideTooltip{width:calc(100vw - 20px); left:10px !important; right:10px !important; transform:none !important} .guide-show-btn{bottom:14px; left:14px; padding:7px 10px; font-size:10.5px} }
 @keyframes guideIn{from{opacity:0; transform:translateY(6px) scale(.98)} to{opacity:1; transform:none}}
 @media (prefers-reduced-motion:reduce){ .guide-highlight, #guideTooltip{transition:none; animation:none} }
 
@@ -1691,14 +1693,15 @@ img,svg{max-width:100%; height:auto}
           </div>
           <div class="about-card">
             <h3>Contact OSR</h3>
-            <div class="kv"><b>Email</b> <span>[official email]</span></div>
-            <div class="kv"><b>Office</b> <span>[building, room, campus]</span></div>
-            <div class="kv"><b>Hours</b> <span>[Monday to Friday, 9 AM to 4 PM]</span></div>
-            <div class="kv"><b>Official page</b> <span>[Facebook or site link]</span></div>
+            <div class="kv"><b>Email</b> <span><a id="hcEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a></span></div>
+            <div class="kv"><b>Office</b> <span id="hcOffice">Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan</span></div>
+            <div class="kv"><b>Telephone</b> <span id="hcPhone">+63 44 796 3817</span></div>
+            <div class="kv"><b>Hours</b> <span id="hcHours">Monday to Friday, within office hours</span></div>
+            <div class="kv"><b>Official page</b> <span><a id="hcPage" href="https://www.facebook.com/BulSUSG1983/" target="_blank" rel="noopener">BulSU Student Government on Facebook</a></span></div>
             <div class="divider"></div>
-            <p class="small muted">Replace brackets with verified details.</p>
+            <p class="small muted">The OSR is housed at the Student Government office. Messages are triaged within office hours.</p>
             <div class="row">
-              <a class="btn btn--sm" href="mailto:name@bulsu.edu.ph">Send email</a>
+              <a class="btn btn--sm" id="hcMailto" href="mailto:bulsusg1983@gmail.com">Send email</a>
               <button class="btn btn--sm btn--ghost" id="copyContact">Copy contact block</button>
             </div>
           </div>
@@ -1706,10 +1709,10 @@ img,svg{max-width:100%; height:auto}
             <h3>Student Support</h3>
             <p>For immediate concerns, contact verified university services.</p>
             <ul style="margin:8px 0 0; padding-left:16px; font-size:13.5px; line-height:1.6">
-              <li><b>Guidance and Counseling</b> - [office, link]</li>
-              <li><b>University Clinic</b> - [office, link]</li>
-              <li><b>Security Office</b> - [office, link]</li>
-              <li><b>OSG / Student Organizations</b> - [office, link]</li>
+              <li><b>Guidance and Counseling</b> - <a href="https://sites.google.com/bulsu.edu.ph/gcscmain" target="_blank" rel="noopener">GCSC, Roxas Hall RH 104-105</a> • bulsuguidancecenter@bulsu.edu.ph</li>
+              <li><b>Student Welfare</b> - <a href="https://www.bulsu.edu.ph/students/staff" target="_blank" rel="noopener">Office of Student Welfare directory</a></li>
+              <li><b>Crisis hotline</b> - NCMH Crisis Hotline <a href="https://ncmh.gov.ph/" target="_blank" rel="noopener">1553</a> (24/7, free)</li>
+              <li><b>Student Government</b> - <a href="https://www.facebook.com/BulSUSG1983/" target="_blank" rel="noopener">BulSU SG official page</a></li>
             </ul>
             <div class="divider"></div>
             <p class="small muted">If you need urgent help, contact the nearest help desk directly.</p>
@@ -1825,18 +1828,18 @@ img,svg{max-width:100%; height:auto}
             <div class="kv"><b>Campuses served</b> <span>All BulSU campuses</span></div>
             <div class="kv"><b>Designation</b> <span>Updated when officially designated</span></div>
             <div class="divider"></div>
-            <p class="small muted">Each field maps to a content object. Replace bracketed values with verified data.</p>
+            <p class="small muted">Fields are updated as official records are released.</p>
           </div>
           <div class="about-card">
             <h3>Contact information</h3>
-            <div class="kv"><b>Email</b> <span>[official email]</span></div>
-            <div class="kv"><b>Telephone</b> <span>[official number]</span></div>
-            <div class="kv"><b>Office address</b> <span>[building, room, City of Malolos, Bulacan]</span></div>
-            <div class="kv"><b>Office hours</b> <span>[Monday to Friday, 9 AM to 4 PM]</span></div>
+            <div class="kv"><b>Email</b> <span><a id="acEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a></span></div>
+            <div class="kv"><b>Telephone</b> <span id="acPhone">+63 44 796 3817</span></div>
+            <div class="kv"><b>Office address</b> <span id="acAddress">Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan</span></div>
+            <div class="kv"><b>Office hours</b> <span id="acHours">Monday to Friday, within office hours</span></div>
             <div class="kv"><b>Response time</b> <span>Within office hours</span></div>
             <div class="row" style="margin-top:10px">
               <a class="btn btn--sm btn--red" href="#help" data-nav>Contact form</a>
-              <a class="btn btn--sm btn--ghost" href="mailto:name@bulsu.edu.ph">Send email</a>
+              <a class="btn btn--sm btn--ghost" id="acMailto" href="mailto:bulsusg1983@gmail.com">Send email</a>
             </div>
           </div>
           <div class="about-card">
@@ -2184,8 +2187,8 @@ img,svg{max-width:100%; height:auto}
     </div>
     <div>
       <h4>Office</h4>
-      <p>[Building, Room, Campus]<br>City of Malolos, Bulacan<br>[official email] • [official number]</p>
-      <div class="mono" style="font-size:11px; color:#9A9590; margin-top:8px; letter-spacing:0.04em; text-transform:uppercase">Office hours • Within office hours</div>
+      <p><span id="foLine1">Student Government (SG) Office</span><br><span id="foLine2">BulSU Main Campus, Guinhawa</span><br><span id="foCity">City of Malolos, Bulacan</span><br><a id="foEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a> • <span id="foPhone">+63 44 796 3817</span></p>
+      <div class="mono" id="foHours" style="font-size:11px; color:#9A9590; margin-top:8px; letter-spacing:0.04em; text-transform:uppercase">Office hours • Within office hours</div>
       <div class="row" style="margin-top:14px">
         <a class="btn btn--sm" href="#help" data-nav style="background:white; color:var(--ink); border-color:white">Raise a concern</a>
         <a class="btn btn--sm btn--ghost" href="#about" data-nav style="border-color:rgba(255,255,255,0.18); color:white">Contact</a>
@@ -2194,7 +2197,7 @@ img,svg{max-width:100%; height:auto}
   </div>
   <div class="footer__bar">
     <span>© <span id="year"></span> Office of the Student Regent, Bulacan State University. Verified content only.</span>
-    <span class="mono small">ENERGY 2 / RHYTHM 3 / MOTION 2 • Professional • Clean • Editorial</span>
+    <span class="mono small" id="footerCredit">OSR™ 2025–2026 • Made by Angelo Alvarado</span>
   </div>
 </footer>
 
@@ -2278,14 +2281,14 @@ const INITIATIVES = [
   {id:"init-004", title:"Student Consultation Caravan — Listening Sessions per College", description:"College-by-college listening sessions to gather student concerns for Board consolidation.", purpose:"Ensure student positions brought to the Board reflect collected, verified concerns.", status:"PLANNED", date:"2024-08-12", category:"Consultation", links:[{label:"Consultation brief", href:"#"}], image:"", _placeholder:true}
 ];
 const RESOURCES = [
-  {id:"r-001", title:"BulSU Student Handbook", category:"STUDENT RIGHTS & POLICIES", description:"Official handbook covering student rights, responsibilities, conduct, and university policies.", link:"https://bulsu.edu.ph"},
-  {id:"r-002", title:"Academic Calendar", category:"ACADEMIC", description:"Official academic calendar with enrollment, examination, and holiday schedules.", link:"https://bulsu.edu.ph"},
-  {id:"r-003", title:"Magna Carta of Students - Reference Materials", category:"STUDENT RIGHTS & POLICIES", description:"Reference materials on student rights, as adopted or referenced by the University.", link:"#"},
-  {id:"r-004", title:"Student Governance Resources", category:"STUDENT GOVERNANCE", description:"Publicly available governance documents and general information on student representation.", link:"#"},
-  {id:"r-005", title:"University Guidance and Counseling Services", category:"STUDENT SUPPORT", description:"Official student support services for counseling, wellness, and referrals.", link:"#"},
-  {id:"r-006", title:"Crisis and Help Hotlines - Official Directory", category:"STUDENT SUPPORT", description:"Verified crisis and help resources. Contact the nearest service directly for urgent help.", link:"#"},
-  {id:"r-007", title:"Board Resolutions Affecting Students - Public Index", category:"OFFICIAL DOCUMENTS", description:"Publicly available university documents and Board issuances where authorized for release.", link:"#"},
-  {id:"r-008", title:"Relevant Official Policies", category:"STUDENT RIGHTS & POLICIES", description:"Selected university policies relevant to student welfare and academic life.", link:"#"},
+  {id:"r-001", title:"BulSU Student Handbook", category:"STUDENT RIGHTS & POLICIES", description:"Official handbook covering student rights, responsibilities, conduct, and university policies (PDF, from the BulSU downloads portal).", link:"https://www.bulsu.edu.ph/downloads/files/student_handbook.pdf"},
+  {id:"r-002", title:"Academic Calendar", category:"ACADEMIC", description:"Official university calendar with enrollment, examination, and holiday schedules, plus the downloadable forms portal for students.", link:"https://www.bulsu.edu.ph/university-calendar"},
+  {id:"r-003", title:"Magna Carta of Students - Reference Materials", category:"STUDENT RIGHTS & POLICIES", description:"House Bill 8196, the proposed Magna Carta of Students Rights and Welfare Act, as filed in the House of Representatives. Student rights currently in force are codified in the BulSU Student Handbook and Batas Pambansa Blg. 232.", link:"https://docs.congress.hrep.online/legisdocs/basic_20/HB08196.pdf"},
+  {id:"r-004", title:"Student Governance Resources", category:"STUDENT GOVERNANCE", description:"Official page of the Bulacan State University Student Government, which houses the Office of the Student Regent.", link:"https://www.facebook.com/BulSUSG1983/"},
+  {id:"r-005", title:"University Guidance and Counseling Services", category:"STUDENT SUPPORT", description:"BulSU Guidance and Counseling Services Center (GCSC), Roxas Hall RH 104-105, Main Campus. bulsuguidancecenter@bulsu.edu.ph • (044) 919-7800 loc. 1071-1072, Monday to Friday, 8 AM to 5 PM.", link:"https://sites.google.com/bulsu.edu.ph/gcscmain"},
+  {id:"r-006", title:"Crisis and Help Hotlines - Official Directory", category:"STUDENT SUPPORT", description:"NCMH Crisis Hotline: dial 1553 (24/7, free). For urgent help, contact the nearest service directly.", link:"https://ncmh.gov.ph/"},
+  {id:"r-007", title:"Official University Documents - Transparency Seal", category:"OFFICIAL DOCUMENTS", description:"BulSU Transparency Seal portal: publicly released university documents, budgets, and issuances, including Board records authorized for release.", link:"https://www.bulsu.edu.ph/transparency-seal"},
+  {id:"r-008", title:"Relevant Official Policies", category:"STUDENT RIGHTS & POLICIES", description:"BulSU Manual of Operations — the university's governing policies, including Board of Regents and student organization provisions.", link:"https://www.bulsu.edu.ph/assets/transparency/manual_of_operations.pdf"},
 ];
 const $ = s=>document.querySelector(s);
 const $$ = s=>[...document.querySelectorAll(s)];
@@ -2294,7 +2297,7 @@ const fmtShort = iso=>{ const d=new Date(iso+"T12:00:00"); return {day:d.getDate
 const escapeHtml = s=> s.replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
 function daysAgo(iso){ return Math.floor((Date.now() - new Date(iso+"T12:00:00"))/86400000); }
 function highlight(text, q){ if(!q) return escapeHtml(text); const re=new RegExp("("+q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","ig"); return escapeHtml(text).replace(re, "<span class='highlight'>$1</span>"); }
-function toast(msg){ const wrap=$("#toastWrap"); const el=document.createElement("div"); el.className="toast"; el.textContent=msg; wrap.appendChild(el); requestAnimationFrame(()=> el.classList.add("is-visible")); setTimeout(()=>{ el.classList.remove("is-visible"); setTimeout(()=> el.remove(), 260)}, 2200); }
+function toast(msg){ const wrap=$("#toastWrap"); const el=document.createElement("div"); el.className="toast"; el.setAttribute("role","status"); el.textContent=msg; wrap.appendChild(el); requestAnimationFrame(()=> el.classList.add("is-visible")); setTimeout(()=>{ el.classList.remove("is-visible"); setTimeout(()=> el.remove(), 240)}, 1800); }
 let saved = new Set();
 try{ const raw=localStorage.getItem("osr-saved"); if(raw) saved=new Set(JSON.parse(raw)); }catch(e){ try{console.warn("storage unavailable",e)}catch(_){} }
 function persistSaved(){ try{ localStorage.setItem("osr-saved", JSON.stringify([...saved])); }catch(e){} updateSavedCounts(); }
@@ -2571,8 +2574,17 @@ $("#concernForm").addEventListener("submit", e=>{
   safeRemove("osr-concern");
   setTimeout(()=>{ e.target.reset(); updateAnonState(); setConcernStep(1); }, 900);
 });
+// Shared contact details — defaults below; the admin CMS (Settings → Website
+// settings) can override them at runtime via /api/settings/public.
+window.OSR_CONTACT = window.OSR_CONTACT || {
+  email:"bulsusg1983@gmail.com",
+  phone:"+63 44 796 3817",
+  office:"Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan",
+  hours:"Monday to Friday, within office hours"
+};
 $("#copyContact").addEventListener("click", async ()=>{
-  const text=`Office of the Student Regent, Bulacan State University\nEmail: [official email]\nOffice: [building, room, campus]\nHours: [Monday to Friday, 9 AM to 4 PM]`;
+  const c=window.OSR_CONTACT;
+  const text=`Office of the Student Regent, Bulacan State University\nEmail: ${c.email}\nTelephone: ${c.phone}\nOffice: ${c.office}\nHours: ${c.hours}`;
   const ok=await safeCopy(text); toast(ok?"Contact block copied":"Copy failed — select and copy manually");
 });
 

@@ -85,6 +85,24 @@
   .preview-container{position:relative; border:1px solid var(--line); border-radius:12px; overflow:hidden; height:520px; background:white}
   .preview-container iframe{width:100%; height:100%; border:none; display:block}
   .guide-anchored{position:absolute !important; z-index:5}
+  /* mobile drawer backdrop */
+  .backdrop{position:fixed; inset:0; background:rgba(17,18,20,.45); z-index:39; display:none}
+  .backdrop.open{display:block}
+  @media(max-width:900px){
+    .panel-head{flex-wrap:wrap}
+    .row{flex-wrap:wrap}
+    .preview-container{height:380px}
+  }
+  @media(max-width:640px){
+    .top{padding:8px 10px; gap:8px}
+    .top h1{font-size:14px}
+    .content{padding:12px}
+    /* 16px inputs prevent iOS focus zoom */
+    .form input,.form textarea,.form select,.search input{font-size:16px}
+    .modal{padding:12px}
+    .modal-box{padding:14px}
+    .sidebar{inset:0 25% 0 0}
+  }
 </style>
 </head>
 <body>
@@ -180,10 +198,20 @@ $('#logout').onclick = async ()=>{
   localStorage.removeItem('osr_admin_token');
   location.href='/admin/login.html';
 };
-$('#menu').onclick = ()=> $('#sidebar').classList.toggle('open');
+// Mobile drawer with backdrop — closes on backdrop tap or nav selection
+const backdrop = document.createElement('div');
+backdrop.className = 'backdrop';
+document.body.appendChild(backdrop);
+function setDrawer(open){
+  $('#sidebar').classList.toggle('open', open);
+  backdrop.classList.toggle('open', open);
+}
+$('#menu').onclick = ()=> setDrawer(!$('#sidebar').classList.contains('open'));
+backdrop.onclick = ()=> setDrawer(false);
+$$('.nav a').forEach(a=> a.addEventListener('click', ()=>{ if(innerWidth<900) setDrawer(false); }));
 // Responsive menu visibility
 if(innerWidth<900) $('#menu').style.display='inline-flex';
-addEventListener('resize', ()=> $('#menu').style.display = innerWidth<900 ? 'inline-flex' : 'none');
+addEventListener('resize', ()=>{ $('#menu').style.display = innerWidth<900 ? 'inline-flex' : 'none'; if(innerWidth>=900) setDrawer(false); });
 
 // Global search
 $('#globalSearch').addEventListener('keydown', e=>{
@@ -745,9 +773,23 @@ async function renderSettings(){
           <form class="form" id="siteForm">
             <label>Site title <input name="site_title" value="${settings.site_title||'Office of the Student Regent - Bulacan State University'}"></label>
             <label>Footer text <textarea name="footer_text">${settings.footer_text||''}</textarea></label>
-            <label>Contact email <input name="contact_email" value="${settings.contact_email||''}"></label>
-            <label>Contact phone <input name="contact_phone" value="${settings.contact_phone||''}"></label>
+            <div style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:.06em; text-transform:uppercase; color:var(--red); margin-top:6px">Office &amp; contact (public site footer, Help, About)</div>
+            <div class="form-row">
+              <label>Contact email <input name="contact_email" value="${settings.contact_email||''}"></label>
+              <label>Contact phone <input name="contact_phone" value="${settings.contact_phone||''}"></label>
+            </div>
+            <label>Office — line 1 <input name="office_line1" value="${settings.office_line1||''}" placeholder="Student Government (SG) Office"></label>
+            <label>Office — line 2 <input name="office_line2" value="${settings.office_line2||''}" placeholder="BulSU Main Campus, Guinhawa"></label>
+            <label>Office — city <input name="office_city" value="${settings.office_city||''}" placeholder="City of Malolos, Bulacan"></label>
+            <label>Full office address (Help &amp; About cards) <input name="office_address" value="${settings.office_address||''}" placeholder="Street / building, campus, city"></label>
+            <div class="form-row">
+              <label>Office hours (long) <input name="office_hours" value="${settings.office_hours||''}" placeholder="Monday to Friday, within office hours"></label>
+              <label>Office hours (footer label) <input name="office_hours_short" value="${settings.office_hours_short||''}" placeholder="Office hours • Within office hours"></label>
+            </div>
+            <label>Official page URL (Facebook or website) <input name="official_page" value="${settings.official_page||''}" placeholder="https://www.facebook.com/..."></label>
+            <label>Footer credit line (bottom bar) <input name="footer_credit" value="${settings.footer_credit||''}" placeholder="OSR™ 2025–2026 • Made by …"></label>
             <button class="btn btn--red" type="submit">Save settings</button>
+            <p style="font-size:12px; color:var(--stone); margin:0">Changes apply to the public site footer and contact cards when the backend is running. Empty fields keep the site's built-in values.</p>
           </form>
         </div>
       </div>
@@ -816,7 +858,7 @@ async function renderAbout(){
 }
 
 async function renderHelp(){
-  $('#content').innerHTML = `<div class="panel"><div class="panel-head"><h2>Help / Contact</h2></div><div class="panel-body"><p style="font-size:13px; color:var(--stone)">Manage Help and contact information via Pages and Settings. This section mirrors About editing.</p><a href="#about" class="btn btn--ghost">Go to About editor</a></div></div>`;
+  $('#content').innerHTML = `<div class="panel"><div class="panel-head"><h2>Help / Contact</h2></div><div class="panel-body"><p style="font-size:13px; color:var(--stone)">The office address, email, phone, hours, and official page shown on the public site (footer, Help, and About) are managed in <b>Settings → Website settings</b>. The About page texts (mandate, vision, mission) are managed in the About editor.</p><div style="display:flex; gap:8px; flex-wrap:wrap"><a href="#settings" class="btn btn--red">Open Website settings</a><a href="#about" class="btn btn--ghost">Go to About editor</a></div></div></div>`;
 }
 
 async function renderActivity(){

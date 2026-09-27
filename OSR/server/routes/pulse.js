@@ -19,7 +19,7 @@ router.post('/submit', (req,res)=>{
   for(const [cat, pts] of Object.entries(allocation)){
     const existing=db.prepare('SELECT * FROM pulse_aggregates WHERE period=? AND category=?').get(period, cat);
     if(existing){
-      db.prepare('UPDATE pulse_aggregates SET total_points=total_points+?, response_count=response_count+1, updated_at=datetime("now") WHERE period=? AND category=?').run(Number(pts), period, cat);
+      db.prepare("UPDATE pulse_aggregates SET total_points=total_points+?, response_count=response_count+1, updated_at=datetime('now') WHERE period=? AND category=?").run(Number(pts), period, cat);
     } else {
       db.prepare('INSERT INTO pulse_aggregates (period, category, total_points, response_count) VALUES (?,?,?,?)').run(period, cat, Number(pts), 1);
     }

@@ -71,9 +71,24 @@ export function seedFromFrontend(db) {
       if (ress && ress.length) {
         const stmt = db.prepare('INSERT INTO resources (id, title, description, category, file_url, external_link, status) VALUES (?,?,?,?,?,?,?)');
         for (const r of ress) {
-          stmt.run(r.id, r.title, r.description, r.category, r.fileUrl || '', r.externalLink || '', 'Published');
+          stmt.run(r.id, r.title, r.description, r.category, r.fileUrl || '', r.link || r.externalLink || '', 'Published');
         }
         console.log(`[Seed] Resources: ${ress.length}`);
+      }
+    } else {
+      // Keep existing databases in sync when the built-in resources gain real
+      // links. Only fills empty external_link values — rows edited through the
+      // admin CMS are never overwritten.
+      const ress = extractArray('RESOURCES');
+      if (ress && ress.length) {
+        const stmt = db.prepare('UPDATE resources SET external_link=? WHERE id=? AND (external_link IS NULL OR external_link=?)');
+        let filled = 0;
+        for (const r of ress) {
+          const link = r.link || r.externalLink || '';
+          if (!link) continue;
+          filled += stmt.run(link, r.id, '').changes;
+        }
+        if (filled) console.log(`[Seed] Resources: filled ${filled} missing link(s) from the website`);
       }
     }
 
@@ -88,6 +103,29 @@ export function seedFromFrontend(db) {
         }
         console.log(`[Seed] Calendar: ${cals.length}`);
       }
+    }
+
+    // Site settings — prefill the verified office/contact details so the
+    // admin Settings form starts with real values (all editable from the CMS).
+    const settingsCount = db.prepare('SELECT COUNT(*) as c FROM site_settings').get().c;
+    if (settingsCount === 0) {
+      const defaults = {
+        site_title: 'Office of the Student Regent - Bulacan State University',
+        footer_text: 'Verified announcements, Board Meeting records, initiatives, and student resources.',
+        contact_email: 'bulsusg1983@gmail.com',
+        contact_phone: '+63 44 796 3817',
+        office_line1: 'Student Government (SG) Office',
+        office_line2: 'BulSU Main Campus, Guinhawa',
+        office_city: 'City of Malolos, Bulacan',
+        office_address: 'Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan',
+        office_hours: 'Monday to Friday, within office hours',
+        office_hours_short: 'Office hours • Within office hours',
+        official_page: 'https://www.facebook.com/BulSUSG1983/',
+        footer_credit: 'OSR™ 2025–2026 • Made by Angelo Alvarado'
+      };
+      const stmt = db.prepare('INSERT OR IGNORE INTO site_settings (key, value) VALUES (?,?)');
+      for (const [k, v] of Object.entries(defaults)) stmt.run(k, v);
+      console.log('[Seed] Site settings: defaults');
     }
 
     // Pages - About

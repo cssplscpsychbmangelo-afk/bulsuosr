@@ -79,7 +79,7 @@ router.patch('/account', authRequired, (req,res)=>{
 
   if (changed.length === 0) return res.status(400).json({ error: 'No changes' });
 
-  db.prepare('UPDATE admins SET email=?, password_hash=?, updated_at=datetime("now") WHERE id=?').run(email, password_hash, admin.id);
+  db.prepare("UPDATE admins SET email=?, password_hash=?, updated_at=datetime('now') WHERE id=?").run(email, password_hash, admin.id);
   try { db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type, details) VALUES (?,?,?,?,?)').run(admin.id, admin.email, `Updated account: ${changed.join(', ')}`, 'admin', JSON.stringify({ newEmail: email })); } catch {}
 
   // Issue new token if email changed

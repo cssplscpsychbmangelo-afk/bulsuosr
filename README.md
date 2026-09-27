@@ -37,8 +37,10 @@ npm install
 node index.js          # → http://localhost:4000
 ```
 
-Environment variables (optional locally — `OSR/server/.env`, read by `dotenv`):
-`JWT_SECRET` (32+ chars, **required** for admin login), `DB_PATH`, `ADMIN_EMAIL`,
+Environment variables (optional locally — `OSR/server/.env`, read by `dotenv`,
+see `OSR/server/.env.example`):
+`JWT_SECRET` (32+ chars — if missing, a temporary secret is generated so admin
+login still works, but sessions reset on every restart), `DB_PATH`, `ADMIN_EMAIL`,
 `ADMIN_PASSWORD`, `PORT` (default 4000).
 
 Public site: `http://localhost:4000/` · Admin: `http://localhost:4000/admin/login.html`
