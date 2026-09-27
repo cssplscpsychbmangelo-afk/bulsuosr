@@ -44,7 +44,7 @@
   <div id="err" class="err"></div>
   <form id="form">
     <label for="email">Email</label>
-    <input id="email" type="email" required autocomplete="username" placeholder="name@example.com">
+    <input id="email" type="email" required autocomplete="username" placeholder="name@example.com" value="admin@osr.bulsu.edu.ph">
     <label for="password">Password</label>
     <div class="row">
       <input id="password" type="password" required autocomplete="current-password" placeholder="Enter your password">
@@ -56,7 +56,12 @@
     </div>
     <button id="submit" class="btn" type="submit">Log in →</button>
   </form>
-  <p class="muted">Secure admin access. Sessions last 8 hours, or 30 days if remembered.<br><a href="/">← Back to public website</a></p>
+  <p class="muted">Secure admin access. Sessions last 8 hours, or 30 days if remembered.</p>
+  <p class="muted" style="margin-top:4px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:var(--paper); font-size:11px; text-align:left">
+    <b>Default login:</b> <code style="background:#F7F5F2; padding:1px 4px; border-radius:4px; font-size:11px">admin@osr.bulsu.edu.ph</code> / <code style="background:#F7F5F2; padding:1px 4px; border-radius:4px; font-size:11px">Admin123456!</code><br>
+    <span style="color:var(--stone)">Change these from Settings → Account after logging in.</span>
+  </p>
+  <p class="muted"><a href="/">← Back to public website</a></p>
 </div>
 <script>
 const $ = s=>document.querySelector(s);
@@ -101,6 +106,22 @@ $('#form').onsubmit = async (e)=>{
 };
 // if already logged in, go to dashboard
 fetch('/api/auth/me', {credentials:'include'}).then(r=>{ if(r.ok) location.href='/admin/'; }).catch(()=>{});
+// Quick health check — show CMS status below the form
+(function(){
+  const el = document.createElement('p');
+  el.className = 'muted';
+  el.style.marginTop = '8px';
+  el.style.fontSize = '11px';
+  el.style.textAlign = 'center';
+  el.innerHTML = 'Checking CMS…';
+  document.querySelector('.card').appendChild(el);
+  fetch('/api/health').then(r=>{
+    if(r.ok) { el.innerHTML = '<span style="color:#115E34">✓ CMS is online</span>'; el.style.color='#115E34'; setTimeout(()=>el.remove(), 3000); }
+    else { el.innerHTML = '<span style="color:var(--red)">CMS is not responding — check Netlify function logs</span>'; }
+  }).catch(()=>{
+    el.innerHTML = '<span style="color:var(--red)">Cannot reach CMS — check that Netlify Functions are deployed</span>';
+  });
+})();
 </script>
 </body>
 </html>

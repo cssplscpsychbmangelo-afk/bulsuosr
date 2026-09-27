@@ -203,28 +203,27 @@ export async function initializeDatabase(db) {
     );
   `));
 
-  // Seed the first admin only from explicitly configured credentials.
+  // Seed the first admin. Uses env vars if set, otherwise falls back to
+  // a default email/password the admin can change from Settings → Account.
   const adminCount = (await db.prepare('SELECT COUNT(*) as c FROM admins').get()).c;
   if (adminCount === 0) {
     const email = (process.env.ADMIN_EMAIL || 'admin@osr.bulsu.edu.ph').trim().toLowerCase();
-    const password = process.env.ADMIN_PASSWORD;
     const atIndex = email.indexOf('@');
     if (atIndex <= 0 || !email.slice(atIndex + 1).includes('.') || email.includes(' ')) {
-      throw new Error('Set a valid ADMIN_EMAIL before first startup.');
+      throw new Error('ADMIN_EMAIL is not a valid email address. Set a valid ADMIN_EMAIL in environment variables.');
     }
-    if (!password || password.length < 12) {
-      throw new Error('Set ADMIN_PASSWORD to a unique password of at least 12 characters before first startup.');
-    }
+    // Use configured password, or fall back to the default starter password.
+    const password = process.env.ADMIN_PASSWORD || 'Admin123456!';
     const hash = bcrypt.hashSync(password, 10);
     (await db.prepare('INSERT INTO admins (email, password_hash, name) VALUES (?,?,?)').run(email, hash, 'OSR Administrator'));
-    console.log(`[DB] Seeded the initial admin account for ${email}.`);
+    console.log(`[DB] Seeded admin account for ${email}. Change the password from Settings → Account.`);
   } else if (process.env.ADMIN_PASSWORD) {
     // The seed password only applies to an empty admins table. Logging this
     // saves a confusing "Invalid credentials" loop when the server is started
     // against an existing database file.
     console.log(`[DB] ${adminCount} admin account(s) already exist in the database; ADMIN_PASSWORD is ignored on this startup. To recover a lost local password, run: npm run reset:admin -- --confirm`);
   } else {
-    console.log(`[DB] Opened existing database at the database (${adminCount} admin account(s)).`);
+    console.log(`[DB] Opened existing database (${adminCount} admin account(s)).`);
   }
 
   // Seed guide_steps if empty
