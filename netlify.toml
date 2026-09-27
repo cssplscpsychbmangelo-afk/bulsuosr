@@ -1,12 +1,6 @@
-# ── Netlify configuration (read from the repository ROOT) ─────────────────────
-# Why this file exists:
-#   The repo root contains only the OSR/ folder — no index.html and no build
-#   config. Netlify reads netlify.toml from the base directory (the repo root by
-#   default) and publishes that directory, so every URL returned Netlify's
-#   "Page Not Found".
-#   The public site actually lives in OSR/osr-website, so that is what we publish.
-#
-# Leave the Netlify base directory empty (repository root).
+# ── Netlify configuration (root) ──
+# Public site lives in OSR/osr-website, so that is what we publish.
+# Base directory empty (repo root).
 
 [build]
   base    = "."
@@ -21,25 +15,20 @@
   node_bundler = "esbuild"
   included_files = ["OSR/osr-website/index.html"]
 
+# Minimal headers — avoid complex CSP that can fail validation.
 [[headers]]
   for = "/*"
   [headers.values]
-    X-Frame-Options           = "DENY"
-    X-Content-Type-Options    = "nosniff"
-    Referrer-Policy           = "strict-origin-when-cross-origin"
-    Permissions-Policy        = "camera=(), microphone=(), geolocation=()"
-    # cdn.jsdelivr.net is required: index.html injects jsPDF from there for the
-    # "download as PDF" action. Without it the script is blocked by CSP.
-    Content-Security-Policy   = "default-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://cdn.jsdelivr.net; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
 
-# HTML must always revalidate, otherwise visitors keep seeing an old page.
 [[headers]]
   for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# The build copies admin files and writes redirect config and does not hash assets, so JS/CSS
-# revalidate too (Netlify answers 304 with an ETag, without pinning stale files).
 [[headers]]
   for = "/js/*"
   [headers.values]
@@ -50,7 +39,6 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Images change rarely — one week is a safe cache window.
 [[headers]]
   for = "/*.png"
   [headers.values]

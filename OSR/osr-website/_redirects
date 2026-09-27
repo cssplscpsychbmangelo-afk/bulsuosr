@@ -1,8 +1,7 @@
-# Netlify serves the admin and API without a separate host.
-/admin         /admin/login.html          200!
-/admin/        /admin/index.html          200!
-/admin/login   /admin/login.html          200!
-/api/*         /.netlify/functions/cms/:splat 200!
-/uploads/*     /.netlify/functions/media/:splat 200
-/admin/*       /admin/index.html          200
-/*             /index.html                200
+# Netlify redirects — standalone admin
+/admin    /admin/index.html  200!
+/admin/   /admin/index.html  200!
+/admin/*  /admin/index.html  200!
+/api/*    /.netlify/functions/cms/:splat  200!
+/uploads/*  /.netlify/functions/media/:splat  200!
+/*        /index.html  200
