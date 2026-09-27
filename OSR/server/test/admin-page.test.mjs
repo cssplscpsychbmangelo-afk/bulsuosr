@@ -30,6 +30,13 @@ test('admin page inline script parses, so /admin can never render blank', async 
   assert.match(html, /id="adminScreen"/);
   assert.match(html, /checkAuthAndSetup\(\);/);
   assert.match(html, /function showAuth\(/, 'the boot path must be able to reveal a screen');
+
+  assert.match(html, /src="\/osr-logo\.png"/, 'the supplied OSR logo must identify the login and workspace');
+  assert.match(html, /id="adminSidebar"/, 'the workspace needs a persistent navigation landmark');
+  assert.match(html, /id="mobileMenuBtn"[^>]+aria-controls="adminSidebar"/, 'mobile navigation must be labeled and connected');
+  for (const section of ['overview', 'announcements', 'board', 'initiatives', 'resources', 'calendar', 'media', 'settings']) {
+    assert.match(html, new RegExp(`data-tab="${section}"`), `${section} must remain reachable from admin navigation`);
+  }
 });
 
 // Regression: the CSRF origin guard compared `${req.protocol}://${host}` with the

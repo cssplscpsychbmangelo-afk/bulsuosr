@@ -30,7 +30,7 @@ test('local SQLite initialization, seed and async rollback still work', async ()
       for (const route of ['/admin', '/admin/', '/admin/login', '/admin/login.html']) {
         const response = await fetch(`http://127.0.0.1:${port}${route}`, { redirect: 'manual' });
         assert.equal(response.status, 200, `${route} must render the single admin page`);
-        assert.match(await response.text(), /<title>OSR Admin — Neon Standalone<\/title>/);
+        assert.match(await response.text(), /<title>OSR Content Administration<\/title>/);
       }
     } finally {
       await new Promise(resolve => server.close(resolve));
