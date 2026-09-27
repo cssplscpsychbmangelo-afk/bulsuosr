@@ -9,7 +9,11 @@ export async function initializeDatabase(db) {
       password_hash TEXT NOT NULL,
       name TEXT DEFAULT 'OSR Administrator',
       created_at TEXT DEFAULT (datetime('now')),
-      updated_at TEXT DEFAULT (datetime('now'))
+      updated_at TEXT DEFAULT (datetime('now')),
+      role TEXT NOT NULL DEFAULT 'super_admin',
+      active INTEGER NOT NULL DEFAULT 1,
+      session_version INTEGER NOT NULL DEFAULT 0,
+      last_login TEXT
     );
   `));
 
@@ -139,7 +143,10 @@ export async function initializeDatabase(db) {
       url TEXT NOT NULL,
       used_by TEXT,
       created_by INTEGER,
-      created_at TEXT DEFAULT (datetime('now'))
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT,
+      title TEXT, caption TEXT, category TEXT,
+      status TEXT NOT NULL DEFAULT 'Published'
     );
   `));
 
@@ -203,29 +210,8 @@ export async function initializeDatabase(db) {
     );
   `));
 
-  // ── Standalone admin: no env dependency ──
-  // The admin account lives entirely in Neon (or SQLite locally). We seed a
-  // default account only when the admins table is empty, so the site works
-  // out-of-the-box without ADMIN_EMAIL / ADMIN_PASSWORD env vars.
-  // After first login, change credentials from Settings → Account.
-  const adminCount = (await db.prepare('SELECT COUNT(*) as c FROM admins').get()).c;
-  if (adminCount === 0) {
-    const email = 'admin@osr.bulsu.edu.ph';
-    const password = 'Admin123456!';
-    const hash = bcrypt.hashSync(password, 10);
-    try {
-      (await db.prepare('INSERT INTO admins (email, password_hash, name) VALUES (?,?,?)').run(email, hash, 'OSR Administrator'));
-      console.log(`[DB] Seeded default admin ${email} — change password from Settings → Account after first login.`);
-    } catch (e) {
-      // Race: another cold start seeded first — ignore unique violation
-      if (!String(e.message).toLowerCase().includes('duplicate') && !String(e.message).toLowerCase().includes('unique') && !String(e.code).includes('23505')) {
-        throw e;
-      }
-      console.log('[DB] Admin already seeded by concurrent instance');
-    }
-  } else {
-    console.log(`[DB] Found ${adminCount} admin account(s) — standalone mode, no env needed.`);
-  }
+  // No known default credentials: first account is created explicitly via /auth/setup.
+  // Existing production admins are preserved; the setup endpoint is disabled once one exists.
 
   // ── Standalone JWT secret: persist in site_settings so sessions survive
   // cold starts even when JWT_SECRET env var is not set (Netlify Functions).

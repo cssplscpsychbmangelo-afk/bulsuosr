@@ -2436,6 +2436,17 @@ function setRoute(hash){
   // reveal reset
   requestAnimationFrame(()=> observeReveals());
 }
+function openCmsDeepLink(){
+  const match=location.hash.match(/^#(announcements|board-meetings|initiatives)\?(ann|board|init)=([a-zA-Z0-9-]+)$/);
+  if(!match)return;
+  const id=match[3],type=match[2];
+  // The CMS integration may still be loading: try again on its hydration event.
+  const open=()=>{const item=[...document.querySelectorAll('[data-detail]')].find(el=>el.dataset.detail===type && el.dataset.id===id);if(item)item.click()};
+  setTimeout(open,1100);
+  window.addEventListener('cms:hydrated',open,{once:true});
+}
+window.addEventListener('hashchange',openCmsDeepLink);
+window.addEventListener('DOMContentLoaded',openCmsDeepLink);
 window.addEventListener("hashchange", ()=> setRoute());
 window.addEventListener("DOMContentLoaded", ()=> setRoute(location.hash));
 setTimeout(()=> setRoute(location.hash), 120);

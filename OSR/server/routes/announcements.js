@@ -1,5 +1,7 @@
+import { randomUUID } from 'node:crypto';
 import express from 'express';
 import { authRequired } from '../middleware/auth.js';
+import { validateContent } from '../middleware/content.js';
 const router = express.Router();
 
 async function logActivity(db, admin, action, id, details='') {
@@ -25,14 +27,14 @@ router.get('/', authRequired, async (req,res)=>{
   res.json((await db.prepare(sql).all(...params)));
 });
 
-router.get('/:id', async (req,res)=>{
+router.get('/:id', authRequired, async (req,res)=>{
   const db = req.app.locals.db;
   const row = (await db.prepare('SELECT * FROM announcements WHERE id=?').get(req.params.id));
   if (!row) return res.status(404).json({error:'Not found'});
   res.json(row);
 });
 
-router.post('/', authRequired, async (req,res)=>{
+router.post('/', authRequired, validateContent, async (req,res)=>{
   const db = req.app.locals.db;
   const { id, title, category, date, summary, content, external_link, image, status } = req.body;
   if (!title) return res.status(400).json({error:'Title required'});
@@ -46,7 +48,7 @@ router.post('/', authRequired, async (req,res)=>{
   } catch(e){ res.status(400).json({error:e.message}); }
 });
 
-router.patch('/:id', authRequired, async (req,res)=>{
+router.patch('/:id', authRequired, validateContent, async (req,res)=>{
   const db = req.app.locals.db;
   const existing = (await db.prepare('SELECT * FROM announcements WHERE id=?').get(req.params.id));
   if (!existing) return res.status(404).json({error:'Not found'});
@@ -67,7 +69,7 @@ router.delete('/:id', authRequired, async (req,res)=>{
   const db = req.app.locals.db;
   const row = (await db.prepare('SELECT * FROM announcements WHERE id=?').get(req.params.id));
   if (!row) return res.status(404).json({error:'Not found'});
-  (await db.prepare('DELETE FROM announcements WHERE id=?').run(req.params.id));
+  (await db.prepare("UPDATE announcements SET status='Archived', updated_at=datetime('now') WHERE id=?").run(req.params.id));
   (await logActivity(db, req.admin, `Deleted announcement: ${row.title}`, req.params.id));
   res.json({ ok:true });
 });

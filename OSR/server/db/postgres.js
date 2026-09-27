@@ -71,6 +71,21 @@ export async function migrateDatabase(db, sourcePath) {
     await db.query('CREATE TABLE IF NOT EXISTS osr.schema_migrations (version INTEGER PRIMARY KEY)');
     const alreadyMigrated = await db.prepare('SELECT version FROM osr.schema_migrations WHERE version=1').get();
     if (alreadyMigrated) {
+        if (!(await db.prepare('SELECT version FROM osr.schema_migrations WHERE version=2').get())) {
+    // Additive migration for existing Neon installations; never reset content.
+    await db.query(`ALTER TABLE osr.admins ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'super_admin'`);
+    await db.query(`ALTER TABLE osr.admins ADD COLUMN IF NOT EXISTS active INTEGER NOT NULL DEFAULT 1`);
+    await db.query(`ALTER TABLE osr.admins ADD COLUMN IF NOT EXISTS session_version INTEGER NOT NULL DEFAULT 0`);
+    await db.query(`ALTER TABLE osr.admins ADD COLUMN IF NOT EXISTS last_login TEXT`);
+    await db.query(`ALTER TABLE osr.media ADD COLUMN IF NOT EXISTS title TEXT`);
+    await db.query(`ALTER TABLE osr.media ADD COLUMN IF NOT EXISTS caption TEXT`);
+    await db.query(`ALTER TABLE osr.media ADD COLUMN IF NOT EXISTS category TEXT`);
+    await db.query(`ALTER TABLE osr.media ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'Published'`);
+    await db.query(`ALTER TABLE osr.media ADD COLUMN IF NOT EXISTS updated_at TEXT`);
+    await db.query(`CREATE INDEX IF NOT EXISTS idx_ann_status ON osr.announcements(status, date)`);
+    await db.query(`CREATE INDEX IF NOT EXISTS idx_event_status ON osr.calendar_events(status, iso)`);
+        await db.query('INSERT INTO osr.schema_migrations (version) VALUES (2)');
+      }
       // Ensure jwt_secret is loaded into env for standalone mode even after migration
       try {
         const row = await db.prepare('SELECT value FROM osr.site_settings WHERE key=$1').get('jwt_secret');
@@ -88,7 +103,7 @@ export async function migrateDatabase(db, sourcePath) {
       window_start TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
       attempts INTEGER NOT NULL DEFAULT 1
     )`);
-    await db.query('INSERT INTO osr.schema_migrations (version) VALUES (1)');
+    await db.query('INSERT INTO osr.schema_migrations (version) VALUES (1), (2)');
   })();
   // Outside transaction: ensure JWT_SECRET env is set from DB for standalone mode
   // (schema.js already sets it, but we double-check after migration)

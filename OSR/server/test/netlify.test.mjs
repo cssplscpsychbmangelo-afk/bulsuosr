@@ -59,7 +59,9 @@ test('PostgreSQL-backed Netlify CMS', async t => {
   await t.test('schema and content initialize atomically, once', async () => {
     await migrateDatabase(db, sourcePath);
     await migrateDatabase(db, sourcePath);
-    assert.equal((await db.prepare('SELECT COUNT(*) AS c FROM admins').get()).c, 1);
+    assert.equal((await db.prepare('SELECT COUNT(*) AS c FROM admins').get()).c, 0);
+    assert.equal((await ok('/api/auth/setup-status')).needsSetup,true);
+    await ok('/api/auth/setup','POST',{name:'Test Admin',email:'admin@osr.bulsu.edu.ph',password:'Admin123456789!'},null);
     assert.ok((await db.prepare('SELECT COUNT(*) AS c FROM calendar_events').get()).c > 0);
     assert.equal((await request('/api/health')).statusCode, 200);
   });
@@ -68,7 +70,7 @@ test('PostgreSQL-backed Netlify CMS', async t => {
     assert.equal((await request('/api/auth/login', 'POST', { email: 'admin@osr.bulsu.edu.ph', password: 'wrong' })).statusCode, 401);
   });
   await t.test('login issues an HttpOnly secure cookie', async () => {
-    const res = await request('/api/auth/login', 'POST', { email: 'admin@osr.bulsu.edu.ph', password: 'Admin123456!' });
+    const res = await request('/api/auth/login', 'POST', { email: 'admin@osr.bulsu.edu.ph', password: 'Admin123456789!' });
     assert.equal(res.statusCode, 200, res.body);
     const value = res.multiValueHeaders?.['set-cookie']?.[0] || res.headers['set-cookie'];
     assert.match(value, /HttpOnly/);
@@ -99,7 +101,8 @@ test('PostgreSQL-backed Netlify CMS', async t => {
       await ok(`/api/${route}/${id}`, 'PATCH', patch);
       assert.ok((await ok('/api/public/'+route)).some(row => row.id === id));
       await ok(`/api/${route}/${id}`, 'DELETE');
-      assert.equal((await request(`/api/${route}/${id}`, 'GET', null, cookie)).statusCode, 404);
+      if(route==='guides') assert.equal((await request(`/api/${route}/${id}`, 'GET', null, cookie)).statusCode,404);
+      else { assert.equal((await ok(`/api/${route}/${id}`))[route==='initiatives'?'status_public':'status'],'Archived'); assert.ok(!(await ok('/api/public/'+route)).some(row=>row.id===id)); }
     }
   });
   await t.test('navigation identity IDs, reorder, settings upsert, and pages', async () => {
@@ -138,7 +141,7 @@ test('PostgreSQL-backed Netlify CMS', async t => {
     assert.equal(media.get(file.filename).data.toString(), 'Hello OSR');
     assert.ok((await ok('/api/media')).some(row => row.id === file.id));
     await ok('/api/media/'+file.id, 'DELETE');
-    assert.equal(media.has(file.filename), false);
+    assert.equal(media.has(file.filename), true); // archived media is retained for existing references
   });
   await t.test('CSRF, persistent throttling, and missing environment config', async () => {
     assert.equal((await request('/api/announcements', 'POST', { title: 'CSRF' }, cookie, { origin: 'https://evil.example' })).statusCode, 403);

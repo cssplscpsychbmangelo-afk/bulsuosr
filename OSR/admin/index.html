@@ -31,6 +31,7 @@ a{color:var(--red); text-decoration:none}
 .tab{padding:7px 12px; border-radius:999px; border:1px solid transparent; background:transparent; font:600 12.5px 'IBM Plex Sans',sans-serif; cursor:pointer}
 .tab.is-active{background:var(--ink); color:#fff}
 .section{display:none}
+[hidden]{display:none!important}
 .section.is-active{display:grid; gap:12px}
 .list{display:grid; gap:8px}
 .row{display:flex; gap:10px; align-items:center; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:#fff}
@@ -51,7 +52,8 @@ a{color:var(--red); text-decoration:none}
 .err.show{display:block}
 .ok{background:var(--ok-bg); border:1px solid #B7E1C6; color:var(--ok); padding:10px 12px; border-radius:10px; font-size:13px; display:none; margin:10px 0}
 .ok.show{display:block}
-@media(max-width:640px){ .form input,.form textarea,.form select{font-size:16px} .header{padding:10px 12px} .wrap{padding:12px} }
+.section-head,.filters,.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.section-head{justify-content:space-between}.filters{margin-top:12px}.filters input,.filters select{padding:9px;border:1px solid var(--line);border-radius:9px;font:inherit;min-width:0}.filters input{flex:1;min-width:150px}.record{justify-content:space-between;align-items:flex-start}.record-main{flex:1;min-width:0}.record .actions{justify-content:flex-end}.record-main .mono{font-size:10px;color:var(--stone)}.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}.media-card img{width:100%;height:120px;object-fit:cover;border-radius:8px}.guide{position:fixed;bottom:18px;left:18px;z-index:30}.guide .card{position:absolute;bottom:48px;left:0;width:min(340px,calc(100vw - 36px));box-shadow:0 12px 40px #0002}.guide p{font-size:13px;color:var(--stone)}.tabs{border-radius:12px;width:100%;overflow:auto;flex-wrap:nowrap}.tab{white-space:nowrap}.login-card>div label{display:block;margin-top:10px;font-size:12px;font-weight:600}.login-card input:not([type=checkbox]){width:100%;padding:10px;border:1px solid var(--line);border-radius:9px;font:inherit}.section .form{max-width:760px}.toasts{max-width:calc(100vw - 32px)}.toast{border-radius:10px;overflow-wrap:anywhere}
+@media(max-width:640px){.header .badge,.header #adminEmail{display:none}.header a{display:none}.record{display:block}.record .actions{justify-content:flex-start;margin-top:10px}.guide{bottom:10px;left:10px}.filters>*{flex:1}.tabs{position:sticky;top:56px;z-index:8} .form input,.form textarea,.form select{font-size:16px} .header{padding:10px 12px} .wrap{padding:12px} }
 </style>
 </head>
 <body>
@@ -69,23 +71,23 @@ a{color:var(--red); text-decoration:none}
 
     <div id="loginFormBox">
       <label>Email</label>
-      <input id="loginEmail" type="email" value="admin@osr.bulsu.edu.ph" placeholder="admin@osr.bulsu.edu.ph">
+      <input id="loginEmail" type="email"  placeholder="admin@osr.bulsu.edu.ph">
       <label>Password</label>
       <input id="loginPass" type="password" placeholder="••••••••">
       <label style="display:flex; gap:6px; align-items:center; text-transform:none; letter-spacing:0; font:400 13px 'IBM Plex Sans',sans-serif; margin-top:10px"><input id="loginRemember" type="checkbox" style="width:auto"> Remember 30 days</label>
       <button id="loginBtn" class="btn btn--red" style="width:100%; margin-top:12px">Log in →</button>
-      <p class="mono" style="font-size:11px; color:var(--stone); margin:10px 0 0; background:var(--paper); border:1px solid var(--line); padding:8px; border-radius:8px">Standalone: credentials stored only in Neon. No ADMIN_EMAIL env needed. Default: <b>admin@osr.bulsu.edu.ph / Admin123456!</b></p>
-      <p style="text-align:center; font-size:12px; margin-top:10px"><a href="/">← Public site</a> • <span id="toSetup" style="color:var(--red); cursor:pointer">First time? Create admin</span></p>
+
+      <p style="text-align:center; font-size:12px; margin-top:10px"><a href="/">← Public site</a> • <button type="button" id="toSetup" class="btn btn--ghost btn--sm" hidden>First time? Create admin</button></p>
     </div>
 
     <div id="setupFormBox" style="display:none">
       <p style="font-size:13px; color:var(--stone); background:var(--paper); border:1px solid var(--line); padding:10px; border-radius:10px">No admin found in Neon. Create first admin — stored only in Neon.</p>
-      <label>Name</label><input id="setupName" value="OSR Administrator">
-      <label>Email</label><input id="setupEmail" type="email" value="admin@osr.bulsu.edu.ph">
-      <label>Password (min 8)</label><input id="setupPass" type="password">
+      <label>Name</label><input id="setupName" >
+      <label>Email</label><input id="setupEmail" type="email" >
+      <label>Password (12+ characters, uppercase and number)</label><input id="setupPass" type="password">
       <label>Confirm</label><input id="setupPass2" type="password">
       <button id="setupBtn" class="btn btn--red" style="width:100%; margin-top:12px">Create admin →</button>
-      <p style="text-align:center; font-size:12px; margin-top:10px"><span id="toLogin" style="color:var(--red); cursor:pointer">Back to login</span></p>
+      <p style="text-align:center; font-size:12px; margin-top:10px"><button type="button" id="toLogin" class="btn btn--ghost btn--sm">Back to login</button></p>
     </div>
 
     <p id="health" class="mono" style="font-size:11px; text-align:center; color:var(--stone); margin-top:12px"></p>
@@ -106,10 +108,11 @@ a{color:var(--red); text-decoration:none}
   </div>
 
   <div class="wrap">
-    <div class="stats" id="stats"></div>
+    <div id="overview" class="section is-active"><div class="stats" id="stats"></div><div class="card"><h3>Recent activity</h3><div id="activity" class="list"></div></div></div>
 
     <div class="tabs" id="tabs">
-      <button class="tab is-active" data-tab="announcements">Announcements</button>
+      <button class="tab is-active" data-tab="overview">Overview</button>
+      <button class="tab" data-tab="announcements">Announcements</button>
       <button class="tab" data-tab="board">Board Meetings</button>
       <button class="tab" data-tab="initiatives">Initiatives</button>
       <button class="tab" data-tab="resources">Resources</button>
@@ -118,7 +121,7 @@ a{color:var(--red); text-decoration:none}
       <button class="tab" data-tab="settings">Settings</button>
     </div>
 
-    <div id="tab-announcements" class="section is-active"></div>
+    <div id="tab-announcements" class="section"></div>
     <div id="tab-board" class="section"></div>
     <div id="tab-initiatives" class="section"></div>
     <div id="tab-resources" class="section"></div>
@@ -126,11 +129,12 @@ a{color:var(--red); text-decoration:none}
     <div id="tab-media" class="section"></div>
     <div id="tab-settings" class="section"></div>
 
-    <p class="mono" style="font-size:11px; color:var(--stone); text-align:center">/admin — single page, Neon-only. No env admin vars. JWT secret persisted in site_settings.</p>
+    <p class="mono" style="font-size:11px; color:var(--stone); text-align:center">OSR • Content saved securely in Neon</p>
   </div>
 </div>
 
-<div class="toasts" id="toasts"></div>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+<div class="guide" id="guide" hidden><button class="btn btn--red" id="guideBtn" aria-expanded="false">? Guide</button><div id="guidePanel" class="card" hidden><button class="btn btn--ghost btn--sm" id="guideClose" style="float:right">Close</button><h3>Publishing with OSR</h3><p>Choose a section, select Add, then save as Draft or Published. Edit existing items from their card. Changes appear in the matching public archive after refresh. Archive removes an item from public view without erasing it.</p><p>Use Calendar for dated activities and Resources for documents or external links. Settings holds your account and, for super admins, site contact details and admin users.</p></div></div>
 
 <script>
 const $ = s=>document.querySelector(s);
@@ -140,9 +144,9 @@ function esc(s){ return String(s||'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'
 
 async function api(path, opts={}){
   const headers={ ...(opts.headers||{}) };
-  if(!(opts.body instanceof FormData) && !headers['Content-Type']) headers['Content-Type']='application/json';
+  if(opts.body && !(opts.body instanceof FormData) && !headers['Content-Type']) headers['Content-Type']='application/json';
   const r=await fetch(path, {...opts, headers, credentials:'include'});
-  if(r.status===401){ showAuth(); throw new Error('Unauthorized'); }
+  if(r.status===401 && !path.startsWith('/api/auth/login')){ showAuth('login'); throw new Error('Session expired. Sign in again.'); }
   const j=await r.json().catch(()=>({}));
   if(!r.ok) throw new Error(j.error||'Request failed');
   return j;
@@ -155,12 +159,12 @@ function showErr(m){ authErr.textContent=m; authErr.classList.add('show'); authO
 function showOk(m){ authOk.textContent=m; authOk.classList.add('show'); authErr.classList.remove('show'); }
 function clearAuthMsg(){ authErr.classList.remove('show'); authOk.classList.remove('show'); }
 function showAuth(mode){
-  adminScreen.style.display='none';
+  adminScreen.style.display='none'; $('#guide').hidden=true;
   authScreen.style.display='grid';
   if(mode==='setup'){ $('#loginFormBox').style.display='none'; $('#setupFormBox').style.display='block'; authBadge.textContent='Setup required'; authBadge.className='badge'; authBadge.style.background='#FFF0F2'; authBadge.style.color='var(--red)'; }
   else { $('#setupFormBox').style.display='none'; $('#loginFormBox').style.display='block'; authBadge.textContent='Neon • Standalone'; authBadge.className='badge badge--green'; authBadge.style.background=''; authBadge.style.color=''; }
 }
-function showAdmin(){ authScreen.style.display='none'; adminScreen.style.display='block'; }
+function showAdmin(){ authScreen.style.display='none'; adminScreen.style.display='block'; $('#guide').hidden=false; }
 
 $('#toSetup').onclick=()=>showAuth('setup');
 $('#toLogin').onclick=()=>showAuth('login');
@@ -180,7 +184,7 @@ $('#setupBtn').onclick=async()=>{
   clearAuthMsg();
   const email=$('#setupEmail').value.trim(), pass=$('#setupPass').value, pass2=$('#setupPass2').value, name=$('#setupName').value.trim();
   if(pass!==pass2) return showErr('Passwords do not match');
-  if(pass.length<8) return showErr('Password min 8 chars');
+  if(pass.length<12 || !/[A-Z]/.test(pass) || !/[0-9]/.test(pass)) return showErr('Use 12+ characters, uppercase and a number');
   $('#setupBtn').disabled=true; $('#setupBtn').textContent='Creating…';
   try{
     const j=await api('/api/auth/setup', {method:'POST', body:JSON.stringify({email,password:pass,name})});
@@ -191,157 +195,138 @@ $('#setupBtn').onclick=async()=>{
   finally{ $('#setupBtn').disabled=false; $('#setupBtn').textContent='Create admin →'; }
 };
 
-$('#logoutBtn').onclick=async()=>{ await fetch('/api/auth/logout',{method:'POST', credentials:'include'}); showAuth('login'); toast('Logged out'); };
+$('#logoutBtn').onclick=async()=>{const b=$('#logoutBtn');b.disabled=true;try{await api('/api/auth/logout',{method:'POST'});showAuth('login');toast('Logged out')}catch(e){toast('Logout failed: '+e.message)}finally{b.disabled=false}};
 
 async function checkAuthAndSetup(){
   // health
   try{
     const h=await fetch('/api/health'); const hj=await h.json().catch(()=>({}));
-    if(h.ok) $('#health').innerHTML='<span style="color:var(--ok)">✓ CMS online • Neon standalone • Only DATABASE_URL required</span>';
+    if(h.ok) $('#health').textContent='CMS API online';
     else $('#health').textContent='CMS error: '+(hj.error||h.status);
   }catch{ $('#health').textContent='Cannot reach CMS — check DATABASE_URL / Functions'; }
 
   try{
     const me=await api('/api/auth/me');
     $('#adminEmail').textContent=me.email;
-    showAdmin(); await initAdmin();
+    await initAdmin();
     return;
   }catch{}
 
   try{
     const s=await api('/api/auth/setup-status');
-    if(s.needsSetup) showAuth('setup'); else showAuth('login');
+    $('#toSetup').hidden=!s.needsSetup; if(s.needsSetup) showAuth('setup'); else showAuth('login');
   }catch{ showAuth('login'); }
 }
 
-// Simple admin logic
-let currentTab='announcements';
-$('#tabs').onclick=e=>{
-  const btn=e.target.closest('.tab'); if(!btn) return;
-  currentTab=btn.dataset.tab;
-  $$('.tab').forEach(b=>b.classList.toggle('is-active', b===btn));
-  $$('.section').forEach(s=>s.classList.toggle('is-active', s.id==='tab-'+currentTab));
-  renderTab(currentTab);
+const modules={
+ announcements:{label:'Announcements',url:'announcements',anchor:'announcements',fields:[['title','Title *'],['category','Category'],['date','Publication date','date'],['summary','Short summary','textarea'],['content','Full content','textarea'],['image','Featured image URL','url'],['external_link','External link','url']]},
+ board:{label:'Board Meetings',url:'board-meetings',anchor:'board-meetings',fields:[['title','Meeting title *'],['meeting_number','Meeting number'],['date','Meeting date','date'],['description','Description','textarea'],['type','Meeting type'],['academic_year','Academic year'],['minutes_link','Minutes URL','url'],['related_documents','Related documents (one URL per line)','textarea']]},
+ initiatives:{label:'Initiatives',url:'initiatives',anchor:'initiatives',fields:[['title','Title *'],['description','Short description','textarea'],['purpose','Purpose / full description','textarea'],['status','Progress','select',['PLANNED','ONGOING','COMPLETED','ON_HOLD']],['date','Start date','date'],['category','Category'],['image','Image URL','url'],['links','Related resources (one URL per line)','textarea']]},
+ resources:{label:'Resources',url:'resources',anchor:'resources',fields:[['title','Title *'],['description','Description','textarea'],['category','Category'],['file_url','File URL','url'],['external_link','External website URL','url']]},
+ calendar:{label:'Calendar',url:'calendar',anchor:'academic-calendar',fields:[['activity','Event title *'],['iso','Date *','date'],['start_time','Start time','time'],['end_time','End time','time'],['location','Location'],['description','Description','textarea'],['category','Category'],['link','Registration URL','url']]}
 };
-
-function formHTML(fields, values={}){
-  return `<form class="form" data-form>
-    ${fields.map(f=>{
-      const v=values[f.name]||'';
-      if(f.type==='textarea') return `<label>${f.label}<textarea name="${f.name}" placeholder="${f.placeholder||''}">${esc(v)}</textarea></label>`;
-      if(f.type==='select') return `<label>${f.label}<select name="${f.name}">${f.options.map(o=>`<option value="${esc(o.value)}" ${v==o.value?'selected':''}>${esc(o.label)}</option>`).join('')}</select></label>`;
-      return `<label>${f.label}<input name="${f.name}" type="${f.type||'text'}" value="${esc(String(v)).replace(/\"/g,'&quot;')}" placeholder="${f.placeholder||''}"></label>`;
-    }).join('')}
-    <div style="display:flex; gap:8px; justify-content:flex-end"><button type="button" class="btn btn--ghost btn--sm" data-cancel>Cancel</button><button type="submit" class="btn btn--red btn--sm">Save</button></div>
-  </form>`;
+let currentTab='overview', cached={};
+function statusKey(tab){return tab==='initiatives'?'status_public':'status'}
+function switchTab(tab){
+ currentTab=tab;
+ $$('.tab').forEach(b=>b.classList.toggle('is-active',b.dataset.tab===tab));
+ $$('.section').forEach(e=>e.classList.toggle('is-active',e.id==='tab-'+tab || (tab==='overview'&&e.id==='overview')));
+ if(tab==='overview') loadStats(); else renderTab(tab);
 }
-
-function listRow(item, actions){
-  return `<div class="row"><div style="flex:1; min-width:0"><b>${esc(item.title||item.activity||item.original_name||'Untitled')}</b> ${item.status?`<span class="badge ${item.status==='Published'?'badge--green': item.status==='Draft'?'':'badge--red'}">${esc(item.status)}</span>`:''}<br><span>${esc([item.category, item.date||item.iso, (item.summary||item.description||'').slice(0,80)].filter(Boolean).join(' • '))}</span></div><div style="display:flex; gap:6px; flex-wrap:wrap">${actions}</div></div>`;
-}
-
-async function renderTab(tab){
-  const el=$('#tab-'+tab);
-  if(!el) return;
-  el.innerHTML='<div class="empty">Loading…</div>';
-  try{
-    if(tab==='announcements'){
-      const rows=await api('/api/announcements');
-      el.innerHTML=`<div class="card"><div style="display:flex; justify-content:space-between; align-items:center"><h3>Announcements (${rows.length})</h3><button class="btn btn--red btn--sm" id="newAnn">+ New</button></div></div><div class="list">${rows.map(r=>listRow(r, `<button class="btn btn--ghost btn--sm" data-edit="${r.id}">Edit</button><button class="btn btn--ghost btn--sm" data-del="${r.id}">Delete</button>`)).join('')||'<div class="empty">No announcements</div>'}</div><div id="annForm"></div>`;
-      $('#newAnn').onclick=()=>showAnnForm();
-      el.querySelectorAll('[data-edit]').forEach(b=>b.onclick=async()=>{ const row=await api('/api/announcements/'+b.dataset.edit); showAnnForm(row); });
-      el.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{ if(!confirm('Delete?')) return; await api('/api/announcements/'+b.dataset.del,{method:'DELETE'}); toast('Deleted'); renderTab('announcements'); });
-    }
-    if(tab==='board'){
-      const rows=await api('/api/board-meetings');
-      el.innerHTML=`<div class="card"><div style="display:flex; justify-content:space-between"><h3>Board Meetings (${rows.length})</h3><button class="btn btn--red btn--sm" id="newBoard">+ New</button></div></div><div class="list">${rows.map(r=>listRow(r, `<button class="btn btn--ghost btn--sm" data-edit="${r.id}">Edit</button><button class="btn btn--ghost btn--sm" data-del="${r.id}">Delete</button>`)).join('')||'<div class="empty">No meetings</div>'}</div><div id="boardForm"></div>`;
-      $('#newBoard').onclick=()=>showBoardForm();
-      el.querySelectorAll('[data-edit]').forEach(b=>b.onclick=async()=>{ const row=await api('/api/board-meetings/'+b.dataset.edit); showBoardForm(row); });
-      el.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{ if(!confirm('Delete?')) return; await api('/api/board-meetings/'+b.dataset.del,{method:'DELETE'}); toast('Deleted'); renderTab('board'); });
-    }
-    if(tab==='initiatives'){
-      const rows=await api('/api/initiatives');
-      el.innerHTML=`<div class="card"><div style="display:flex; justify-content:space-between"><h3>Initiatives (${rows.length})</h3><button class="btn btn--red btn--sm" id="newInit">+ New</button></div></div><div class="list">${rows.map(r=>listRow(r, `<button class="btn btn--ghost btn--sm" data-edit="${r.id}">Edit</button><button class="btn btn--ghost btn--sm" data-del="${r.id}">Delete</button>`)).join('')||'<div class="empty">No initiatives</div>'}</div><div id="initForm"></div>`;
-      $('#newInit').onclick=()=>showInitForm();
-      el.querySelectorAll('[data-edit]').forEach(b=>b.onclick=async()=>{ const row=await api('/api/initiatives/'+b.dataset.edit); showInitForm(row); });
-      el.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{ if(!confirm('Delete?')) return; await api('/api/initiatives/'+b.dataset.del,{method:'DELETE'}); toast('Deleted'); renderTab('initiatives'); });
-    }
-    if(tab==='resources'){
-      const rows=await api('/api/resources');
-      el.innerHTML=`<div class="card"><div style="display:flex; justify-content:space-between"><h3>Resources (${rows.length})</h3><button class="btn btn--red btn--sm" id="newRes">+ New</button></div></div><div class="list">${rows.map(r=>listRow(r, `<button class="btn btn--ghost btn--sm" data-edit="${r.id}">Edit</button><button class="btn btn--ghost btn--sm" data-del="${r.id}">Delete</button>`)).join('')||'<div class="empty">No resources</div>'}</div><div id="resForm"></div>`;
-      $('#newRes').onclick=()=>showResForm();
-      el.querySelectorAll('[data-edit]').forEach(b=>b.onclick=async()=>{ const row=await api('/api/resources/'+b.dataset.edit); showResForm(row); });
-      el.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{ if(!confirm('Delete?')) return; await api('/api/resources/'+b.dataset.del,{method:'DELETE'}); toast('Deleted'); renderTab('resources'); });
-    }
-    if(tab==='calendar'){
-      const rows=await api('/api/calendar');
-      el.innerHTML=`<div class="card"><div style="display:flex; justify-content:space-between"><h3>Calendar (${rows.length}) — showing 50</h3><button class="btn btn--red btn--sm" id="newCal">+ Add</button></div></div><div class="list">${rows.slice(0,50).map(r=>listRow(r, `<button class="btn btn--ghost btn--sm" data-edit="${r.id}">Edit</button><button class="btn btn--ghost btn--sm" data-del="${r.id}">Delete</button>`)).join('')||'<div class="empty">No events</div>'}</div><div id="calForm"></div>`;
-      $('#newCal').onclick=()=>showCalForm();
-      el.querySelectorAll('[data-edit]').forEach(b=>b.onclick=async()=>{ const row=await api('/api/calendar/'+b.dataset.edit); showCalForm(row); });
-      el.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{ if(!confirm('Delete?')) return; await api('/api/calendar/'+b.dataset.del,{method:'DELETE'}); toast('Deleted'); renderTab('calendar'); });
-    }
-    if(tab==='media'){
-      const rows=await api('/api/media');
-      el.innerHTML=`<div class="card"><div style="display:flex; justify-content:space-between; align-items:center; gap:8px"><h3>Media (${rows.length})</h3><label class="btn btn--red btn--sm" style="cursor:pointer"><input type="file" id="mediaFile" hidden> Upload</label></div></div><div class="list">${rows.map(r=>`<div class="row"><div style="flex:1"><b>${esc(r.original_name)}</b><br><span>${esc(r.file_type)} • ${(r.size/1024).toFixed(1)}KB • <a href="${esc(r.url)}" target="_blank">View</a></span></div><div style="display:flex; gap:6px"><button class="btn btn--ghost btn--sm" data-copy="${esc(r.url)}">Copy URL</button><button class="btn btn--ghost btn--sm" data-del="${r.id}">Delete</button></div></div>`).join('')||'<div class="empty">No files</div>'}</div>`;
-      $('#mediaFile').onchange=async e=>{ const f=e.target.files[0]; if(!f) return; const fd=new FormData(); fd.append('file', f); const r=await fetch('/api/media/upload',{method:'POST', body:fd, credentials:'include'}); const j=await r.json(); if(!r.ok) return toast(j.error); toast('Uploaded'); renderTab('media'); };
-      el.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>{ navigator.clipboard.writeText(location.origin+b.dataset.copy); toast('Copied'); });
-      el.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{ if(!confirm('Delete?')) return; await api('/api/media/'+b.dataset.del,{method:'DELETE'}); toast('Deleted'); renderTab('media'); });
-    }
-    if(tab==='settings'){
-      const me=await api('/api/auth/me'); const settings=await api('/api/settings');
-      el.innerHTML=`<div class="card"><h3>Account — ${esc(me.email)}</h3>
-        <form class="form" id="accForm"><label>Current password<input name="currentPassword" type="password" required></label><label>New email<input name="newEmail" type="email" placeholder="new@osr.bulsu.edu.ph"></label><label>Confirm email<input name="confirmEmail" type="email"></label><label>New password<input name="newPassword" type="password"></label><label>Confirm password<input name="confirmPassword" type="password"></label><button class="btn btn--red btn--sm" type="submit">Update account</button></form></div>
-        <div class="card"><h3>Site settings (public footer)</h3>
-        <form class="form" id="siteForm"><label>Site title<input name="site_title" value="${esc(settings.site_title||'')}"></label><label>Contact email<input name="contact_email" value="${esc(settings.contact_email||'')}"></label><label>Contact phone<input name="contact_phone" value="${esc(settings.contact_phone||'')}"></label><label>Office address<input name="office_address" value="${esc(settings.office_address||'')}"></label><label>Footer credit<input name="footer_credit" value="${esc(settings.footer_credit||'')}"></label><button class="btn btn--red btn--sm" type="submit">Save settings</button></form></div>`;
-      $('#accForm').onsubmit=async e=>{ e.preventDefault(); const fd=new FormData(e.target); const data=Object.fromEntries(fd.entries()); try{ const r=await api('/api/auth/account',{method:'PATCH', body:JSON.stringify(data)}); toast('Updated: '+(r.changed||'ok')); if(r.changed?.includes('password')) setTimeout(()=>{ showAuth('login'); }, 1000); }catch(err){ toast(err.message); } };
-      $('#siteForm').onsubmit=async e=>{ e.preventDefault(); const fd=new FormData(e.target); const data=Object.fromEntries(fd.entries()); await api('/api/settings',{method:'PATCH', body:JSON.stringify(data)}); toast('Settings saved'); };
-    }
-  }catch(e){ el.innerHTML=`<div class="empty" style="color:var(--red)">Error: ${esc(e.message)}</div>`; }
-}
-
-function showAnnForm(initial={}){
-  const fields=[{label:'Title',name:'title'},{label:'Category',name:'category'},{label:'Date',name:'date',type:'date'},{label:'Summary',name:'summary',type:'textarea'},{label:'Content',name:'content',type:'textarea'},{label:'External link',name:'external_link'},{label:'Status',name:'status',type:'select',options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'},{value:'Archived',label:'Archived'}]}];
-  const wrap=$('#annForm'); wrap.innerHTML=formHTML(fields, initial);
-  wrap.querySelector('[data-cancel]').onclick=()=>wrap.innerHTML='';
-  wrap.querySelector('[data-form]').onsubmit=async e=>{ e.preventDefault(); const data=Object.fromEntries(new FormData(e.target).entries()); try{ if(initial.id) await api('/api/announcements/'+initial.id,{method:'PATCH', body:JSON.stringify(data)}); else await api('/api/announcements',{method:'POST', body:JSON.stringify(data)}); toast('Saved'); wrap.innerHTML=''; renderTab('announcements'); loadStats(); }catch(err){ toast(err.message); } };
-}
-function showBoardForm(initial={}){
-  const fields=[{label:'Meeting number',name:'meeting_number'},{label:'Date',name:'date',type:'date'},{label:'Title',name:'title'},{label:'Description',name:'description',type:'textarea'},{label:'Type',name:'type'},{label:'Academic Year',name:'academic_year'},{label:'Minutes link',name:'minutes_link'},{label:'Status',name:'status',type:'select',options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'}]}];
-  const wrap=$('#boardForm'); wrap.innerHTML=formHTML(fields, initial);
-  wrap.querySelector('[data-cancel]').onclick=()=>wrap.innerHTML='';
-  wrap.querySelector('[data-form]').onsubmit=async e=>{ e.preventDefault(); const data=Object.fromEntries(new FormData(e.target).entries()); try{ if(initial.id) await api('/api/board-meetings/'+initial.id,{method:'PATCH', body:JSON.stringify(data)}); else await api('/api/board-meetings',{method:'POST', body:JSON.stringify(data)}); toast('Saved'); wrap.innerHTML=''; renderTab('board'); loadStats(); }catch(err){ toast(err.message); } };
-}
-function showInitForm(initial={}){
-  const fields=[{label:'Title',name:'title'},{label:'Description',name:'description',type:'textarea'},{label:'Purpose',name:'purpose',type:'textarea'},{label:'Status',name:'status',type:'select',options:[{value:'ONGOING',label:'ONGOING'},{value:'PLANNED',label:'PLANNED'},{value:'COMPLETED',label:'COMPLETED'},{value:'ON_HOLD',label:'ON_HOLD'}]},{label:'Date',name:'date',type:'date'},{label:'Category',name:'category'},{label:'Status public',name:'status_public',type:'select',options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'}]}];
-  const wrap=$('#initForm'); wrap.innerHTML=formHTML(fields, initial);
-  wrap.querySelector('[data-cancel]').onclick=()=>wrap.innerHTML='';
-  wrap.querySelector('[data-form]').onsubmit=async e=>{ e.preventDefault(); const data=Object.fromEntries(new FormData(e.target).entries()); try{ if(initial.id) await api('/api/initiatives/'+initial.id,{method:'PATCH', body:JSON.stringify(data)}); else await api('/api/initiatives',{method:'POST', body:JSON.stringify(data)}); toast('Saved'); wrap.innerHTML=''; renderTab('initiatives'); loadStats(); }catch(err){ toast(err.message); } };
-}
-function showResForm(initial={}){
-  const fields=[{label:'Title',name:'title'},{label:'Description',name:'description',type:'textarea'},{label:'Category',name:'category'},{label:'File URL',name:'file_url'},{label:'External link',name:'external_link'},{label:'Status',name:'status',type:'select',options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'}]}];
-  const wrap=$('#resForm'); wrap.innerHTML=formHTML(fields, initial);
-  wrap.querySelector('[data-cancel]').onclick=()=>wrap.innerHTML='';
-  wrap.querySelector('[data-form]').onsubmit=async e=>{ e.preventDefault(); const data=Object.fromEntries(new FormData(e.target).entries()); try{ if(initial.id) await api('/api/resources/'+initial.id,{method:'PATCH', body:JSON.stringify(data)}); else await api('/api/resources',{method:'POST', body:JSON.stringify(data)}); toast('Saved'); wrap.innerHTML=''; renderTab('resources'); loadStats(); }catch(err){ toast(err.message); } };
-}
-function showCalForm(initial={}){
-  const fields=[{label:'Activity',name:'activity'},{label:'Date label',name:'date'},{label:'Day',name:'day'},{label:'Month',name:'month'},{label:'Category',name:'category',type:'select',options:[{value:'General',label:'General'},{value:'Enrollment',label:'Enrollment'},{value:'Holiday',label:'Holiday'},{value:'Examinations',label:'Examinations'},{value:'Academic',label:'Academic'},{value:'Graduation',label:'Graduation'}]},{label:'ISO date',name:'iso',type:'date'},{label:'Status',name:'status',type:'select',options:[{value:'Draft',label:'Draft'},{value:'Published',label:'Published'}]}];
-  const wrap=$('#calForm'); wrap.innerHTML=formHTML(fields, initial);
-  wrap.querySelector('[data-cancel]').onclick=()=>wrap.innerHTML='';
-  wrap.querySelector('[data-form]').onsubmit=async e=>{ e.preventDefault(); const data=Object.fromEntries(new FormData(e.target).entries()); try{ if(initial.id) await api('/api/calendar/'+initial.id,{method:'PATCH', body:JSON.stringify(data)}); else await api('/api/calendar',{method:'POST', body:JSON.stringify(data)}); toast('Saved'); wrap.innerHTML=''; renderTab('calendar'); loadStats(); }catch(err){ toast(err.message); } };
-}
-
+$('#tabs').onclick=e=>{const b=e.target.closest('[data-tab]');if(b) switchTab(b.dataset.tab)};
+$('#guideBtn').onclick=()=>{const p=$('#guidePanel');p.hidden=!p.hidden;$('#guideBtn').setAttribute('aria-expanded',String(!p.hidden))};
+$('#guideClose').onclick=()=>{$('#guidePanel').hidden=true;$('#guideBtn').setAttribute('aria-expanded','false');sessionStorage.setItem('osr-guide-closed','1')};
 async function loadStats(){
-  try{
-    const d=await api('/api/dashboard');
-    $('#stats').innerHTML=`<div class="stat"><b>Announcements</b><strong>${d.cards.publishedAnn}</strong><span class="mono" style="font-size:11px; color:var(--stone)">${d.cards.draftAnn} drafts</span></div><div class="stat"><b>Board Meetings</b><strong>${d.cards.upcomingBoard}</strong></div><div class="stat"><b>Initiatives</b><strong>${d.cards.activeInit}</strong></div><div class="stat"><b>Resources</b><strong>${d.cards.resources}</strong></div><div class="stat"><b>Calendar</b><strong>${d.cards.upcomingCal}</strong></div><div class="stat"><b>Pulse</b><strong>${d.cards.pulseResponses}</strong></div>`;
-  }catch{ $('#stats').innerHTML='<div class="empty">Stats unavailable</div>'; }
+ const e=$('#stats');e.innerHTML='<div class="empty">Loading dashboard…</div>';
+ try{const d=await api('/api/dashboard'),c=d.cards;
+ e.innerHTML=[['Published announcements',c.publishedAnn],['Upcoming events',c.upcomingCal],['Board meetings',c.upcomingBoard],['Active initiatives',c.activeInit],['Resources',c.resources],['Recent updates',c.lastUpdated?.slice(0,10)||'—']].map(([k,v])=>`<div class="stat"><b>${esc(k)}</b><strong>${esc(v)}</strong></div>`).join('');
+ $('#activity').innerHTML=d.recent.map(r=>`<div class="row"><div><b>${esc(r.action)}</b><br><span>${esc(r.created_at)} · ${esc(r.admin_email)}</span></div></div>`).join('')||'<div class="empty">No activity yet.</div>';
+ }catch(err){e.innerHTML=`<div class="err show">${esc(err.message)}</div>`}
 }
-
-async function initAdmin(){
-  showAdmin();
-  await loadStats();
-  await renderTab(currentTab);
+function publicLink(tab,r){
+ if(tab==='media')return r.url;
+ if(r[statusKey(tab)]!=='Published')return '';
+ const hash=modules[tab].anchor;
+ if(tab==='announcements'||tab==='board'||tab==='initiatives')return '/#'+hash+'?'+({announcements:'ann',board:'board',initiatives:'init'}[tab])+'='+encodeURIComponent(r.id);
+ return '/#'+hash;
 }
+function fieldHTML([name,label,type,opts],r){
+ let value=r[name]??'';
+ if(['related_documents','links'].includes(name))value=Array.isArray(value)?value.map(x=>x.href).join('\n'):'';
+ const required=(name==='title'||(name==='activity'&& !r.id)||name==='iso'&& !r.id)?' required':'';
+ if(type==='textarea')return `<label>${esc(label)}<textarea name="${name}"${required}>${esc(value)}</textarea></label>`;
+ if(type==='select')return `<label>${esc(label)}<select name="${name}">${opts.map(v=>`<option value="${v}" ${v===value?'selected':''}>${v.replaceAll('_',' ')}</option>`).join('')}</select></label>`;
+ return `<label>${esc(label)}<input name="${name}" type="${type||'text'}" value="${esc(value)}"${required}></label>`;
+}
+function form(tab,r={}){
+ const m=modules[tab],e=$('#editor-'+tab);
+ e.innerHTML=`<form class="form"><h3>${r.id?'Edit':'Add'} ${m.label}</h3>${m.fields.map(f=>fieldHTML(f,r)).join('')}<label>Visibility<select name="${statusKey(tab)}">${['Draft','Published','Archived'].map(v=>`<option ${r[statusKey(tab)]===v?'selected':''}>${v}</option>`).join('')}</select></label><div class="err" role="alert"></div><div class="actions"><button type="button" class="btn btn--ghost" data-cancel>Cancel</button><button class="btn btn--red" type="submit">${r.id?'Save changes':'Create'}</button></div></form>`;
+ e.scrollIntoView({behavior:'smooth',block:'start'});
+ e.querySelector('[data-cancel]').onclick=()=>e.innerHTML='';
+ e.querySelector('form').onsubmit=async ev=>{
+ ev.preventDefault();const button=e.querySelector('[type=submit]');button.disabled=true;button.textContent='Saving…';
+ const data=Object.fromEntries(new FormData(ev.target));
+ if(tab==='calendar'){data.title=data.activity;data.date=data.iso; if(data.iso){const d=new Date(data.iso+'T12:00:00');data.day=d.toLocaleString('en',{weekday:'short'});data.month=d.toLocaleString('en',{month:'long',year:'numeric'});}}
+ for(const key of ['related_documents','links'])if(key in data)data[key]=data[key].split('\n').map(x=>x.trim()).filter(Boolean).map(href=>({href,label:'Document'}));
+ try{await api('/api/'+m.url+(r.id?'/'+encodeURIComponent(r.id):''),{method:r.id?'PATCH':'POST',body:JSON.stringify(data)});
+ toast(`${m.label} saved successfully.`); await renderTab(tab); loadStats();
+ }catch(err){const box=e.querySelector('.err');box.textContent=err.message;box.classList.add('show');button.disabled=false;button.textContent='Try saving again';}
+ };
+}
+async function renderTab(tab){
+ if(tab==='settings')return renderSettings();
+ if(tab==='media')return renderMedia();
+ const m=modules[tab],e=$('#tab-'+tab);e.innerHTML='<div class="empty">Loading '+m.label+'…</div>';
+ try{const rows=await api('/api/'+m.url);cached[tab]=rows;
+ e.innerHTML=`<div class="card"><div class="section-head"><div><h3>${m.label}</h3><span class="mono">${rows.length} records · Drafts stay private</span></div><button class="btn btn--red" data-new>+ Add ${tab==='calendar'?'event':'new'}</button></div><div class="filters"><input type="search" aria-label="Search" placeholder="Search ${m.label.toLowerCase()}…" data-search><select aria-label="Filter status" data-status><option value="">All statuses</option>${['Draft','Published','Archived'].map(x=>`<option>${x}</option>`).join('')}</select><select aria-label="Sort order" data-sort><option value="new">Newest first</option><option value="old">Oldest first</option></select></div></div><div id="records-${tab}" class="list"></div><div id="editor-${tab}"></div>`;
+ e.querySelector('[data-new]').onclick=()=>form(tab);
+ const paint=()=>{
+ const q=e.querySelector('[data-search]').value.toLowerCase(),status=e.querySelector('[data-status]').value;
+ const list=rows.filter(r=>(!status||r[statusKey(tab)]===status)&&(!q||JSON.stringify([r.title,r.activity,r.description,r.summary,r.category]).toLowerCase().includes(q))).sort((a,b)=>((a.created_at||a.date||a.iso||'').localeCompare(b.created_at||b.date||b.iso||''))*(e.querySelector('[data-sort]').value==='new'?-1:1));
+ e.querySelector('#records-'+tab).innerHTML=list.map(r=>`<article class="row record"><div class="record-main"><b>${esc(r.title||r.activity)}</b> <span class="badge ${r[statusKey(tab)]==='Published'?'badge--green':''}">${esc(r[statusKey(tab)])}</span><br><span>${esc([r.category,r.date||r.iso,r.summary||r.description].filter(Boolean).join(' · ').slice(0,170))}</span><br><span class="mono">Created ${esc(r.created_at?.slice(0,10)||'—')} · Updated ${esc(r.updated_at?.slice(0,10)||'—')}</span></div><div class="actions"><button class="btn btn--ghost btn--sm" data-edit="${esc(r.id)}">Edit</button><button class="btn btn--ghost btn--sm" data-toggle="${esc(r.id)}">${r[statusKey(tab)]==='Published'?'Unpublish':'Publish'}</button><button class="btn btn--ghost btn--sm" data-archive="${esc(r.id)}">Archive</button>${publicLink(tab,r)?`<a class="btn btn--ghost btn--sm" target="_blank" rel="noopener" href="${publicLink(tab,r)}">Public site ↗</a>`:''}</div></article>`).join('')||'<div class="empty">No matching records. Add one or adjust the filters.</div>';
+ };
+ e.querySelectorAll('.filters input,.filters select').forEach(el=>el.oninput=paint);paint();
+ e.onclick=async ev=>{
+ const btn=ev.target.closest('[data-edit],[data-toggle],[data-archive]');if(!btn||btn.disabled)return;
+ const id=btn.dataset.edit||btn.dataset.toggle||btn.dataset.archive,r=rows.find(x=>x.id===id);if(!r)return;
+ if(btn.dataset.edit){form(tab,r);return;}
+ const action=btn.dataset.archive?'archive':r[statusKey(tab)]==='Published'?'unpublish':'publish';
+ if(action==='archive'&&!confirm(`Archive “${r.title||r.activity}”? It will disappear from public listings, but can be restored.`))return;
+ btn.disabled=true;btn.textContent=action==='archive'?'Archiving…':'Updating…';
+ try{await api('/api/'+m.url+'/'+encodeURIComponent(id),{method:'PATCH',body:JSON.stringify({[statusKey(tab)]:action==='archive'?'Archived':action==='publish'?'Published':'Draft'})});toast(`${m.label} ${action==='archive'?'archived':action==='publish'?'published':'unpublished'}.`);await renderTab(tab);loadStats();}catch(err){toast('Not saved: '+err.message);btn.disabled=false;btn.textContent='Retry';}
+ };
+ }catch(err){e.innerHTML=`<div class="err show">Could not load ${esc(m.label)}: ${esc(err.message)} <button class="btn btn--ghost" data-retry>Retry</button></div>`;e.querySelector('[data-retry]').onclick=()=>renderTab(tab)}
+}
+async function renderMedia(){
+ const e=$('#tab-media');e.innerHTML='<div class="empty">Loading media…</div>';
+ try{const rows=await api('/api/media');e.innerHTML=`<div class="card"><h3>Media library</h3><p>Use a lightweight HTTPS image link, or upload a JPEG, PNG or WebP (max 3 MB).</p><form class="form" id="mediaForm"><label>Title *<input name="title" required></label><label>Image URL *<input name="url" type="url" required placeholder="https://…"></label><label>Caption<input name="caption"></label><label>Category<input name="category"></label><label>Visibility<select name="status"><option>Draft</option><option>Published</option></select></label><button class="btn btn--red">Add image link</button></form><label class="btn btn--ghost" style="margin-top:10px">Upload file <input id="mediaFile" type="file" accept="image/jpeg,image/png,image/webp" style="max-width:180px"></label></div><div class="media-grid">${rows.map(r=>`<div class="card media-card">${r.file_type?.startsWith('image/')?`<img loading="lazy" src="${esc(r.url)}" alt="${esc(r.title||r.original_name)}">`:''}<b>${esc(r.title||r.original_name)}</b><p>${esc(r.caption||r.file_type||'')} · ${esc(r.status||'Published')}</p><div class="actions"><button class="btn btn--ghost btn--sm" data-edit="${esc(r.id)}">Edit</button><button class="btn btn--ghost btn--sm" data-archive="${esc(r.id)}">Archive</button><a class="btn btn--ghost btn--sm" href="${esc(r.url)}" target="_blank" rel="noopener">Open ↗</a></div></div>`).join('')||'<div class="empty">No media yet.</div>'}</div><div id="mediaEdit"></div>`;
+ $('#mediaForm').onsubmit=ev=>submitForm(ev,'/api/media/link',()=>renderMedia());
+ $('#mediaFile').onchange=async ev=>{const f=ev.target.files[0];if(!f)return;if(f.size>3*1024*1024)return toast('File exceeds 3 MB');const fd=new FormData();fd.append('file',f);ev.target.disabled=true;try{await api('/api/media/upload',{method:'POST',body:fd});toast('Upload saved');await renderMedia()}catch(err){toast('Upload failed: '+err.message);ev.target.disabled=false}};
+ e.onclick=async ev=>{const b=ev.target.closest('[data-edit],[data-archive]');if(!b)return;const r=rows.find(x=>x.id===(b.dataset.edit||b.dataset.archive));if(!r)return;
+ if(b.dataset.archive){if(!confirm(`Archive “${r.title||r.original_name}”?`))return;b.disabled=true;try{await api('/api/media/'+encodeURIComponent(r.id),{method:'DELETE'});toast('Media archived');renderMedia()}catch(err){toast(err.message);b.disabled=false}return;}
+ const box=$('#mediaEdit');box.innerHTML=`<form class="form"><h3>Edit ${esc(r.title||r.original_name)}</h3>${['title','caption','category'].map(k=>`<label>${k}<input name="${k}" value="${esc(r[k]||'')}"></label>`).join('')}<label>Status<select name="status">${['Draft','Published','Archived'].map(x=>`<option ${r.status===x?'selected':''}>${x}</option>`).join('')}</select></label><button class="btn btn--red">Save media</button><button type="button" class="btn btn--ghost" data-cancel>Cancel</button></form>`;box.querySelector('[data-cancel]').onclick=()=>box.innerHTML='';box.querySelector('form').onsubmit=ev=>submitForm(ev,'/api/media/'+encodeURIComponent(r.id),()=>renderMedia(),'PATCH');box.scrollIntoView();
+ };
+ }catch(err){e.innerHTML=`<div class="err show">Media unavailable: ${esc(err.message)}</div>`}
+}
+async function submitForm(ev,path,done,method='POST'){
+ ev.preventDefault();const btn=ev.target.querySelector('button[type=submit],button:not([type])');btn.disabled=true;btn.textContent='Saving…';
+ try{await api(path,{method,body:JSON.stringify(Object.fromEntries(new FormData(ev.target)))});toast('Saved successfully');await done()}catch(err){toast('Not saved: '+err.message);btn.disabled=false;btn.textContent='Try again'}
+}
+async function renderSettings(){
+ const e=$('#tab-settings');e.innerHTML='<div class="empty">Loading settings…</div>';
+ try{const me=await api('/api/auth/me');const superAdmin=me.role==='super_admin';const settings=superAdmin?await api('/api/settings'):{};
+ e.innerHTML=`<div class="card"><h3>My account · ${esc(me.email)}</h3><form class="form" id="accountForm"><label>Name<input name="name" value="${esc(me.name)}"></label><label>New email<input type="email" name="newEmail" placeholder="Leave blank to keep current email"></label><label>Confirm new email<input type="email" name="confirmEmail"></label><label>New password<input type="password" name="newPassword" placeholder="Leave blank to keep password"></label><label>Confirm new password<input type="password" name="confirmPassword"></label><label><input type="checkbox" name="logoutOthers" value="true" style="width:auto"> Log out other sessions</label><label>Current password *<input type="password" name="currentPassword" required></label><button class="btn btn--red">Update account</button></form></div>${superAdmin?`<div class="card"><h3>Site information</h3><form class="form" id="siteForm">${[['site_title','OSR name'],['site_description','Description'],['contact_email','Contact email'],['contact_phone','Contact phone'],['office_address','Office address'],['official_page','Official page'],['social_facebook','Facebook'],['social_instagram','Instagram'],['homepage_intro','Homepage introduction'],['footer_credit','Footer information']].map(([k,l])=>`<label>${l}<input name="${k}" value="${esc(settings[k]||'')}"></label>`).join('')}<button class="btn btn--red">Save site information</button></form></div><div class="card"><h3>Admin users</h3><div id="adminUsers">Loading…</div></div>`:''}`;
+ $('#accountForm').onsubmit=ev=>{ev.preventDefault();const data=Object.fromEntries(new FormData(ev.target));data.logoutOthers=data.logoutOthers==='true';const b=ev.target.querySelector('button');b.disabled=true;b.textContent='Updating…';api('/api/auth/account',{method:'PATCH',body:JSON.stringify(data)}).then(()=>{toast('Account updated');renderSettings()}).catch(err=>{toast('Not saved: '+err.message);b.disabled=false;b.textContent='Update account'})};
+ if(superAdmin){$('#siteForm').onsubmit=ev=>submitForm(ev,'/api/settings',()=>renderSettings(),'PATCH');renderUsers()}
+ }catch(err){e.innerHTML=`<div class="err show">Settings unavailable: ${esc(err.message)}</div>`}
+}
+async function renderUsers(){
+ const e=$('#adminUsers');try{const rows=await api('/api/admin-users');e.innerHTML=`<div class="list">${rows.map(r=>`<div class="row record"><div class="record-main"><b>${esc(r.name)}</b><br><span>${esc(r.email)} · ${esc(r.role)} · ${r.active?'Active':'Inactive'} · Created ${esc(r.created_at?.slice(0,10))} · Last login ${esc(r.last_login||'Never')}</span></div><div class="actions"><button class="btn btn--ghost btn--sm" data-role="${r.id}">${r.role==='admin'?'Make super admin':'Make admin'}</button><button class="btn btn--ghost btn--sm" data-active="${r.id}">${r.active?'Deactivate':'Activate'}</button></div></div>`).join('')}</div><form class="form" id="addUser"><h3>Add administrator</h3><label>Name<input name="name" required></label><label>Email<input type="email" name="email" required></label><label>Role<select name="role"><option value="admin">Admin</option><option value="super_admin">Super admin</option></select></label><button class="btn btn--red">Create account</button></form><div id="temporaryPassword" class="ok" role="status"></div>`;
+ $('#addUser').onsubmit=async ev=>{ev.preventDefault();const b=ev.target.querySelector('button');b.disabled=true;b.textContent='Creating…';try{const result=await api('/api/admin-users',{method:'POST',body:JSON.stringify(Object.fromEntries(new FormData(ev.target)))});await renderUsers();const notice=$('#temporaryPassword');notice.textContent=`Temporary password for ${result.record.email}: ${result.temporaryPassword} — copy it now and ask them to change it on first login. It will not be shown again.`;notice.classList.add('show')}catch(err){toast(err.message);b.disabled=false;b.textContent='Create account'}};
+ e.onclick=async ev=>{const b=ev.target.closest('[data-role],[data-active]');if(!b)return;const r=rows.find(x=>x.id===(Number(b.dataset.role||b.dataset.active)));if(!r)return;if(!confirm(`Change access for ${r.email}?`))return;b.disabled=true;try{await api('/api/admin-users/'+r.id,{method:'PATCH',body:JSON.stringify(b.dataset.role?{role:r.role==='admin'?'super_admin':'admin'}:{active:r.active?0:1})});toast('Access updated');renderUsers()}catch(err){toast(err.message);b.disabled=false}};
+ }catch(err){e.textContent='Could not load users: '+err.message}
+}
+async function initAdmin(){showAdmin();$('#guidePanel').hidden=true;switchTab('overview')}
 
 // start
 checkAuthAndSetup();

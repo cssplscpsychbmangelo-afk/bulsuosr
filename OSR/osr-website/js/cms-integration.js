@@ -108,7 +108,7 @@
   }
 
   function patchAnnouncements(data){
-    if(!data || !data.length) return;
+    if(!Array.isArray(data)) return;
     const mapped = data.map(a => ({
       id: a.id,
       title: a.title,
@@ -116,7 +116,7 @@
       date: a.date || '',
       summary: a.summary || '',
       content: a.content || '',
-      externalLink: a.external_link || '',
+      externalLink: safeLink(a.external_link),
       image: a.image || '',
       is_featured: !!a.is_featured
     }));
@@ -129,19 +129,50 @@
   }
 
   function patchResources(data){
-    if(!data || !data.length) return;
+    if(!Array.isArray(data)) return;
     const mapped = data.map(r => ({
       id: r.id,
       title: r.title,
       category: r.category || 'GENERAL',
       description: r.description || '',
-      link: r.external_link || r.file_url || '#'
+      link: safeLink(r.external_link || r.file_url) || '#'
     }));
     if(replaceArray(window.RESOURCES || (typeof RESOURCES !== 'undefined' ? RESOURCES : null), mapped)){
       try{ window.renderResources && window.renderResources(); }catch(e){ console.warn('[CMS] re-render resources failed', e); }
       console.log('[CMS] Resources hydrated:', mapped.length);
     }
     window.__CMS_RESOURCES = data;
+  }
+
+  function safeLink(url){ try { const u=new URL(url,location.origin); return ['http:','https:'].includes(u.protocol) ? u.href : ''; } catch { return ''; } }
+  function patchBoard(data){
+    if(!Array.isArray(data)) return;
+    replaceArray(typeof BOARD_MEETINGS !== 'undefined' ? BOARD_MEETINGS : null, data.map(b=>({
+      id:b.id, title:b.title, meetingNumber:b.meeting_number||'', date:b.date||'',
+      academicYear:b.academic_year||'', type:b.type||'', description:b.description||'',
+      minutesLink:safeLink(b.minutes_link), relatedDocuments:Array.isArray(b.related_documents)?b.related_documents.filter(d=>safeLink(d.href)).map(d=>({...d,href:safeLink(d.href)})):[]
+    })));
+    if(typeof renderBoard === 'function') renderBoard();
+  }
+  function patchInitiatives(data){
+    if(!Array.isArray(data)) return;
+    replaceArray(typeof INITIATIVES !== 'undefined' ? INITIATIVES : null, data.map(i=>({
+      id:i.id, title:i.title, description:i.description||'', purpose:i.purpose||'',
+      status:i.status||'PLANNED', date:i.date||'', category:i.category||'', image:i.image||'',
+      links:Array.isArray(i.links)?i.links.filter(d=>safeLink(d.href)).map(d=>({...d,href:safeLink(d.href)})):[]
+    })));
+    if(typeof renderInitiatives === 'function') renderInitiatives();
+  }
+  function patchCalendar(data){
+    if(!Array.isArray(data)) return;
+    replaceArray(typeof ACADEMIC_CALENDAR !== 'undefined' ? ACADEMIC_CALENDAR : null, data.map(e=>({
+      ...e, date:e.date||e.iso?.slice(8)||'', month:e.month|| (e.iso ? new Date(e.iso+'T12:00:00').toLocaleString('en',{month:'long',year:'numeric'}) : ''),
+      day:e.day|| (e.iso ? new Date(e.iso+'T12:00:00').toLocaleString('en',{weekday:'short'}) : '')
+    })));
+    const month=document.getElementById('calMonth');
+    if(month) { month.innerHTML='<option value="all">All months</option>'; if(typeof populateCalMonths === 'function') populateCalMonths(); }
+    if(typeof renderCalendar === 'function') renderCalendar();
+    if(typeof updateUpNext === 'function') updateUpNext();
   }
 
   // Apply admin-managed site settings (Settings → Website settings) to the
@@ -165,7 +196,7 @@
     text('hcOffice', s.office_address);
     tel('hcPhone', s.contact_phone);
     text('hcHours', s.office_hours);
-    href('hcPage', s.official_page);
+    href('hcPage', safeLink(s.official_page));
     href('hcMailto', s.contact_email ? 'mailto:' + s.contact_email : null);
 
     mail('acEmail', s.contact_email);
@@ -175,6 +206,7 @@
     href('acMailto', s.contact_email ? 'mailto:' + s.contact_email : null);
 
     if(s.site_title) document.title = s.site_title;
+    if(s.homepage_intro) { const intro=document.querySelector('#page-home .hero p'); if(intro) intro.textContent=s.homepage_intro; }
 
     // Keep the copy-contact block in sync with whatever the admin saved.
     window.OSR_CONTACT = Object.assign(window.OSR_CONTACT || {}, {
@@ -308,9 +340,9 @@
     setTimeout(()=>{
       if(anns) patchAnnouncements(anns);
       if(ress) patchResources(ress);
-      // Other types (board, initiatives, calendar) stay on the built-in
-      // content until their renderers support hydration; the data is kept
-      // on window.__CMS_DATA for future use.
+      if(boards) patchBoard(boards);
+      if(inits) patchInitiatives(inits);
+      if(cals) patchCalendar(cals);
       console.log('[CMS] Data hydrated', window.__CMS_DATA);
 
       // Trigger a custom event so the original script could react if it listens

@@ -19,7 +19,7 @@ test('local SQLite initialization, seed and async rollback still work', async ()
       db.prepare('DELETE FROM admins').run();
       throw new Error('rollback');
     })());
-    assert.equal(db.prepare('SELECT COUNT(*) AS c FROM admins').get().c, 1);
+    assert.equal(db.prepare('SELECT COUNT(*) AS c FROM admins').get().c, 0);
 
     const app = createApp(db);
     const server = await new Promise(resolve => {

@@ -1,7 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import rateLimit from 'express-rate-limit';
-import { authRequired, signToken } from '../middleware/auth.js';
+import { authRequired, superAdminRequired, signToken } from '../middleware/auth.js';
 
 const router = express.Router();
 const cookieOptions = {
@@ -22,19 +22,20 @@ const loginLimiter = rateLimit({
 router.post('/login', loginLimiter, async (req, res) => {
   const db = req.app.locals.db;
   const { email, password, remember } = req.body;
-  if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
-  const admin = (await db.prepare('SELECT * FROM admins WHERE email=?').get(email.trim().toLowerCase()));
-  if (!admin) return res.status(401).json({ error: 'Invalid credentials' });
-  const ok = bcrypt.compareSync(password, admin.password_hash);
+  if (typeof email !== 'string' || typeof password !== 'string') return res.status(400).json({ error: 'Email and password required' });
+  const admin = (await db.prepare('SELECT * FROM admins WHERE email=?').get(String(email).trim().toLowerCase()));
+  if (!admin || !admin.active) return res.status(401).json({ error: 'Invalid credentials' });
+  const ok = typeof password === 'string' && bcrypt.compareSync(password, admin.password_hash);
   if (!ok) return res.status(401).json({ error: 'Invalid credentials' });
   const keepSession = remember === true || remember === 'true';
+  await db.prepare("UPDATE admins SET last_login=datetime('now') WHERE id=?").run(admin.id);
   const token = signToken(admin, keepSession);
   const maxAge = keepSession ? 30 * 24 * 60 * 60 * 1000 : 8 * 60 * 60 * 1000;
   res.cookie('token', token, { ...cookieOptions, maxAge });
   // log activity
   try { (await db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type) VALUES (?,?,?,?)').run(admin.id, admin.email, 'Login', 'auth')); } catch {}
   // The credential is sent only as an HttpOnly cookie, never exposed to JS.
-  res.json({ ok: true, admin: { id: admin.id, email: admin.email, name: admin.name } });
+  res.json({ ok: true, admin: { id: admin.id, email: admin.email, name: admin.name, role: admin.role } });
 });
 
 router.post('/logout', (req, res) => {
@@ -44,7 +45,7 @@ router.post('/logout', (req, res) => {
 
 router.get('/me', authRequired, async (req,res)=>{
   const db = req.app.locals.db;
-  const admin = (await db.prepare('SELECT id, email, name, created_at FROM admins WHERE id=?').get(req.admin.id));
+  const admin = (await db.prepare('SELECT id, email, name, role, created_at, last_login FROM admins WHERE id=?').get(req.admin.id));
   if (!admin) return res.status(401).json({ error: 'Not found' });
   res.json(admin);
 });
@@ -53,13 +54,13 @@ router.patch('/account', authRequired, async (req,res)=>{
   const db = req.app.locals.db;
   const admin = (await db.prepare('SELECT * FROM admins WHERE id=?').get(req.admin.id));
   if (!admin) return res.status(401).json({ error: 'Not found' });
-  const { currentPassword, newEmail, confirmEmail, newPassword, confirmPassword } = req.body;
+  const { currentPassword, newEmail, confirmEmail, newPassword, confirmPassword, name, logoutOthers } = req.body;
 
   // Verify current password for any change
-  if ((newEmail || newPassword) && !currentPassword) {
+  if ((newEmail || newPassword || name?.trim() !== admin.name || logoutOthers) && !currentPassword) {
     return res.status(400).json({ error: 'Current password required' });
   }
-  if ((newEmail || newPassword) && !bcrypt.compareSync(currentPassword, admin.password_hash)) {
+  if ((newEmail || newPassword || name?.trim() !== admin.name || logoutOthers) && !bcrypt.compareSync(currentPassword, admin.password_hash)) {
     return res.status(401).json({ error: 'Current password incorrect' });
   }
 
@@ -70,7 +71,7 @@ router.patch('/account', authRequired, async (req,res)=>{
   if (newEmail) {
     const normalizedEmail = newEmail.trim().toLowerCase();
     if (normalizedEmail !== String(confirmEmail || '').trim().toLowerCase()) return res.status(400).json({ error: 'Emails do not match' });
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) return res.status(400).json({ error: 'Invalid email' });
+    if (normalizedEmail.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) return res.status(400).json({ error: 'Invalid email' });
     const exists = (await db.prepare('SELECT id FROM admins WHERE email=? AND id != ?').get(normalizedEmail, admin.id));
     if (exists) return res.status(409).json({ error: 'Email already in use' });
     email = normalizedEmail;
@@ -79,19 +80,21 @@ router.patch('/account', authRequired, async (req,res)=>{
 
   if (newPassword) {
     if (newPassword !== confirmPassword) return res.status(400).json({ error: 'Passwords do not match' });
-    if (newPassword.length < 8) return res.status(400).json({ error: 'Password must be at least 8 characters' });
+    if (newPassword.length < 12) return res.status(400).json({ error: 'Password must be at least 12 characters' });
     if (!/[A-Z]/.test(newPassword) || !/[0-9]/.test(newPassword)) return res.status(400).json({ error: 'Password must include uppercase and number' });
-    password_hash = bcrypt.hashSync(newPassword, 10);
+    password_hash = bcrypt.hashSync(newPassword, 12);
     changed.push('password');
   }
 
+  if (name && name.trim() !== admin.name) { if (typeof name !== 'string' || name.trim().length > 100) return res.status(400).json({error:'Invalid name'}); changed.push('name'); }
+  if (logoutOthers === true) changed.push('sessions');
   if (changed.length === 0) return res.status(400).json({ error: 'No changes' });
 
-  (await db.prepare("UPDATE admins SET email=?, password_hash=?, updated_at=datetime('now') WHERE id=?").run(email, password_hash, admin.id));
+  (await db.prepare("UPDATE admins SET email=?, password_hash=?, name=?, session_version=?, updated_at=datetime('now') WHERE id=?").run(email, password_hash, name?.trim() || admin.name, admin.session_version + (newPassword || logoutOthers === true ? 1 : 0), admin.id));
   try { (await db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type, details) VALUES (?,?,?,?,?)').run(admin.id, admin.email, `Updated account: ${changed.join(', ')}`, 'admin', JSON.stringify({ newEmail: email }))); } catch {}
 
   // Refresh the HttpOnly session after the account email changes.
-  const newToken = signToken({ id: admin.id, email });
+  const newToken = signToken({ id: admin.id, email, session_version: admin.session_version + (newPassword || logoutOthers === true ? 1 : 0) });
   res.cookie('token', newToken, { ...cookieOptions, maxAge: 8 * 60 * 60 * 1000 });
 
   res.json({ ok: true, email, changed });
@@ -102,34 +105,37 @@ router.get('/setup-status', async (req, res) => {
   const db = req.app.locals.db;
   try {
     const count = (await db.prepare('SELECT COUNT(*) as c FROM admins').get()).c;
-    res.json({ needsSetup: count === 0, count });
+    res.json({ needsSetup: count === 0 });
   } catch (e) {
-    res.json({ needsSetup: false, count: 1 });
+    res.status(503).json({ error: 'Database unavailable' });
   }
 });
 
 // Create first admin when none exists — no auth required, self-contained
-router.post('/setup', async (req, res) => {
+router.post('/setup', loginLimiter, async (req, res) => {
   const db = req.app.locals.db;
-  const count = (await db.prepare('SELECT COUNT(*) as c FROM admins').get()).c;
-  if (count > 0) return res.status(403).json({ error: 'Setup already completed — admin exists' });
 
   const { email, password, name } = req.body;
-  if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
+  if (typeof email !== 'string' || typeof password !== 'string') return res.status(400).json({ error: 'Email and password required' });
   const normalizedEmail = String(email).trim().toLowerCase();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) return res.status(400).json({ error: 'Invalid email' });
-  if (String(password).length < 8) return res.status(400).json({ error: 'Password must be at least 8 characters' });
+  if (normalizedEmail.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) return res.status(400).json({ error: 'Invalid email' });
+  if (String(password).length < 12 || !/[A-Z]/.test(password) || !/[0-9]/.test(password)) return res.status(400).json({ error: 'Password must be at least 12 characters with uppercase and number' });
 
-  const hash = bcrypt.hashSync(String(password), 10);
+  const hash = bcrypt.hashSync(String(password), 12);
   try {
-    (await db.prepare('INSERT INTO admins (email, password_hash, name) VALUES (?,?,?)').run(normalizedEmail, hash, name || 'OSR Administrator'));
+    const result = await db.transaction(async () => {
+      if (db.query) await db.query('SELECT pg_advisory_xact_lock(1869836851)');
+      if ((await db.prepare('SELECT COUNT(*) as c FROM admins').get()).c) return null;
+      return db.prepare('INSERT INTO admins (email, password_hash, name) VALUES (?,?,?)').run(normalizedEmail, hash, typeof name === 'string' ? name.slice(0,100) : 'OSR Administrator');
+    })();
+    if (!result) return res.status(403).json({error:'Setup already completed'});
   } catch (e) {
     if (String(e.message).toLowerCase().includes('unique') || String(e.code) === '23505') {
       return res.status(409).json({ error: 'Admin already exists' });
     }
     throw e;
   }
-  console.log(`[Auth] First admin created via setup: ${normalizedEmail}`);
+  console.log('[Auth] First admin created');
   res.json({ ok: true, email: normalizedEmail });
 });
 

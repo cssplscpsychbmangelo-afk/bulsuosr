@@ -19,23 +19,27 @@ function getJwtSecret() {
   return process.env.JWT_SECRET;
 }
 
-export function authRequired(req, res, next) {
-  const authorization = req.headers.authorization || '';
-  const bearerToken = authorization.startsWith('Bearer ') ? authorization.slice(7) : null;
-  const token = req.cookies?.token || bearerToken;
-  if (!token) return res.status(401).json({ error: 'Unauthorized' });
-
+export async function authRequired(req, res, next) {
+  const token = req.cookies?.token;
+  if (!token) return res.status(401).json({ error: 'Sign in required' });
   try {
-    req.admin = jwt.verify(token, getJwtSecret());
+    const payload = jwt.verify(token, getJwtSecret());
+    const admin = await req.app.locals.db.prepare('SELECT id, email, name, role, active, session_version FROM admins WHERE id=?').get(payload.id);
+    if (!admin || !admin.active || admin.session_version !== payload.version || admin.email !== payload.email)
+      return res.status(401).json({ error: 'Session expired. Sign in again.' });
+    req.admin = admin;
     next();
-  } catch {
-    return res.status(401).json({ error: 'Session expired' });
-  }
+  } catch { return res.status(401).json({ error: 'Session expired. Sign in again.' }); }
+}
+
+export function superAdminRequired(req, res, next) {
+  if (req.admin?.role !== 'super_admin') return res.status(403).json({ error: 'Super admin access required' });
+  next();
 }
 
 export function signToken(admin, remember = false) {
   return jwt.sign(
-    { id: admin.id, email: admin.email },
+    { id: admin.id, email: admin.email, version: admin.session_version },
     getJwtSecret(),
     { expiresIn: remember ? '30d' : '8h' }
   );

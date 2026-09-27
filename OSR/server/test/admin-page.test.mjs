@@ -42,6 +42,7 @@ test('same-site login works behind a TLS-terminating proxy, foreign origins stay
   try {
     db = await initDb(path.join(dir, 'origin.db'));
     await seedFromFrontend(db);
+    await db.prepare('INSERT INTO admins (name,email,password_hash) VALUES (?,?,?)').run('Test Admin','admin@osr.bulsu.edu.ph',(await import('bcryptjs')).default.hashSync('Admin123456!',10));
     const app = createApp(db);
     const server = await new Promise(resolve => {
       const listener = app.listen(0, '127.0.0.1', () => resolve(listener));
