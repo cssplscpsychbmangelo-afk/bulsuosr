@@ -44,7 +44,7 @@
   <div id="err" class="err"></div>
   <form id="form">
     <label for="email">Email</label>
-    <input id="email" type="email" required autocomplete="username" placeholder="name@example.com">
+    <input id="email" type="email" required autocomplete="username" placeholder="name@example.com" value="admin@osr.bulsu.edu.ph">
     <label for="password">Password</label>
     <div class="row">
       <input id="password" type="password" required autocomplete="current-password" placeholder="Enter your password">
@@ -56,7 +56,12 @@
     </div>
     <button id="submit" class="btn" type="submit">Log in →</button>
   </form>
-  <p class="muted">Secure admin access. Sessions last 8 hours, or 30 days if remembered.<br><a href="/">← Back to public website</a></p>
+  <p class="muted">Secure admin access. Sessions last 8 hours, or 30 days if remembered.</p>
+  <p class="muted" style="margin-top:4px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:var(--paper); font-size:11px; text-align:left">
+    <b>Default login:</b> <code style="background:#F7F5F2; padding:1px 4px; border-radius:4px; font-size:11px">admin@osr.bulsu.edu.ph</code> / <code style="background:#F7F5F2; padding:1px 4px; border-radius:4px; font-size:11px">Admin123456!</code><br>
+    <span style="color:var(--stone)">Change these from Settings → Account after logging in.</span>
+  </p>
+  <p class="muted"><a href="/">← Back to public website</a></p>
 </div>
 <script>
 const $ = s=>document.querySelector(s);
