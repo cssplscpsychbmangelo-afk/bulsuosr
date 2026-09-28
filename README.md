@@ -55,6 +55,47 @@ Open `http://localhost:4000/admin`. Without `DATABASE_URL`, local development
 uses SQLite and local files. With `DATABASE_URL`, it uses Neon directly.
 Default login on a fresh DB: `admin@osr.bulsu.edu.ph / Admin123456!`. The setup form is available on `/admin` when no account exists.
 
+## Admin tools
+
+- **Mass publish / archive / delete.** Every content screen (announcements,
+  board meetings, initiatives, resources, calendar, media) has a select-all
+  option and one sticky toolbar that publishes, unpublishes, archives, restores,
+  or permanently deletes the selected records in a single request
+  (`POST /api/bulk`, up to 500 ids). Deleting three or more records asks for a
+  typed confirmation; deleting media also removes the stored file.
+- **Google Document calendar.** In *Admin → Calendar → Google Document source*,
+  paste the published link of the Google Docs/Sheets file that lists activities.
+  *Check document* previews what the parser reads without saving anything;
+  *Connect & sync* stores the link and imports every activity. The website
+  re-reads the document on its own (at most once every 15 minutes, before a
+  public calendar request), so later edits in the document appear on the site
+  without anyone re-uploading it. Only events created by the document (ids
+  starting with `gdoc-`) are ever updated or removed; hand-typed events are
+  left alone. `POST /api/calendar/source/preview` and friends back the panel.
+- **BulSU Pulse data.** *Admin → Pulse data* lists every period that has
+  submissions with counts, points, the top priority and the last submission time,
+  sorted newest or oldest first and filterable by date range. A period, a range,
+  or the entire dataset can be wiped; aggregates are rebuilt from what remains,
+  so the public Pulse never shows a deleted submission. Wiping everything
+  requires typing `WIPE`.
+- **Contact & details.** Any OSR administrator (not only a super administrator)
+  can edit the email, phone, office address, office hours, official page, social
+  links and footer credit shown on the public site through
+  `PATCH /api/settings/contact`. Super administrators still own the public text
+  blocks (title, description, homepage intro, footer note).
+- **Activity log.** A dedicated screen lists every recorded change (administrator,
+  action, content type, time) with search, type filter and CSV export.
+- **BulSU Pulse, once it has data.** The public Pulse panel is a single tablist
+  with six views — This period, Monthly, Yearly, Trends, History, Share & report —
+  each with a ‹ select › period stepper and a Latest jump. Periods are shown as
+  "September 2026 · 5 builds", every view opens with a one-line takeaway, month
+  comparisons are labelled ("Change versus August 2026, percentage points of
+  share") and History is a table that discloses periods beyond the latest six.
+  `OSR/server/test/pulse-nav.test.mjs` drives that navigation against synthetic
+  submissions on every `npm test`.
+- **Overview.** The dashboard now shows per-section library health (published /
+  draft / archived counts) taken from `GET /api/bulk/summary`.
+
 ## Tests
 
 ```bash
@@ -76,6 +117,17 @@ Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
 - `OSR/admin/index.html`: standalone login/setup/dashboard UI, including a health check showing "Neon standalone".
 
 ## Recent fixes
+
+- **A stray leftover script fragment was removed from `/admin`.** A duplicated
+  `</script></body></html>` tail followed by a bare `AndSetup();` call sat after
+  the admin page's closing `</html>`. Nothing executed it, but it was removed so
+  the document ends where it should; the real `checkAuthAndSetup();` call is
+  untouched.
+- **The default calendar no longer contains term-summary rows.** Thirteen
+  "TERMS & SCHEDULES" lines had been imported as events (their date, day and
+  activity were the same string). They are gone from the built-in calendar; the
+  parser now stops at that heading, and misread rows can be cleared from the
+  admin in one action.
 
 - **`/admin` no longer shows a blank white page.** The admin page is one inline
   `<script>`; a stray `\"` inside the escape helper was invalid JavaScript, so
