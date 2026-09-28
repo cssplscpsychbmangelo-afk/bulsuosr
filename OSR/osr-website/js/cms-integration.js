@@ -29,14 +29,26 @@
     return ct.includes('application/json');
   }
 
+  function safeLink(url){
+    if(!url || typeof url !== 'string' || !url.trim()) return '';
+    url = url.trim();
+    if(url === '#' || url.startsWith('#')) return url;
+    try {
+      const u = new URL(url, location.origin);
+      return ['http:', 'https:'].includes(u.protocol) ? u.href : '';
+    } catch {
+      return '';
+    }
+  }
+
   async function fetchPublic(type, allowRetry=false){
     if(!backendAvailable && !allowRetry) return null;
 
     let r;
     try{
       // Try the new /api/public/:type endpoint first, fallback to /api/:type/public
-      r = await fetch(`${API_BASE}/api/public/${type}`, {credentials:'include'});
-      if(!r.ok) r = await fetch(`${API_BASE}/api/${type}/public`, {credentials:'include'});
+      r = await fetch(`${API_BASE}/api/public/${type}`, {credentials:'include', cache:'no-store'});
+      if(!r.ok) r = await fetch(`${API_BASE}/api/${type}/public`, {credentials:'include', cache:'no-store'});
     }catch(e){
       // Network / CORS failure: no backend reachable from this origin at all.
       noBackend('unreachable — '+e.message);
@@ -120,9 +132,12 @@
       image: a.image || '',
       is_featured: !!a.is_featured
     }));
-    if(replaceArray(window.ANNOUNCEMENTS || (typeof ANNOUNCEMENTS !== 'undefined' ? ANNOUNCEMENTS : null), mapped)){
-      try{ window.renderAnnouncements && window.renderAnnouncements(); }catch(e){ console.warn('[CMS] re-render announcements failed', e); }
-      try{ window.renderHomeAnnouncements && window.renderHomeAnnouncements(); }catch(e){}
+    const target = window.ANNOUNCEMENTS || (typeof ANNOUNCEMENTS !== 'undefined' ? ANNOUNCEMENTS : null);
+    if(replaceArray(target, mapped)){
+      try{ (window.renderAnnouncements || (typeof renderAnnouncements === 'function' ? renderAnnouncements : null))?.(); }catch(e){ console.warn('[CMS] re-render announcements failed', e); }
+      try{ (window.renderHomeAnnouncements || (typeof renderHomeAnnouncements === 'function' ? renderHomeAnnouncements : null))?.(); }catch(e){}
+      try{ (window.updateDashStats || (typeof updateDashStats === 'function' ? updateDashStats : null))?.(); }catch(e){}
+      try{ (window.renderSearch || (typeof renderSearch === 'function' ? renderSearch : null))?.(); }catch(e){}
       console.log('[CMS] Announcements hydrated:', mapped.length);
     }
     window.__CMS_ANNOUNCEMENTS = data;
@@ -135,80 +150,149 @@
       title: r.title,
       category: r.category || 'GENERAL',
       description: r.description || '',
-      link: safeLink(r.external_link || r.file_url) || '#'
+      link: safeLink(r.external_link) || safeLink(r.file_url) || '#'
     }));
-    if(replaceArray(window.RESOURCES || (typeof RESOURCES !== 'undefined' ? RESOURCES : null), mapped)){
-      try{ window.renderResources && window.renderResources(); }catch(e){ console.warn('[CMS] re-render resources failed', e); }
+    const target = window.RESOURCES || (typeof RESOURCES !== 'undefined' ? RESOURCES : null);
+    if(replaceArray(target, mapped)){
+      try{ (window.renderResources || (typeof renderResources === 'function' ? renderResources : null))?.(); }catch(e){ console.warn('[CMS] re-render resources failed', e); }
+      try{ (window.updateDashStats || (typeof updateDashStats === 'function' ? updateDashStats : null))?.(); }catch(e){}
+      try{ (window.updateSavedCounts || (typeof updateSavedCounts === 'function' ? updateSavedCounts : null))?.(); }catch(e){}
+      try{ (window.renderSearch || (typeof renderSearch === 'function' ? renderSearch : null))?.(); }catch(e){}
       console.log('[CMS] Resources hydrated:', mapped.length);
     }
     window.__CMS_RESOURCES = data;
   }
 
-  function safeLink(url){ try { const u=new URL(url,location.origin); return ['http:','https:'].includes(u.protocol) ? u.href : ''; } catch { return ''; } }
   function patchBoard(data){
     if(!Array.isArray(data)) return;
-    replaceArray(typeof BOARD_MEETINGS !== 'undefined' ? BOARD_MEETINGS : null, data.map(b=>({
-      id:b.id, title:b.title, meetingNumber:b.meeting_number||'', date:b.date||'',
-      academicYear:b.academic_year||'', type:b.type||'', description:b.description||'',
-      minutesLink:safeLink(b.minutes_link), relatedDocuments:Array.isArray(b.related_documents)?b.related_documents.filter(d=>safeLink(d.href)).map(d=>({...d,href:safeLink(d.href)})):[]
-    })));
-    if(typeof renderBoard === 'function') renderBoard();
+    const mapped = data.map(b => ({
+      id: b.id,
+      title: b.title,
+      meetingNumber: b.meeting_number || '',
+      date: b.date || '',
+      academicYear: b.academic_year || '',
+      type: b.type || '',
+      description: b.description || '',
+      minutesLink: safeLink(b.minutes_link),
+      relatedDocuments: Array.isArray(b.related_documents)
+        ? b.related_documents.filter(d => d && (d.href || typeof d === 'string')).map(d => typeof d === 'string' ? { label: 'Document', href: safeLink(d) } : { ...d, href: safeLink(d.href) })
+        : []
+    }));
+    const target = window.BOARD_MEETINGS || (typeof BOARD_MEETINGS !== 'undefined' ? BOARD_MEETINGS : null);
+    if(replaceArray(target, mapped)){
+      try{ (window.renderBoard || (typeof renderBoard === 'function' ? renderBoard : null))?.(); }catch(e){}
+      try{ (window.updateDashStats || (typeof updateDashStats === 'function' ? updateDashStats : null))?.(); }catch(e){}
+      try{ (window.renderSearch || (typeof renderSearch === 'function' ? renderSearch : null))?.(); }catch(e){}
+    }
+    window.__CMS_BOARD = data;
   }
+
   function patchInitiatives(data){
     if(!Array.isArray(data)) return;
-    replaceArray(typeof INITIATIVES !== 'undefined' ? INITIATIVES : null, data.map(i=>({
-      id:i.id, title:i.title, description:i.description||'', purpose:i.purpose||'',
-      status:i.status||'PLANNED', date:i.date||'', category:i.category||'', image:i.image||'',
-      links:Array.isArray(i.links)?i.links.filter(d=>safeLink(d.href)).map(d=>({...d,href:safeLink(d.href)})):[]
-    })));
-    if(typeof renderInitiatives === 'function') renderInitiatives();
+    const mapped = data.map(i => ({
+      id: i.id,
+      title: i.title,
+      description: i.description || '',
+      purpose: i.purpose || '',
+      status: i.status || 'PLANNED',
+      date: i.date || '',
+      category: i.category || '',
+      image: i.image || '',
+      links: Array.isArray(i.links)
+        ? i.links.filter(d => d && (d.href || typeof d === 'string')).map(d => typeof d === 'string' ? { label: 'Link', href: safeLink(d) } : { ...d, href: safeLink(d.href) })
+        : []
+    }));
+    const target = window.INITIATIVES || (typeof INITIATIVES !== 'undefined' ? INITIATIVES : null);
+    if(replaceArray(target, mapped)){
+      try{ (window.renderInitiatives || (typeof renderInitiatives === 'function' ? renderInitiatives : null))?.(); }catch(e){}
+      try{ (window.updateDashStats || (typeof updateDashStats === 'function' ? updateDashStats : null))?.(); }catch(e){}
+      try{ (window.renderSearch || (typeof renderSearch === 'function' ? renderSearch : null))?.(); }catch(e){}
+    }
+    window.__CMS_INITIATIVES = data;
   }
+
   function patchCalendar(data){
     if(!Array.isArray(data)) return;
-    replaceArray(typeof ACADEMIC_CALENDAR !== 'undefined' ? ACADEMIC_CALENDAR : null, data.map(e=>({
-      ...e, date:e.date||e.iso?.slice(8)||'', month:e.month|| (e.iso ? new Date(e.iso+'T12:00:00').toLocaleString('en',{month:'long',year:'numeric'}) : ''),
-      day:e.day|| (e.iso ? new Date(e.iso+'T12:00:00').toLocaleString('en',{weekday:'short'}) : '')
-    })));
-    const month=document.getElementById('calMonth');
-    if(month) { month.innerHTML='<option value="all">All months</option>'; if(typeof populateCalMonths === 'function') populateCalMonths(); }
-    if(typeof renderCalendar === 'function') renderCalendar();
-    if(typeof updateUpNext === 'function') updateUpNext();
+    const mapped = data.map(e => ({
+      ...e,
+      activity: e.activity || e.title || '',
+      title: e.title || e.activity || '',
+      date: e.date || (e.iso ? e.iso.slice(8) : ''),
+      month: e.month || (e.iso ? new Date(e.iso + 'T12:00:00').toLocaleString('en', { month: 'long', year: 'numeric' }) : ''),
+      day: e.day || (e.iso ? new Date(e.iso + 'T12:00:00').toLocaleString('en', { weekday: 'short' }) : '')
+    }));
+    const target = window.ACADEMIC_CALENDAR || (typeof ACADEMIC_CALENDAR !== 'undefined' ? ACADEMIC_CALENDAR : null);
+    if(replaceArray(target, mapped)){
+      const month = document.getElementById('calMonth');
+      if(month) {
+        month.innerHTML = '<option value="all">All months</option>';
+        try{ (window.populateCalMonths || (typeof populateCalMonths === 'function' ? populateCalMonths : null))?.(); }catch(e){}
+      }
+      try{ (window.renderCalendar || (typeof renderCalendar === 'function' ? renderCalendar : null))?.(); }catch(e){}
+      try{ (window.updateUpNext || (typeof updateUpNext === 'function' ? updateUpNext : null))?.(); }catch(e){}
+      try{ (window.updateDashStats || (typeof updateDashStats === 'function' ? updateDashStats : null))?.(); }catch(e){}
+    }
+    window.__CMS_CALENDAR = data;
   }
 
   // Apply admin-managed site settings (Settings → Website settings) to the
-  // footer and contact cards. Only non-empty values override the built-ins.
+  // footer, brand, and contact cards. Only non-empty values override the built-ins.
   function applySiteSettings(s){
     if(!s || typeof s !== 'object') return;
     const text = (id, v) => { const el = document.getElementById(id); if(el && v) el.textContent = v; };
     const mail = (id, v) => { const el = document.getElementById(id); if(el && v){ el.textContent = v; el.href = 'mailto:' + v; } };
     const tel = (id, v) => { const el = document.getElementById(id); if(el && v){ el.textContent = v; if(el.tagName === 'A') el.href = 'tel:' + String(v).replace(/[^\d+]/g, ''); } };
-    const href = (id, v) => { const el = document.getElementById(id); if(el && v) el.href = v; };
+    const href = (id, v) => { const el = document.getElementById(id); if(el && v) el.href = safeLink(v); };
 
-    text('foLine1', s.office_line1);
-    text('foLine2', s.office_line2);
-    text('foCity', s.office_city);
-    mail('foEmail', s.contact_email);
-    tel('foPhone', s.contact_phone);
+    if(s.site_title) {
+      document.title = s.site_title;
+      document.querySelectorAll('.brand__text b').forEach(el => el.textContent = s.site_title);
+    }
+    if(s.site_description) {
+      const meta = document.querySelector('meta[name="description"]');
+      if(meta) meta.setAttribute('content', s.site_description);
+    }
+    if(s.homepage_intro) {
+      const intro = document.querySelector('#page-home .hero p, .hero__lead');
+      if(intro) intro.textContent = s.homepage_intro;
+    }
+
+    if(s.office_address) {
+      text('hcOffice', s.office_address);
+      text('acAddress', s.office_address);
+      const foLine1 = document.getElementById('foLine1');
+      if(foLine1) foLine1.textContent = s.office_address;
+      const foLine2 = document.getElementById('foLine2');
+      if(foLine2) foLine2.style.display = s.office_line2 ? '' : 'none';
+      const foCity = document.getElementById('foCity');
+      if(foCity) foCity.style.display = s.office_city ? '' : 'none';
+    }
+    if(s.office_line1) text('foLine1', s.office_line1);
+    if(s.office_line2) { const fo2=document.getElementById('foLine2'); if(fo2){ fo2.textContent=s.office_line2; fo2.style.display=''; } }
+    if(s.office_city) { const foc=document.getElementById('foCity'); if(foc){ foc.textContent=s.office_city; foc.style.display=''; } }
+
     text('foHours', s.office_hours_short);
     text('footerCredit', s.footer_credit);
-
-    mail('hcEmail', s.contact_email);
-    text('hcOffice', s.office_address);
-    tel('hcPhone', s.contact_phone);
     text('hcHours', s.office_hours);
-    href('hcPage', safeLink(s.official_page));
-    href('hcMailto', s.contact_email ? 'mailto:' + s.contact_email : null);
-
-    mail('acEmail', s.contact_email);
-    tel('acPhone', s.contact_phone);
-    text('acAddress', s.office_address);
     text('acHours', s.office_hours);
+
+    mail('foEmail', s.contact_email);
+    mail('hcEmail', s.contact_email);
+    mail('acEmail', s.contact_email);
+    href('hcMailto', s.contact_email ? 'mailto:' + s.contact_email : null);
     href('acMailto', s.contact_email ? 'mailto:' + s.contact_email : null);
 
-    if(s.site_title) document.title = s.site_title;
-    if(s.homepage_intro) { const intro=document.querySelector('#page-home .hero p'); if(intro) intro.textContent=s.homepage_intro; }
+    tel('foPhone', s.contact_phone);
+    tel('hcPhone', s.contact_phone);
+    tel('acPhone', s.contact_phone);
 
-    // Keep the copy-contact block in sync with whatever the admin saved.
+    href('hcPage', safeLink(s.official_page));
+    if(s.social_facebook) {
+      document.querySelectorAll('a[href*="facebook.com"]').forEach(a => {
+        a.href = safeLink(s.social_facebook);
+      });
+    }
+
     window.OSR_CONTACT = Object.assign(window.OSR_CONTACT || {}, {
       email: s.contact_email || (window.OSR_CONTACT || {}).email,
       phone: s.contact_phone || (window.OSR_CONTACT || {}).phone,
@@ -218,10 +302,10 @@
     console.log('[CMS] Site settings applied');
   }
 
-  async function fetchSettings(){
-    if(!backendAvailable) return null;
+  async function fetchSettings(forceRefresh = false){
+    if(!backendAvailable && !forceRefresh) return null;
     try{
-      const r = await fetch(`${API_BASE}/api/settings/public`, {credentials:'include'});
+      const r = await fetch(`${API_BASE}/api/settings/public`, {credentials:'include', cache:'no-store'});
       if(!r.ok || !isJson(r)) return null;
       const j = await r.json();
       if(j && j.available === false) return null; // static-host stub
@@ -229,11 +313,34 @@
     }catch(e){ return null; }
   }
 
+  function patchNavigation(navs){
+    if(!Array.isArray(navs) || !navs.length) return;
+    const nav = document.querySelector('nav.nav');
+    if(!nav) return;
+    const existing = [...nav.querySelectorAll('a[data-nav]')];
+    const actions = nav.querySelector('.nav__actions');
+    const currentActive = existing.find(a => a.getAttribute('aria-current') === 'page')?.getAttribute('href') || (location.hash || '#home');
+    const visibleNavs = navs.filter(item => item.is_visible !== 0 && item.is_visible !== false);
+    if(!visibleNavs.length) return;
+
+    existing.forEach(a => a.remove());
+    visibleNavs.forEach(item => {
+      const a = document.createElement('a');
+      a.href = item.href;
+      a.setAttribute('data-nav', '');
+      a.textContent = item.label;
+      if(item.href === currentActive) a.setAttribute('aria-current', 'page');
+      a.addEventListener('click', () => {
+        if(typeof window.setRoute === 'function') window.setRoute(item.href);
+      });
+      if(actions) nav.insertBefore(a, actions);
+      else nav.appendChild(a);
+    });
+  }
+
   // Guide data patch: override perPageGuides if available
   function patchGuides(apiGuides){
     if(!apiGuides || !apiGuides.length) return;
-    // The frontend expects perPageGuides as an object {home:[...], about:[...]}
-    // Convert array of guide_steps to that format
     const perPage = {};
     for(const g of apiGuides){
       if(!g.is_enabled) continue;
@@ -246,42 +353,20 @@
         step_number: g.step_number
       });
     }
-    // Sort each page by step_number
     for(const k in perPage) perPage[k].sort((a,b)=>a.step_number-b.step_number);
-    // If the frontend has window.perPageGuides, override it
     if(window.perPageGuides){
       Object.assign(window.perPageGuides, perPage);
-      console.log('[CMS] Patched perPageGuides from API', perPage);
     } else if(window.perPageGuide){
-      // older singular version
-      console.log('[CMS] Found perPageGuide, patching');
-      // Convert to new format
       window.perPageGuides = perPage;
     } else {
-      // Store for later use
       window.__CMS_GUIDES = perPage;
-      console.log('[CMS] Stored guides', perPage);
     }
   }
 
   // Pulse: intercept Ideal BulSU / BulSU Pulse submissions
   function patchPulse(){
-    // Find pulse forms and override submit to use backend
     const forms = document.querySelectorAll('form, [data-pulse-form]');
-    // Also look for the specific pulse allocation UI
     const pulseSection = document.querySelector('#page-ideal-bulsu, #ideal-bulsu, [data-pulse]');
-    if(pulseSection){
-      console.log('[CMS] Pulse section found, will intercept submissions');
-    }
-    // Override any existing pulse submit handler if it uses localStorage
-    // We look for buttons that submit pulse
-    const submitBtns = document.querySelectorAll('button, a');
-    submitBtns.forEach(btn=>{
-      if(btn.textContent && btn.textContent.toLowerCase().includes('submit') && btn.closest('#page-ideal-bulsu, #ideal-bulsu, .pulse')){
-        // This is heuristic, we will add a listener that captures pulse submissions
-      }
-    });
-    // Add a global handler for pulse submissions via API
     window.__cmsSubmitPulse = async (allocation)=>{
       try{
         const r = await fetch(`${API_BASE}/api/pulse/submit`, {
@@ -291,65 +376,98 @@
         });
         const j = await r.json();
         if(!r.ok) throw new Error(j.error);
-        console.log('[CMS] Pulse submitted', j);
         return j;
       }catch(e){
-        console.error('[CMS] Pulse submit failed', e);
         throw e;
       }
     };
   }
 
-  document.addEventListener('DOMContentLoaded', async ()=>{
-    // Wire Pulse submission even when the public-content probe finds no backend.
-    patchPulse();
-    // Probe with one request first; static hosting keeps the built-in content.
-    const anns = await fetchPublic('announcements');
-    if(!backendAvailable) return;
+  let isHydrating = false;
+  async function hydrateAll(forceRefresh = false){
+    if(isHydrating) return;
+    isHydrating = true;
+    try {
+      if(forceRefresh) backendAvailable = true;
+      const anns = await fetchPublic('announcements', forceRefresh);
+      if(!backendAvailable) return;
 
-    // Backend is there: fetch the rest in parallel.
-    const results = await Promise.allSettled([
-      fetchPublic('board-meetings'),
-      fetchPublic('initiatives'),
-      fetchPublic('resources'),
-      fetchPublic('calendar'),
-      fetchPublic('guides'),
-      fetchPublic('navigation')
-    ]);
+      const results = await Promise.allSettled([
+        fetchPublic('board-meetings', forceRefresh),
+        fetchPublic('initiatives', forceRefresh),
+        fetchPublic('resources', forceRefresh),
+        fetchPublic('calendar', forceRefresh),
+        fetchPublic('guides', forceRefresh),
+        fetchPublic('navigation', forceRefresh),
+        fetchSettings(forceRefresh)
+      ]);
 
-    const [boards, inits, ress, cals, guides, navs] = results.map(r=> r.status==='fulfilled'? r.value : null);
+      const [boards, inits, ress, cals, guides, navs, settings] = results.map(r => r.status==='fulfilled' ? r.value : null);
 
-    window.__CMS_DATA = {
-      announcements: anns,
-      board_meetings: boards,
-      initiatives: inits,
-      resources: ress,
-      calendar: cals,
-      guides: guides,
-      navigation: navs
-    };
+      window.__CMS_DATA = {
+        announcements: anns,
+        board_meetings: boards,
+        initiatives: inits,
+        resources: ress,
+        calendar: cals,
+        guides: guides,
+        navigation: navs,
+        settings: settings
+      };
 
-    // Patch guides immediately
-    if(guides) patchGuides(guides);
-
-    // Apply admin-managed site settings (office, contact, footer credit)
-    const settings = await fetchSettings();
-    if(settings) applySiteSettings(settings);
-
-    // Patch announcements etc after a delay to let original render finish
-    setTimeout(()=>{
+      if(guides) patchGuides(guides);
+      if(settings) applySiteSettings(settings);
       if(anns) patchAnnouncements(anns);
       if(ress) patchResources(ress);
       if(boards) patchBoard(boards);
       if(inits) patchInitiatives(inits);
       if(cals) patchCalendar(cals);
-      console.log('[CMS] Data hydrated', window.__CMS_DATA);
+      if(navs) patchNavigation(navs);
 
-      // Trigger a custom event so the original script could react if it listens
+      console.log('[CMS] Content fully hydrated', window.__CMS_DATA);
       window.dispatchEvent(new CustomEvent('cms:hydrated', {detail: window.__CMS_DATA}));
-    }, 1000);
+    } finally {
+      isHydrating = false;
+    }
+  }
 
+  // Live real-time sync with changes made in admin
+  if (typeof BroadcastChannel !== 'undefined') {
+    try {
+      const bc = new BroadcastChannel('osr-cms-sync');
+      bc.onmessage = (e) => {
+        console.log('[CMS] Real-time sync event received from admin:', e.data);
+        hydrateAll(true);
+      };
+    } catch(e) {}
+  }
+
+  window.addEventListener('storage', (e) => {
+    if(e.key === 'osr_cms_last_update') {
+      console.log('[CMS] LocalStorage sync event triggered');
+      hydrateAll(true);
+    }
   });
+
+  window.addEventListener('focus', () => {
+    hydrateAll(false);
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if(document.visibilityState === 'visible') {
+      hydrateAll(false);
+    }
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      patchPulse();
+      hydrateAll();
+    });
+  } else {
+    patchPulse();
+    hydrateAll();
+  }
 
   // --- GUIDE POSITIONING FIX (robust) ---
   function getPreviewContainer(){

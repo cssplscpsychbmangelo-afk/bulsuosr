@@ -10,6 +10,7 @@ async function logActivity(db, admin, action, id, details='') {
 
 // Public list (published only)
 router.get('/public', async (req,res)=>{
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   const db = req.app.locals.db;
   const rows = (await db.prepare("SELECT * FROM announcements WHERE status='Published' ORDER BY date DESC").all());
   res.json(rows);

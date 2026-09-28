@@ -29,10 +29,13 @@ export async function seedFromFrontend(db, sourcePath) {
       if (anns && anns.length) {
         const stmt = db.prepare('INSERT INTO announcements (id, title, category, date, summary, content, external_link, image, status) VALUES (?,?,?,?,?,?,?,?,?)');
         for (const a of anns) {
-          (await stmt.run(a.id, a.title, a.category, a.date, a.summary, a.content, a.externalLink || '', a.image || '', a._placeholder ? 'Draft' : 'Published'));
+          (await stmt.run(a.id, a.title, a.category, a.date, a.summary, a.content, a.externalLink || '', a.image || '', 'Published'));
         }
         console.log(`[Seed] Announcements: ${anns.length}`);
       }
+    } else {
+      // Ensure seeded announcements are published so they appear on public site
+      await db.prepare("UPDATE announcements SET status='Published' WHERE status='Draft' AND (created_by IS NULL OR created_by='')").run();
     }
 
     // Board Meetings
@@ -42,10 +45,13 @@ export async function seedFromFrontend(db, sourcePath) {
       if (boards && boards.length) {
         const stmt = db.prepare('INSERT INTO board_meetings (id, meeting_number, date, title, description, type, academic_year, status, minutes_link, related_documents) VALUES (?,?,?,?,?,?,?,?,?,?)');
         for (const b of boards) {
-          (await stmt.run(b.id, b.meetingNumber, b.date, b.title, b.description, b.type, b.academicYear, b._placeholder ? 'Draft' : 'Published', b.minutesLink || '', JSON.stringify(b.relatedDocuments || [])));
+          (await stmt.run(b.id, b.meetingNumber, b.date, b.title, b.description, b.type, b.academicYear, 'Published', b.minutesLink || '', JSON.stringify(b.relatedDocuments || [])));
         }
         console.log(`[Seed] Board Meetings: ${boards.length}`);
       }
+    } else {
+      // Ensure seeded board meetings are published so they appear on public site
+      await db.prepare("UPDATE board_meetings SET status='Published' WHERE status='Draft' AND (created_by IS NULL OR created_by='')").run();
     }
 
     // Initiatives
@@ -55,10 +61,13 @@ export async function seedFromFrontend(db, sourcePath) {
       if (inits && inits.length) {
         const stmt = db.prepare('INSERT INTO initiatives (id, title, description, purpose, status, date, category, image, links, status_public) VALUES (?,?,?,?,?,?,?,?,?,?)');
         for (const i of inits) {
-          (await stmt.run(i.id, i.title, i.description, i.purpose, i.status, i.date, i.category, i.image || '', JSON.stringify(i.links || []), i._placeholder ? 'Draft' : 'Published'));
+          (await stmt.run(i.id, i.title, i.description, i.purpose, i.status, i.date, i.category, i.image || '', JSON.stringify(i.links || []), 'Published'));
         }
         console.log(`[Seed] Initiatives: ${inits.length}`);
       }
+    } else {
+      // Ensure seeded initiatives are published so they appear on public site
+      await db.prepare("UPDATE initiatives SET status_public='Published' WHERE status_public='Draft' AND (created_by IS NULL OR created_by='')").run();
     }
 
     // Resources

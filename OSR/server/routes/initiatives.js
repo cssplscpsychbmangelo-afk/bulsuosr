@@ -5,6 +5,7 @@ import { validateContent } from '../middleware/content.js';
 const router=express.Router();
 async function log(db,a,act,id){ try{(await db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type, content_id) VALUES (?,?,?,?,?)').run(a?.id||null,a?.email||'system',act,'initiative',id));}catch{} }
 router.get('/public',async (req,res)=>{
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   const db=req.app.locals.db;
   const rows=(await db.prepare("SELECT * FROM initiatives WHERE status_public='Published' ORDER BY date DESC").all()).map(r=>{try{r.links=JSON.parse(r.links)}catch{} return r;});
   res.json(rows);

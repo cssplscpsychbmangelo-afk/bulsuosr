@@ -7,6 +7,7 @@ router.get('/', async (req,res)=>{
   res.json((await db.prepare('SELECT * FROM navigation_items ORDER BY order_index').all()));
 });
 router.get('/public', async (req,res)=>{
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   const db=req.app.locals.db;
   res.json((await db.prepare('SELECT * FROM navigation_items WHERE is_visible=1 ORDER BY order_index').all()));
 });

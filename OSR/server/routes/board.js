@@ -6,6 +6,7 @@ const router = express.Router();
 async function log(db, admin, action, id){ try{ (await db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type, content_id) VALUES (?,?,?,?,?)').run(admin?.id||null, admin?.email||'system', action, 'board_meeting', id));}catch{} }
 
 router.get('/public', async (req,res)=>{
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   const db=req.app.locals.db;
   const rows=(await db.prepare("SELECT * FROM board_meetings WHERE status='Published' ORDER BY date DESC").all()).map(r=>{ try{ r.related_documents=JSON.parse(r.related_documents)}catch{} return r; });
   res.json(rows);
