@@ -313,6 +313,160 @@
     }catch(e){ return null; }
   }
 
+  // ── About OSR page ────────────────────────────────────────────────────────
+  // The About page is structured office information edited in Admin → About
+  // OSR. Only values the office actually saved are applied; every empty field
+  // keeps the wording built into the page, so a fresh install looks unchanged.
+  function aboutEsc(value){
+    return String(value ?? '').replace(/[&<>"']/g, character => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[character]);
+  }
+  function aboutText(id, value){
+    const el = document.getElementById(id);
+    if(el && typeof value === 'string' && value.trim()) el.textContent = value.trim();
+  }
+  function aboutLines(id, values){
+    const el = document.getElementById(id);
+    if(!el || !Array.isArray(values) || !values.length) return;
+    const items = values.filter(value => typeof value === 'string' && value.trim()).map(value => value.trim());
+    if(items.length) el.innerHTML = items.map(value => `<li>${aboutEsc(value)}</li>`).join('');
+  }
+  function aboutValues(id, values){
+    const el = document.getElementById(id);
+    if(!el || !Array.isArray(values) || !values.length) return;
+    const items = values.filter(value => typeof value === 'string' && value.trim()).map(value => value.trim());
+    if(!items.length) return;
+    el.innerHTML = items.map((value, index) => `<span style="font:600 11px 'IBM Plex Mono',monospace; ${index === 0 ? 'background:var(--red-3); border:1px solid #FFD0D6; color:var(--red)' : 'background:var(--paper-2); border:1px solid var(--line)'}; padding:5px 8px; border-radius:999px">${aboutEsc(value)}</span>`).join('');
+  }
+  function aboutKV(id, rows){
+    const el = document.getElementById(id);
+    if(!el || !Array.isArray(rows) || !rows.length) return;
+    const items = rows.filter(row => row && (row.label || row.value));
+    if(items.length) el.innerHTML = items.map(row => `<div class="kv"><b>${aboutEsc(row.label || '')}</b> <span>${aboutEsc(row.value || '')}</span></div>`).join('');
+  }
+  function aboutAnchor(href, label, style){
+    const link = document.createElement('a');
+    link.textContent = label;
+    if(/^https?:\/\//i.test(href)){
+      link.href = href;
+      link.target = '_blank';
+      link.rel = 'noopener';
+    } else {
+      link.href = href || '#';
+      link.setAttribute('data-nav', '');
+      link.addEventListener('click', () => { if(typeof window.setRoute === 'function') window.setRoute(link.getAttribute('href')); });
+    }
+    if(style) link.setAttribute('style', style);
+    return link;
+  }
+  function aboutFeatured(id, rows){
+    const el = document.getElementById(id);
+    if(!el || !Array.isArray(rows) || !rows.length) return;
+    const items = rows.filter(row => row && (row.title || row.description));
+    if(!items.length) return;
+    el.innerHTML = '';
+    items.forEach((row, index) => {
+      const card = document.createElement('div');
+      const tint = index % 2 === 0 ? 'var(--paper-2)' : 'white';
+      card.setAttribute('style', `border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:${tint}`);
+      const head = document.createElement('div');
+      head.setAttribute('style', 'display:flex; justify-content:space-between; align-items:center');
+      const title = document.createElement('b');
+      title.setAttribute('style', 'font-size:13px');
+      title.textContent = row.title || '';
+      head.appendChild(title);
+      if(row.tag){
+        const tag = document.createElement('span');
+        tag.className = 'mono';
+        tag.setAttribute('style', `font-size:10px; background:${index % 2 === 0 ? 'white' : 'var(--paper-2)'}; border:1px solid var(--line); padding:2px 6px; border-radius:999px`);
+        tag.textContent = row.tag;
+        head.appendChild(tag);
+      }
+      card.appendChild(head);
+      if(row.description){
+        const text = document.createElement('p');
+        text.className = 'small muted';
+        text.setAttribute('style', 'margin:4px 0 0; line-height:1.5');
+        text.textContent = row.description;
+        card.appendChild(text);
+      }
+      if(row.link_href){
+        card.appendChild(aboutAnchor(row.link_href, row.link_label || 'Open', 'font:600 12px \'IBM Plex Mono\',monospace; color:var(--red); text-decoration:none; display:inline-flex; gap:4px; margin-top:6px'));
+      }
+      el.appendChild(card);
+    });
+  }
+  function aboutLinks(id, rows){
+    const el = document.getElementById(id);
+    if(!el || !Array.isArray(rows) || !rows.length) return;
+    const items = rows.filter(row => row && (row.label || row.href));
+    if(!items.length) return;
+    el.innerHTML = '';
+    items.forEach(row => {
+      const item = document.createElement('li');
+      item.appendChild(aboutAnchor(row.href, row.label || row.href));
+      el.appendChild(item);
+    });
+  }
+
+  function applyAboutContent(a){
+    if(!a || typeof a !== 'object') return;
+    aboutText('aboutEyebrow', a.eyebrow);
+    aboutText('about-title', a.title);
+    aboutText('aboutIntro', a.intro);
+    aboutText('aboutBadge', a.badge);
+    aboutText('aboutOfficeHeading', a.office_heading);
+    aboutText('aboutOfficeP1', a.office_p1);
+    aboutText('aboutOfficeP2', a.office_p2);
+    aboutText('aboutMandateHeading', a.mandate_heading);
+    aboutLines('aboutMandateList', a.mandate_items);
+    aboutText('aboutMandateNote', a.mandate_note);
+    aboutText('aboutSrHeading', a.sr_heading);
+    aboutText('aboutSrLabel', a.sr_label);
+    aboutText('aboutSrName', a.sr_name);
+    aboutText('aboutSrMeta', a.sr_meta);
+    aboutText('aboutSrNote', a.sr_note);
+    aboutText('aboutDirHeading', a.dir_heading);
+    aboutText('aboutDirIntro', a.dir_intro);
+    aboutText('aboutDirExecName', a.dir_exec_name);
+    aboutText('aboutDirExecTag', a.dir_exec_tag);
+    aboutText('aboutDirNames', a.dir_names);
+    aboutText('aboutDirTag', a.dir_tag);
+    aboutText('aboutCollegeTitle', a.college_title);
+    aboutText('aboutCollegeDesc', a.college_desc);
+    aboutText('aboutCollegeRows', a.college_rows);
+    aboutText('aboutVmHeading', a.vm_heading);
+    aboutText('aboutVision', a.vision);
+    aboutText('aboutMission', a.mission);
+    aboutValues('aboutValuesList', a.values);
+    aboutText('aboutValuesNote', a.values_note);
+    aboutText('aboutInfoHeading', a.info_heading);
+    aboutKV('aboutInfoRows', a.info);
+    aboutText('aboutInfoNote', a.info_note);
+    aboutText('aboutContactHeading', a.contact_heading);
+    aboutText('aboutResponseTime', a.response_time);
+    aboutText('aboutFeaturedHeading', a.featured_heading);
+    aboutText('aboutFeaturedIntro', a.featured_intro);
+    aboutFeatured('aboutFeaturedList', a.featured);
+    aboutText('aboutFeaturedNote', a.featured_note);
+    aboutText('aboutLinksHeading', a.links_heading);
+    aboutLinks('aboutLinksList', a.links);
+    aboutText('aboutLinksNote', a.links_note);
+    console.log('[CMS] About page content applied');
+  }
+
+  async function fetchAbout(forceRefresh = false){
+    if(!backendAvailable && !forceRefresh) return null;
+    try{
+      const r = await fetch(`${API_BASE}/api/about/public`, {credentials:'include', cache:'no-store'});
+      if(!r.ok || !isJson(r)) return null;
+      const j = await r.json();
+      if(j && j.available === false) return null; // static-host stub
+      return j;
+    }catch(e){ return null; }
+  }
+
   function patchNavigation(navs){
     if(!Array.isArray(navs) || !navs.length) return;
     const nav = document.querySelector('nav.nav');
@@ -399,10 +553,11 @@
         fetchPublic('calendar', forceRefresh),
         fetchPublic('guides', forceRefresh),
         fetchPublic('navigation', forceRefresh),
-        fetchSettings(forceRefresh)
+        fetchSettings(forceRefresh),
+        fetchAbout(forceRefresh)
       ]);
 
-      const [boards, inits, ress, cals, guides, navs, settings] = results.map(r => r.status==='fulfilled' ? r.value : null);
+      const [boards, inits, ress, cals, guides, navs, settings, about] = results.map(r => r.status==='fulfilled' ? r.value : null);
 
       window.__CMS_DATA = {
         announcements: anns,
@@ -412,11 +567,13 @@
         calendar: cals,
         guides: guides,
         navigation: navs,
-        settings: settings
+        settings: settings,
+        about: about
       };
 
       if(guides) patchGuides(guides);
       if(settings) applySiteSettings(settings);
+      if(about && Object.keys(about).length) applyAboutContent(about);
       if(anns) patchAnnouncements(anns);
       if(ress) patchResources(ress);
       if(boards) patchBoard(boards);

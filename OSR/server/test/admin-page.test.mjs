@@ -34,7 +34,7 @@ test('admin page inline script parses, so /admin can never render blank', async 
   assert.match(html, /src="\/osr-logo\.png"/, 'the supplied OSR logo must identify the login and workspace');
   assert.match(html, /id="adminSidebar"/, 'the workspace needs a persistent navigation landmark');
   assert.match(html, /id="mobileMenuBtn"[^>]+aria-controls="adminSidebar"/, 'mobile navigation must be labeled and connected');
-  for (const section of ['overview', 'announcements', 'board', 'initiatives', 'resources', 'calendar', 'media', 'settings']) {
+  for (const section of ['overview', 'activity', 'announcements', 'board', 'initiatives', 'resources', 'calendar', 'media', 'contact', 'about', 'pulse', 'settings']) {
     assert.match(html, new RegExp(`data-tab="${section}"`), `${section} must remain reachable from admin navigation`);
   }
 });
