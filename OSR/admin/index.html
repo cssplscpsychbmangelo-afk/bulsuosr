@@ -46,16 +46,17 @@ img{display:block;max-width:100%}
 .skip-link{position:fixed;left:16px;top:12px;z-index:1000;transform:translateY(-150%);background:var(--ink);color:var(--white);padding:10px 14px;border-radius:6px;font-weight:700}
 .skip-link:focus{transform:none}
 .mono{font-family:'IBM Plex Mono',monospace}
-.btn{min-height:44px;border:1px solid var(--control);border-radius:8px;padding:10px 15px;background:var(--white);color:var(--ink);font-weight:600;font-size:13px;line-height:1.2;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,border-color .15s,color .15s,transform .15s var(--ease)}
-.btn:hover{background:var(--paper);border-color:var(--ink)}
-.btn:active{transform:translateY(1px)}
-.btn:disabled{cursor:not-allowed;opacity:.58}
-.btn--red{border-color:var(--red);background:var(--red);color:var(--white)}
-.btn--red:hover{border-color:var(--red-dark);background:var(--red-dark)}
-.btn--ghost{background:var(--white)}
-.btn--quiet{border-color:transparent;background:transparent}
-.btn--quiet:hover{border-color:var(--line);background:var(--white)}
-.btn--sm{min-height:44px;padding:8px 12px;font-size:12px}
+.btn{min-height:38px;border:1px solid rgba(17,18,20,0.15);border-radius:8px;padding:8px 16px;background:var(--white);color:var(--ink);font-weight:550;font-size:13px;line-height:1.25;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 1px 2px rgba(17,18,20,0.04);transition:all .16s cubic-bezier(.16,1,.3,1)}
+.btn:hover{background:var(--paper-2);border-color:rgba(17,18,20,0.28);box-shadow:0 2px 5px rgba(17,18,20,0.07);transform:translateY(-1px)}
+.btn:active{transform:translateY(0);box-shadow:0 1px 2px rgba(17,18,20,0.04)}
+.btn:disabled{cursor:not-allowed;opacity:.55;transform:none;box-shadow:none}
+.btn--red{border-color:#8F1428;background:var(--red);color:var(--white);box-shadow:0 1px 3px rgba(166,25,46,0.22),inset 0 1px 0 rgba(255,255,255,0.16)}
+.btn--red:hover{border-color:#7A0F21;background:var(--red-dark);box-shadow:0 3px 8px rgba(166,25,46,0.3);transform:translateY(-1px)}
+.btn--ghost{background:var(--white);border-color:var(--line-2)}
+.btn--ghost:hover{background:var(--paper-2);border-color:var(--ink-soft)}
+.btn--quiet{border-color:transparent;background:transparent;box-shadow:none}
+.btn--quiet:hover{border-color:var(--line);background:var(--white);box-shadow:0 1px 2px rgba(17,18,20,0.04)}
+.btn--sm{min-height:32px;padding:5px 12px;font-size:12px;border-radius:6px}
 .btn--block{width:100%}
 .badge{display:inline-flex;align-items:center;gap:6px;width:max-content;border:1px solid var(--line);border-radius:999px;padding:5px 9px;background:var(--white);color:var(--stone);font:600 10px/1 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em}
 .badge--green{border-color:#85B798;background:var(--green-soft);color:var(--green)}
@@ -108,33 +109,48 @@ img{display:block;max-width:100%}
 .health.is-online:before{background:var(--green)}
 .health.is-error:before{background:var(--red)}
 
-.topbar{position:sticky;top:0;z-index:40;height:72px;display:flex;align-items:center;gap:14px;padding:0 22px;border-bottom:1px solid var(--line);background:var(--white)}
+.topbar{position:sticky;top:0;z-index:40;height:72px;display:flex;align-items:center;gap:12px;padding:0 22px;border-bottom:1px solid var(--line);background:var(--white)}
 .mobile-menu-btn{display:none}
-.topbar-brand{display:flex;align-items:center;gap:11px;min-width:0;color:var(--ink)}
-.topbar-logo{width:50px;height:50px;object-fit:contain;flex:none}
+.topbar-brand{display:flex;align-items:center;gap:11px;min-width:0;color:var(--ink);flex-shrink:0}
+.topbar-logo{width:46px;height:46px;object-fit:contain;flex:none}
 .topbar-brand-copy{min-width:0;line-height:1.15}
-.topbar-brand-copy b{display:block;font:700 16px 'Fraunces',Georgia,serif}
-.topbar-brand-copy span{display:block;margin-top:3px;color:var(--stone);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
-.topbar-actions{display:flex;align-items:center;gap:9px;margin-left:auto}
+.topbar-brand-copy b{display:block;font:700 15px 'Fraunces',Georgia,serif}
+.topbar-brand-copy span{display:block;margin-top:2px;color:var(--stone);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
+.topbar-nav{display:flex;align-items:center;gap:3px;overflow-x:auto;scrollbar-width:none;padding:3px 4px;background:var(--paper-2);border:1px solid var(--line);border-radius:8px;margin:0 12px;flex:1 1 auto;max-width:max-content}
+.topbar-nav::-webkit-scrollbar{display:none}
+.topbar-nav-link{border:0;background:transparent;color:var(--stone);font-weight:550;font-size:12px;padding:5px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;transition:all .15s}
+.topbar-nav-link:hover{color:var(--ink);background:rgba(255,255,255,0.7)}
+.topbar-nav-link.is-active{color:var(--red-dark);background:var(--white);font-weight:600;box-shadow:0 1px 2px rgba(17,18,20,0.06)}
+@media(max-width:1120px){.topbar-nav{display:none}}
+.topbar-actions{display:flex;align-items:center;gap:9px;margin-left:auto;flex-shrink:0}
 .site-short{display:none}
 .admin-identity{max-width:260px;margin-right:3px;text-align:right;line-height:1.25}
 .admin-identity span{display:block;color:var(--stone);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
 .admin-identity strong{display:block;overflow:hidden;text-overflow:ellipsis;font-size:12px;font-weight:600;white-space:nowrap}
-.admin-shell{max-width:1540px;min-height:calc(100vh - 72px);margin:0 auto;display:grid;grid-template-columns:250px minmax(0,1fr)}
-.sidebar{position:sticky;top:72px;align-self:start;height:calc(100vh - 72px);display:flex;flex-direction:column;padding:25px 18px 18px;border-right:1px solid var(--line);background:var(--paper)}
+.admin-shell{max-width:1540px;min-height:calc(100vh - 72px);margin:0 auto;display:grid;grid-template-columns:272px minmax(0,1fr)}
+.sidebar{position:sticky;top:72px;align-self:start;height:calc(100vh - 72px);display:flex;flex-direction:column;padding:24px 18px 20px;border-right:1px solid var(--line);background:var(--paper);overflow-y:auto;scrollbar-width:thin}
 .sidebar-mobile-head{display:none}
-.nav-label{margin:0 10px 8px;color:var(--stone);font:600 10px/1.4 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.09em}
-.tabs{display:grid;gap:3px;margin-bottom:22px}
-.tab{position:relative;width:100%;min-height:46px;display:grid;grid-template-columns:30px minmax(0,1fr);align-items:center;gap:7px;border:1px solid transparent;border-radius:8px;padding:8px 10px;background:transparent;color:var(--ink-soft);font-weight:500;text-align:left;cursor:pointer;transition:background .15s,border-color .15s,color .15s}
-.tab-index{color:var(--stone);font:500 10px 'IBM Plex Mono',monospace}
-.tab:hover{border-color:var(--line);background:var(--white)}
-.tab.is-active{border-color:var(--line);background:var(--white);color:var(--red-dark);font-weight:700}
-.tab.is-active:before{content:"";position:absolute;left:-1px;top:8px;bottom:8px;width:3px;border-radius:0 2px 2px 0;background:var(--red)}
-.tab.is-active .tab-index{color:var(--red-dark)}
-.sidebar-note{margin:auto 4px 0;padding:16px 12px;border-top:1px solid var(--line);color:var(--stone);font-size:11.5px}
-.sidebar-note b{display:block;margin-bottom:4px;color:var(--ink);font-size:12px}
+.nav-label{margin:18px 10px 8px;color:var(--stone);font:600 10.5px/1.4 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.11em;display:flex;align-items:center;gap:8px}
+.nav-label:first-of-type{margin-top:0}
+.nav-label:after{content:"";flex:1;height:1px;background:var(--line);opacity:0.6}
+.tabs{display:grid;gap:5px;margin-bottom:14px}
+.tab{position:relative;width:100%;min-height:42px;display:grid;grid-template-columns:26px minmax(0,1fr);align-items:center;gap:10px;border:1px solid transparent;border-radius:8px;padding:8px 12px;background:transparent;color:var(--ink-soft);font-size:13.5px;font-weight:500;text-align:left;cursor:pointer;transition:all .15s}
+.tab-index{display:inline-flex;align-items:center;justify-content:center;height:22px;border-radius:4px;background:rgba(17,18,20,0.04);border:1px solid rgba(17,18,20,0.06);color:var(--stone);font:600 10px 'IBM Plex Mono',monospace;text-align:center}
+.tab:hover{border-color:var(--line);background:var(--white);color:var(--ink);transform:translateX(2px)}
+.tab.is-active{border-color:var(--line);background:var(--white);color:var(--red-dark);font-weight:600;box-shadow:0 1px 3px rgba(17,18,20,0.05)}
+.tab.is-active:before{content:"";position:absolute;left:0;top:6px;bottom:6px;width:3.5px;border-radius:0 3px 3px 0;background:var(--red)}
+.tab.is-active .tab-index{background:var(--red-soft);border-color:#D78E9A;color:var(--red-dark)}
+.sidebar-note{margin:auto 0 0;padding:14px 14px;border:1px solid var(--line);border-radius:8px;background:var(--white);color:var(--stone);font-size:12px;line-height:1.45;box-shadow:0 1px 2px rgba(17,18,20,0.03)}
+.sidebar-note b{display:flex;align-items:center;gap:6px;margin-bottom:4px;color:var(--ink);font-size:12px}
 .sidebar-logout{display:none;margin-top:10px}
 .nav-backdrop{display:none}
+.mobile-tab-strip{display:none}
+@media(max-width:1120px){
+  .mobile-tab-strip{display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;padding:4px 0 16px;margin-bottom:8px;border-bottom:1px solid var(--line)}
+  .mobile-tab-strip::-webkit-scrollbar{display:none}
+  .mobile-tab-strip .topbar-nav-link{padding:6px 12px;border:1px solid var(--line);background:var(--white);border-radius:6px;font-size:12px}
+  .mobile-tab-strip .topbar-nav-link.is-active{border-color:var(--red);color:var(--red-dark);background:var(--red-soft)}
+}
 .main-content{min-width:0;padding:42px clamp(24px,4vw,58px) 70px}
 .page-header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin:0 0 28px;padding:0 0 24px;border-bottom:1px solid var(--ink)}
 .page-kicker{margin:0 0 8px;color:var(--red-dark);font:600 10px/1.4 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
@@ -394,6 +410,16 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
       <img class="topbar-logo" src="/osr-logo.png" alt=""/>
       <span class="topbar-brand-copy"><b>OSR Administration</b><span>Content workspace</span></span>
     </a>
+    <nav class="topbar-nav" id="topbarNav" aria-label="Quick workspace navigation">
+      <button class="topbar-nav-link is-active" type="button" data-tab="overview" aria-current="page">Overview</button>
+      <button class="topbar-nav-link" type="button" data-tab="announcements">Announcements</button>
+      <button class="topbar-nav-link" type="button" data-tab="board">Board</button>
+      <button class="topbar-nav-link" type="button" data-tab="initiatives">Initiatives</button>
+      <button class="topbar-nav-link" type="button" data-tab="resources">Resources</button>
+      <button class="topbar-nav-link" type="button" data-tab="calendar">Calendar</button>
+      <button class="topbar-nav-link" type="button" data-tab="media">Media</button>
+      <button class="topbar-nav-link" type="button" data-tab="settings">Settings</button>
+    </nav>
     <div class="topbar-actions">
       <div class="admin-identity"><span>Signed in as</span><strong id="adminEmail"></strong></div>
       <a href="/" target="_blank" rel="noopener" class="btn btn--ghost btn--sm topbar-site"><span class="site-full">View public site</span><span class="site-short">Site</span></a>
@@ -434,6 +460,16 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
     </aside>
 
     <main id="mainContent" class="main-content" tabindex="-1">
+      <nav class="mobile-tab-strip" id="mobileTabStrip" aria-label="Quick section navigation">
+        <button class="topbar-nav-link is-active" type="button" data-tab="overview" aria-current="page">Overview</button>
+        <button class="topbar-nav-link" type="button" data-tab="announcements">Announcements</button>
+        <button class="topbar-nav-link" type="button" data-tab="board">Board</button>
+        <button class="topbar-nav-link" type="button" data-tab="initiatives">Initiatives</button>
+        <button class="topbar-nav-link" type="button" data-tab="resources">Resources</button>
+        <button class="topbar-nav-link" type="button" data-tab="calendar">Calendar</button>
+        <button class="topbar-nav-link" type="button" data-tab="media">Media</button>
+        <button class="topbar-nav-link" type="button" data-tab="settings">Settings</button>
+      </nav>
       <header class="page-header">
         <div>
           <p id="pageKicker" class="page-kicker">Workspace 01</p>
@@ -518,6 +554,19 @@ function toast(message) {
   element.textContent = message;
   $('#toasts').appendChild(element);
   window.setTimeout(() => element.remove(), 3200);
+}
+
+function notifyContentChanged(moduleName) {
+  try {
+    if (typeof BroadcastChannel !== 'undefined') {
+      const bc = new BroadcastChannel('osr-cms-sync');
+      bc.postMessage({ type: 'cms-updated', module: moduleName, timestamp: Date.now() });
+      bc.close();
+    }
+  } catch(e) {}
+  try {
+    localStorage.setItem('osr_cms_last_update', JSON.stringify({ module: moduleName, timestamp: Date.now() }));
+  } catch(e) {}
 }
 
 function formatDate(value) {
@@ -809,7 +858,7 @@ document.addEventListener('keydown', event => {
 async function switchTab(tab, options = {}) {
   if (!pageMeta[tab]) return;
   currentTab = tab;
-  $$('.tab').forEach(button => {
+  $$('.tab, .topbar-nav-link').forEach(button => {
     const active = button.dataset.tab === tab;
     button.classList.toggle('is-active', active);
     if (active) button.setAttribute('aria-current', 'page');
@@ -921,7 +970,7 @@ function form(tab, record = {}) {
     <form class="form">
       <h3>${record.id ? 'Edit' : 'Add'} ${module.itemLabel}</h3>
       ${module.fields.map(field => fieldHTML(field, record)).join('')}
-      <label>Visibility<select name="${statusKey(tab)}">${['Draft','Published','Archived'].map(value => `<option ${record[statusKey(tab)] === value ? 'selected' : ''}>${value}</option>`).join('')}</select></label>
+      <label>Visibility<select name="${statusKey(tab)}">${['Published','Draft','Archived'].map(value => `<option ${(record[statusKey(tab)] || 'Published') === value ? 'selected' : ''}>${value}</option>`).join('')}</select></label>
       <div class="err" role="alert"></div>
       <div class="actions"><button type="button" class="btn btn--ghost" data-cancel>Cancel</button><button class="btn btn--red" type="submit">${record.id ? 'Save changes' : `Create ${module.itemLabel}`}</button></div>
     </form>`;
@@ -955,6 +1004,7 @@ function form(tab, record = {}) {
         body: JSON.stringify(data)
       });
       toast(`${module.itemLabel[0].toUpperCase()}${module.itemLabel.slice(1)} saved successfully.`);
+      notifyContentChanged(tab);
       await renderTab(tab);
       loadStats();
     } catch (error) {
@@ -1062,6 +1112,7 @@ async function renderTab(tab) {
           body: JSON.stringify({ [statusKey(tab)]: action === 'archive' ? 'Archived' : action === 'publish' ? 'Published' : 'Draft' })
         });
         toast(`${module.itemLabel[0].toUpperCase()}${module.itemLabel.slice(1)} ${action === 'archive' ? 'archived' : action === 'publish' ? 'published' : 'unpublished'}.`);
+        notifyContentChanged(tab);
         await renderTab(tab);
         loadStats();
       } catch (error) {
@@ -1146,6 +1197,7 @@ async function renderMedia() {
         try {
           await api(`/api/media/${encodeURIComponent(record.id)}`, { method: 'DELETE' });
           toast('The media item was archived.');
+          notifyContentChanged('media');
           await renderMedia();
         } catch (error) {
           toast(error.message);
@@ -1178,6 +1230,7 @@ async function submitForm(event, path, done, method = 'POST') {
   try {
     await api(path, { method, body: JSON.stringify(Object.fromEntries(new FormData(event.currentTarget))) });
     toast('Saved successfully.');
+    notifyContentChanged('settings');
     await done();
   } catch (error) {
     toast(`The changes were not saved: ${error.message}`);

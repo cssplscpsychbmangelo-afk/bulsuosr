@@ -5,6 +5,7 @@ import { validateContent } from '../middleware/content.js';
 const router=express.Router();
 async function log(db,a,act,id){ try{(await db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type, content_id) VALUES (?,?,?,?,?)').run(a?.id||null,a?.email||'system',act,'resource',id));}catch{} }
 router.get('/public',async (req,res)=>{
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   const db=req.app.locals.db;
   res.json((await db.prepare("SELECT * FROM resources WHERE status='Published' ORDER BY created_at DESC").all()));
 });

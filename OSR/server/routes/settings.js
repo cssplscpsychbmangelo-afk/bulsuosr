@@ -11,6 +11,7 @@ router.get('/', authRequired, superAdminRequired, async (req,res)=>{
   res.json(obj);
 });
 router.get('/public', async (req,res)=>{
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
   const db=req.app.locals.db;
   const rows=(await db.prepare('SELECT * FROM site_settings').all());
   const obj={}; rows.forEach(r=>{ if(r.key !== 'jwt_secret') obj[r.key]=r.value; });

@@ -130,8 +130,10 @@ app.use('/api/admin-users', adminUsersRoutes);
 
 // Public aggregated endpoint
 app.get('/api/public/:type', async (req, res) => {
+  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.set('Pragma', 'no-cache');
+  res.set('Expires', '0');
   const type = req.params.type;
-  if (type === 'pulse-aggregates') res.set('Cache-Control', 'no-store');
   const map = {
     'announcements': 'announcements',
     'board-meetings': 'board_meetings',
