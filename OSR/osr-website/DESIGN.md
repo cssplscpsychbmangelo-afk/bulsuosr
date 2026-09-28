@@ -43,6 +43,13 @@ ENERGY 2 / RHYTHM 3 / MOTION 2
 - No glassmorphism, no gradients, no blobs, no heavy shadows. Shadows limited to nav dropdown and mobile drawer: 0 8px 24px rgba(16,18,20,0.08).
 - No stock-photo-heavy hero. Use typography and structure; optional images only where supplied, with honest placeholders.
 
+## Data views — BulSU Pulse navigation
+- One view at a time. The Pulse panel exposes six views (This period, Monthly, Yearly, Trends, History, Share & report) behind a single tablist, so nothing important sits below three other cards.
+- Every view carries its own period stepper (‹ select ›) plus a "Latest" jump, so a visitor can walk the record without hunting inside a dropdown.
+- Periods read in words — "September 2026 · 5 builds", never `2026-09`. A one-line takeaway in plain language states what the current numbers mean before any chart.
+- Comparisons are always labelled ("Change versus August 2026, percentage points of share") and described as descriptive only, never as a ranking.
+- History is a real table (period, builds, top priority, share, runner-up) that shows the latest six periods and discloses the rest on request.
+
 ## Human / Mobile (R-03, R-25, R-27, R-32)
 - Mobile-first, no horizontal overflow at 320. Tap targets minimum 44px. Keyboard order follows visual order, visible focus ring (red).
 - Contrast verified: Ink #111214 on white 15.9:1 PASS, Stone #6B6560 on white 5.8:1 PASS, White on Red #A6192E 7.2:1 PASS, Red on light gray fails so never set red text on gray.

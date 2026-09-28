@@ -255,7 +255,8 @@ router.post('/purge', authRequired, async (req, res) => {
 });
 
 // Rebuild every aggregate row from the submissions that still exist.
-async function rebuildAggregates(db) {
+// Exported so maintenance scripts and tests can reuse the exact same maths.
+export async function rebuildAggregates(db) {
   const rows = await db.prepare('SELECT period, allocation, total_points FROM pulse_submissions').all();
   const monthly = new Map();
   const allTime = new Map();

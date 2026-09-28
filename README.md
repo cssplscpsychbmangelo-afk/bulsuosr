@@ -85,6 +85,14 @@ Default login on a fresh DB: `admin@osr.bulsu.edu.ph / Admin123456!`. The setup 
   blocks (title, description, homepage intro, footer note).
 - **Activity log.** A dedicated screen lists every recorded change (administrator,
   action, content type, time) with search, type filter and CSV export.
+- **BulSU Pulse, once it has data.** The public Pulse panel is a single tablist
+  with six views — This period, Monthly, Yearly, Trends, History, Share & report —
+  each with a ‹ select › period stepper and a Latest jump. Periods are shown as
+  "September 2026 · 5 builds", every view opens with a one-line takeaway, month
+  comparisons are labelled ("Change versus August 2026, percentage points of
+  share") and History is a table that discloses periods beyond the latest six.
+  `OSR/server/test/pulse-nav.test.mjs` drives that navigation against synthetic
+  submissions on every `npm test`.
 - **Overview.** The dashboard now shows per-section library health (published /
   draft / archived counts) taken from `GET /api/bulk/summary`.
 

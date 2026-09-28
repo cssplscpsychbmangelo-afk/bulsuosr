@@ -953,6 +953,67 @@ img,svg{max-width:100%; height:auto}
 #page-ideal-bulsu .pulse-counter{gap:6px; padding:3px 6px}
 #page-ideal-bulsu .pulse-alloc-row__desc{max-width:60ch}
 #page-ideal-bulsu select{max-width:100%}
+/* Pulse explorer — six views behind one navigation bar. */
+.pulse-viewnav{display:flex; gap:5px; flex-wrap:wrap; margin-top:12px; padding:4px; border:1px solid var(--line); border-radius:14px; background:var(--paper-2)}
+.pulse-viewtab{padding:8px 13px; border-radius:10px; border:1px solid transparent; background:transparent; font:600 12px "IBM Plex Sans",sans-serif; color:var(--ink-2); cursor:pointer; transition:background .14s, color .14s, border-color .14s; min-height:38px}
+.pulse-viewtab:hover{background:white; border-color:var(--line)}
+.pulse-viewtab.is-active{background:var(--red); border-color:var(--red); color:white; box-shadow:0 2px 8px rgba(166,25,46,0.16)}
+.pulse-viewtab:focus-visible{outline:2px solid var(--red); outline-offset:2px}
+.pulse-period-nav{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:12px}
+.pulse-period-nav .select{min-width:172px; max-width:100%}
+.pulse-step{width:40px; height:40px; flex:0 0 40px; display:grid; place-items:center; border:1px solid var(--line); border-radius:10px; background:white; color:var(--ink); cursor:pointer; transition:border-color .14s, background .14s}
+.pulse-step:hover:not(:disabled){border-color:var(--red); background:var(--red-3); color:var(--red)}
+.pulse-step:disabled{opacity:.4; cursor:not-allowed}
+.pulse-step:focus-visible{outline:2px solid var(--red); outline-offset:2px}
+.pulse-nav-meta{font:500 11px "IBM Plex Mono",monospace; color:var(--stone); margin-left:auto}
+.pulse-takeaway{display:flex; gap:9px; align-items:flex-start; margin:12px 0 0; padding:11px 13px; border:1px solid var(--line); border-left:3px solid var(--red); border-radius:9px; background:var(--paper-2); font-size:12.5px; line-height:1.55; color:var(--ink-2)}
+.pulse-takeaway[hidden]{display:none}
+.pulse-takeaway b{color:var(--ink)}
+.pulse-chiprow{display:flex; gap:7px; flex-wrap:wrap; margin-top:10px}
+.pulse-chip{font:600 11px "IBM Plex Mono",monospace; padding:4px 9px; border:1px solid var(--line); border-radius:999px; background:white; color:var(--ink-2)}
+.pulse-chip--top{border-color:#FFD0D6; background:var(--red-3); color:var(--red)}
+.pulse-controls{display:flex; gap:9px; flex-wrap:wrap; align-items:center; margin-top:2px}
+.pulse-controls .spacer{flex:1 1 auto}
+.pulse-tablewrap{margin-top:10px; overflow-x:auto; border:1px solid var(--line); border-radius:10px; background:white}
+.pulse-table{width:100%; border-collapse:collapse; font-size:12.5px}
+.pulse-table th,.pulse-table td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap}
+.pulse-table th{font:600 10px "IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.05em; color:var(--stone); background:var(--paper-2)}
+.pulse-table tbody tr:last-child td{border-bottom:0}
+.pulse-table tbody tr.is-latest{background:var(--red-3)}
+.pulse-table td.pulse-table__period{font-weight:600}
+.pulse-movers{display:grid; gap:6px; margin-top:12px}
+.pulse-mover{display:flex; gap:8px; align-items:baseline; padding:8px 11px; border:1px solid var(--line); border-radius:8px; background:white; font-size:12px}
+.pulse-mover b{font:600 11px "IBM Plex Mono",monospace}
+.pulse-mover--up b{color:#1B7A3D}
+.pulse-mover--down b{color:var(--red)}
+.pulse-share-head{display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between}
+.pulse-share-head h4{margin:0; font-size:13.5px}
+.pulse-share-period{font:600 13px "IBM Plex Sans",sans-serif; margin-top:2px}
+.pulse-share-actions{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+.pulse-share-actions .select{min-width:150px; max-width:100%}
+.pulse-rule{border:0; border-top:1px dashed var(--line); margin:16px 0}
+.pulse-chartbox{margin-top:10px; border:1px solid var(--line); border-radius:10px; background:var(--paper-2); padding:12px; min-height:160px; display:grid; place-items:center}
+.pulse-overview{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:12px}
+.pulse-overview__cell{border:1px solid var(--line); border-radius:9px; background:white; padding:10px 12px; min-width:0}
+.pulse-overview__cell b{display:block; font:600 10px "IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.04em; color:var(--stone)}
+.pulse-overview__cell strong{display:block; margin-top:4px; font:700 19px "Fraunces",serif; line-height:1.1; overflow-wrap:anywhere}
+.pulse-overview__cell span{display:block; margin-top:2px; font-size:11px; color:var(--stone); line-height:1.35}
+@media(max-width:640px){
+  .pulse-viewnav{gap:4px; border-radius:12px}
+  .pulse-viewtab{flex:1 1 calc(50% - 8px); padding:9px 8px; text-align:center; font-size:11.5px}
+  .pulse-period-nav{gap:7px; margin-top:10px}
+  .pulse-period-nav .select{flex:1 1 140px; min-width:0}
+  .pulse-nav-meta{margin-left:0; width:100%}
+  .pulse-step{width:42px; height:42px; flex:0 0 42px}
+  .pulse-overview{grid-template-columns:1fr 1fr; gap:8px}
+  .pulse-overview__cell strong{font-size:17px}
+  .pulse-overview__cell:first-child{grid-column:1 / -1}
+  .pulse-table th,.pulse-table td{padding:8px 9px; font-size:12px}
+  .pulse-table th:nth-child(5),.pulse-table td:nth-child(5){display:none}
+  .pulse-share-head{gap:8px}
+  .pulse-share-actions{width:100%}
+  .pulse-share-actions .select{flex:1 1 auto}
+}
 @media(max-width:760px){
   .ideal-card{margin-top:14px; padding:14px}
 }
@@ -2080,16 +2141,18 @@ img,svg{max-width:100%; height:auto}
       <!-- PULSE PANEL -->
       <div id="pulsePulseTab" role="tabpanel" hidden>
         <div class="ideal-card ideal-card--head">
-          <div>
+          <div style="min-width:0">
             <div class="eyebrow" style="color:var(--red)">BulSU Pulse</div>
-            <h3 style="margin:2px 0 4px; font-family:'Fraunces',serif; font-size:18px; line-height:1">What are students prioritizing?</h3>
-            <p class="small muted" style="margin:0">Student priorities — continuously updated.</p>
+            <h3 style="margin:2px 0 4px; font-family:'Fraunces',serif; font-size:18px; line-height:1.15">What are students prioritizing?</h3>
+            <p class="small muted" style="margin:0">Points share = how students split their 10 points. It is a pulse, not a vote count.</p>
           </div>
           <div style="text-align:right; min-width:140px">
             <div id="pulsePulseCount" class="mono" style="font:700 11px 'IBM Plex Mono',monospace; background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:5px 8px; border-radius:999px; display:inline-block">0 builds</div>
             <div class="mono" style="font-size:10.5px; color:var(--stone); margin-top:4px" id="pulsePulsePeriodLabel">—</div>
           </div>
         </div>
+
+        <div class="pulse-overview" id="pulseOverviewStats" aria-live="polite"></div>
 
         <div id="pulseGeneralStatus" class="ideal-card ideal-card--head">
           <div>
@@ -2104,90 +2167,130 @@ img,svg{max-width:100%; height:auto}
           </div>
         </div>
 
-        <div class="pulse-subtabs" style="margin-top:12px; display:flex; gap:6px; flex-wrap:wrap">
-          <button data-pview="period" class="pulse-subtab is-active">This period</button>
-          <button data-pview="monthly" class="pulse-subtab">Monthly</button>
-          <button data-pview="yearly" class="pulse-subtab">Yearly</button>
+        <!-- PULSE EXPLORER: one navigation, six views. -->
+        <div id="pulseViewNav" class="pulse-viewnav" role="tablist" aria-label="BulSU Pulse views">
+          <button type="button" role="tab" id="pulseTabPeriod" class="pulse-viewtab is-active" data-pview="period" aria-controls="pulseViewPeriod" aria-selected="true">This period</button>
+          <button type="button" role="tab" id="pulseTabMonthly" class="pulse-viewtab" data-pview="monthly" aria-controls="pulseViewMonthly" aria-selected="false" tabindex="-1">Monthly</button>
+          <button type="button" role="tab" id="pulseTabYearly" class="pulse-viewtab" data-pview="yearly" aria-controls="pulseViewYearly" aria-selected="false" tabindex="-1">Yearly</button>
+          <button type="button" role="tab" id="pulseTabTrend" class="pulse-viewtab" data-pview="trend" aria-controls="pulseViewTrend" aria-selected="false" tabindex="-1">Trends</button>
+          <button type="button" role="tab" id="pulseTabHistory" class="pulse-viewtab" data-pview="history" aria-controls="pulseViewHistory" aria-selected="false" tabindex="-1">History</button>
+          <button type="button" role="tab" id="pulseTabShare" class="pulse-viewtab" data-pview="share" aria-controls="pulseViewShare" aria-selected="false" tabindex="-1">Share &amp; report</button>
         </div>
 
-        <div id="pulseViewPeriod" class="pulse-view">
-          <div id="pulsePeriodTop" style="margin-top:2px"></div>
-          <div id="pulsePeriodBars" style="margin-top:12px; min-height:40px"></div>
+        <!-- 1. THIS PERIOD -->
+        <div id="pulseViewPeriod" class="pulse-view" role="tabpanel" aria-labelledby="pulseTabPeriod" tabindex="0">
+          <div class="pulse-period-nav">
+            <button id="pulsePeriodPrev" class="pulse-step" type="button" aria-label="Previous period"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <select id="pulsePeriodSelect" class="select" aria-label="Choose a period"></select>
+            <button id="pulsePeriodNext" class="pulse-step" type="button" aria-label="Next period"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <button id="pulsePeriodLatest" class="btn btn--sm btn--ghost" type="button">Latest</button>
+            <span id="pulsePeriodMeta" class="pulse-nav-meta"></span>
+          </div>
+          <p id="pulsePeriodTakeaway" class="pulse-takeaway" hidden></p>
+          <div id="pulsePeriodTop"></div>
+          <div id="pulsePeriodBars"></div>
           <div id="pulsePeriodEmpty" class="ideal-empty" hidden style="border-style:solid; background:white; border-color:var(--line)"></div>
         </div>
 
-        <div id="pulseViewMonthly" class="pulse-view" hidden>
-          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:2px">
-            <label class="mono" style="font-size:11px; color:var(--stone)" for="pulseMonthSelect">Month</label>
-            <select id="pulseMonthSelect" class="select" style="min-width:160px"></select>
-            <span id="pulseMonthlyMeta" class="mono" style="font-size:11px; color:var(--stone)"></span>
+        <!-- 2. MONTHLY -->
+        <div id="pulseViewMonthly" class="pulse-view" role="tabpanel" aria-labelledby="pulseTabMonthly" tabindex="0" hidden>
+          <div class="pulse-period-nav">
+            <button id="pulseMonthPrev" class="pulse-step" type="button" aria-label="Previous month"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <select id="pulseMonthSelect" class="select" aria-label="Choose a month"></select>
+            <button id="pulseMonthNext" class="pulse-step" type="button" aria-label="Next month"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <span id="pulseMonthlyMeta" class="pulse-nav-meta"></span>
           </div>
-          <div id="pulseMonthlyTop" style="margin-top:10px"></div>
-          <div id="pulseMonthlyBars" style="margin-top:10px"></div>
-          <div id="pulseMonthlyChange" class="small muted" style="margin-top:8px; line-height:1.5"></div>
+          <p id="pulseMonthlyTakeaway" class="pulse-takeaway" hidden></p>
+          <div id="pulseMonthlyTop"></div>
+          <div id="pulseMonthlyBars"></div>
+          <div id="pulseMonthlyChange" class="pulse-movers"></div>
         </div>
 
-        <div id="pulseViewYearly" class="pulse-view" hidden>
-          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-top:2px">
-            <label class="mono" style="font-size:11px; color:var(--stone)" for="pulseYearSelect">Year</label>
-            <select id="pulseYearSelect" class="select" style="min-width:120px"></select>
-            <span id="pulseYearlyMeta" class="mono" style="font-size:11px; color:var(--stone)"></span>
+        <!-- 3. YEARLY -->
+        <div id="pulseViewYearly" class="pulse-view" role="tabpanel" aria-labelledby="pulseTabYearly" tabindex="0" hidden>
+          <div class="pulse-period-nav">
+            <button id="pulseYearPrev" class="pulse-step" type="button" aria-label="Previous year"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <select id="pulseYearSelect" class="select" aria-label="Choose a year"></select>
+            <button id="pulseYearNext" class="pulse-step" type="button" aria-label="Next year"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg></button>
+            <span id="pulseYearlyMeta" class="pulse-nav-meta"></span>
           </div>
-          <div id="pulseYearlyTop" style="margin-top:10px"></div>
-          <div id="pulseYearlyBars" style="margin-top:10px"></div>
-          <div id="pulseYearlyCompare" class="small muted" style="margin-top:8px; line-height:1.5"></div>
+          <p id="pulseYearlyTakeaway" class="pulse-takeaway" hidden></p>
+          <div id="pulseYearlyTop"></div>
+          <div id="pulseYearlyBars"></div>
+          <div id="pulseYearlyCompare" class="pulse-movers"></div>
         </div>
 
-        <div class="ideal-card">
-          <h4 style="margin:0; font-size:13px">How student priorities change</h4>
-          <p class="small muted" style="margin:2px 0 8px">Choose a category to see its share across available months.</p>
-          <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px">
+        <!-- 4. TRENDS -->
+        <div id="pulseViewTrend" class="pulse-view" role="tabpanel" aria-labelledby="pulseTabTrend" tabindex="0" hidden>
+          <div class="pulse-controls">
+            <label class="mono" style="font-size:11px; color:var(--stone)" for="pulseTrendSelect">Category</label>
             <select id="pulseTrendSelect" class="select" style="min-width:180px">
               <option value="learning">Learning</option>
               <option value="campus">Campus</option>
               <option value="mobility">Mobility</option>
               <option value="connectivity">Connectivity</option>
               <option value="wellbeing">Well-being</option>
-              <option value="cultureCommunity">Culture & Community</option>
+              <option value="cultureCommunity">Culture &amp; Community</option>
               <option value="studentVoice">Student Voice</option>
             </select>
-            <span class="mono" style="font-size:11px; color:var(--stone)">Simple SVG line — no library</span>
+            <span class="mono" style="font-size:11px; color:var(--stone)">Share of all points, month by month</span>
           </div>
-          <div id="pulseTrendChart" style="border:1px solid var(--line); border-radius:10px; background:var(--paper-2); padding:12px; min-height:160px; display:grid; place-items:center"></div>
+          <p id="pulseTrendTakeaway" class="pulse-takeaway" hidden></p>
+          <div id="pulseTrendSummary" class="pulse-chiprow"></div>
+          <div id="pulseTrendChart" class="pulse-chartbox"></div>
           <div id="pulseTrendNoData" class="mono" style="font-size:11px; color:var(--stone); margin-top:6px"></div>
         </div>
 
-        <div id="pulseAttention" class="ideal-card">
-          <h4 style="margin:0; font-size:13px">What has students’ attention?</h4>
-          <p class="small muted" style="margin:2px 0 10px">Most prioritized category for each available period — descriptive only.</p>
-          <div id="pulseAttentionList" style="display:grid; gap:6px"></div>
+        <!-- 5. HISTORY -->
+        <div id="pulseViewHistory" class="pulse-view" role="tabpanel" aria-labelledby="pulseTabHistory" tabindex="0" hidden>
+          <div class="pulse-controls">
+            <h4 style="margin:0; font-size:13.5px">Every period with submissions</h4>
+            <span class="spacer"></span>
+            <span id="pulseHistoryMeta" class="mono" style="font-size:11px; color:var(--stone)"></span>
+            <button id="pulseHistoryToggle" class="btn btn--sm btn--ghost" type="button" hidden>Show earlier periods</button>
+          </div>
+          <div class="pulse-tablewrap">
+            <table class="pulse-table">
+              <thead>
+                <tr>
+                  <th scope="col">Period</th>
+                  <th scope="col">Builds</th>
+                  <th scope="col">Top priority</th>
+                  <th scope="col">Top share</th>
+                  <th scope="col">Runner-up</th>
+                </tr>
+              </thead>
+              <tbody id="pulseHistoryBody"></tbody>
+            </table>
+          </div>
         </div>
 
-        <div id="pulseSnapshot" style="margin-top:14px; border:1px solid var(--line); border-radius:12px; background:white; overflow:hidden">
-          <div style="padding:12px; background:var(--paper-2); border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap">
+        <!-- 6. SHARE AND REPORT -->
+        <div id="pulseViewShare" class="pulse-view" role="tabpanel" aria-labelledby="pulseTabShare" tabindex="0" hidden>
+          <div class="pulse-share-head">
             <div>
-              <div class="mono" style="font:700 10.5px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase; color:var(--red)">BulSU Pulse — Snapshot</div>
-              <div id="pulseSnapshotPeriod" style="font:600 13px 'IBM Plex Sans',sans-serif">—</div>
+              <h4>Snapshot</h4>
+              <div id="pulseSnapshotPeriod" class="pulse-share-period">—</div>
             </div>
-            <button id="pulseSnapshotShare" class="btn btn--sm btn--ghost" style="font-size:11px; padding:5px 8px">Copy text</button>
+            <button id="pulseSnapshotShare" class="btn btn--sm btn--ghost" type="button">Copy text</button>
           </div>
-          <div style="padding:14px">
-            <div id="pulseSnapshotBars"></div>
-            <div class="mono" style="font-size:11px; color:var(--stone); margin-top:10px; line-height:1.5" id="pulseSnapshotMeta">Based on builds • Student priorities for this period.</div>
+          <p id="pulseSnapshotTakeaway" class="pulse-takeaway" hidden></p>
+          <div id="pulseSnapshotBars" style="margin-top:12px"></div>
+          <div class="mono" style="font-size:11px; color:var(--stone); margin-top:10px; line-height:1.5" id="pulseSnapshotMeta">Based on builds • Student priorities for this period.</div>
+
+          <hr class="pulse-rule"/>
+
+          <div class="pulse-share-head">
+            <div>
+              <h4>Generate report</h4>
+              <p class="small muted" style="margin:2px 0 0">Objective PDF — totals, distribution, top priorities, methodology. OSR red-and-white style.</p>
+            </div>
+            <div class="pulse-share-actions">
+              <select id="pulseReportPeriod" class="select" aria-label="Report period"></select>
+              <button id="pulseReportBtn" class="btn btn--sm" style="background:var(--red); border-color:var(--red); color:white; display:inline-flex; align-items:center; gap:6px"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="white" stroke-width="1.8" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download PDF</button>
+            </div>
           </div>
         </div>
-
-        <div class="ideal-card ideal-card--actions">
-          <div>
-            <h4 style="margin:0; font-size:13px; display:flex; gap:8px; align-items:center"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="var(--red)" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg> Generate Report</h4>
-            <p class="small muted" style="margin:2px 0 0">Objective PDF — totals, distribution, top priorities, methodology. OSR red-and-white style.</p>
-          </div>
-          <div style="display:flex; gap:8px; align-items:center">
-            <select id="pulseReportPeriod" class="select" style="min-width:140px"></select>
-            <button id="pulseReportBtn" class="btn btn--sm" style="background:var(--red); border-color:var(--red); color:white; display:inline-flex; align-items:center; gap:6px"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="white" stroke-width="1.8"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download PDF</button>
-          </div>
-        </div>
-
 
         <div style="margin-top:14px; border-left:3px solid var(--red); background:var(--paper-2); border-radius:10px; padding:14px">
           <h4 style="margin:0; font-size:13px">How OSR uses the Pulse</h4>
@@ -3154,6 +3257,8 @@ let pulseDataState = "loading";
 let pulseLastUpdated = null;
 let pulseRefreshInFlight = null;
 let pulsePollTimer = null;
+let pulseSelectedPeriod = "";      // which period the "This period" view is showing
+let pulseHistoryExpanded = false;  // history table shows the latest 6 periods by default
 
 function pulsePeriodNow(){
   const parts=new Intl.DateTimeFormat("en-US", {timeZone:"Asia/Manila", year:"numeric", month:"2-digit"}).formatToParts(new Date());
@@ -3239,6 +3344,7 @@ function pulseApplyRemoteAggregates(rows, available=true){
       next[period].points[key]=points;
     });
     pulseAggregates=next;
+    if(pulseSelectedPeriod && !next[pulseSelectedPeriod]) pulseSelectedPeriod="";
     pulseDataState=Object.keys(next).length ? "live" : "empty";
   }
   pulseLastUpdated=new Date();
@@ -3422,6 +3528,37 @@ function pulseLatestPeriod(){
   if(ps.length) return ps[ps.length-1];
   return pulseCurrentPeriod;
 }
+// "2026-09" reads as a filing label. Students should read "September 2026".
+function pulsePeriodLabel(period){
+  const match=/^(\d{4})-(\d{2})$/.exec(String(period||""));
+  if(!match) return String(period||"");
+  const date=new Date(Date.UTC(Number(match[1]), Number(match[2])-1, 1));
+  return date.toLocaleDateString("en-PH", {month:"long", year:"numeric", timeZone:"UTC"});
+}
+function pulsePeriodWithBuilds(period){
+  const agg=pulseGetPeriod(period);
+  const label=pulsePeriodLabel(period);
+  return agg ? `${label} · ${agg.responses} build${agg.responses===1?"":"s"}` : label;
+}
+function pulseBuildsLabel(count){
+  return `${count} build${count===1?"":"s"}`;
+}
+// The period a visitor is looking at, always a period that has data.
+function pulseSelectedOrLatest(){
+  const periods=pulseAllPeriods();
+  if(!periods.length) return pulseCurrentPeriod;
+  if(pulseSelectedPeriod && periods.includes(pulseSelectedPeriod)) return pulseSelectedPeriod;
+  return periods[periods.length-1];
+}
+function pulseStepPeriodBy(delta){
+  const periods=pulseAllPeriods();
+  if(!periods.length) return false;
+  const index=periods.indexOf(pulseSelectedOrLatest());
+  const next=Math.min(periods.length-1, Math.max(0, index+delta));
+  if(next===index) return false;
+  pulseSelectedPeriod=periods[next];
+  return true;
+}
 function pulseAggregateForYear(year){
   const periods = pulseAllPeriods().filter(p=> p.startsWith(year+"-"));
   if(!periods.length) return null;
@@ -3480,65 +3617,101 @@ function pulseRenderPulse(){
   }
   const latest=pulseLatestPeriod();
   if(labelEl){
-    if(periods.length) labelEl.textContent=`Latest period: ${latest} · ${periods.length} period${periods.length===1?"":"s"}`;
+    if(periods.length) labelEl.textContent=`Latest: ${pulsePeriodLabel(latest)} · ${periods.length} period${periods.length===1?"":"s"} tracked`;
     else if(pulseDataState==="empty") labelEl.textContent=`No submissions yet · ${pulseCurrentPeriod}`;
     else if(pulseDataState==="unavailable") labelEl.textContent="No cached sample data is shown";
     else labelEl.textContent="Checking the public submissions endpoint";
   }
   pulseUpdateGeneralStatus();
+  pulseRenderOverviewStats();
   pulseRenderPeriodView();
   pulseRenderMonthlyView();
   pulseRenderYearlyView();
   pulseRenderTrend();
-  pulseRenderAttention();
+  pulseRenderHistory();
   pulseRenderSnapshot();
   pulseRenderIntegrity();
   pulseReportPopulate();
 }
 
 function pulseRenderPeriodView(){
+  const select=document.getElementById("pulsePeriodSelect");
+  const meta=document.getElementById("pulsePeriodMeta");
+  const takeaway=document.getElementById("pulsePeriodTakeaway");
   const topWrap=document.getElementById("pulsePeriodTop");
   const barsWrap=document.getElementById("pulsePeriodBars");
   const empty=document.getElementById("pulsePeriodEmpty");
+  const prev=document.getElementById("pulsePeriodPrev");
+  const next=document.getElementById("pulsePeriodNext");
+  const latestBtn=document.getElementById("pulsePeriodLatest");
   if(!topWrap||!barsWrap) return;
+
   const periods=pulseAllPeriods();
   if(!periods.length){
+    if(select) select.innerHTML='<option value="">No data yet</option>';
+    if(meta) meta.textContent="";
+    if(takeaway) takeaway.hidden=true;
+    if(prev) prev.disabled=true;
+    if(next) next.disabled=true;
+    if(latestBtn) latestBtn.hidden=true;
     topWrap.innerHTML="";
     barsWrap.innerHTML="";
-    empty.hidden=false;
-    empty.innerHTML=pulseNoDataCopy();
+    if(empty){ empty.hidden=false; empty.innerHTML=pulseNoDataCopy(); }
     return;
   }
-  empty.hidden=true;
-  const latest=pulseLatestPeriod();
-  const agg=pulseGetPeriod(latest);
+  if(empty) empty.hidden=true;
+
+  const period=pulseSelectedOrLatest();
+  pulseSelectedPeriod=period;
+  const index=periods.indexOf(period);
+  const agg=pulseGetPeriod(period);
   const dist=pulseDistribution(agg);
-  if(!dist){ topWrap.innerHTML=""; barsWrap.innerHTML=""; return; }
+
+  if(select){
+    select.innerHTML=periods.map(p=>`<option value="${p}"${p===period?" selected":""}>${escapeHtml(pulsePeriodWithBuilds(p))}</option>`).join("");
+    select.value=period;
+  }
+  if(prev) prev.disabled=index<=0;
+  if(next) next.disabled=index>=periods.length-1;
+  if(latestBtn) latestBtn.hidden=index===periods.length-1;
+  if(meta) meta.textContent=`Period ${index+1} of ${periods.length} · ${agg?pulseBuildsLabel(agg.responses):"no builds"}`;
+
+  if(!dist){
+    if(takeaway) takeaway.hidden=true;
+    topWrap.innerHTML="";
+    barsWrap.innerHTML=pulseNoDataMarkup();
+    return;
+  }
+
+  if(takeaway){
+    takeaway.hidden=false;
+    takeaway.innerHTML=`<span aria-hidden="true">▸</span><span>In <b>${escapeHtml(pulsePeriodLabel(period))}</b>, ${pulseBuildsLabel(agg.responses)} put most points into <b>${escapeHtml(dist.top.label)}</b> — ${dist.top.pct}% of every point allocated — with <b>${escapeHtml(dist.second.label)}</b> next at ${dist.second.pct}%.</span>`;
+  }
   topWrap.innerHTML = `
-    <div class="pulse-period-summary">
+    <div class="pulse-period-summary" style="margin-top:12px">
       <div style="border:1px solid var(--line); border-radius:8px; background:var(--paper-2); padding:10px">
         <div class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone)">Top priority</div>
-        <div style="font:700 14px 'Fraunces',serif; margin-top:2px">${dist.top.label}</div>
+        <div style="font:700 14px 'Fraunces',serif; margin-top:2px">${escapeHtml(dist.top.label)}</div>
         <div class="mono" style="font-size:11px; color:var(--stone)">${dist.top.pts} pts • ${dist.top.pct}%</div>
       </div>
       <div style="border:1px solid var(--line); border-radius:8px; background:white; padding:10px">
         <div class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone)">Second priority</div>
-        <div style="font:600 13px 'Fraunces',serif; margin-top:2px">${dist.second.label}</div>
+        <div style="font:600 13px 'Fraunces',serif; margin-top:2px">${escapeHtml(dist.second.label)}</div>
         <div class="mono" style="font-size:11px; color:var(--stone)">${dist.second.pts} pts • ${dist.second.pct}%</div>
       </div>
       <div style="border:1px solid var(--line); border-radius:8px; background:white; padding:10px">
-        <div class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone)">Total builds</div>
+        <div class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone)">Builds in period</div>
         <div style="font:700 18px 'Fraunces',serif; margin-top:2px">${agg.responses}</div>
-        <div class="mono" style="font-size:11px; color:var(--stone)">${latest}</div>
+        <div class="mono" style="font-size:11px; color:var(--stone)">${escapeHtml(pulsePeriodLabel(period))}</div>
       </div>
     </div>
-    <div class="mono" style="font-size:11px; color:var(--stone); margin-top:8px">Current student priorities — aggregate points share (not a vote)</div>
+    <div class="mono" style="font-size:11px; color:var(--stone); margin-top:8px">Share of every point allocated in this period — not a vote count</div>
   `;
   barsWrap.innerHTML = `
     <div style="display:grid; gap:8px; margin-top:8px">
       ${dist.entries.map(entry=>pulseCategoryRow(entry,`${entry.pct}% · ${entry.pts} pts`)).join("")}
     </div>
-    <div class="small muted" style="margin-top:8px">Based on ${agg.responses} build${agg.responses===1?"":"s"} · ${dist.total} points allocated</div>
+    <div class="small muted" style="margin-top:8px">Based on ${pulseBuildsLabel(agg.responses)} · ${dist.total} points allocated</div>
   `;
 }
 
@@ -3548,55 +3721,69 @@ function pulseRenderMonthlyView(){
   const topWrap=document.getElementById("pulseMonthlyTop");
   const barsWrap=document.getElementById("pulseMonthlyBars");
   const changeEl=document.getElementById("pulseMonthlyChange");
+  const takeaway=document.getElementById("pulseMonthlyTakeaway");
+  const prevBtn=document.getElementById("pulseMonthPrev");
+  const nextBtn=document.getElementById("pulseMonthNext");
   if(!sel) return;
   const periods=pulseAllPeriods();
-  if(periods.length){
-    sel.innerHTML = periods.map(p=> `<option value="${p}">${p}</option>`).join("");
-    if(!sel.value) sel.value=periods[periods.length-1];
-  } else {
-    sel.innerHTML = `<option value="">No data yet</option>`;
+  if(!periods.length){
+    sel.innerHTML='<option value="">No data yet</option>';
+    if(prevBtn) prevBtn.disabled=true;
+    if(nextBtn) nextBtn.disabled=true;
     if(topWrap) topWrap.innerHTML="";
     if(barsWrap) barsWrap.innerHTML=pulseNoDataMarkup();
     if(meta) meta.textContent="";
-    if(changeEl) changeEl.textContent="";
+    if(changeEl) changeEl.innerHTML="";
+    if(takeaway) takeaway.hidden=true;
     return;
   }
+  const previousValue=sel.value;
+  sel.innerHTML=periods.map(p=>`<option value="${p}">${escapeHtml(pulsePeriodWithBuilds(p))}</option>`).join("");
+  sel.value=periods.includes(previousValue) ? previousValue : periods[periods.length-1];
+
   const period=sel.value;
+  const index=periods.indexOf(period);
+  if(prevBtn) prevBtn.disabled=index<=0;
+  if(nextBtn) nextBtn.disabled=index>=periods.length-1;
+
   const agg=pulseGetPeriod(period);
   const dist=pulseDistribution(agg);
-  if(meta) meta.textContent = agg ? `${agg.responses} builds` : "";
-  if(!dist){ if(topWrap) topWrap.innerHTML=""; if(barsWrap) barsWrap.innerHTML=""; return; }
-  topWrap.innerHTML = `
-    <div style="display:flex; gap:8px; flex-wrap:wrap">
-      <span class="mono" style="background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:4px 8px; border-radius:999px; font-size:11px">Top: ${dist.top.label} • ${dist.top.pct}%</span>
-      <span class="mono" style="background:var(--paper-2); border:1px solid var(--line); padding:4px 8px; border-radius:999px; font-size:11px">Second: ${dist.second.label} • ${dist.second.pct}%</span>
+  if(meta) meta.textContent=`${agg?pulseBuildsLabel(agg.responses):"No builds"} · month ${index+1} of ${periods.length}`;
+  if(!dist){
+    if(topWrap) topWrap.innerHTML="";
+    if(barsWrap) barsWrap.innerHTML="";
+    if(changeEl) changeEl.innerHTML="";
+    if(takeaway) takeaway.hidden=true;
+    return;
+  }
+  if(takeaway){
+    takeaway.hidden=false;
+    takeaway.innerHTML=`<span aria-hidden="true">▸</span><span><b>${escapeHtml(pulsePeriodLabel(period))}</b>: ${escapeHtml(dist.top.label)} leads with ${dist.top.pct}% of points from ${pulseBuildsLabel(agg.responses)}.</span>`;
+  }
+  if(topWrap) topWrap.innerHTML = `
+    <div class="pulse-chiprow" style="margin-top:12px">
+      <span class="pulse-chip pulse-chip--top">Top: ${escapeHtml(dist.top.label)} • ${dist.top.pct}%</span>
+      <span class="pulse-chip">Second: ${escapeHtml(dist.second.label)} • ${dist.second.pct}%</span>
+      <span class="pulse-chip">${dist.total} points allocated</span>
     </div>`;
-  barsWrap.innerHTML=`<div style="display:grid; gap:8px; margin-top:8px">${dist.entries.map(entry=>pulseCategoryRow(entry,`${entry.pct}%`)).join("")}</div>`;
-  // change from previous
+  if(barsWrap) barsWrap.innerHTML=`<div style="display:grid; gap:8px; margin-top:8px">${dist.entries.map(entry=>pulseCategoryRow(entry,`${entry.pct}%`)).join("")}</div>`;
+
   if(changeEl){
-    const idx=periods.indexOf(period);
-    if(idx>0){
-      const prev = pulseGetPeriod(periods[idx-1]);
-      const prevDist = pulseDistribution(prev);
-      if(prevDist){
-        // find biggest mover
-        let best=null, bestDelta=-Infinity;
-        dist.entries.forEach(e=>{
-          const prevE = prevDist.entries.find(x=> x.key===e.key);
-          const delta = prevE ? (e.pct - prevE.pct) : 0;
-          if(delta>bestDelta){ bestDelta=delta; best=e; }
-        });
-        if(best && Math.abs(bestDelta)>=1){
-          const wording = bestDelta>0 ? `${best.label} received a larger share of points this month.` : `${best.label} received a smaller share this month.`;
-          changeEl.textContent = wording + ` (${bestDelta>0?"+":""}${bestDelta} pts share vs ${periods[idx-1]})`;
-        } else {
-          changeEl.textContent = "No notable change from the previous available month. Not enough difference for a meaningful comparison.";
-        }
-      } else {
-        changeEl.textContent = "Not enough responses are available for a meaningful period comparison yet.";
-      }
+    const prevPeriod=index>0 ? periods[index-1] : null;
+    const prevDist=prevPeriod ? pulseDistribution(pulseGetPeriod(prevPeriod)) : null;
+    if(!prevPeriod || !prevDist){
+      changeEl.innerHTML=`<div class="pulse-mover"><span>${periods.length>1 ? "This is the earliest month with submissions, so there is nothing before it to compare." : "Comparisons with the previous month appear once a second month has submissions."}</span></div>`;
     } else {
-      changeEl.textContent = periods.length>1 ? "" : "Not enough responses are available for a meaningful period comparison yet.";
+      const movers=dist.entries.map(entry=>{
+        const before=prevDist.entries.find(item=>item.key===entry.key);
+        return {label:entry.label, now:entry.pct, before:before?before.pct:null, delta:before? entry.pct-before.pct : 0};
+      }).filter(mover=>mover.before!==null && Math.abs(mover.delta)>=1)
+        .sort((a,b)=>Math.abs(b.delta)-Math.abs(a.delta))
+        .slice(0,4);
+      const heading=`<div class="mono" style="font-size:10.5px; color:var(--stone)">Change versus ${escapeHtml(pulsePeriodLabel(prevPeriod))} (percentage points of share)</div>`;
+      changeEl.innerHTML = heading + (movers.length
+        ? movers.map(mover=>`<div class="pulse-mover pulse-mover--${mover.delta>0?"up":"down"}"><b>${mover.delta>0?"+":""}${mover.delta} pts</b><span>${escapeHtml(mover.label)} share ${mover.delta>0?"grew":"shrank"} from ${mover.before}% to ${mover.now}%</span></div>`).join("")
+        : `<div class="pulse-mover"><span>No category moved by more than one point of share this month.</span></div>`);
     }
   }
 }
@@ -3607,56 +3794,153 @@ function pulseRenderYearlyView(){
   const topWrap=document.getElementById("pulseYearlyTop");
   const barsWrap=document.getElementById("pulseYearlyBars");
   const compareEl=document.getElementById("pulseYearlyCompare");
+  const takeaway=document.getElementById("pulseYearlyTakeaway");
+  const prevBtn=document.getElementById("pulseYearPrev");
+  const nextBtn=document.getElementById("pulseYearNext");
   if(!sel) return;
   const years=pulseAllYears();
-  if(years.length){
-    sel.innerHTML = years.map(y=> `<option value="${y}">${y}</option>`).join("");
-    if(!sel.value) sel.value=years[years.length-1];
-  } else {
-    sel.innerHTML='<option>No data</option>';
+  if(!years.length){
+    sel.innerHTML='<option value="">No data yet</option>';
+    if(prevBtn) prevBtn.disabled=true;
+    if(nextBtn) nextBtn.disabled=true;
     if(topWrap) topWrap.innerHTML="";
     if(barsWrap) barsWrap.innerHTML=pulseNoDataMarkup();
     if(meta) meta.textContent="";
-    if(compareEl) compareEl.textContent="";
+    if(compareEl) compareEl.innerHTML="";
+    if(takeaway) takeaway.hidden=true;
     return;
   }
+  const previousValue=sel.value;
+  sel.innerHTML=years.map(year=>`<option value="${year}">${year}</option>`).join("");
+  sel.value=years.includes(previousValue) ? previousValue : years[years.length-1];
+
   const year=sel.value;
+  const index=years.indexOf(year);
+  if(prevBtn) prevBtn.disabled=index<=0;
+  if(nextBtn) nextBtn.disabled=index>=years.length-1;
+
   const agg=pulseAggregateForYear(year);
-  if(!agg || !agg.responses){
+  const dist=agg && agg.responses ? pulseDistribution(agg) : null;
+  if(!dist){
     if(topWrap) topWrap.innerHTML="";
     if(barsWrap) barsWrap.innerHTML="";
     if(meta) meta.textContent="";
+    if(compareEl) compareEl.innerHTML="";
+    if(takeaway) takeaway.hidden=true;
     return;
   }
-  const dist=pulseDistribution(agg);
-  if(meta) meta.textContent=`${agg.responses} builds • ${agg.sourcePeriods.length} month${agg.sourcePeriods.length===1?"":"s"}`;
-  if(topWrap) topWrap.innerHTML=`<div style="display:flex; gap:8px; flex-wrap:wrap"><span class="mono" style="background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:4px 8px; border-radius:999px; font-size:11px">Top ${year}: ${dist.top.label} • ${dist.top.pct}%</span></div>`;
+  if(meta) meta.textContent=`${pulseBuildsLabel(agg.responses)} · ${agg.sourcePeriods.length} month${agg.sourcePeriods.length===1?"":"s"} of data`;
+  if(takeaway){
+    takeaway.hidden=false;
+    takeaway.innerHTML=`<span aria-hidden="true">▸</span><span><b>${year}</b> combines ${pulseBuildsLabel(agg.responses)} from ${agg.sourcePeriods.length} month${agg.sourcePeriods.length===1?"":"s"}; <b>${escapeHtml(dist.top.label)}</b> holds ${dist.top.pct}% of all points.</span>`;
+  }
+  if(topWrap) topWrap.innerHTML=`<div class="pulse-chiprow" style="margin-top:12px"><span class="pulse-chip pulse-chip--top">Top of ${year}: ${escapeHtml(dist.top.label)} • ${dist.top.pct}%</span><span class="pulse-chip">Second: ${escapeHtml(dist.second.label)} • ${dist.second.pct}%</span></div>`;
   if(barsWrap) barsWrap.innerHTML=`<div style="display:grid; gap:8px; margin-top:8px">${dist.entries.map(entry=>pulseCategoryRow(entry,`${entry.pct}%`)).join("")}</div>`;
   if(compareEl){
-    if(years.length>1){
-      const otherYears = years.filter(y=> y!==year);
-      const other = otherYears.length ? pulseAggregateForYear(otherYears[otherYears.length-1]) : null;
-      if(other){
-        const otherDist=pulseDistribution(other);
-        if(otherDist) compareEl.textContent=`${year} top: ${dist.top.label} (${dist.top.pct}%). ${otherYears[otherYears.length-1]} top: ${otherDist.top.label} (${otherDist.top.pct}%). Descriptive only — not a ranking.`;
-        else compareEl.textContent="";
-      } else compareEl.textContent="";
-    } else {
-      compareEl.textContent="Not enough responses are available for a meaningful period comparison yet.";
-    }
+    const others=years.filter(item=>item!==year);
+    const otherYear=others.length ? others[others.length-1] : null;
+    const otherAgg=otherYear ? pulseAggregateForYear(otherYear) : null;
+    const otherDist=otherAgg ? pulseDistribution(otherAgg) : null;
+    compareEl.innerHTML = otherDist
+      ? `<div class="pulse-mover"><b>${year}</b><span>Top: ${escapeHtml(dist.top.label)} (${dist.top.pct}%)</span></div>
+         <div class="pulse-mover"><b>${otherYear}</b><span>Top: ${escapeHtml(otherDist.top.label)} (${otherDist.top.pct}%)</span></div>
+         <div class="mono" style="font-size:10.5px; color:var(--stone)">Descriptive only — a change of year does not by itself mean priorities changed.</div>`
+      : `<div class="pulse-mover"><span>${years.length>1?"":"Only one year of data so far. "}A second year of submissions will make a yearly comparison possible.</span></div>`;
   }
+}
+
+function pulseRenderHistory(){
+  const body=document.getElementById("pulseHistoryBody");
+  const meta=document.getElementById("pulseHistoryMeta");
+  const toggle=document.getElementById("pulseHistoryToggle");
+  if(!body) return;
+  const periods=pulseAllPeriods();
+  if(!periods.length){
+    body.innerHTML=`<tr><td colspan="5">${pulseNoDataCopy()}</td></tr>`;
+    if(meta) meta.textContent="";
+    if(toggle) toggle.hidden=true;
+    return;
+  }
+  const newestFirst=periods.slice().reverse();
+  const limit=6;
+  const hidden=!pulseHistoryExpanded && newestFirst.length>limit;
+  const shown=hidden ? newestFirst.slice(0,limit) : newestFirst;
+  const latest=periods[periods.length-1];
+  body.innerHTML=shown.map(period=>{
+    const agg=pulseGetPeriod(period);
+    const dist=pulseDistribution(agg);
+    if(!dist) return `<tr><td class="pulse-table__period">${escapeHtml(pulsePeriodLabel(period))}</td><td colspan="4">No readable aggregate</td></tr>`;
+    const latestTag = period===latest ? ' <span class="mono" style="font-size:10px; color:var(--red)">LATEST</span>' : "";
+    return `<tr class="${period===latest?"is-latest":""}">
+      <td class="pulse-table__period">${escapeHtml(pulsePeriodLabel(period))}${latestTag}</td>
+      <td>${agg.responses}</td>
+      <td>${escapeHtml(dist.top.label)}</td>
+      <td>${dist.top.pct}%</td>
+      <td>${escapeHtml(dist.second.label)} · ${dist.second.pct}%</td>
+    </tr>`;
+  }).join("");
+  if(meta) meta.textContent=`${newestFirst.length} period${newestFirst.length===1?"":"s"} · ${pulseResponseCount()} builds`;
+  if(toggle){
+    toggle.hidden=newestFirst.length<=limit;
+    toggle.textContent=pulseHistoryExpanded ? "Show fewer periods" : `Show all ${newestFirst.length} periods`;
+    toggle.setAttribute("aria-expanded", pulseHistoryExpanded ? "true":"false");
+  }
+}
+
+function pulseRenderOverviewStats(){
+  const wrap=document.getElementById("pulseOverviewStats");
+  if(!wrap) return;
+  const periods=pulseAllPeriods();
+  if(!periods.length){
+    wrap.innerHTML = pulseDataState==="loading"
+      ? `<div class="pulse-overview__cell"><b>Loading</b><strong>…</strong><span>Checking for stored submissions</span></div>`
+      : `<div class="pulse-overview__cell" style="grid-column:1/-1"><b>BulSU Pulse</b><strong>No builds yet</strong><span>${pulseDataState==="unavailable"?"Live data is unavailable right now.":"The first submitted build will appear here."}</span></div>`;
+    return;
+  }
+  const latest=periods[periods.length-1];
+  const overall=periods.reduce((acc,period)=>{
+    const agg=pulseGetPeriod(period);
+    if(!agg) return acc;
+    acc.responses+=agg.responses||0;
+    Object.keys(acc.points).forEach(key=> acc.points[key]+=(agg.points[key]||0));
+    return acc;
+  }, {responses:0, points:Object.fromEntries(PULSE_CATEGORIES.map(category=>[category.key,0]))});
+  const dist=pulseDistribution({responses:overall.responses, points:overall.points});
+  const first=pulsePeriodLabel(periods[0]);
+  wrap.innerHTML = `
+    <div class="pulse-overview__cell">
+      <b>Periods tracked</b>
+      <strong>${periods.length}</strong>
+      <span>${periods.length===1?`Started ${escapeHtml(first)}`:`${escapeHtml(first)} → ${escapeHtml(pulsePeriodLabel(latest))}`}</span>
+    </div>
+    <div class="pulse-overview__cell">
+      <b>Builds recorded</b>
+      <strong>${overall.responses}</strong>
+      <span>Latest: ${escapeHtml(pulsePeriodLabel(latest))}</span>
+    </div>
+    <div class="pulse-overview__cell">
+      <b>Top priority so far</b>
+      <strong style="font-size:15px">${dist?escapeHtml(dist.top.label):"—"}</strong>
+      <span>${dist?`${dist.top.pct}% of all points across every period`:"No points recorded yet"}</span>
+    </div>`;
 }
 
 function pulseRenderTrend(){
   const sel=document.getElementById("pulseTrendSelect");
   const chart=document.getElementById("pulseTrendChart");
   const note=document.getElementById("pulseTrendNoData");
+  const summary=document.getElementById("pulseTrendSummary");
+  const takeaway=document.getElementById("pulseTrendTakeaway");
   if(!sel||!chart) return;
   const periods=pulseAllPeriods();
   const key=sel.value;
+  const category=PULSE_CATEGORIES.find(item=>item.key===key);
+  const categoryLabel=category?category.label:key;
   if(!periods.length){
     chart.innerHTML=pulseNoDataMarkup();
     if(note) note.textContent="";
+    if(summary) summary.innerHTML="";
+    if(takeaway) takeaway.hidden=true;
     return;
   }
   // build data: for each period, compute share for key
@@ -3671,12 +3955,34 @@ function pulseRenderTrend(){
   if(!valid.length){
     chart.innerHTML='<div class="mono" style="font-size:11px; color:var(--stone)">No data for this category yet.</div>';
     if(note) note.textContent="";
+    if(summary) summary.innerHTML="";
+    if(takeaway) takeaway.hidden=true;
     return;
   }
+  const values=valid.map(d=>d.pct);
+  const lowest=Math.min(...values);
+  const highest=Math.max(...values);
+  const newest=valid[valid.length-1];
+
+  if(summary){
+    summary.innerHTML=`
+      <span class="pulse-chip pulse-chip--top">Now: ${newest.pct}% · ${escapeHtml(pulsePeriodLabel(newest.period))}</span>
+      <span class="pulse-chip">Highest: ${highest}%</span>
+      <span class="pulse-chip">Lowest: ${lowest}%</span>
+      <span class="pulse-chip">${valid.length} month${valid.length===1?"":"s"} with data</span>`;
+  }
+  if(takeaway){
+    takeaway.hidden=false;
+    const movement = valid.length<2
+      ? "Only one month has data so far, so there is no line to compare yet."
+      : `Across ${valid.length} months with data, its share ranged from ${lowest}% to ${highest}%.`;
+    takeaway.innerHTML=`<span aria-hidden="true">▸</span><span><b>${escapeHtml(categoryLabel)}</b> holds ${newest.pct}% of the points in ${escapeHtml(pulsePeriodLabel(newest.period))}. ${movement}</span>`;
+  }
+
   // SVG dimensions
   const W=520, H=120, padL=36, padR=12, padT=12, padB=28;
   const innerW=W-padL-padR, innerH=H-padT-padB;
-  const maxPct=Math.max(...valid.map(d=>d.pct), 10);
+  const maxPct=Math.max(...values, 10);
   const stepX = periods.length>1 ? innerW/(periods.length-1) : innerW;
   // build points
   let points="";
@@ -3695,32 +4001,17 @@ function pulseRenderTrend(){
     const lab=d.period.slice(5); // MM
     const hasData = d.pct!==null;
     xLabels += `<text x="${x}" y="${H-6}" text-anchor="middle" font-size="9" font-family="IBM Plex Mono, monospace" fill="${hasData?"var(--stone)":"#B8B2AC"}">${hasData?lab:"NO DATA"}</text>`;
-    if(d.pct===null) dots += `<text x="${x}" y="${H/2}" text-anchor="middle" font-size="9" fill="var(--stone)">NO DATA</text>`;
+    if(d.pct===null && periods.length<=12) dots += `<text x="${x}" y="${H/2}" text-anchor="middle" font-size="9" fill="var(--stone)">NO DATA</text>`;
   });
-  chart.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="160" role="img" aria-label="Trend for ${key}"><rect x="0" y="0" width="${W}" height="${H}" rx="8" fill="var(--paper-2)" stroke="var(--line)"/><line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="var(--line)" stroke-width="1"/><line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="var(--line)" stroke-width="1"/><polyline fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="${points.trim()}"/>${dots}${xLabels}</svg>`;
-  if(note) note.textContent = data.some(d=> d.pct===null) ? "Months with NO DATA are left blank — no interpolation." : "";
-}
-
-function pulseRenderAttention(){
-  const wrap=document.getElementById("pulseAttentionList");
-  if(!wrap) return;
-  const periods=pulseAllPeriods();
-  if(!periods.length){
-    wrap.innerHTML=pulseNoDataMarkup();
-    return;
-  }
-  wrap.innerHTML = periods.slice().reverse().map(p=>{
-    const agg=pulseGetPeriod(p);
-    const dist=pulseDistribution(agg);
-    if(!dist) return `<div style="display:flex; justify-content:space-between; gap:10px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:white"><span class="mono" style="font-size:11px; color:var(--stone)">${p}</span><span style="font:600 12px 'IBM Plex Sans',sans-serif">${dist?dist.top.label:"—"}</span></div>`;
-    return `<div style="display:flex; justify-content:space-between; gap:10px; padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:white"><span class="mono" style="font-size:11px; color:var(--stone)">${p} • ${agg.responses} builds</span><span style="font:600 12px 'IBM Plex Sans',sans-serif">${dist.top.label} • ${dist.top.pct}%</span></div>`;
-  }).join("");
+  chart.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="100%" height="160" role="img" aria-label="Share of points for ${escapeHtml(categoryLabel)} by month"><rect x="0" y="0" width="${W}" height="${H}" rx="8" fill="var(--paper-2)" stroke="var(--line)"/><line x1="${padL}" y1="${padT}" x2="${padL}" y2="${H-padB}" stroke="var(--line)" stroke-width="1"/><line x1="${padL}" y1="${H-padB}" x2="${W-padR}" y2="${H-padB}" stroke="var(--line)" stroke-width="1"/><polyline fill="none" stroke="var(--red)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" points="${points.trim()}"/>${dots}${xLabels}</svg><div class="mono" style="font-size:10px; color:var(--stone); margin-top:6px; text-align:center">Month labels show two digits (01 = January)</div>`;
+  if(note) note.textContent = data.some(d=> d.pct===null) ? "Months marked NO DATA are left blank — nothing is interpolated." : "";
 }
 
 function pulseRenderSnapshot(){
   const periodEl=document.getElementById("pulseSnapshotPeriod");
   const barsEl=document.getElementById("pulseSnapshotBars");
   const metaEl=document.getElementById("pulseSnapshotMeta");
+  const takeaway=document.getElementById("pulseSnapshotTakeaway");
   if(!periodEl||!barsEl) return;
   const periods=pulseAllPeriods();
   const latest = periods.length ? periods[periods.length-1] : pulseCurrentPeriod;
@@ -3728,13 +4019,18 @@ function pulseRenderSnapshot(){
   if(!agg || !agg.responses){
     periodEl.textContent=pulseDataState==="loading" ? "Checking submissions" : pulseDataState==="unavailable" ? "Live data unavailable" : "No student submissions yet";
     barsEl.innerHTML=pulseNoDataMarkup();
+    if(takeaway) takeaway.hidden=true;
     if(metaEl) metaEl.textContent=pulseUpdatedLabel();
     return;
   }
-  periodEl.textContent = latest;
+  periodEl.textContent = pulsePeriodLabel(latest);
   const dist=pulseDistribution(agg);
   barsEl.innerHTML=`<div style="display:grid; gap:8px">${dist.entries.map(entry=>pulseCategoryRow(entry,`${entry.pct}%`)).join("")}</div>`;
-  if(metaEl) metaEl.textContent=`Based on ${agg.responses} build${agg.responses===1?"":"s"} • Student-submitted priorities for this period.`;
+  if(takeaway){
+    takeaway.hidden=false;
+    takeaway.innerHTML=`<span aria-hidden="true">▸</span><span>Snapshot of the newest period on record: <b>${escapeHtml(pulsePeriodLabel(latest))}</b> from ${pulseBuildsLabel(agg.responses)}. Copy the text for a post or a memo, or download the PDF below.</span>`;
+  }
+  if(metaEl) metaEl.textContent=`Based on ${pulseBuildsLabel(agg.responses)} • Student-submitted priorities for this period.`;
 }
 
 function pulseRenderIntegrity(){
@@ -3748,37 +4044,25 @@ function pulseRenderIntegrity(){
 
 function pulseReportPopulate(){
   const sel=document.getElementById("pulseReportPeriod");
-  const preview=document.getElementById("pulseReportPreview");
-  const body=document.getElementById("pulseReportPreviewBody");
   if(!sel) return;
   const periods=pulseAllPeriods();
   const years=pulseAllYears();
-  let opts = periods.map(p=> `<option value="${p}">${p} • ${pulseAggregates[p].responses} builds</option>`).join("");
+  const previousValue=sel.value;
+  if(!periods.length){
+    sel.innerHTML='<option value="">No data yet</option>';
+    return;
+  }
+  let options=periods.map(period=>`<option value="${period}">${escapeHtml(pulsePeriodWithBuilds(period))}</option>`).join("");
   if(years.length>1){
-    years.forEach(y=>{
-      const agg=pulseAggregateForYear(y);
-      if(agg) opts += `<option value="year-${y}">${y} (yearly • ${agg.responses} builds)</option>`;
+    years.forEach(year=>{
+      const agg=pulseAggregateForYear(year);
+      if(agg) options += `<option value="year-${year}">${year} · whole year, ${pulseBuildsLabel(agg.responses)}</option>`;
     });
   }
-  if(!periods.length){
-    opts='<option value="">No data yet</option>';
-    if(preview) preview.style.display="none";
-  } else {
-    if(!sel.value) sel.value=periods[periods.length-1];
-    if(preview) preview.style.display="none";
-  }
-  sel.innerHTML=opts;
-  // preserve selection if possible
-  if(periods.length && sel.value){
-    const val=sel.value;
-    let agg=null;
-    if(val.startsWith("year-")) agg=pulseAggregateForYear(val.slice(5));
-    else agg=pulseGetPeriod(val);
-    if(agg && body){
-      const dist=pulseDistribution(agg);
-      if(dist) body.innerHTML=`<b>${val}</b> — ${agg.responses} builds, ${dist.total} points. Top: ${dist.top.label} ${dist.top.pct}% (${dist.top.pts} pts).<br><span class="mono" style="font-size:10.5px; color:var(--stone)">${dist.entries.map(e=> e.short+': '+e.pct+'%').join(' • ')}</span>`;
-    }
-  }
+  sel.innerHTML=options;
+  // Keep whatever the visitor picked; fall back to the newest period.
+  const values=[...sel.options].map(option=>option.value);
+  sel.value=values.includes(previousValue) ? previousValue : periods[periods.length-1];
 }
 
 async function pulseEnsureJSPDF(){
@@ -4024,16 +4308,74 @@ function pulseBind(){
     button.disabled=false;
     button.textContent="Refresh";
   });
-  // subtabs
-  document.querySelectorAll(".pulse-subtab").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const v=btn.dataset.pview;
-      document.querySelectorAll(".pulse-subtab").forEach(b=> b.classList.toggle("is-active", b===btn));
-      document.getElementById("pulseViewPeriod").hidden = v!=="period";
-      document.getElementById("pulseViewMonthly").hidden = v!=="monthly";
-      document.getElementById("pulseViewYearly").hidden = v!=="yearly";
+  // Explorer navigation: six views behind one tablist.
+  const pulseViews=["period","monthly","yearly","trend","history","share"];
+  const pulseViewPanel=view=>document.getElementById("pulseView"+view.charAt(0).toUpperCase()+view.slice(1));
+  const pulseSetView=(view, focus=false)=>{
+    if(!pulseViews.includes(view)) view="period";
+    document.querySelectorAll("#pulseViewNav .pulse-viewtab").forEach(btn=>{
+      const active=btn.dataset.pview===view;
+      btn.classList.toggle("is-active", active);
+      btn.setAttribute("aria-selected", active?"true":"false");
+      btn.tabIndex=active?0:-1;
+      if(active && focus) btn.focus();
     });
+    pulseViews.forEach(v=>{
+      const panel=pulseViewPanel(v);
+      if(panel) panel.hidden=v!==view;
+    });
+    try{ sessionStorage.setItem("osr-pulse-view", view); }catch(e){}
+  };
+  document.querySelectorAll("#pulseViewNav .pulse-viewtab").forEach(btn=>{
+    btn.addEventListener("click", ()=>pulseSetView(btn.dataset.pview));
   });
+  document.getElementById("pulseViewNav")?.addEventListener("keydown", event=>{
+    if(!["ArrowRight","ArrowLeft","Home","End"].includes(event.key)) return;
+    const tabs=[...document.querySelectorAll("#pulseViewNav .pulse-viewtab")];
+    const current=Math.max(0, tabs.findIndex(tab=>tab.classList.contains("is-active")));
+    let next=current;
+    if(event.key==="ArrowRight") next=(current+1)%tabs.length;
+    else if(event.key==="ArrowLeft") next=(current-1+tabs.length)%tabs.length;
+    else if(event.key==="Home") next=0;
+    else next=tabs.length-1;
+    if(!tabs[next]) return;
+    event.preventDefault();
+    pulseSetView(tabs[next].dataset.pview, true);
+  });
+  // Step through periods, months and years without hunting in the dropdown.
+  const stepSelect=(selectId, delta, render)=>{
+    const select=document.getElementById(selectId);
+    if(!select || !select.options.length || !select.value) return;
+    const next=Math.min(select.options.length-1, Math.max(0, select.selectedIndex+delta));
+    if(next===select.selectedIndex) return;
+    select.selectedIndex=next;
+    render();
+  };
+  document.getElementById("pulsePeriodPrev")?.addEventListener("click", ()=>{ if(pulseStepPeriodBy(-1)) pulseRenderPeriodView(); });
+  document.getElementById("pulsePeriodNext")?.addEventListener("click", ()=>{ if(pulseStepPeriodBy(1)) pulseRenderPeriodView(); });
+  document.getElementById("pulsePeriodLatest")?.addEventListener("click", ()=>{
+    const periods=pulseAllPeriods();
+    if(!periods.length) return;
+    pulseSelectedPeriod=periods[periods.length-1];
+    pulseRenderPeriodView();
+  });
+  document.getElementById("pulsePeriodSelect")?.addEventListener("change", event=>{
+    pulseSelectedPeriod=event.currentTarget.value;
+    pulseRenderPeriodView();
+  });
+  document.getElementById("pulseMonthPrev")?.addEventListener("click", ()=>stepSelect("pulseMonthSelect", -1, pulseRenderMonthlyView));
+  document.getElementById("pulseMonthNext")?.addEventListener("click", ()=>stepSelect("pulseMonthSelect", 1, pulseRenderMonthlyView));
+  document.getElementById("pulseYearPrev")?.addEventListener("click", ()=>stepSelect("pulseYearSelect", -1, pulseRenderYearlyView));
+  document.getElementById("pulseYearNext")?.addEventListener("click", ()=>stepSelect("pulseYearSelect", 1, pulseRenderYearlyView));
+  document.getElementById("pulseHistoryToggle")?.addEventListener("click", ()=>{
+    pulseHistoryExpanded=!pulseHistoryExpanded;
+    pulseRenderHistory();
+  });
+  let savedView="period";
+  try{ savedView=sessionStorage.getItem("osr-pulse-view") || "period"; }catch(e){}
+  pulseSetView(savedView);
+  // Small hook so the Pulse navigation can be driven from a test or console.
+  window.__pulseUI={views:pulseViews, setView:pulseSetView, setPeriod:value=>{ pulseSelectedPeriod=value; pulseRenderPeriodView(); }, stepPeriod:pulseStepPeriodBy, expandHistory:value=>{ pulseHistoryExpanded=Boolean(value); pulseRenderHistory(); }, render:pulseRenderPulse};
   document.getElementById("pulseReset")?.addEventListener("click", ()=>{
     PULSE_CATEGORIES.forEach(c=> pulsePoints[c.key]=0);
     pulseSavePoints();
