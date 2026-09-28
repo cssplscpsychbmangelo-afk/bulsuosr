@@ -20,6 +20,7 @@ import settingsRoutes from './routes/settings.js';
 import pagesRoutes from './routes/pages.js';
 import dashboardRoutes from './routes/dashboard.js';
 import adminUsersRoutes from './routes/admin-users.js';
+import bulkRoutes from './routes/bulk.js';
 
 export function createApp(db, { mediaStore } = {}) {
 const app = express();
@@ -127,6 +128,7 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/pages', pagesRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin-users', adminUsersRoutes);
+app.use('/api/bulk', bulkRoutes);
 
 // Public aggregated endpoint
 app.get('/api/public/:type', async (req, res) => {

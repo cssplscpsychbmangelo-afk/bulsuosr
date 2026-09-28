@@ -246,6 +246,66 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
 .confirm-body p{margin:10px 0 0;color:var(--stone)}
 .confirm-actions{display:flex;justify-content:flex-end;gap:9px;padding:15px 24px;border-top:1px solid var(--line);background:var(--paper)}
 
+/* ── Bulk tools, data tables, document source and contact editor ────────── */
+.bulk-bar{position:sticky;top:72px;z-index:18;display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-top:14px;padding:12px 14px;border:1px solid #D78E9A;border-left:4px solid var(--red);border-radius:10px;background:var(--red-soft);box-shadow:0 8px 20px rgba(166,25,46,.08)}
+.bulk-bar[hidden]{display:none}
+.bulk-bar b{font-size:13px;white-space:nowrap}
+.bulk-bar .spacer{flex:1 1 auto}
+.check{display:inline-flex;align-items:center;gap:8px;color:var(--stone);font-size:12px;font-weight:600;cursor:pointer}
+.check input{width:18px;height:18px;min-height:18px;margin:0;accent-color:var(--red);cursor:pointer}
+.record-select{display:flex;align-items:flex-start;gap:11px;min-width:0;flex:1}
+.records-list .row.is-selected{background:var(--red-soft);border-color:#D78E9A}
+.data-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.data-table th,.data-table td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--line);vertical-align:middle}
+.data-table th{font:600 10px/1.4 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--stone);background:var(--paper-deep)}
+.data-table tbody tr:hover{background:var(--paper)}
+.data-table tbody tr.is-selected{background:var(--red-soft)}
+.data-table td.mono{font:500 11px 'IBM Plex Mono',monospace;color:var(--stone)}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--white)}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
+.toolbar .check{margin-right:auto}
+.toolbar input[type="date"],.toolbar input[type="search"],.toolbar select{min-height:38px;border:1px solid var(--control);border-radius:8px;padding:6px 10px;background:var(--white);color:var(--ink)}
+.source-panel{display:grid;gap:14px;margin-bottom:18px;border-left:4px solid var(--red)}
+.source-grid{display:grid;grid-template-columns:minmax(260px,1.4fr) repeat(2,minmax(150px,.6fr));gap:12px;align-items:end}
+.source-grid .field{margin:0}
+.source-status{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12px;color:var(--stone)}
+.source-preview{display:grid;gap:7px;max-height:280px;overflow:auto;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--paper)}
+.source-preview .pv{display:flex;gap:9px;align-items:baseline;padding-bottom:7px;border-bottom:1px dashed var(--line)}
+.source-preview .pv:last-child{border-bottom:0;padding-bottom:0}
+.source-preview .pv b{font:600 11px 'IBM Plex Mono',monospace;color:var(--red);flex:0 0 auto}
+.switch-row{display:flex;align-items:center;gap:9px;color:var(--ink-soft);font-size:12.5px;font-weight:600;cursor:pointer}
+.switch-row input{width:18px;height:18px;min-height:18px;accent-color:var(--red);cursor:pointer}
+.pill{border-radius:999px;padding:3px 8px;border:1px solid var(--line);background:var(--paper);font:600 10px/1.5 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.04em;color:var(--stone)}
+.pill--doc{border-color:#9FC4D8;background:#EAF4F9;color:#17536F}
+.stat-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(142px,1fr));gap:10px;margin-top:14px}
+.mini-stat{border:1px solid var(--line);border-radius:9px;background:var(--white);padding:12px 13px}
+.mini-stat b{display:block;font:600 10px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.04em;color:var(--stone)}
+.mini-stat strong{display:block;margin-top:6px;font:700 24px 'Fraunces',Georgia,serif}
+.contact-grid{display:grid;grid-template-columns:minmax(320px,1fr) minmax(300px,.85fr);gap:18px;align-items:start}
+.contact-grid .form{width:100%}
+.preview-card{display:grid;gap:9px;border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:10px;background:var(--white);padding:18px}
+.preview-card h3{margin:0 0 4px}
+.preview-card .kv{display:flex;gap:10px;font-size:12.5px;color:var(--ink-soft);border-bottom:1px dashed var(--line);padding-bottom:8px}
+.preview-card .kv:last-child{border-bottom:0;padding-bottom:0}
+.preview-card .kv b{min-width:108px;flex:0 0 auto;color:var(--stone);font-weight:600}
+.preview-card .kv span{overflow-wrap:anywhere}
+.field-group{display:grid;gap:12px;padding-top:4px}
+.field-group>h4{margin:0;font:600 12px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--red-dark)}
+.danger-zone{display:grid;gap:12px;margin-top:18px;padding:18px;border:1px solid #D78E9A;border-left:4px solid var(--red);border-radius:10px;background:var(--red-soft)}
+.danger-zone h3{margin:0}
+.danger-zone p{margin:0;color:var(--red-dark);font-size:12.5px}
+.confirm-input{width:100%;margin-top:12px;min-height:42px;border:1px solid var(--control);border-radius:8px;padding:9px 11px;background:var(--white);color:var(--ink);font-weight:600;letter-spacing:.08em}
+.hint{color:var(--stone);font-size:11.5px}
+@media(max-width:1180px){
+  .source-grid{grid-template-columns:1fr 1fr}
+  .contact-grid{grid-template-columns:1fr}
+}
+@media(max-width:860px){
+  .bulk-bar{top:64px}
+  .source-grid{grid-template-columns:1fr}
+  .bulk-bar b{width:100%}
+}
+
 @media(max-width:1180px){
   .admin-shell{grid-template-columns:215px minmax(0,1fr)}
   .main-content{padding:34px 28px 64px}
@@ -412,12 +472,15 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
     </a>
     <nav class="topbar-nav" id="topbarNav" aria-label="Quick workspace navigation">
       <button class="topbar-nav-link is-active" type="button" data-tab="overview" aria-current="page">Overview</button>
+      <button class="topbar-nav-link" type="button" data-tab="activity">Activity</button>
       <button class="topbar-nav-link" type="button" data-tab="announcements">Announcements</button>
       <button class="topbar-nav-link" type="button" data-tab="board">Board</button>
       <button class="topbar-nav-link" type="button" data-tab="initiatives">Initiatives</button>
       <button class="topbar-nav-link" type="button" data-tab="resources">Resources</button>
       <button class="topbar-nav-link" type="button" data-tab="calendar">Calendar</button>
       <button class="topbar-nav-link" type="button" data-tab="media">Media</button>
+      <button class="topbar-nav-link" type="button" data-tab="contact">Contact</button>
+      <button class="topbar-nav-link" type="button" data-tab="pulse">Pulse</button>
       <button class="topbar-nav-link" type="button" data-tab="settings">Settings</button>
     </nav>
     <div class="topbar-actions">
@@ -438,21 +501,24 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
       <p class="nav-label">Workspace</p>
       <nav class="tabs" id="tabs" aria-label="Workspace sections">
         <button class="tab is-active" type="button" data-tab="overview" aria-current="page"><span class="tab-index">01</span><span>Overview</span></button>
+        <button class="tab" type="button" data-tab="activity"><span class="tab-index">02</span><span>Activity log</span></button>
       </nav>
 
       <p class="nav-label">Content</p>
       <nav class="tabs" id="contentTabs" aria-label="Content sections">
-        <button class="tab" type="button" data-tab="announcements"><span class="tab-index">02</span><span>Announcements</span></button>
-        <button class="tab" type="button" data-tab="board"><span class="tab-index">03</span><span>Board meetings</span></button>
-        <button class="tab" type="button" data-tab="initiatives"><span class="tab-index">04</span><span>Initiatives</span></button>
-        <button class="tab" type="button" data-tab="resources"><span class="tab-index">05</span><span>Resources</span></button>
-        <button class="tab" type="button" data-tab="calendar"><span class="tab-index">06</span><span>Calendar</span></button>
+        <button class="tab" type="button" data-tab="announcements"><span class="tab-index">03</span><span>Announcements</span></button>
+        <button class="tab" type="button" data-tab="board"><span class="tab-index">04</span><span>Board meetings</span></button>
+        <button class="tab" type="button" data-tab="initiatives"><span class="tab-index">05</span><span>Initiatives</span></button>
+        <button class="tab" type="button" data-tab="resources"><span class="tab-index">06</span><span>Resources</span></button>
+        <button class="tab" type="button" data-tab="calendar"><span class="tab-index">07</span><span>Calendar</span></button>
       </nav>
 
       <p class="nav-label">Administration</p>
       <nav class="tabs" id="adminTabs" aria-label="Administration sections">
-        <button class="tab" type="button" data-tab="media"><span class="tab-index">07</span><span>Media library</span></button>
-        <button class="tab" type="button" data-tab="settings"><span class="tab-index">08</span><span>Settings</span></button>
+        <button class="tab" type="button" data-tab="media"><span class="tab-index">08</span><span>Media library</span></button>
+        <button class="tab" type="button" data-tab="contact"><span class="tab-index">09</span><span>Contact &amp; details</span></button>
+        <button class="tab" type="button" data-tab="pulse"><span class="tab-index">10</span><span>Pulse data</span></button>
+        <button class="tab" type="button" data-tab="settings"><span class="tab-index">11</span><span>Settings</span></button>
       </nav>
 
       <div class="sidebar-note"><b>Publishing note</b>Drafts stay private. Published records appear on the public OSR website.</div>
@@ -462,12 +528,15 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
     <main id="mainContent" class="main-content" tabindex="-1">
       <nav class="mobile-tab-strip" id="mobileTabStrip" aria-label="Quick section navigation">
         <button class="topbar-nav-link is-active" type="button" data-tab="overview" aria-current="page">Overview</button>
+        <button class="topbar-nav-link" type="button" data-tab="activity">Activity</button>
         <button class="topbar-nav-link" type="button" data-tab="announcements">Announcements</button>
         <button class="topbar-nav-link" type="button" data-tab="board">Board</button>
         <button class="topbar-nav-link" type="button" data-tab="initiatives">Initiatives</button>
         <button class="topbar-nav-link" type="button" data-tab="resources">Resources</button>
         <button class="topbar-nav-link" type="button" data-tab="calendar">Calendar</button>
         <button class="topbar-nav-link" type="button" data-tab="media">Media</button>
+        <button class="topbar-nav-link" type="button" data-tab="contact">Contact</button>
+        <button class="topbar-nav-link" type="button" data-tab="pulse">Pulse</button>
         <button class="topbar-nav-link" type="button" data-tab="settings">Settings</button>
       </nav>
       <header class="page-header">
@@ -484,6 +553,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
           <div><h2>Published record summary</h2><p>Live counts from the OSR content database.</p></div>
         </div>
         <div class="stats" id="stats" aria-live="polite"><div class="empty loading-state">Loading content summary</div></div>
+        <div class="stat-row" id="libraryHealth" aria-live="polite"></div>
         <div class="overview-grid">
           <section class="panel" aria-labelledby="activityTitle">
             <div class="panel-head"><div><h2 id="activityTitle">Recent activity</h2><p>Latest changes made by OSR administrators.</p></div></div>
@@ -501,12 +571,15 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
         </div>
       </section>
 
+      <section id="tab-activity" class="section" aria-label="Activity log"></section>
       <section id="tab-announcements" class="section" aria-label="Announcements"></section>
       <section id="tab-board" class="section" aria-label="Board meetings"></section>
       <section id="tab-initiatives" class="section" aria-label="Initiatives"></section>
       <section id="tab-resources" class="section" aria-label="Resources"></section>
       <section id="tab-calendar" class="section" aria-label="Calendar"></section>
       <section id="tab-media" class="section" aria-label="Media library"></section>
+      <section id="tab-contact" class="section" aria-label="Contact details"></section>
+      <section id="tab-pulse" class="section" aria-label="BulSU Pulse data"></section>
       <section id="tab-settings" class="section" aria-label="Settings"></section>
 
       <p class="admin-footer mono">Office of the Student Regent · Bulacan State University</p>
@@ -526,7 +599,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
 </div>
 
 <dialog id="confirmDialog" class="confirm-dialog" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
-  <div class="confirm-body"><div class="confirm-mark"></div><h2 id="confirmTitle">Confirm action</h2><p id="confirmMessage"></p></div>
+  <div class="confirm-body"><div class="confirm-mark"></div><h2 id="confirmTitle">Confirm action</h2><p id="confirmMessage"></p><input id="confirmTyped" class="confirm-input" type="text" autocomplete="off" spellcheck="false" hidden aria-label="Type the confirmation word"/></div>
   <form method="dialog" class="confirm-actions">
     <button class="btn btn--ghost" value="cancel">Cancel</button>
     <button id="confirmAccept" class="btn btn--red" value="confirm">Confirm</button>
@@ -591,16 +664,25 @@ async function api(path, options = {}) {
   return data;
 }
 
-function askConfirm(title, message, actionLabel = 'Confirm') {
+function askConfirm(title, message, actionLabel = 'Confirm', typeToConfirm = '') {
   const dialog = $('#confirmDialog');
   if (typeof dialog.showModal !== 'function') return Promise.resolve(window.confirm(message));
   $('#confirmTitle').textContent = title;
   $('#confirmMessage').textContent = message;
-  $('#confirmAccept').textContent = actionLabel;
+  const accept = $('#confirmAccept');
+  accept.textContent = actionLabel;
+  const typed = $('#confirmTyped');
+  typed.hidden = !typeToConfirm;
+  typed.value = '';
+  typed.placeholder = typeToConfirm;
+  const sync = () => { accept.disabled = Boolean(typeToConfirm) && typed.value.trim().toUpperCase() !== typeToConfirm.toUpperCase(); };
+  typed.oninput = sync;
+  sync();
   dialog.returnValue = 'cancel';
   dialog.showModal();
+  if (typeToConfirm) typed.focus(); else accept.focus();
   return new Promise(resolve => {
-    dialog.addEventListener('close', () => resolve(dialog.returnValue === 'confirm'), { once: true });
+    dialog.addEventListener('close', () => resolve(dialog.returnValue === 'confirm' && !accept.disabled), { once: true });
   });
 }
 
@@ -792,13 +874,16 @@ const modules = {
 
 const pageMeta = {
   overview: ['Workspace 01', 'Content overview', 'Review publishing activity and move directly to the content that needs attention.', 'New announcement', 'announcements'],
-  announcements: ['Content 02', 'Announcements', 'Create, review, and publish official OSR updates.', 'New announcement', 'announcements'],
-  board: ['Content 03', 'Board meetings', 'Maintain meeting records, dates, and supporting documents.', 'Add meeting', 'board'],
-  initiatives: ['Content 04', 'Initiatives', 'Track student-centered work and its public status.', 'Add initiative', 'initiatives'],
-  resources: ['Content 05', 'Resources', 'Keep useful documents and external links easy to find.', 'Add resource', 'resources'],
-  calendar: ['Content 06', 'Calendar', 'Manage upcoming activities and important dates.', 'Add event', 'calendar'],
-  media: ['Administration 07', 'Media library', 'Manage uploaded files and externally hosted images.', 'Add media', 'media'],
-  settings: ['Administration 08', 'Settings', 'Manage your account, site information, and administrator access.', '', '']
+  activity: ['Workspace 02', 'Activity log', 'Every change made in this workspace, newest first.', '', ''],
+  announcements: ['Content 03', 'Announcements', 'Create, review, and publish official OSR updates.', 'New announcement', 'announcements'],
+  board: ['Content 04', 'Board meetings', 'Maintain meeting records, dates, and supporting documents.', 'Add meeting', 'board'],
+  initiatives: ['Content 05', 'Initiatives', 'Track student-centered work and its public status.', 'Add initiative', 'initiatives'],
+  resources: ['Content 06', 'Resources', 'Keep useful documents and external links easy to find.', 'Add resource', 'resources'],
+  calendar: ['Content 07', 'Calendar', 'Manage activities by hand, or keep them synced from the OSR Google Document.', 'Add event', 'calendar'],
+  media: ['Administration 08', 'Media library', 'Manage uploaded files and externally hosted images.', 'Add media', 'media'],
+  contact: ['Administration 09', 'Contact & details', 'Control the email, phone, office and social details shown on the public site.', '', ''],
+  pulse: ['Administration 10', 'Pulse data', 'Examine every BulSU Pulse period by date, then wipe what should be removed.', '', ''],
+  settings: ['Administration 11', 'Settings', 'Manage your account, site information, and administrator access.', '', '']
 };
 
 let currentTab = 'overview';
@@ -930,6 +1015,7 @@ async function loadStats() {
       ['Published resources', cards.resources]
     ];
     stats.innerHTML = metrics.map(([label, value]) => `<div class="stat"><b>${esc(label)}</b><strong>${esc(value)}</strong></div>`).join('');
+    renderLibraryHealth();
     activity.innerHTML = dashboard.recent.map(record => `
       <div class="row">
         <div><b>${esc(record.action)}</b><br><span>${esc(formatDate(record.created_at))} · ${esc(record.admin_email || 'System')}</span></div>
@@ -1023,27 +1109,171 @@ function statusClass(status) {
   return '';
 }
 
+/* ── Mass actions ────────────────────────────────────────────────────────────
+   Every content screen can select many records and publish, unpublish,
+   archive, restore, or permanently delete them in one request. */
+const bulkSelection = {};
+
+const bulkMeta = {
+  announcements: { label: 'announcements', itemLabel: 'announcement' },
+  board: { label: 'board meetings', itemLabel: 'board meeting' },
+  initiatives: { label: 'initiatives', itemLabel: 'initiative' },
+  resources: { label: 'resources', itemLabel: 'resource' },
+  calendar: { label: 'calendar events', itemLabel: 'calendar event' },
+  media: { label: 'media items', itemLabel: 'media item' }
+};
+
+function selectedIds(tab) {
+  if (!bulkSelection[tab]) bulkSelection[tab] = new Set();
+  return bulkSelection[tab];
+}
+
+function bulkBarHTML(tab) {
+  return `<div class="bulk-bar" id="bulkBar-${tab}" hidden>
+    <b id="bulkCount-${tab}">0 selected</b>
+    <span class="hint">Bulk actions apply to everything selected.</span>
+    <div class="spacer"></div>
+    <button class="btn btn--ghost btn--sm" type="button" data-bulk="publish">Publish</button>
+    <button class="btn btn--ghost btn--sm" type="button" data-bulk="draft">Move to draft</button>
+    <button class="btn btn--ghost btn--sm" type="button" data-bulk="archive">Archive</button>
+    <button class="btn btn--ghost btn--sm" type="button" data-bulk="restore">Restore</button>
+    <button class="btn btn--red btn--sm" type="button" data-bulk="delete">Delete permanently</button>
+    <button class="btn btn--quiet btn--sm" type="button" data-bulk="clear">Clear</button>
+  </div>`;
+}
+
+function refreshBulkUI(tab) {
+  const selection = selectedIds(tab);
+  const bar = $(`#bulkBar-${tab}`);
+  if (bar) {
+    bar.hidden = selection.size === 0;
+    const count = $(`#bulkCount-${tab}`);
+    if (count) count.textContent = `${selection.size} selected`;
+  }
+  const selectAll = document.querySelector(`#tab-${tab} [data-select-all]`);
+  const boxes = [...document.querySelectorAll(`#tab-${tab} [data-select]`)];
+  boxes.forEach(box => {
+    const row = box.closest('.row, tr');
+    if (row) row.classList.toggle('is-selected', selection.has(box.dataset.select));
+  });
+  if (selectAll) {
+    const total = boxes.length;
+    const chosen = boxes.filter(box => selection.has(box.dataset.select)).length;
+    selectAll.checked = total > 0 && chosen === total;
+    selectAll.indeterminate = chosen > 0 && chosen < total;
+  }
+}
+
+async function runBulk(tab, action) {
+  const ids = [...selectedIds(tab)];
+  if (!ids.length) return;
+  const meta = bulkMeta[tab];
+  const noun = ids.length === 1 ? meta.itemLabel : meta.label;
+  const labels = {
+    publish: ['Publish these records?', `${ids.length} ${noun} will become visible on the public website.`, 'Publish'],
+    draft: ['Move to draft?', `${ids.length} ${noun} will be unpublished and hidden from the public website.`, 'Move to draft'],
+    archive: ['Archive these records?', `${ids.length} ${noun} will leave public listings but stay in the CMS.`, 'Archive'],
+    restore: ['Restore these records?', `${ids.length} ${noun} will be published again.`, 'Restore']
+  };
+  if (action === 'delete') {
+    const confirmed = await askConfirm(
+      'Delete permanently?',
+      `This removes ${ids.length} ${noun} from the database and cannot be undone. Archive them instead if you only need to hide them.`,
+      'Delete permanently',
+      ids.length >= 3 ? 'DELETE' : ''
+    );
+    if (!confirmed) return;
+  } else {
+    const [title, message, label] = labels[action];
+    if (!await askConfirm(title, message, label)) return;
+  }
+  const buttons = [...document.querySelectorAll(`#bulkBar-${tab} [data-bulk]`)];
+  buttons.forEach(button => { button.disabled = true; });
+  try {
+    const result = await api('/api/bulk', { method: 'POST', body: JSON.stringify({ module: tab, action, ids }) });
+    toast(`${result.affected} ${result.affected === 1 ? meta.itemLabel : meta.label} ${result.verb || 'updated'}.`);
+    selectedIds(tab).clear();
+    notifyContentChanged(tab);
+    await (tab === 'media' ? renderMedia() : renderTab(tab));
+    loadStats();
+  } catch (error) {
+    toast(`Bulk action failed: ${error.message}`);
+    buttons.forEach(button => { button.disabled = false; });
+  }
+}
+
+function bindBulkControls(tab) {
+  const bar = $(`#bulkBar-${tab}`);
+  if (bar && !bar.dataset.bound) {
+    bar.dataset.bound = '1';
+    bar.addEventListener('click', event => {
+      const button = event.target.closest('[data-bulk]');
+      if (!button || button.disabled) return;
+      const action = button.dataset.bulk;
+      if (action === 'clear') {
+        selectedIds(tab).clear();
+        document.querySelectorAll(`#tab-${tab} [data-select]`).forEach(box => { box.checked = false; });
+        refreshBulkUI(tab);
+        return;
+      }
+      runBulk(tab, action);
+    });
+  }
+  const section = $(`#tab-${tab}`);
+  if (section && !section.dataset.bulkBound) {
+    section.dataset.bulkBound = '1';
+    section.addEventListener('change', event => {
+      const all = event.target.closest('[data-select-all]');
+      if (all) {
+        const selection = selectedIds(tab);
+        const boxes = [...section.querySelectorAll('[data-select]')];
+        boxes.forEach(box => {
+          box.checked = all.checked;
+          if (all.checked) selection.add(box.dataset.select); else selection.delete(box.dataset.select);
+        });
+        refreshBulkUI(tab);
+        return;
+      }
+      const box = event.target.closest('[data-select]');
+      if (!box) return;
+      const selection = selectedIds(tab);
+      if (box.checked) selection.add(box.dataset.select); else selection.delete(box.dataset.select);
+      refreshBulkUI(tab);
+    });
+  }
+}
+
 async function renderTab(tab) {
   if (tab === 'settings') return renderSettings();
   if (tab === 'media') return renderMedia();
+  if (tab === 'activity') return renderActivity();
+  if (tab === 'contact') return renderContact();
+  if (tab === 'pulse') return renderPulseData();
   const module = modules[tab];
   const section = $(`#tab-${tab}`);
   section.innerHTML = `<div class="empty loading-state">Loading ${esc(module.label.toLowerCase())}</div>`;
   try {
     const rows = await api(`/api/${module.url}`);
     cached[tab] = rows;
+    // Forget selections that no longer exist.
+    const selection = selectedIds(tab);
+    [...selection].forEach(id => { if (!rows.some(record => String(record.id) === id)) selection.delete(id); });
+
     section.innerHTML = `
+      ${tab === 'calendar' ? '<div id="calendarSource"></div>' : ''}
       <div class="card">
         <div class="section-head">
           <div><h3>Content records</h3><span class="mono">${rows.length} ${rows.length === 1 ? 'record' : 'records'} · Drafts stay private</span></div>
           <button class="btn btn--red" type="button" data-new>Add ${module.itemLabel}</button>
         </div>
         <div class="filters">
+          <label class="check"><input type="checkbox" data-select-all aria-label="Select every record shown"> Select all</label>
           <input type="search" aria-label="Search ${esc(module.label)}" placeholder="Search ${esc(module.label.toLowerCase())}" data-search>
           <select aria-label="Filter by status" data-status><option value="">All statuses</option>${['Draft','Published','Archived'].map(value => `<option>${value}</option>`).join('')}</select>
           <select aria-label="Sort records" data-sort><option value="new">Newest first</option><option value="old">Oldest first</option></select>
         </div>
       </div>
+      ${bulkBarHTML(tab)}
       <div id="records-${tab}" class="list records-list"></div>
       <div id="editor-${tab}"></div>`;
 
@@ -1062,14 +1292,21 @@ async function renderTab(tab) {
         list.innerHTML = rows.length
           ? '<div class="empty">No records match these filters. <button class="btn btn--ghost btn--sm" type="button" data-clear-filters>Clear filters</button></div>'
           : `<div class="empty">No ${esc(module.label.toLowerCase())} have been added yet. <button class="btn btn--red btn--sm" type="button" data-empty-new>Add the first ${esc(module.itemLabel)}</button></div>`;
+        refreshBulkUI(tab);
         return;
       }
       list.innerHTML = visible.map(record => {
         const statusValue = record[statusKey(tab)] || 'Draft';
         const details = [record.category, record.date || record.iso, record.summary || record.description].filter(Boolean).join(' · ').slice(0, 170);
         const link = publicLink(tab, record);
+        const title = record.title || record.activity;
+        const checked = selection.has(String(record.id)) ? ' checked' : '';
+        const fromDocument = String(record.id).startsWith('gdoc-');
         return `<article class="row record">
-          <div class="record-main"><b>${esc(record.title || record.activity)}</b> <span class="badge ${statusClass(statusValue)}">${esc(statusValue)}</span><br><span>${esc(details || 'No description provided')}</span><br><span class="mono">Created ${esc(record.created_at?.slice(0,10) || 'Not available')} · Updated ${esc(record.updated_at?.slice(0,10) || 'Not available')}</span></div>
+          <label class="record-select">
+            <input type="checkbox" data-select="${esc(record.id)}"${checked} aria-label="Select ${esc(title)}">
+            <div class="record-main"><b>${esc(title)}</b> <span class="badge ${statusClass(statusValue)}">${esc(statusValue)}</span>${fromDocument ? ' <span class="pill pill--doc">Google Doc</span>' : ''}<br><span>${esc(details || 'No description provided')}</span><br><span class="mono">Created ${esc(record.created_at?.slice(0,10) || 'Not available')} · Updated ${esc(record.updated_at?.slice(0,10) || 'Not available')}</span></div>
+          </label>
           <div class="actions">
             <button class="btn btn--ghost btn--sm" type="button" data-edit="${esc(record.id)}">Edit</button>
             <button class="btn btn--ghost btn--sm" type="button" data-toggle="${esc(record.id)}">${statusValue === 'Published' ? 'Unpublish' : 'Publish'}</button>
@@ -1078,11 +1315,14 @@ async function renderTab(tab) {
           </div>
         </article>`;
       }).join('');
+      refreshBulkUI(tab);
     };
 
     section.querySelector('[data-new]').addEventListener('click', () => form(tab));
-    section.querySelectorAll('.filters input,.filters select').forEach(control => control.addEventListener('input', paint));
+    section.querySelectorAll('.filters input:not([type="checkbox"]),.filters select').forEach(control => control.addEventListener('input', paint));
+    bindBulkControls(tab);
     paint();
+    if (tab === 'calendar') renderCalendarSource();
 
     section.onclick = async event => {
       if (event.target.closest('[data-empty-new]')) return form(tab);
@@ -1101,7 +1341,7 @@ async function renderTab(tab) {
       if (button.dataset.edit) return form(tab, record);
       const action = button.dataset.archive ? 'archive' : record[statusKey(tab)] === 'Published' ? 'unpublish' : 'publish';
       if (action === 'archive') {
-        const confirmed = await askConfirm('Archive this record?', `Archive “${record.title || record.activity}”? It will leave public listings but remain available in the CMS.`, 'Archive record');
+        const confirmed = await askConfirm('Archive this record?', `Archive "${record.title || record.activity}"? It will leave public listings but remain available in the CMS.`, 'Archive record');
         if (!confirmed) return;
       }
       button.disabled = true;
@@ -1127,6 +1367,7 @@ async function renderTab(tab) {
   }
 }
 
+
 async function renderMedia() {
   const section = $('#tab-media');
   section.innerHTML = '<div class="empty loading-state">Loading the media library</div>';
@@ -1135,7 +1376,9 @@ async function renderMedia() {
     section.innerHTML = `
       <div class="card">
         <div class="section-head">
-          <div><h3>Media records</h3><span class="mono">${rows.length} ${rows.length === 1 ? 'item' : 'items'} · Files are limited to 3 MB</span></div>
+          <div><h3>Media records</h3><span class="mono">${rows.length} ${rows.length === 1 ? 'item' : 'items'} · Files are limited to 3 MB</span>
+            <label class="check" style="margin-top:8px"><input type="checkbox" data-select-all aria-label="Select every media item"> Select all</label>
+          </div>
           <div class="actions"><button id="showMediaForm" class="btn btn--red" type="button">Add image link</button><button class="btn btn--ghost" type="button" data-upload-media>Upload file</button><input id="mediaFile" type="file" accept="image/jpeg,image/png,image/webp,application/pdf,.doc,.docx,.txt" hidden></div>
         </div>
         <form class="form media-form" id="mediaForm" hidden>
@@ -1148,14 +1391,20 @@ async function renderMedia() {
           <div class="actions"><button type="button" class="btn btn--ghost" data-cancel-media>Cancel</button><button class="btn btn--red" type="submit">Save image link</button></div>
         </form>
       </div>
-      <div class="media-grid">${rows.map(record => `<article class="card media-card">
+      ${bulkBarHTML('media')}
+      <div class="media-grid" style="margin-top:14px">${rows.map(record => `<article class="card media-card">
+        <label class="check"><input type="checkbox" data-select="${esc(record.id)}" aria-label="Select ${esc(record.title || record.original_name || 'media item')}"> Select</label>
         ${record.file_type?.startsWith('image/') ? `<img loading="lazy" src="${esc(record.url)}" alt="${esc(record.caption || record.title || record.original_name || '')}">` : ''}
         <b>${esc(record.title || record.original_name)}</b>
-        <p>${esc(record.caption || record.file_type || 'File')} · ${esc(record.status || 'Published')}</p>
+        <p>${esc(record.caption || record.file_type || 'File')} · <span class="badge ${statusClass(record.status || 'Published')}">${esc(record.status || 'Published')}</span></p>
         <div class="actions"><button class="btn btn--ghost btn--sm" type="button" data-edit="${esc(record.id)}">Edit</button>${record.status === 'Archived' ? '' : `<button class="btn btn--ghost btn--sm" type="button" data-archive="${esc(record.id)}">Archive</button>`}<a class="btn btn--ghost btn--sm" href="${esc(record.url)}" target="_blank" rel="noopener">Open file</a></div>
       </article>`).join('') || '<div class="empty">No media has been added yet. Use Add image link or Upload file to add the first item.</div>'}</div>
       <div id="mediaEdit"></div>`;
 
+    {
+      const selection = selectedIds('media');
+      [...selection].forEach(id => { if (!rows.some(record => String(record.id) === id)) selection.delete(id); });
+    }
     const linkForm = $('#mediaForm');
     $('#showMediaForm').addEventListener('click', () => {
       linkForm.hidden = false;
@@ -1168,6 +1417,8 @@ async function renderMedia() {
     });
     section.querySelector('[data-upload-media]').addEventListener('click', () => $('#mediaFile').click());
     linkForm.addEventListener('submit', event => submitForm(event, '/api/media/link', () => renderMedia()));
+    bindBulkControls('media');
+    refreshBulkUI('media');
     $('#mediaFile').addEventListener('change', async event => {
       const file = event.target.files[0];
       if (!file) return;
@@ -1346,6 +1597,532 @@ async function renderUsers() {
   }
 }
 
+/* ── Overview: where the records live ─────────────────────────────────────── */
+async function renderLibraryHealth() {
+  const host = $('#libraryHealth');
+  if (!host) return;
+  try {
+    const summary = await api('/api/bulk/summary');
+    const cells = Object.entries(summary).map(([key, counts]) => `
+      <button class="mini-stat" type="button" data-go-tab="${esc(key === 'board' ? 'board' : key)}" style="text-align:left; cursor:pointer">
+        <b>${esc(counts.label)}</b>
+        <strong>${esc(counts.total)}</strong>
+        <span class="hint">${esc(counts.Published)} published · ${esc(counts.Draft)} draft · ${esc(counts.Archived)} archived</span>
+      </button>`).join('');
+    host.innerHTML = cells || '';
+  } catch {
+    host.innerHTML = '';
+  }
+}
+
+/* ── Activity log ─────────────────────────────────────────────────────────── */
+let activityFilter = { type: '', query: '' };
+
+async function renderActivity() {
+  const section = $('#tab-activity');
+  section.innerHTML = '<div class="empty loading-state">Loading the activity log</div>';
+  try {
+    const rows = await api('/api/activity?limit=200');
+    const types = [...new Set(rows.map(row => row.content_type).filter(Boolean))].sort();
+    const draw = () => {
+      const query = activityFilter.query.toLowerCase();
+      const visible = rows.filter(row => {
+        const matchesType = !activityFilter.type || row.content_type === activityFilter.type;
+        const haystack = `${row.action} ${row.admin_email || ''} ${row.content_type || ''} ${row.details || ''}`.toLowerCase();
+        return matchesType && (!query || haystack.includes(query));
+      });
+      $('#activityRows').innerHTML = visible.length ? visible.map(row => `
+        <tr>
+          <td class="mono">${esc(formatDate(row.created_at))}</td>
+          <td>${esc(row.admin_email || 'System')}</td>
+          <td>${esc(row.action)}</td>
+          <td><span class="pill">${esc(row.content_type || 'general')}</span></td>
+          <td class="mono">${esc((row.details || '').slice(0, 90))}</td>
+        </tr>`).join('') : '<tr><td colspan="5" class="empty">No activity matches this filter yet.</td></tr>';
+      $('#activityMeta').textContent = `${visible.length} of ${rows.length} entries`;
+    };
+    section.innerHTML = `
+      <div class="card">
+        <div class="section-head">
+          <div><h3>Every change made here</h3><span class="mono" id="activityMeta"></span></div>
+          <button class="btn btn--ghost btn--sm" type="button" id="activityExport">Export CSV</button>
+        </div>
+        <div class="toolbar">
+          <input type="search" id="activitySearch" placeholder="Search actions, people or details" aria-label="Search activity">
+          <select id="activityType" aria-label="Filter by content type">
+            <option value="">All content types</option>
+            ${types.map(type => `<option value="${esc(type)}">${esc(type.replaceAll('_', ' '))}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      <div class="table-wrap" style="margin-top:16px">
+        <table class="data-table">
+          <thead><tr><th>When</th><th>Administrator</th><th>Action</th><th>Content</th><th>Details</th></tr></thead>
+          <tbody id="activityRows"></tbody>
+        </table>
+      </div>`;
+    $('#activitySearch').addEventListener('input', event => { activityFilter.query = event.target.value; draw(); });
+    $('#activityType').addEventListener('change', event => { activityFilter.type = event.target.value; draw(); });
+    $('#activityExport').addEventListener('click', () => {
+      const csv = [['when', 'administrator', 'action', 'content_type', 'content_id'].join(',')]
+        .concat(rows.map(row => [row.created_at, row.admin_email, row.action, row.content_type, row.content_id].map(value => `"${String(value ?? '').replace(/"/g, '""')}"`).join(',')))
+        .join('\n');
+      downloadText('osr-activity-log.csv', csv, 'text/csv');
+    });
+    draw();
+  } catch (error) {
+    section.innerHTML = `<div class="err show">The activity log could not be loaded: ${esc(error.message)} <button class="btn btn--ghost btn--sm" type="button" data-retry>Retry</button></div>`;
+    section.querySelector('[data-retry]').addEventListener('click', renderActivity);
+  }
+}
+
+function downloadText(filename, text, type = 'text/plain') {
+  const blob = new Blob([text], { type });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+/* ── Calendar: the Google Document that drives the activity list ──────────── */
+async function renderCalendarSource() {
+  const host = $('#calendarSource');
+  if (!host) return;
+  host.innerHTML = '<div class="card loading-state">Checking the calendar document</div>';
+  try {
+    const data = await api('/api/calendar/source');
+    const source = data.source || {};
+    host.innerHTML = `
+      <section class="card source-panel">
+        <div class="section-head">
+          <div><h3>Google Document source</h3><span class="mono">${source.connected ? `${data.syncedEvents} events managed by the document` : 'No document connected — events are entered by hand'}</span></div>
+          <span class="pill ${source.connected ? 'pill--doc' : ''}">${source.connected ? 'Connected' : 'Manual only'}</span>
+        </div>
+        <p class="form-intro">Paste the published Google Docs or Google Sheets link that lists the activities. The website re-reads it on its own, so edits in the document appear in the calendar without anyone re-uploading anything.</p>
+        <div class="source-grid">
+          <div class="field"><label for="calSourceUrl">Document link</label><input id="calSourceUrl" type="url" placeholder="https://docs.google.com/document/d/…" value="${esc(source.url || '')}"></div>
+          <label class="switch-row"><input type="checkbox" id="calSourceAuto" ${source.auto ? 'checked' : ''}> Automatic re-check</label>
+          <label class="switch-row"><input type="checkbox" id="calSourcePrune" ${source.prune ? 'checked' : ''}> Remove deleted activities</label>
+        </div>
+        <div class="source-status">
+          <span class="badge ${source.lastStatus === 'ok' ? 'badge--green' : source.lastStatus === 'error' ? 'badge--red' : ''}">${esc(source.lastStatus || 'not synced')}</span>
+          <span>${source.lastSyncAt ? `Last synced ${esc(formatDate(source.lastSyncAt))}` : 'Never synced yet'}</span>
+          ${source.lastCount ? `<span>· ${esc(source.lastCount)} activities</span>` : ''}
+          ${source.lastDetail ? `<span>· ${esc(source.lastDetail)}</span>` : ''}
+        </div>
+        <div class="actions">
+          <button class="btn btn--red" type="button" id="calSourceSave">Connect &amp; sync</button>
+          <button class="btn btn--ghost" type="button" id="calSourceCheck">Check document</button>
+          <button class="btn btn--ghost" type="button" id="calSourceSync" ${source.connected ? '' : 'disabled'}>Sync now</button>
+          <button class="btn btn--quiet" type="button" id="calSourceRemove" ${source.connected ? '' : 'disabled'}>Disconnect</button>
+        </div>
+        <div id="calSourcePreview" class="source-preview" hidden></div>
+      </section>`;
+
+    const preview = $('#calSourcePreview');
+    const showPreview = result => {
+      preview.hidden = false;
+      const events = result.events || [];
+      preview.innerHTML = `
+        <div class="pv"><b>${events.length}${result.total > events.length ? ` of ${result.total}` : ''}</b><span>${esc(result.message || 'activities read from the document')}</span></div>
+        ${events.slice(0, 40).map(event => `<div class="pv"><b>${esc(event.iso)}</b><span>${esc(event.activity)}${event.start_time ? ` · ${esc(event.start_time)}` : ''}${event.location ? ` · ${esc(event.location)}` : ''}</span></div>`).join('')}
+        ${result.skippedCount ? `<div class="pv"><b>${esc(result.skippedCount)}</b><span>lines were not understood and were left out.</span></div>` : ''}`;
+    };
+
+    $('#calSourceCheck').addEventListener('click', async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      button.textContent = 'Reading the document';
+      try {
+        const result = await api('/api/calendar/source/preview', { method: 'POST', body: JSON.stringify({ url: $('#calSourceUrl').value.trim() }) });
+        showPreview(result);
+        toast(`${result.total} activities found in the document.`);
+      } catch (error) {
+        toast(`The document could not be read: ${error.message}`);
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Check document';
+      }
+    });
+
+    $('#calSourceSave').addEventListener('click', async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      button.textContent = 'Connecting';
+      try {
+        const result = await api('/api/calendar/source', {
+          method: 'PATCH',
+          body: JSON.stringify({ url: $('#calSourceUrl').value.trim(), auto: $('#calSourceAuto').checked, prune: $('#calSourcePrune').checked })
+        });
+        const sync = result.sync || {};
+        toast(sync.message || 'The document is connected.');
+        await renderCalendarSource();
+        await renderTab('calendar');
+        loadStats();
+      } catch (error) {
+        toast(`Could not connect the document: ${error.message}`);
+        button.disabled = false;
+        button.textContent = 'Connect & sync';
+      }
+    });
+
+    $('#calSourceSync').addEventListener('click', async event => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      button.textContent = 'Syncing';
+      try {
+        const result = await api('/api/calendar/source/sync', { method: 'POST' });
+        toast(result.sync?.message || 'Calendar synced.');
+        await renderCalendarSource();
+        await renderTab('calendar');
+      } catch (error) {
+        toast(`Sync failed: ${error.message}`);
+        button.disabled = false;
+        button.textContent = 'Sync now';
+      }
+    });
+
+    $('#calSourceRemove').addEventListener('click', async () => {
+      const confirmed = await askConfirm('Disconnect the document?', 'The synced events stay in the calendar and become ordinary editable records. Use the bulk tools if you also want to delete them.', 'Disconnect');
+      if (!confirmed) return;
+      try {
+        await api('/api/calendar/source?keepEvents=1', { method: 'DELETE' });
+        toast('The Google Document was disconnected.');
+        await renderCalendarSource();
+        await renderTab('calendar');
+      } catch (error) {
+        toast(`Could not disconnect: ${error.message}`);
+      }
+    });
+  } catch (error) {
+    host.innerHTML = `<div class="err show">The calendar document settings could not be loaded: ${esc(error.message)}</div>`;
+  }
+}
+
+/* ── Contact & details ──────────────────────────────────────────────────────
+   Office staff keep the public contact details current. Only a super
+   administrator can also rewrite the public text blocks. */
+const CONTACT_GROUPS = [
+  ['Office', [
+    ['contact_person', 'Contact person'],
+    ['contact_role', 'Role or position'],
+    ['contact_email', 'Primary email', 'email'],
+    ['contact_email_secondary', 'Secondary email', 'email'],
+    ['contact_phone', 'Primary phone'],
+    ['contact_phone_secondary', 'Secondary phone']
+  ]],
+  ['Address', [
+    ['office_line1', 'Building or office'],
+    ['office_line2', 'Street or campus'],
+    ['office_city', 'City or municipality'],
+    ['office_postal', 'Postal code'],
+    ['office_country', 'Country'],
+    ['office_address', 'Full address (contact cards)'],
+    ['office_room', 'Room'],
+    ['office_map_url', 'Map link', 'url']
+  ]],
+  ['Office hours', [
+    ['office_hours', 'Hours shown on contact cards'],
+    ['office_hours_short', 'Short hours (footer)'],
+    ['office_hours_note', 'Note (holidays, special schedules)']
+  ]],
+  ['Presence', [
+    ['official_page', 'Official page', 'url'],
+    ['social_facebook', 'Facebook page', 'url'],
+    ['social_instagram', 'Instagram profile', 'url'],
+    ['footer_credit', 'Footer credit']
+  ]]
+];
+
+const PUBLIC_TEXT_FIELDS = [
+  ['site_title', 'Site title'],
+  ['site_description', 'Site description'],
+  ['homepage_intro', 'Homepage introduction'],
+  ['footer_text', 'Footer note']
+];
+
+function contactInputs(groups, values, disabled = false) {
+  return groups.map(([title, fields]) => `
+    <div class="field-group">
+      <h4>${esc(title)}</h4>
+      ${fields.map(([key, label, type]) => `<label>${esc(label)}<input name="${key}" type="${type || 'text'}" value="${esc(values[key] || '')}" ${disabled ? 'disabled' : ''}></label>`).join('')}
+    </div>`).join('');
+}
+
+function validateContactData(data) {
+  for (const [key, value] of Object.entries(data)) {
+    if (!value) continue;
+    if (key.includes('email') && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return `"${value}" is not a valid email address.`;
+    if (key === 'office_map_url' && !/^https?:\/\//i.test(value)) return `"${value}" must start with https://`;
+    if ((key.startsWith('social_') || key === 'official_page') && !/^https?:\/\//i.test(value)) return `"${value}" must start with https://`;
+  }
+  return '';
+}
+
+async function renderContact() {
+  const section = $('#tab-contact');
+  section.innerHTML = '<div class="empty loading-state">Loading contact details</div>';
+  let contact = {};
+  let full = null;
+  try {
+    contact = await api('/api/settings/public');
+    try { full = await api('/api/settings'); } catch { full = null; }
+    const values = { ...contact, ...(full || {}) };
+
+    section.innerHTML = `
+      <div class="contact-grid">
+        <form class="form" id="contactForm">
+          <h3>Contact &amp; office details</h3>
+          <p class="form-intro">These replace the placeholder details on the public Help, About and footer sections. Any OSR administrator can keep them current.</p>
+          ${contactInputs(CONTACT_GROUPS, values)}
+          <div class="err" role="alert"></div>
+          <button class="btn btn--red" type="submit">Save contact details</button>
+        </form>
+        <div>
+          <div class="preview-card" id="contactPreview"></div>
+          <div class="danger-zone">
+            <h3>Clear the contact overrides</h3>
+            <p>Empties every field above so the public site falls back to its own defaults again.</p>
+            <button class="btn btn--ghost" type="button" id="contactReset">Reset to defaults</button>
+          </div>
+        </div>
+      </div>
+      ${full ? `<form class="form" id="publicTextForm" style="margin-top:18px">
+        <h3>Public text</h3>
+        <p class="form-intro">Title, description and homepage wording. Super administrators only.</p>
+        ${contactInputs([['Site', PUBLIC_TEXT_FIELDS]], values)}
+        <div class="err" role="alert"></div>
+        <button class="btn btn--red" type="submit">Save public text</button>
+      </form>` : ''}`;
+
+    const preview = () => {
+      const value = name => (section.querySelector(`[name="${name}"]`)?.value || '').trim();
+      const lines = [
+        ['Office', value('office_address') || [value('office_line1'), value('office_line2'), value('office_city')].filter(Boolean).join(', ') || '—'],
+        ['Person', [value('contact_person'), value('contact_role')].filter(Boolean).join(' · ') || '—'],
+        ['Email', [value('contact_email'), value('contact_email_secondary')].filter(Boolean).join(' · ') || '—'],
+        ['Phone', [value('contact_phone'), value('contact_phone_secondary')].filter(Boolean).join(' · ') || '—'],
+        ['Hours', value('office_hours') || value('office_hours_short') || '—'],
+        ['Link', value('official_page') || '—'],
+        ['Footer', value('footer_credit') || '—']
+      ];
+      $('#contactPreview').innerHTML = `<h3>How the public site will read</h3>${lines.map(([label, text]) => `<div class="kv"><b>${esc(label)}</b><span>${esc(text)}</span></div>`).join('')}`;
+    };
+    preview();
+    section.querySelectorAll('#contactForm input').forEach(input => input.addEventListener('input', preview));
+
+    $('#contactForm').addEventListener('submit', async event => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(event.currentTarget));
+      const error = $('#contactForm .err');
+      const problem = validateContactData(data);
+      if (problem) { error.textContent = problem; error.classList.add('show'); return; }
+      error.classList.remove('show');
+      const button = event.currentTarget.querySelector('[type="submit"]');
+      button.disabled = true;
+      button.textContent = 'Saving details';
+      try {
+        await api('/api/settings/contact', { method: 'PATCH', body: JSON.stringify(data) });
+        toast('Contact details saved. The public site updates on the next visit.');
+        notifyContentChanged('settings');
+        await renderContact();
+      } catch (submitError) {
+        toast(`The details were not saved: ${submitError.message}`);
+        button.disabled = false;
+        button.textContent = 'Save contact details';
+      }
+    });
+
+    $('#contactReset').addEventListener('click', async () => {
+      const confirmed = await askConfirm('Reset contact details?', 'Every contact and office value returns to the built-in default.', 'Reset details');
+      if (!confirmed) return;
+      const blank = Object.fromEntries(CONTACT_GROUPS.flatMap(([, fields]) => fields.map(([key]) => [key, ''])));
+      try {
+        await api('/api/settings/contact', { method: 'PATCH', body: JSON.stringify(blank) });
+        toast('Contact details were reset to the defaults.');
+        notifyContentChanged('settings');
+        await renderContact();
+      } catch (error) {
+        toast(`Could not reset: ${error.message}`);
+      }
+    });
+
+    if (full) {
+      $('#publicTextForm').addEventListener('submit', async event => {
+        event.preventDefault();
+        const button = event.currentTarget.querySelector('[type="submit"]');
+        button.disabled = true;
+        button.textContent = 'Saving';
+        try {
+          await api('/api/settings', { method: 'PATCH', body: JSON.stringify(Object.fromEntries(new FormData(event.currentTarget))) });
+          toast('Public text saved.');
+          notifyContentChanged('settings');
+        } catch (error) {
+          toast(`Not saved: ${error.message}`);
+          button.disabled = false;
+          button.textContent = 'Save public text';
+        }
+      });
+    }
+  } catch (error) {
+    section.innerHTML = `<div class="err show">Contact details could not be loaded: ${esc(error.message)} <button class="btn btn--ghost btn--sm" type="button" data-retry>Retry</button></div>`;
+    section.querySelector('[data-retry]').addEventListener('click', renderContact);
+  }
+}
+
+/* ── BulSU Pulse data ─────────────────────────────────────────────────────── */
+let pulseSort = 'desc';
+
+async function renderPulseData() {
+  const section = $('#tab-pulse');
+  section.innerHTML = '<div class="empty loading-state">Loading BulSU Pulse data</div>';
+  let rows = [];
+  let totals = { responses: 0, points: 0 };
+  const selected = new Set();
+
+  const load = async (from = $('#pulseFrom')?.value || '', to = $('#pulseTo')?.value || '') => {
+    const query = new URLSearchParams({ sort: pulseSort });
+    if (from) query.set('from', from);
+    if (to) query.set('to', to);
+    const data = await api(`/api/pulse/data?${query}`);
+    rows = data.rows || [];
+    totals = data.totals || totals;
+    selected.clear();
+    draw(from, to);
+  };
+
+  const draw = (from = '', to = '') => {
+    section.innerHTML = `
+      <div class="card">
+        <div class="section-head">
+          <div><h3>Stored submissions by period</h3><span class="mono">${rows.length} ${rows.length === 1 ? 'period' : 'periods'} · ${totals.responses} submissions · ${totals.points} points</span></div>
+          <div class="actions">
+            <button class="btn btn--ghost btn--sm" type="button" id="pulseSort">${pulseSort === 'desc' ? 'Newest first' : 'Oldest first'}</button>
+            <button class="btn btn--ghost btn--sm" type="button" id="pulseExport">Export CSV</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <label class="mono" for="pulseFrom" style="font-size:11px;color:var(--stone)">Submitted between</label>
+          <input type="date" id="pulseFrom" value="${esc(from)}" aria-label="From date">
+          <input type="date" id="pulseTo" value="${esc(to)}" aria-label="To date">
+          <button class="btn btn--ghost btn--sm" type="button" id="pulseApply">Apply range</button>
+          <button class="btn btn--quiet btn--sm" type="button" id="pulseClear">Clear</button>
+        </div>
+      </div>
+      <div class="table-wrap" style="margin-top:16px">
+        <table class="data-table">
+          <thead><tr>
+            <th><input type="checkbox" id="pulseSelectAll" aria-label="Select every period"></th>
+            <th>Period</th><th>Submissions</th><th>Points</th><th>Average</th><th>Top priority</th><th>Last submission</th><th></th>
+          </tr></thead>
+          <tbody>${rows.length ? rows.map(row => `
+            <tr data-period="${esc(row.period)}">
+              <td><input type="checkbox" class="pulse-check" value="${esc(row.period)}" aria-label="Select ${esc(row.period)}"></td>
+              <td><b>${esc(row.period)}</b></td>
+              <td class="mono">${esc(row.responses)}</td>
+              <td class="mono">${esc(row.points)}</td>
+              <td class="mono">${esc(row.averagePoints)}</td>
+              <td>${esc(row.topCategory ? `${row.topCategory} (${row.topPoints})` : '—')}</td>
+              <td class="mono">${esc(row.lastAt || '—')}</td>
+              <td><button class="btn btn--ghost btn--sm" type="button" data-wipe-period="${esc(row.period)}">Wipe</button></td>
+            </tr>`).join('') : '<tr><td colspan="8" class="empty">No BulSU Pulse submissions were recorded in this range.</td></tr>'}</tbody>
+        </table>
+      </div>
+      <div class="bulk-bar" id="pulseBulkBar" hidden>
+        <b id="pulseBulkCount">0 periods selected</b>
+        <div class="spacer"></div>
+        <button class="btn btn--red btn--sm" type="button" id="pulseWipeSelected">Wipe selected periods</button>
+        <button class="btn btn--quiet btn--sm" type="button" id="pulseBulkClear">Clear</button>
+      </div>
+      <div class="danger-zone">
+        <h3>Wipe BulSU Pulse data</h3>
+        <p>Wiping deletes the stored submissions for the chosen dates and rebuilds the public aggregates from what remains. There is no undo.</p>
+        <div class="toolbar" style="border:0;margin:0;padding:0">
+          <button class="btn btn--ghost" type="button" id="pulseWipeRange">Wipe the selected date range</button>
+          <button class="btn btn--red" type="button" id="pulseWipeAll">Wipe every BulSU Pulse record</button>
+        </div>
+      </div>`;
+
+    const syncBulk = () => {
+      const bar = $('#pulseBulkBar');
+      bar.hidden = selected.size === 0;
+      $('#pulseBulkCount').textContent = `${selected.size} period${selected.size === 1 ? '' : 's'} selected`;
+      section.querySelectorAll('tr[data-period]').forEach(tr => tr.classList.toggle('is-selected', selected.has(tr.dataset.period)));
+      const all = $('#pulseSelectAll');
+      all.checked = rows.length > 0 && selected.size === rows.length;
+      all.indeterminate = selected.size > 0 && selected.size < rows.length;
+    };
+
+    $('#pulseApply').addEventListener('click', () => load($('#pulseFrom').value, $('#pulseTo').value).catch(error => toast(error.message)));
+    $('#pulseClear').addEventListener('click', () => load('', '').catch(error => toast(error.message)));
+    $('#pulseSort').addEventListener('click', () => { pulseSort = pulseSort === 'desc' ? 'asc' : 'desc'; load($('#pulseFrom').value, $('#pulseTo').value).catch(error => toast(error.message)); });
+    $('#pulseExport').addEventListener('click', () => {
+      const csv = [['period', 'submissions', 'points', 'average_points', 'top_category', 'top_points', 'first_at', 'last_at'].join(',')]
+        .concat(rows.map(row => [row.period, row.responses, row.points, row.averagePoints, row.topCategory, row.topPoints, row.firstAt, row.lastAt].map(value => `"${String(value ?? '').replace(/"/g, '""')}"`).join(',')))
+        .join('\n');
+      downloadText('bulsu-pulse-data.csv', csv, 'text/csv');
+    });
+    section.querySelectorAll('.pulse-check').forEach(box => box.addEventListener('change', () => {
+      if (box.checked) selected.add(box.value); else selected.delete(box.value);
+      syncBulk();
+    }));
+    $('#pulseSelectAll').addEventListener('change', event => {
+      selected.clear();
+      section.querySelectorAll('.pulse-check').forEach(box => { box.checked = event.target.checked; if (event.target.checked) selected.add(box.value); });
+      syncBulk();
+    });
+    $('#pulseBulkClear').addEventListener('click', () => { selected.clear(); section.querySelectorAll('.pulse-check').forEach(box => { box.checked = false; }); syncBulk(); });
+    $('#pulseWipeSelected').addEventListener('click', async () => {
+      const periods = [...selected];
+      const confirmed = await askConfirm('Wipe these periods?', `${periods.length} period${periods.length === 1 ? '' : 's'} (${periods.slice(0, 5).join(', ')}${periods.length > 5 ? '…' : ''}) will be deleted and the public aggregates rebuilt.`, 'Wipe periods');
+      if (!confirmed) return;
+      await purge({ scope: 'periods', periods });
+    });
+    section.querySelectorAll('[data-wipe-period]').forEach(button => button.addEventListener('click', async () => {
+      const period = button.dataset.wipePeriod;
+      const confirmed = await askConfirm('Wipe this period?', `Every submission recorded in ${period} will be deleted.`, 'Wipe period');
+      if (!confirmed) return;
+      await purge({ scope: 'periods', periods: [period] });
+    }));
+    $('#pulseWipeRange').addEventListener('click', async () => {
+      const from = $('#pulseFrom').value;
+      const to = $('#pulseTo').value;
+      if (!from && !to) return toast('Choose a start or end date first.');
+      const confirmed = await askConfirm('Wipe this date range?', `Submissions created between ${from || 'the beginning'} and ${to || 'today'} will be deleted.`, 'Wipe range');
+      if (!confirmed) return;
+      await purge({ scope: 'range', from, to });
+    });
+    $('#pulseWipeAll').addEventListener('click', async () => {
+      const confirmed = await askConfirm('Wipe every BulSU Pulse record?', 'All stored submissions and aggregates are deleted. The public Pulse returns to "no submissions yet". This cannot be undone.', 'Wipe all data', 'WIPE');
+      if (!confirmed) return;
+      await purge({ scope: 'all', confirm: 'WIPE' });
+    });
+  };
+
+  const purge = async payload => {
+    try {
+      const result = await api('/api/pulse/purge', { method: 'POST', body: JSON.stringify(payload) });
+      toast(`${result.removed} submission${result.removed === 1 ? '' : 's'} wiped. ${result.remaining} remain.`);
+      notifyContentChanged('pulse');
+      await load($('#pulseFrom').value, $('#pulseTo').value);
+      loadStats();
+    } catch (error) {
+      toast(`Wipe failed: ${error.message}`);
+    }
+  };
+
+  try {
+    await load('', '');
+  } catch (error) {
+    section.innerHTML = `<div class="err show">BulSU Pulse data could not be loaded: ${esc(error.message)} <button class="btn btn--ghost btn--sm" type="button" data-retry>Retry</button></div>`;
+    section.querySelector('[data-retry]').addEventListener('click', renderPulseData);
+  }
+}
+
 async function initAdmin() {
   showAdmin();
   $('#guidePanel').hidden = true;
@@ -1355,10 +2132,6 @@ async function initAdmin() {
 
 authScreen.style.display = 'grid';
 checkAuthAndSetup();
-</script>
-</body>
-</html>
-AndSetup();
 </script>
 </body>
 </html>
