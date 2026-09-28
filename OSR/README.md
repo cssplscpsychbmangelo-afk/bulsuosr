@@ -55,7 +55,7 @@ All sections support Create/Edit/Delete, Draft/Published/Archived, Preview, Save
 - **Initiatives**: Title, Description, Purpose, Status (ONGOING/PLANNED/COMPLETED/ON_HOLD), Date, Category, Image, Links
 - **Resources**: Title, Description, Category (editable), File URL/PDF, External link, Publish
 - **Calendar**: Title, Date, Start/End, Category, Location, Link, Attachment, Add/Edit/Delete/Duplicate, auto-reflects public
-- **About/OSR**: Mandate, Vision, Mission, Core Values, Contact, via `pages` table (JSON data)
+- **About/OSR**: Mandate, Vision, Mission, Core Values, Student Regent, Directors, office information, featured programs and official links, edited in *Admin → About OSR* and stored as one JSON document in `site_settings.about_content` (`GET /api/about/public`, `PATCH /api/about`). Empty fields keep the wording built into the public page.
 - **Navigation**: Show/hide, order (drag-drop + Save order), add/remove, validation (href must be #//http), prevents breaking routes
 
 ### 13. Media
@@ -88,6 +88,7 @@ All sections support Create/Edit/Delete, Draft/Published/Archived, Preview, Save
   GET /api/auth/setup-status, POST /api/auth/setup (first admin, no auth)
   GET/POST/PATCH/DELETE /api/announcements(/:id) etc
   GET /api/public/:type (published only)
+  GET /api/about/public, PATCH /api/about (public About page content)
   POST /api/pulse/submit, GET /api/pulse/aggregates, etc
   ```
 

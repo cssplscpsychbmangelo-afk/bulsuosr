@@ -83,6 +83,16 @@ Default login on a fresh DB: `admin@osr.bulsu.edu.ph / Admin123456!`. The setup 
   links and footer credit shown on the public site through
   `PATCH /api/settings/contact`. Super administrators still own the public text
   blocks (title, description, homepage intro, footer note).
+- **About OSR page.** *Admin → About OSR* edits the whole public
+  "About the Office of the Student Regent" page — the page header, the office
+  overview, the mandate bullets, the Student Regent (name, term, campus), the
+  Executive Director and Directors, the college representative rows, the BulSU
+  vision, mission and core values, the office information rows, the featured
+  programs and the official links. Any signed-in administrator can save it
+  through `PATCH /api/about`; the public site reads it from `GET /api/about/public`.
+  Leaving a field empty keeps the wording built into the site, so nothing has to
+  be retyped to change one name, and *Reset to built-in wording* clears every
+  override in one action.
 - **Activity log.** A dedicated screen lists every recorded change (administrator,
   action, content type, time) with search, type filter and CSV export.
 - **BulSU Pulse, once it has data.** The public Pulse panel is a single tablist

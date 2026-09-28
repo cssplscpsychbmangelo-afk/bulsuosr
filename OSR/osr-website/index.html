@@ -1935,23 +1935,23 @@ img,svg{max-width:100%; height:auto}
       <a href="#home" class="btn btn--ghost btn--sm" style="margin-bottom:12px; display:inline-flex; align-items:center; gap:6px; font-size:12px; border-color:var(--line)"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg> Back to home</a>
       <div class="section__head">
         <div>
-          <div class="eyebrow">The Office</div>
+          <div class="eyebrow" id="aboutEyebrow">The Office</div>
           <h2 id="about-title">About the Office of the Student Regent</h2>
-          <p>Structured information that is easy to update when leadership or details change. No invented names.</p>
+          <p id="aboutIntro">Structured information that is easy to update when leadership or details change. No invented names.</p>
         </div>
-        <span class="badge">Easy to update</span>
+        <span class="badge" id="aboutBadge">Easy to update</span>
       </div>
       <div class="about-grid">
         <div style="display:grid; gap:14px">
           <div class="about-card">
-            <h3>Office of the Student Regent</h3>
-            <p>The Office of the Student Regent is the student representation arm within the Bulacan State University Board of Regents. It serves as the formal channel through which BulSU students participate in university governance.</p>
+            <h3 id="aboutOfficeHeading">Office of the Student Regent</h3>
+            <p id="aboutOfficeP1">The Office of the Student Regent is the student representation arm within the Bulacan State University Board of Regents. It serves as the formal channel through which BulSU students participate in university governance.</p>
             <div class="divider"></div>
-            <p>The Office receives student concerns, consults student councils and organizations, and prepares student positions for Board deliberations. Official announcements and meeting records are published on this site when verified.</p>
+            <p id="aboutOfficeP2">The Office receives student concerns, consults student councils and organizations, and prepares student positions for Board deliberations. Official announcements and meeting records are published on this site when verified.</p>
           </div>
           <div class="about-card">
-            <h3>Role and mandate</h3>
-            <ul style="margin:0; padding-left:16px; font-size:13.5px; line-height:1.6">
+            <h3 id="aboutMandateHeading">Role and mandate</h3>
+            <ul id="aboutMandateList" style="margin:0; padding-left:16px; font-size:13.5px; line-height:1.6">
               <li>Represent the studentry in the Board of Regents, the highest governing body of the University</li>
               <li>Consult students and student councils on matters affecting student welfare and academic life</li>
               <li>Bring student positions, concerns, and proposals to the Board</li>
@@ -1959,82 +1959,84 @@ img,svg{max-width:100%; height:auto}
               <li>Maintain an accessible record of student-related Board actions where authorized</li>
             </ul>
             <div class="divider"></div>
-            <p class="small muted">Mandate wording should be aligned with the BulSU Charter and Board resolutions.</p>
+            <p class="small muted" id="aboutMandateNote">Mandate wording should be aligned with the BulSU Charter and Board resolutions.</p>
           </div>
           <div class="about-card">
-            <h3>Student Regent</h3>
+            <h3 id="aboutSrHeading">Student Regent</h3>
             <div style="border:1px dashed var(--line); background:var(--paper-2); border-radius:10px; padding:14px; text-align:center">
-              <div class="mono small" style="color:var(--stone)">Current Student Regent</div>
-              <div style="font-family:'Fraunces',serif; font-size:20px; margin-top:4px">[Name - to be supplied]</div>
-              <div class="small muted" style="margin-top:4px">Term: [academic year] • Campus: [campus]</div>
-              <div class="small muted" style="margin-top:8px">Intentionally empty. Replace with the official designation when appointed.</div>
+              <div class="mono small" style="color:var(--stone)" id="aboutSrLabel">Current Student Regent</div>
+              <div style="font-family:'Fraunces',serif; font-size:20px; margin-top:4px" id="aboutSrName">[Name - to be supplied]</div>
+              <div class="small muted" style="margin-top:4px" id="aboutSrMeta">Term: [academic year] • Campus: [campus]</div>
+              <div class="small muted" style="margin-top:8px" id="aboutSrNote">Intentionally empty. Replace with the official designation when appointed.</div>
             </div>
           </div>
           <div class="about-card">
-            <h3>Directors &amp; Secretariat</h3>
-            <p class="small muted" style="margin:0 0 8px">Supporting the Student Regent in consultations, records, and student concerns. Update when officially designated.</p>
+            <h3 id="aboutDirHeading">Directors &amp; Secretariat</h3>
+            <p class="small muted" style="margin:0 0 8px" id="aboutDirIntro">Supporting the Student Regent in consultations, records, and student concerns. Update when officially designated.</p>
             <div style="display:grid; gap:8px">
               <div style="border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--paper-2); display:flex; justify-content:space-between; align-items:center">
-                <div><b style="font-size:13px">Executive Director</b><div class="small muted">[Name — to be supplied]</div></div>
-                <span class="mono" style="font-size:10px; background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:3px 7px; border-radius:999px">OSR</span>
+                <div><b style="font-size:13px">Executive Director</b><div class="small muted" id="aboutDirExecName">[Name — to be supplied]</div></div>
+                <span class="mono" id="aboutDirExecTag" style="font-size:10px; background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:3px 7px; border-radius:999px">OSR</span>
               </div>
               <div style="border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:white; display:flex; justify-content:space-between; align-items:center">
-                <div><b style="font-size:13px">Directors</b><div class="small muted">[Names — to be supplied]</div></div>
-                <span class="mono" style="font-size:10px; background:var(--paper-2); border:1px solid var(--line); padding:3px 7px; border-radius:999px">TBD</span>
+                <div><b style="font-size:13px">Directors</b><div class="small muted" id="aboutDirNames">[Names — to be supplied]</div></div>
+                <span class="mono" id="aboutDirTag" style="font-size:10px; background:var(--paper-2); border:1px solid var(--line); padding:3px 7px; border-radius:999px">TBD</span>
               </div>
               <div style="border:1px dashed var(--line); border-radius:10px; padding:10px 12px; background:var(--paper-2)">
-                <b style="font-size:12px">College Representatives</b>
-                <div class="small muted" style="margin-top:2px">Per-college coordination for consultation caravan and concerns intake. List updated per term.</div>
-                <div class="mono small" style="margin-top:6px; color:var(--stone)">[Add rows as verified]</div>
+                <b style="font-size:12px" id="aboutCollegeTitle">College Representatives</b>
+                <div class="small muted" style="margin-top:2px" id="aboutCollegeDesc">Per-college coordination for consultation caravan and concerns intake. List updated per term.</div>
+                <div class="mono small" style="margin-top:6px; color:var(--stone)" id="aboutCollegeRows">[Add rows as verified]</div>
               </div>
             </div>
           </div>
           <div class="about-card" style="border-left:4px solid var(--red)">
-            <h3>BulSU Vision &amp; Mission</h3>
+            <h3 id="aboutVmHeading">BulSU Vision &amp; Mission</h3>
             <div style="margin-top:8px">
               <b style="font:700 12px 'IBM Plex Mono',monospace; letter-spacing:0.04em; color:var(--red)">VISION</b>
-              <p style="margin:4px 0 10px; font-size:13.5px; line-height:1.6">Bulacan State University is a progressive <em>knowledge-generating institution</em>, globally recognized for excellent instruction, pioneering research, and responsive community engagements.</p>
+              <p style="margin:4px 0 10px; font-size:13.5px; line-height:1.6" id="aboutVision">Bulacan State University is a progressive <em>knowledge-generating institution</em>, globally recognized for excellent instruction, pioneering research, and responsive community engagements.</p>
               <b style="font:700 12px 'IBM Plex Mono',monospace; letter-spacing:0.04em; color:var(--red)">MISSION</b>
-              <p style="margin:4px 0 10px; font-size:13.5px; line-height:1.6">Bulacan State University exists to produce highly competent, ethical and service-oriented professionals that contribute to the sustainable socio-economic growth and development of the nation.</p>
+              <p style="margin:4px 0 10px; font-size:13.5px; line-height:1.6" id="aboutMission">Bulacan State University exists to produce highly competent, ethical and service-oriented professionals that contribute to the sustainable socio-economic growth and development of the nation.</p>
               <div class="divider"></div>
               <b style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Core Values</b>
-              <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px">
+              <div id="aboutValuesList" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px">
                 <span style="font:600 11px 'IBM Plex Mono',monospace; background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:5px 8px; border-radius:999px">Service to God &amp; Community</span>
                 <span style="font:600 11px 'IBM Plex Mono',monospace; background:var(--paper-2); border:1px solid var(--line); padding:5px 8px; border-radius:999px">Order &amp; Peace</span>
                 <span style="font:600 11px 'IBM Plex Mono',monospace; background:var(--paper-2); border:1px solid var(--line); padding:5px 8px; border-radius:999px">Assurance of Quality &amp; Accountability</span>
                 <span style="font:600 11px 'IBM Plex Mono',monospace; background:var(--paper-2); border:1px solid var(--line); padding:5px 8px; border-radius:999px">Respect &amp; Responsibility</span>
               </div>
-              <p class="small muted" style="margin:8px 0 0">Values per BulSU Student Handbook &amp; institutional statements. See Resources for the official handbook PDF.</p>
+              <p class="small muted" style="margin:8px 0 0" id="aboutValuesNote">Values per BulSU Student Handbook &amp; institutional statements. See Resources for the official handbook PDF.</p>
             </div>
           </div>
         </div>
         <div style="display:grid; gap:14px; align-content:start">
           <div class="about-card">
-            <h3>Office information</h3>
-            <div class="kv"><b>Office name</b> <span>Office of the Student Regent</span></div>
-            <div class="kv"><b>University</b> <span>Bulacan State University</span></div>
-            <div class="kv"><b>Governing body</b> <span>Board of Regents</span></div>
-            <div class="kv"><b>Campuses served</b> <span>All BulSU campuses</span></div>
-            <div class="kv"><b>Designation</b> <span>Updated when officially designated</span></div>
+            <h3 id="aboutInfoHeading">Office information</h3>
+            <div id="aboutInfoRows">
+              <div class="kv"><b>Office name</b> <span>Office of the Student Regent</span></div>
+              <div class="kv"><b>University</b> <span>Bulacan State University</span></div>
+              <div class="kv"><b>Governing body</b> <span>Board of Regents</span></div>
+              <div class="kv"><b>Campuses served</b> <span>All BulSU campuses</span></div>
+              <div class="kv"><b>Designation</b> <span>Updated when officially designated</span></div>
+            </div>
             <div class="divider"></div>
-            <p class="small muted">Fields are updated as official records are released.</p>
+            <p class="small muted" id="aboutInfoNote">Fields are updated as official records are released.</p>
           </div>
           <div class="about-card">
-            <h3>Contact information</h3>
+            <h3 id="aboutContactHeading">Contact information</h3>
             <div class="kv"><b>Email</b> <span><a id="acEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a></span></div>
             <div class="kv"><b>Telephone</b> <span><a id="acPhone" class="phone-link" href="tel:+63447963817">+63 44 796 3817</a></span></div>
             <div class="kv"><b>Office address</b> <span id="acAddress">Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan</span></div>
             <div class="kv"><b>Office hours</b> <span id="acHours">Monday to Friday, within office hours</span></div>
-            <div class="kv"><b>Response time</b> <span>Within office hours</span></div>
+            <div class="kv"><b>Response time</b> <span id="aboutResponseTime">Within office hours</span></div>
             <div class="row" style="margin-top:10px">
               <a class="btn btn--sm btn--red" href="#help" data-nav>Contact form</a>
               <a class="btn btn--sm btn--ghost" id="acMailto" href="mailto:bulsusg1983@gmail.com">Send email</a>
             </div>
           </div>
           <div class="about-card">
-            <h3>Featured programs &amp; initiatives</h3>
-            <p class="small muted" style="margin:0 0 8px">Recurring services consolidated for Board records with date, purpose, and outcomes. See Initiatives for full list.</p>
-            <div style="display:grid; gap:8px">
+            <h3 id="aboutFeaturedHeading">Featured programs &amp; initiatives</h3>
+            <p class="small muted" style="margin:0 0 8px" id="aboutFeaturedIntro">Recurring services consolidated for Board records with date, purpose, and outcomes. See Initiatives for full list.</p>
+            <div id="aboutFeaturedList" style="display:grid; gap:8px">
               <div style="border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--paper-2)">
                 <div style="display:flex; justify-content:space-between; align-items:center"><b style="font-size:13px">Free Printing Services</b><span class="mono" style="font-size:10px; background:white; border:1px solid var(--line); padding:2px 6px; border-radius:999px">Ongoing</span></div>
                 <p class="small muted" style="margin:4px 0 0; line-height:1.5">Document printing support for students — intake, schedule, and outcomes tracked per activity.</p>
@@ -2052,11 +2054,11 @@ img,svg{max-width:100%; height:auto}
               </div>
             </div>
             <div class="divider"></div>
-            <p class="small muted">Replace with verified dates, venues, and outcomes. This mirrors PDF I. “Featured programs and initiatives (list)”.</p>
+            <p class="small muted" id="aboutFeaturedNote">Replace with verified dates, venues, and outcomes. This mirrors PDF I. “Featured programs and initiatives (list)”.</p>
           </div>
           <div class="about-card">
-            <h3>Official links</h3>
-            <ul style="margin:0; padding-left:16px; font-size:13.5px; line-height:1.6">
+            <h3 id="aboutLinksHeading">Official links</h3>
+            <ul id="aboutLinksList" style="margin:0; padding-left:16px; font-size:13.5px; line-height:1.6">
               <li><a href="https://bulsu.edu.ph" target="_blank" rel="noopener">Bulacan State University - bulsu.edu.ph</a></li>
               <li><a href="https://www.bulsu.edu.ph/assets/downloads/files/student_handbook.pdf" target="_blank" rel="noopener">BulSU Student Handbook (PDF)</a></li>
               <li><a href="#board-meetings" data-nav>Board Meeting Archive (this site)</a></li>
@@ -2065,7 +2067,7 @@ img,svg{max-width:100%; height:auto}
               <li>[Additional official page - to be supplied]</li>
             </ul>
             <div class="divider"></div>
-            <p class="small muted">Add only verified official links.</p>
+            <p class="small muted" id="aboutLinksNote">Add only verified official links.</p>
           </div>
         </div>
       </div>
