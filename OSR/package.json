@@ -1,5 +1,12 @@
 {
   "dependencies": {
     "jsdom": "^29.1.1"
+  },
+  "scripts": {
+    "icons": "node osr-website/tools/make-tab-icons.mjs",
+    "icons:check": "node osr-website/tools/make-tab-icons.mjs --check"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
   }
 }

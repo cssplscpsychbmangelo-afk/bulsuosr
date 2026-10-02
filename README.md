@@ -35,7 +35,12 @@ That's it. No `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `JWT_SECRET` required:
 - JWT secret auto-generates and persists in `site_settings.jwt_secret` → sessions survive cold starts
 - Fresh DB: open `/admin` → setup form creates first admin in Neon, or default `admin@osr.bulsu.edu.ph / Admin123456!` is seeded automatically
 
-Redeploy, then open `https://your-site.netlify.app/admin`.
+Redeploy, then open `https://your-site.netlify.app` (and `/OSRAdminControl2026`).
+
+Redeploying is enough — but if you upload `OSR/osr-website/osr-netlify.zip` by
+hand instead of connecting the repository, rebuild that archive first with
+`node OSR/osr-website/netlify-build.mjs`: it is a snapshot, and a stale one
+deploys an old site.
 
 See [deployment instructions](OSR/server/DEPLOY.md) for setup, verification, and troubleshooting. Netlify and Neon usage limits still apply.
 
@@ -116,6 +121,10 @@ npm test --prefix OSR/server
 Integration tests execute PostgreSQL queries in PGlite (a local PostgreSQL engine)
 and use an in-memory media store; they do not connect to your live Neon account.
 Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
+The hero's pointer interactions are driven in jsdom (`hero-motion.test.mjs`), the
+tab icon set is checked against its vector source (`tab-identity.test.mjs`), and
+`osr-netlify.zip` is compared with the files in the repository
+(`netlify-bundle.test.mjs`), so a stale drag-and-drop bundle fails the suite.
 
 ## What changed for standalone
 
@@ -128,6 +137,40 @@ Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
 
 ## Recent fixes
 
+- **The hero's interactions can actually be felt again.** They were being
+  neutralised, not missing: every `.hero.is-in` entrance animation ran with
+  fill-mode `both`, and a finished animation with `both` keeps ownership of the
+  properties it animated — the browser ranked the settled animation above both
+  inline styles and hover rules, so `transform` on the card and on the primary
+  button stayed pinned at `none`. The card lean, the button drift and the hover
+  lift were all being computed and thrown away. The entrances now end at
+  `backwards` (the closing frame is the element's natural state), and the whole
+  vocabulary was made more present: a warmer pointer light that trails the
+  pointer, the top rule carrying the pointer's hotspot, a card that leans from
+  anywhere in the section and lights up under the pointer, a primary button that
+  steps toward it — and a ripple from the exact point pressed, which is the one
+  part a finger on a phone can feel. Coming back to Home replays the arrival
+  instead of leaving the masthead frozen. `hero-motion.test.mjs` drives all of it
+  on every `npm test`, and the entrance fill-modes are asserted directly.
+- **The tab icon is the real OSR mark, and it reads the tab it lands on.**
+  `favicon.svg` is the original logo traced from `osr-logo-original.png` into one
+  vector path, so the tab shows the logo itself rather than a plate with a
+  shrunken raster of it (which is what looked ugly). Inside that one file,
+  `prefers-color-scheme` swaps the fill: institutional red on light browser
+  chrome, a light tint of the same red on dark chrome, so the mark is never a
+  dark blob on a dark strip. Safari and iOS pick up the ICO and PNGs instead;
+  `tools/make-tab-icons.mjs` rasterises those from the same path
+  (`npm run icons --prefix OSR`, `npm run icons:check --prefix OSR`), so the
+  vector and the rasters cannot drift apart. `tab-identity.test.mjs` checks the
+  sizes, the ICO container, the dark-chrome contrast and that every committed
+  raster still matches the path.
+- **A stale drag-and-drop bundle can no longer ship.** `OSR/osr-website/osr-netlify.zip`
+  is the upload-instead-of-Git alternative, and it had gone stale — a deploy from
+  it served an older page with none of the latest work and the old tab icon.
+  `netlify-build.mjs` now rebuilds the archive whenever the site it packs has
+  moved, and `netlify-bundle.test.mjs` fails the suite if the committed archive
+  differs from the repository. The publication itself is unchanged: the site
+  deploys exactly as before.
 - **The hero no longer looks muddy, and it responds to the pointer.** The
   masthead used to stack a grey wash, a pink 28px grid and a masked fade on top
   of each other; it is now one warm wash plus seal line-work in the far corner
