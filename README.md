@@ -141,12 +141,16 @@ Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
 - **The hero title has its own typeface again, and the site keeps Fraunces.**
   `--font-display` is back to Fraunces, so section headings, card titles, About,
   the Ideal BulSU board and the admin screens all read as before. Only the home
-  hero title uses the new `--font-hero` token (`Marcellus`, one weight, same
-  `clamp(42px, 5.4vw, 64px)` size, same two-line break). `font-preview.html`
-  compares seven candidate faces on the real hero — Cinzel, Spectral, DM Serif
-  Display, Playfair Display, IBM Plex Serif and Fraunces — and whichever is
-  chosen is a one-line change. The check page's font request lives in that file
-  only; the shipped page loads Fraunces, Marcellus and IBM Plex.
+  hero title uses the `--font-hero` token: **Bricolage Grotesque at 800** —
+  bold, with tight apertures and squared bowls, so the masthead reads confident
+  rather than like a stock corporate sans. It is self-hosted as one 21 KB latin
+  subset (`osr-website/fonts/bricolage-grotesque-800.woff2`) so the title never
+  waits on a third-party request; the fallback stack is Archivo Black → Impact →
+  Arial Black. Size and break are unchanged: `clamp(42px, 5.4vw, 64px)`, two
+  lines, 34–64 px across 360–1440 px. `font-preview.html` still compares the
+  alternates on the real hero (Archivo, Anton, Oswald, Merriweather, Playfair,
+  Zilla Slab, Libre Franklin, Fraunces) — each is a token change plus its font
+  file.
 - **“Build Your Ideal BulSU” now looks the same everywhere — and the dashboard
   row is balanced.** The quick-access row held five tiles in a four-column grid,
   so *Track My Concern* sat alone on a second row. A sixth tile — Build Your
