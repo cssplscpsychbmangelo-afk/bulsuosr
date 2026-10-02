@@ -128,6 +128,40 @@ Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
 
 ## Recent fixes
 
+- **One rating now produces one prompt.** Submitting “Rate the BulSU OSR” used
+  to print the same sentence twice: the message under the button *and* a
+  floating toast stacked on top of it. Repeated taps queued more copies that
+  overlapped each other, and the button stayed live while the request was in
+  flight, so a single student could post several ratings. The rating form now
+  reports through its own status line only, the send button locks until the
+  request finishes, and a stray tap right after a recorded rating no longer
+  turns into a “name is required” error on the emptied form. Toasts site-wide
+  de-duplicate themselves (the same sentence never stacks twice), skip a
+  message already shown in a form status, cap at three on screen, and keep a
+  width that fits a phone. `OSR/server/test/rating-prompt.test.mjs` checks all
+  of this on every `npm test`.
+- **`/admin` never pre-adds an email or password.** The sign-in form shipped
+  with a placeholder account in the email field, and the browser could restore
+  saved credentials into both fields. Both inputs (and the form) now declare
+  `autocomplete="off"`, the boot path blanks whatever the browser restored, a
+  failed sign-in clears the password field, and creating the first account no
+  longer pre-fills the next sign-in.
+- **Service ratings in the admin now work on a phone.** The filters, stats and
+  wide response table were being laid out inside a grid column that could not
+  shrink, so the whole page scrolled sideways and the numbers were cut off.
+  Sections now cap their column (`minmax(0,1fr)`), the filter bar stacks with
+  full-width controls, the average-rating card spans the row with the counters
+  two-up underneath, and below 680px the responses table becomes one labelled
+  card per rating (date, student, service, stars, comment, Delete) with no
+  sideways scrolling. Long lists paint 50 responses at a time behind a
+  *Show more* button, so a big archive opens fast on a phone.
+- **The About page reads as finished copy.** The header badge said “Easy to
+  update” and the page carried template notes (“Structured information that is
+  easy to update…”, “[Name — to be supplied]”, “Replace with verified dates…”).
+  Those are replaced with pre-written wording in the site's own voice — the
+  badge now reads “Student representation” and unconfirmed roles read “To be
+  announced”. Administrators can still override every line from *Admin → About
+  OSR*; an empty field keeps the wording built into the site.
 - **A stray leftover script fragment was removed from `/admin`.** A duplicated
   `</script></body></html>` tail followed by a bare `AndSetup();` call sat after
   the admin page's closing `</html>`. Nothing executed it, but it was removed so

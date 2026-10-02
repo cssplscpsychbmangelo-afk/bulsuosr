@@ -279,9 +279,11 @@ img{max-width:100%}
 .badge--warn{background:var(--warn-bg); border-color:#FDE68A; color:var(--warn)}
 .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
 .small{font-size:12px}
-.toast-wrap{position:fixed; bottom:18px; left:50%; transform:translateX(-50%); z-index:80; display:grid; gap:6px; pointer-events:none}
-.toast{background:rgba(255,255,255,0.94); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); color:var(--stone); border:1px solid var(--line); padding:6px 12px; border-radius:999px; font-size:12px; font-weight:500; letter-spacing:0.01em; box-shadow:0 4px 14px rgba(17,18,20,0.07); display:flex; gap:8px; align-items:center; opacity:0; transform:translateY(6px); transition:opacity .24s var(--ease), transform .24s var(--ease)}
+.toast-wrap{position:fixed; bottom:calc(18px + env(safe-area-inset-bottom, 0px)); left:50%; transform:translateX(-50%); z-index:80; display:grid; gap:6px; justify-items:center; width:min(420px, calc(100vw - 24px)); pointer-events:none}
+.toast{max-width:100%; background:rgba(255,255,255,0.94); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); color:var(--stone); border:1px solid var(--line); padding:6px 12px; border-radius:999px; font-size:12px; font-weight:500; line-height:1.35; letter-spacing:0.01em; text-align:left; box-shadow:0 4px 14px rgba(17,18,20,0.07); display:flex; gap:8px; align-items:center; opacity:0; transform:translateY(6px); transition:opacity .24s var(--ease), transform .24s var(--ease)}
 .toast.is-visible{opacity:1; transform:none}
+/* A toast never covers the form message it repeats — the two say the same
+   thing, so the inline status is the one that stays on screen. */
 @media(prefers-reduced-motion:reduce){.toast{transition:none}}
 
 /* command palette */
@@ -2107,10 +2109,10 @@ img,svg{max-width:100%; height:auto}
         <div class="ab-hero__copy">
           <div class="ab-hero__eyebrow" id="aboutEyebrow">The Office</div>
           <h2 id="about-title">About the Office of the Student Regent</h2>
-          <p id="aboutIntro">Structured information that is easy to update when leadership or details change. No invented names.</p>
+          <p id="aboutIntro">The Office of the Student Regent is the student voice in the Bulacan State University Board of Regents — receiving student concerns, consulting student councils and organizations, and publishing verified updates from the University's highest governing body.</p>
         </div>
         <div class="ab-hero__side">
-          <span class="ab-hero__badge" id="aboutBadge">Easy to update</span>
+          <span class="ab-hero__badge" id="aboutBadge">Student representation</span>
           <dl class="ab-hero__facts">
             <div><dt>Seat</dt><dd>Board of Regents</dd></div>
             <div><dt>Serves</dt><dd>All BulSU campuses</dd></div>
@@ -2144,7 +2146,7 @@ img,svg{max-width:100%; height:auto}
               <li>Disseminate Board decisions and advisories that affect students</li>
               <li>Maintain an accessible record of student-related Board actions where authorized</li>
             </ol>
-            <p class="ab-note" id="aboutMandateNote">Mandate wording should be aligned with the BulSU Charter and Board resolutions.</p>
+            <p class="ab-note" id="aboutMandateNote">The mandate follows the BulSU Charter and the resolutions of the Board of Regents.</p>
           </div>
         </div>
       </section>
@@ -2158,23 +2160,23 @@ img,svg{max-width:100%; height:auto}
             <h4 class="ab-regent__kicker" id="aboutSrHeading">Student Regent</h4>
             <div class="ab-regent__mark" aria-hidden="true" id="aboutSrMark">SR</div>
             <div class="ab-regent__label" id="aboutSrLabel">Current Student Regent</div>
-            <div class="ab-regent__name" id="aboutSrName">[Name - to be supplied]</div>
-            <div class="ab-regent__meta" id="aboutSrMeta">Term: [academic year] • Campus: [campus]</div>
-            <p class="ab-regent__note" id="aboutSrNote">Intentionally empty. Replace with the official designation when appointed.</p>
+            <div class="ab-regent__name" id="aboutSrName">To be announced</div>
+            <div class="ab-regent__meta" id="aboutSrMeta">Term and campus are published once the appointment is confirmed</div>
+            <p class="ab-regent__note" id="aboutSrNote">The Student Regent carries the student position to the Board of Regents.</p>
           </article>
           <div class="ab-team">
             <h4 id="aboutDirHeading">Directors &amp; Secretariat</h4>
-            <p class="ab-note" id="aboutDirIntro">Supporting the Student Regent in consultations, records, and student concerns. Update when officially designated.</p>
+            <p class="ab-note" id="aboutDirIntro">Supporting the Student Regent in consultations, records, and student concerns.</p>
             <div class="ab-role">
-              <div><b>Executive Director</b><span id="aboutDirExecName">[Name — to be supplied]</span></div>
+              <div><b>Executive Director</b><span id="aboutDirExecName">To be announced</span></div>
               <span class="ab-tag ab-tag--red" id="aboutDirExecTag">OSR</span>
             </div>
             <div class="ab-role">
-              <div><b>Directors</b><span id="aboutDirNames">[Names — to be supplied]</span></div>
+              <div><b>Directors</b><span id="aboutDirNames">To be announced</span></div>
               <span class="ab-tag" id="aboutDirTag">TBD</span>
             </div>
             <div class="ab-role ab-role--dashed">
-              <div><b id="aboutCollegeTitle">College Representatives</b><span id="aboutCollegeDesc">Per-college coordination for consultation caravan and concerns intake. List updated per term.</span><span class="ab-mono" id="aboutCollegeRows">[Add rows as verified]</span></div>
+              <div><b id="aboutCollegeTitle">College Representatives</b><span id="aboutCollegeDesc">Per-college coordination for consultation caravan and concerns intake. List updated per term.</span><span class="ab-mono" id="aboutCollegeRows">Published per term as representatives are confirmed</span></div>
             </div>
           </div>
         </div>
@@ -2231,7 +2233,7 @@ img,svg{max-width:100%; height:auto}
             <a href="#board-meetings" data-nav class="ab-program__link">Board records →</a>
           </div>
         </div>
-        <p class="ab-note" id="aboutFeaturedNote">Replace with verified dates, venues, and outcomes. This mirrors PDF I. “Featured programs and initiatives (list)”.</p>
+        <p class="ab-note" id="aboutFeaturedNote">Dates, venues, and outcomes are published here as each activity is completed.</p>
       </section>
 
       <!-- 05 · Contact & links -->
@@ -2257,7 +2259,7 @@ img,svg{max-width:100%; height:auto}
               <div class="kv"><b>University</b> <span>Bulacan State University</span></div>
               <div class="kv"><b>Governing body</b> <span>Board of Regents</span></div>
               <div class="kv"><b>Campuses served</b> <span>All BulSU campuses</span></div>
-              <div class="kv"><b>Designation</b> <span>Updated when officially designated</span></div>
+              <div class="kv"><b>Designation</b> <span>Published once officially confirmed</span></div>
             </div>
             <p class="ab-note" id="aboutInfoNote">Fields are updated as official records are released.</p>
           </div>
@@ -2772,7 +2774,43 @@ const fmtShort = iso=>{ const d=new Date(iso+"T12:00:00"); return {day:d.getDate
 const escapeHtml = s=> s.replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
 function daysAgo(iso){ return Math.floor((Date.now() - new Date(iso+"T12:00:00"))/86400000); }
 function highlight(text, q){ if(!q) return escapeHtml(text); const re=new RegExp("("+q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","ig"); return escapeHtml(text).replace(re, "<span class='highlight'>$1</span>"); }
-function toast(msg){ const wrap=$("#toastWrap"); const el=document.createElement("div"); el.className="toast"; el.setAttribute("role","status"); el.textContent=msg; wrap.appendChild(el); requestAnimationFrame(()=> el.classList.add("is-visible")); setTimeout(()=>{ el.classList.remove("is-visible"); setTimeout(()=> el.remove(), 240)}, 1800); }
+// Toasts de-duplicate themselves: the same sentence never stacks twice, and a
+// message that is already shown in a form's own status line (role="status" /
+// role="alert" / .error / .ok) is not repeated as a floating toast on top of it.
+const toastState = new Map();
+function toastInlineOwner(text){
+  for(const node of document.querySelectorAll('[role="status"],[role="alert"],.error,.ok')){
+    if(node.closest("#toastWrap")) continue;
+    if(node.hidden || node.offsetParent===null) continue;
+    if(String(node.textContent||"").trim()===text) return true;
+  }
+  return false;
+}
+function dismissToast(text){
+  const live=toastState.get(text); if(!live) return;
+  clearTimeout(live.hideTimer); clearTimeout(live.removeTimer);
+  live.el.classList.remove("is-visible");
+  live.removeTimer=setTimeout(()=>{ live.el.remove(); toastState.delete(text); }, 240);
+}
+function toast(msg){
+  const wrap=$("#toastWrap");
+  const text=String(msg==null?"":msg).trim();
+  if(!wrap || !text) return;
+  const live=toastState.get(text);
+  if(live){
+    // Already on screen: restart its timer instead of printing a second copy.
+    clearTimeout(live.hideTimer); clearTimeout(live.removeTimer);
+    live.el.classList.add("is-visible");
+    live.hideTimer=setTimeout(()=>dismissToast(text), 2600);
+    return;
+  }
+  if(toastInlineOwner(text)) return;
+  while(toastState.size>=3) dismissToast(toastState.keys().next().value);
+  const el=document.createElement("div"); el.className="toast"; el.setAttribute("role","status"); el.textContent=text;
+  wrap.appendChild(el); requestAnimationFrame(()=> el.classList.add("is-visible"));
+  const entry={ el, hideTimer:setTimeout(()=>dismissToast(text), 2600), removeTimer:null };
+  toastState.set(text, entry);
+}
 let saved = new Set();
 try{ const raw=localStorage.getItem("osr-saved"); if(raw) saved=new Set(JSON.parse(raw)); }catch(e){ try{console.warn("storage unavailable",e)}catch(_){} }
 function persistSaved(){ try{ localStorage.setItem("osr-saved", JSON.stringify([...saved])); }catch(e){} updateSavedCounts(); }
@@ -3077,7 +3115,8 @@ $("#concernForm").addEventListener("submit", async e=>{
       <p>Save this code. It is the only way to check your concern if you submitted anonymously. It is also saved on this device.</p>
       <div class="row"><button class="btn btn--sm btn--ghost" type="button" data-copy-code="${escapeHtml(result.code)}">Copy code</button><a class="btn btn--sm btn--red" href="#track?code=${encodeURIComponent(result.code)}">Track it</a></div>
     </div>`;
-    toast("Concern submitted — tracking code "+result.code);
+    // The card above already reports the result next to the button — no second
+    // floating prompt on top of it.
     safeRemove("osr-concern");
     form.reset(); updateAnonState();
     document.querySelectorAll("#concernForm [data-step]").forEach(el=> el.hidden = el.dataset.step!=="3");
@@ -3157,10 +3196,17 @@ window.addEventListener("DOMContentLoaded", ()=>{ renderTrackSaved(); trackFromH
 renderTrackSaved();
 
 /* ── Rate the OSR (name + student number required) ───────────────────────── */
+let ratingSending=false, ratingSent=false;
 document.getElementById("helpFeedbackForm")?.addEventListener("submit", async e=>{
   e.preventDefault();
   const form=e.target, fd=new FormData(form), msg=document.getElementById("helpFeedbackMsg");
-  const fail=text=>{ msg.innerHTML=`<span class="error" role="alert">${escapeHtml(text)}</span>`; toast(text); };
+  if(ratingSending) return;
+  // A stray extra tap right after a recorded rating must not turn into a
+  // "name is required" error on the form that was just emptied.
+  if(ratingSent) return;
+  // The status line under the button is the one prompt for this form: the same
+  // sentence is never repeated as a floating toast, so nothing overlaps.
+  const fail=text=>{ msg.innerHTML=`<span class="error" role="alert">${escapeHtml(text)}</span>`; };
   const name=(fd.get("fb_name")||"").trim(), sn=(fd.get("fb_student_number")||"").trim();
   if(name.length<2) return fail("Your full name is required to rate OSR services.");
   if(!sn) return fail("Your student number is required to rate OSR services.");
@@ -3169,6 +3215,7 @@ document.getElementById("helpFeedbackForm")?.addEventListener("submit", async e=
   if(!fd.get("rating")) return fail("Choose a rating from 1 to 5.");
   if(!(fd.get("feedback")||"").trim()) return fail("Add a short comment about the service.");
   const button=form.querySelector('[type="submit"]');
+  ratingSending=true;
   button.disabled=true; button.textContent="Sending…";
   try{
     const response=await fetch("/api/ratings",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({
@@ -3177,11 +3224,14 @@ document.getElementById("helpFeedbackForm")?.addEventListener("submit", async e=
     const result=await response.json().catch(()=>({}));
     if(!response.ok) throw new Error(result.error||"Your rating could not be sent. Please try again.");
     msg.innerHTML=`<span class="ok" role="status">Thank you. Your rating was recorded and will be included in the OSR's published service summary (names and student numbers are never published).</span>`;
-    toast("Rating sent — thank you");
+    ratingSent=true;
     form.reset();
-  }catch(error){ fail(error.message); }
-  finally{ button.disabled=false; button.textContent="Send rating"; }
+  }catch(error){ fail(error.message||"Your rating could not be sent. Please try again."); }
+  finally{ ratingSending=false; button.disabled=false; button.textContent="Send rating"; }
 });
+// Typing again means a new rating: the "just sent" state ends.
+document.getElementById("helpFeedbackForm")?.addEventListener("input", ()=>{ ratingSent=false; });
+document.getElementById("helpFeedbackForm")?.addEventListener("change", ()=>{ ratingSent=false; });
 // Shared contact details — defaults below; the admin CMS (Settings → Website
 // settings) can override them at runtime via /api/settings/public.
 window.OSR_CONTACT = window.OSR_CONTACT || {

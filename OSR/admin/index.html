@@ -157,7 +157,10 @@ img{display:block;max-width:100%}
 .page-description{max-width:62ch;margin:9px 0 0;color:var(--stone);font-size:14px}
 .page-action{flex:none}
 .section{display:none}
-.section.is-active{display:grid;gap:18px;animation:section-in .28s var(--ease)}
+/* minmax(0,1fr): a wide table inside a section must scroll in its own
+   .table-wrap instead of stretching the whole page on a narrow screen. */
+.section.is-active{display:grid;gap:18px;grid-template-columns:minmax(0,1fr);animation:section-in .28s var(--ease)}
+.section.is-active>*{min-width:0}
 @keyframes section-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
 .overview-lead{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:20px}
 .overview-lead h2{margin:0;font:600 20px 'Fraunces',Georgia,serif}
@@ -260,7 +263,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
 .data-table tbody tr:hover{background:var(--paper)}
 .data-table tbody tr.is-selected{background:var(--red-soft)}
 .data-table td.mono{font:500 11px 'IBM Plex Mono',monospace;color:var(--stone)}
-.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--white)}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%;border:1px solid var(--line);border-radius:10px;background:var(--white)}
 .toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:16px;padding-top:16px;border-top:1px solid var(--line)}
 .toolbar .check{margin-right:auto}
 .toolbar input[type="date"],.toolbar input[type="search"],.toolbar select{min-height:38px;border:1px solid var(--control);border-radius:8px;padding:6px 10px;background:var(--white);color:var(--ink)}
@@ -504,6 +507,8 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
 .rating-stat__text{font-size:16px!important;overflow-wrap:anywhere}
 .rating-stat--hero{background:var(--red);border-color:var(--red);color:var(--white)}
 .rating-stat--hero span,.rating-stat--hero b small{color:#FFD5DC}
+.responses-more{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px}
+.responses-more span{font-size:11px;color:var(--stone)}
 .rating-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:14px;margin-top:14px}
 .rating-grid h3{margin-bottom:12px}
 .rating-bar{display:grid;grid-template-columns:30px minmax(0,1fr) 72px;gap:10px;align-items:center;margin-bottom:8px;font-weight:600;font-size:12.5px}
@@ -516,6 +521,50 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
 .stars{color:var(--red);letter-spacing:1px;white-space:nowrap}
 .stars span{color:var(--line)}
 @media(max-width:980px){.inbox,.rating-grid{grid-template-columns:minmax(0,1fr)}.inbox__list{position:static;max-height:none}.rating-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* Service ratings on a phone: filters stack, and the responses table becomes
+   one card per rating instead of six unreadable columns. */
+@media(max-width:680px){
+  .report-bar{align-items:stretch;gap:12px}
+  .report-bar__range{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;width:100%}
+  .report-bar__range label:nth-child(3){grid-column:1/-1}
+  .report-bar__range input,.report-bar__range select{width:100%;min-width:0}
+  .report-bar__range input[type="date"]{padding:6px 8px;font-size:12.5px}
+  .report-bar__actions{display:grid;grid-template-columns:minmax(0,1fr);gap:10px;width:100%}
+  .report-bar__actions .btn{width:100%}
+  .rating-stats{gap:10px}
+  /* Average rating spans the row; the three counters sit two-up underneath. */
+  .rating-stat--hero{grid-column:1/-1}
+  .rating-stat{padding:14px}
+  .rating-stat b{font-size:22px}
+  .rating-stat b small{font-size:12px}
+  .rating-stat__text{font-size:14px!important}
+  .rating-bar{grid-template-columns:24px minmax(0,1fr) 64px;gap:8px;font-size:12px}
+  .rating-table{font-size:12px}
+  .rating-table th,.rating-table td{padding:7px 6px}
+  .rating-table td{overflow-wrap:anywhere}
+  .table-wrap--cards{border:0;border-radius:0;background:transparent;overflow:visible}
+  .rating-table--responses{display:block}
+  .rating-table--responses thead{display:none}
+  .rating-table--responses tbody{display:grid;gap:10px}
+  .rating-table--responses tr{display:grid;gap:2px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--white)}
+  .rating-table--responses td{display:grid;grid-template-columns:92px minmax(0,1fr);gap:8px;padding:3px 0;border:0}
+  .rating-table--responses td:before{content:attr(data-label);font:600 10px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--stone)}
+  .rating-table--responses td[data-label="Student"] .rating-campus{display:block;margin-top:2px}
+  .rating-table--responses td[data-label="Student"] .rating-sep{display:none}
+  .rating-table--responses td[data-label="Comment"]{display:block;margin-top:2px}
+  .rating-table--responses td[data-label="Comment"]:before{display:block;margin-bottom:3px}
+  .rating-table--responses td[data-label="Actions"]{grid-template-columns:minmax(0,1fr);margin-top:8px}
+  .rating-table--responses td[data-label="Actions"]:before{display:none}
+  .rating-table--responses td[data-label="Actions"] .btn{width:100%}
+  .responses-more{display:grid;gap:8px;justify-items:stretch}
+  .responses-more .btn{width:100%}
+  .responses-more span{text-align:center}
+}
+@media(max-width:420px){
+  .rating-stats{gap:8px}
+  .rating-stat{padding:12px}
+  .rating-stat b{font-size:20px}
+}
 </style>
 </head>
 <body>
@@ -550,15 +599,15 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
         <div id="authErr" class="err" role="alert"></div>
         <div id="authOk" class="ok" role="status"></div>
 
-        <form id="loginFormBox" class="auth-form">
+        <form id="loginFormBox" class="auth-form" autocomplete="off">
           <div class="field">
             <label for="loginEmail">Email address</label>
-            <input id="loginEmail" name="email" type="email" autocomplete="username" inputmode="email" placeholder="admin@osr.bulsu.edu.ph" required/>
+            <input id="loginEmail" name="email" type="email" autocomplete="off" autocapitalize="off" spellcheck="false" inputmode="email" placeholder="Enter your administrator email" required/>
           </div>
           <div class="field">
             <label for="loginPass">Password</label>
             <div class="password-field">
-              <input id="loginPass" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" required/>
+              <input id="loginPass" name="password" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Enter your password" required/>
               <button type="button" id="passwordToggle" class="password-toggle" aria-pressed="false" aria-controls="loginPass">Show</button>
             </div>
           </div>
@@ -750,10 +799,16 @@ function esc(value) {
 }
 
 function toast(message) {
+  const text = String(message ?? '').trim();
+  if (!text) return;
+  const host = $('#toasts');
+  // One prompt per message: the same sentence never stacks twice while it is
+  // still on screen (repeated clicks used to pile identical toasts up).
+  if ([...host.children].some(element => element.textContent === text)) return;
   const element = document.createElement('div');
   element.className = 'toast';
-  element.textContent = message;
-  $('#toasts').appendChild(element);
+  element.textContent = text;
+  host.appendChild(element);
   window.setTimeout(() => element.remove(), 3200);
 }
 
@@ -831,7 +886,19 @@ function clearAuthMsg() {
   authOk.classList.remove('show');
 }
 
-function showAuth(mode) {
+// The sign-in fields always start empty: nothing is pre-added by the page, and
+// autocomplete is off on both the form and its inputs, so a remembered email or
+// password is never waiting in the form before the administrator types it.
+function clearLoginForm() {
+  const email = $('#loginEmail');
+  const pass = $('#loginPass');
+  if (email) email.value = '';
+  if (pass) { pass.value = ''; pass.type = 'password'; }
+  const toggle = $('#passwordToggle');
+  if (toggle) { toggle.textContent = 'Show'; toggle.setAttribute('aria-pressed', 'false'); }
+}
+
+function showAuth(mode = 'login') {
   closeNav();
   adminScreen.style.display = 'none';
   $('#guide').hidden = true;
@@ -891,6 +958,7 @@ $('#loginFormBox').addEventListener('submit', async event => {
     toast('Signed in successfully.');
     await initAdmin();
   } catch (error) {
+    $('#loginPass').value = '';
     showErr(error.message);
   } finally {
     button.disabled = false;
@@ -917,9 +985,10 @@ $('#setupFormBox').addEventListener('submit', async event => {
       method: 'POST',
       body: JSON.stringify({ email, password, name })
     });
-    $('#loginEmail').value = data.email;
+    clearLoginForm();
     showAuth('login');
-    showOk(`The account for ${data.email} was created. You can now sign in.`);
+    showOk(`The account for ${data.email} was created. Sign in with that email and the password you chose.`);
+    $('#loginEmail').focus();
   } catch (error) {
     showErr(error.message);
   } finally {
@@ -932,6 +1001,7 @@ async function logout(button) {
   button.disabled = true;
   try {
     await api('/api/auth/logout', { method: 'POST' });
+    clearLoginForm();
     showAuth('login');
     toast('You have been logged out.');
   } catch (error) {
@@ -946,6 +1016,9 @@ $('#sidebarLogout').addEventListener('click', event => logout(event.currentTarge
 
 async function checkAuthAndSetup() {
   const health = $('#health');
+  // A browser may restore saved credentials before this script runs; blank the
+  // sign-in form so /admin always opens with empty email and password fields.
+  clearLoginForm();
   try {
     const response = await fetch('/api/health');
     const data = await response.json().catch(() => ({}));
@@ -2644,6 +2717,11 @@ async function renderRatings() {
     </div>
     <div id="ratingsBody"></div>`;
 
+  // Long lists are painted in chunks so a phone is not asked to lay out
+  // hundreds of response cards at once; "Show more" reveals the next chunk.
+  const RESPONSE_CHUNK = 50;
+  let responseLimit = RESPONSE_CHUNK;
+
   const current = () => {
     const service = section.querySelector('[data-service]').value;
     return ratingsInRange(rows, section.querySelector('[data-from]').value, section.querySelector('[data-to]').value).filter(row => !service || row.service === service);
@@ -2652,6 +2730,7 @@ async function renderRatings() {
     const list = current();
     const sum = ratingsSummary(list);
     const max = Math.max(1, ...sum.dist.map(item => item.count));
+    const shown = list.slice(0, responseLimit);
     $('#ratingsBody').innerHTML = !list.length ? '<div class="empty">No ratings in this range yet. Students rate services from Student Help → Rate the BulSU OSR.</div>' : `
       <div class="rating-stats">
         <div class="card rating-stat rating-stat--hero"><span>Average rating</span><b>${sum.avg.toFixed(2)}<small> / 5</small></b><em>${ratingAdjective(sum.avg)}</em></div>
@@ -2670,12 +2749,29 @@ async function renderRatings() {
       </div>
       <div class="card" style="margin-top:14px">
         <div class="section-head"><div><h3>All responses</h3><span class="mono">Names and student numbers are visible to administrators only — never printed in the PDF.</span></div></div>
-        <div class="table-wrap"><table class="rating-table"><thead><tr><th>Date</th><th>Student</th><th>Service</th><th>Rating</th><th>Comment</th><th></th></tr></thead>
-        <tbody>${list.map(row => `<tr><td class="mono">${esc(String(row.created_at).slice(0, 10))}</td><td><b>${esc(row.name)}</b><br><span class="mono">${esc(row.student_number)}</span>${row.campus ? ` · ${esc(row.campus)}` : ''}</td><td>${esc(row.service)}</td><td><span class="stars" aria-label="${row.rating} of 5">${'★'.repeat(row.rating)}<span>${'★'.repeat(5 - row.rating)}</span></span></td><td>${esc(row.feedback || '')}</td><td><button class="btn btn--quiet btn--sm" type="button" data-rating-delete="${esc(row.id)}" aria-label="Delete rating">Delete</button></td></tr>`).join('')}</tbody></table></div>
+        <div class="table-wrap table-wrap--cards"><table class="rating-table rating-table--responses"><thead><tr><th>Date</th><th>Student</th><th>Service</th><th>Rating</th><th>Comment</th><th></th></tr></thead>
+        <tbody>${shown.map(row => `<tr>
+          <td class="mono" data-label="Date">${esc(String(row.created_at).slice(0, 10))}</td>
+          <td data-label="Student"><b>${esc(row.name)}</b><br><span class="mono">${esc(row.student_number)}</span>${row.campus ? `<span class="rating-campus"><span class="rating-sep" aria-hidden="true"> · </span>${esc(row.campus)}</span>` : ''}</td>
+          <td data-label="Service">${esc(row.service)}</td>
+          <td data-label="Rating"><span class="stars" aria-label="${row.rating} of 5">${'★'.repeat(row.rating)}<span>${'★'.repeat(5 - row.rating)}</span></span></td>
+          <td data-label="Comment">${esc(row.feedback || '')}</td>
+          <td data-label="Actions"><button class="btn btn--quiet btn--sm" type="button" data-rating-delete="${esc(row.id)}" aria-label="Delete rating">Delete</button></td>
+        </tr>`).join('')}</tbody></table></div>
+        ${list.length > shown.length ? `<div class="responses-more">
+          <span class="mono">Showing ${shown.length} of ${list.length} responses</span>
+          <button class="btn btn--ghost btn--sm" type="button" data-more-responses>Show ${Math.min(RESPONSE_CHUNK, list.length - shown.length)} more</button>
+        </div>` : ''}
       </div>`;
   };
-  section.querySelectorAll('[data-from],[data-to],[data-service]').forEach(input => input.addEventListener('input', paint));
+  section.querySelectorAll('[data-from],[data-to],[data-service]').forEach(input => input.addEventListener('input', () => { responseLimit = RESPONSE_CHUNK; paint(); }));
   section.addEventListener('click', async event => {
+    if (event.target.closest('[data-more-responses]')) {
+      responseLimit += RESPONSE_CHUNK;
+      paint();
+      section.querySelector('[data-more-responses]')?.focus();
+      return;
+    }
     const del = event.target.closest('[data-rating-delete]');
     if (del) {
       if (!(await askConfirm('Delete this rating?', 'It will be removed from the totals and future PDF summaries.', 'Delete rating'))) return;
