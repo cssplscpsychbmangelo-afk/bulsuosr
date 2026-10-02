@@ -43,6 +43,20 @@ test('the page logo is the same mark, and always institutional red', () => {
   assert.match(mark, /viewBox="[-\d. ]+"/, 'the mark needs its viewBox to scale');
 });
 
+test('a shared link shows the same mark', () => {
+  // og:image was the last place the site had no identity at all: a link posted to
+  // a group chat or a Facebook page unfurled with no image. The card is generated
+  // from the same traced path as everything else.
+  assert.match(html, /<meta property="og:image" content="\/og-image\.png"\/>/, 'the public site must declare a social card');
+  assert.match(html, /<meta property="og:image:width" content="1200"\/>/, 'the card must declare its size so unfurlers reserve the space');
+  assert.match(html, /<meta property="og:image:height" content="630"\/>/);
+  assert.match(html, /<meta property="og:image:alt" content="[^"]+"/, 'the card needs alt text for readers who cannot see it');
+  assert.match(html, /<meta name="twitter:card" content="summary_large_image"\/>/, 'and the large-image card for X');
+  const card = read('og-image.png');
+  assert.equal(card.readUInt32BE(16), 1200, 'the card file must be 1200px wide');
+  assert.equal(card.readUInt32BE(20), 630, 'and 630px tall');
+});
+
 test('the vector icon reads the tab it lands on', () => {
   assert.match(svg, /<svg[^>]*viewBox="[-\d. ]+"/, 'the icon needs a viewBox to scale from 16px to a bookmark tile');
   assert.match(svg, /@media\s*\(prefers-color-scheme:\s*dark\)/, 'dark chrome must be answered inside the file, not by a second PNG');

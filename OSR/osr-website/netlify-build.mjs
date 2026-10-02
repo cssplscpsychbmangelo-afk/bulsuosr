@@ -48,6 +48,7 @@ const archive = {
     ['osr-logo-original.png', path.join(siteDir, 'osr-logo-original.png')],
     ['favicon.svg', path.join(siteDir, 'favicon.svg')],
     ['osr-mark.svg', path.join(siteDir, 'osr-mark.svg')],
+    ['og-image.png', path.join(siteDir, 'og-image.png')],
     ['favicon.ico', path.join(siteDir, 'favicon.ico')],
     ['favicon-16.png', path.join(siteDir, 'favicon-16.png')],
     ['favicon-32.png', path.join(siteDir, 'favicon-32.png')],

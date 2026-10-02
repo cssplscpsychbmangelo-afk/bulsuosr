@@ -122,9 +122,11 @@ Integration tests execute PostgreSQL queries in PGlite (a local PostgreSQL engin
 and use an in-memory media store; they do not connect to your live Neon account.
 Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
 The hero's pointer interactions are driven in jsdom (`hero-motion.test.mjs`), the
-tab icon set is checked against its vector source (`tab-identity.test.mjs`), and
-`osr-netlify.zip` is compared with the files in the repository
-(`netlify-bundle.test.mjs`), so a stale drag-and-drop bundle fails the suite.
+Ideal BulSU points bar is driven the same way (`builder-bar.test.mjs`), the tab
+icon set and the social card are checked against their vector source
+(`tab-identity.test.mjs`), and `osr-netlify.zip` is compared with the files in
+the repository (`netlify-bundle.test.mjs`), so a stale drag-and-drop bundle fails
+the suite.
 
 ## What changed for standalone
 
@@ -164,6 +166,13 @@ tab icon set is checked against its vector source (`tab-identity.test.mjs`), and
   vector and the rasters cannot drift apart. `tab-identity.test.mjs` checks the
   sizes, the ICO container, the dark-chrome contrast and that every committed
   raster still matches the path.
+- **A shared link now unfurls with the mark.** The page had `og:title` and
+  `og:description` but no image, so posting the site anywhere showed a bare text
+  card. `og-image.png` (1200x630) is generated from the same traced path as the
+  tab icon and the page logo, on the site's own paper, with no lettering baked in:
+  every unfurler prints the title and description next to it, and type inside the
+  picture would only duplicate that in whatever font the reader's platform
+  substitutes.
 - **The mark replaced the full stacked lockup in the page's logo slots.** The
   header, mobile menu, footer, welcome card and admin login/top bar/sidebar were
   showing `osr-logo.png` — the whole lockup, wordmark included — at 36-44px,

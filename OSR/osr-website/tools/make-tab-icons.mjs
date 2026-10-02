@@ -71,6 +71,41 @@ function markSvg(size, { fill, tint, plate }) {
   );
 }
 
+/** The mark at its natural 1036x695 proportions, for laying out on a card. */
+const markAtWidth = (width, tint) => {
+  const height = Math.round((width * vh) / vw);
+  return Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${vx} ${vy} ${vw} ${vh}">` +
+      `<path fill="${tint}" fill-rule="evenodd" d="${pathData}"/>` +
+    `</svg>`
+  );
+};
+
+// The social card: what a shared link shows. No lettering, on purpose — every
+// unfurler prints the page's own title and description next to the image, and
+// type baked into the picture would only duplicate it in whatever font the
+// reader's platform substitutes. It is the mark, the paper and the red rule the
+// rest of the site uses, and nothing else.
+const OG_WIDTH = 1200;
+const OG_HEIGHT = 630;
+const OG_MARK_WIDTH = 560;
+async function socialCard() {
+  const mark = await sharp(markAtWidth(OG_MARK_WIDTH, RED)).png().toBuffer();
+  const markHeight = Math.round((OG_MARK_WIDTH * vh) / vw);
+  const rule = Buffer.from(
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${OG_WIDTH}" height="10"><rect width="${OG_WIDTH}" height="10" fill="${RED}"/></svg>`
+  );
+  return sharp({ create: { width: OG_WIDTH, height: OG_HEIGHT, channels: 4, background: PAPER } })
+    .composite([
+      { input: rule, top: 0, left: 0 },
+      // Optically centred: a hair above the middle reads as centred, exact
+      // centring reads as low.
+      { input: mark, top: Math.round((OG_HEIGHT - markHeight) / 2) - 12, left: Math.round((OG_WIDTH - OG_MARK_WIDTH) / 2) },
+    ])
+    .png({ compressionLevel: 9 })
+    .toBuffer();
+}
+
 const raster = (size, options) => sharp(markSvg(size, options)).png({ compressionLevel: 9 }).toBuffer();
 
 /** ICO is a small container: one header, one 16-byte entry per image, then the
@@ -125,6 +160,7 @@ files.set(
   'apple-touch-icon.png',
   await raster(180, { fill: TOUCH_FILL, tint: RED, plate: PAPER })
 );
+files.set('og-image.png', await socialCard());
 files.set(
   'favicon.ico',
   ico(await Promise.all([16, 32, 48].map(async size => ({ size, data: await raster(size, { fill: FILL, tint: RED }) }))))

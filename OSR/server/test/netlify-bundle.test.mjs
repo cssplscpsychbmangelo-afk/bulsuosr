@@ -55,7 +55,7 @@ test('the drag-and-drop bundle holds the site that is in this repository', () =>
       `${name} in the bundle must match the source — run node OSR/osr-website/netlify-build.mjs to refresh the archive`);
   }
   // The tab icon travels with it, so a hand-uploaded deploy gets the new identity too.
-  for (const name of ['favicon.svg', 'osr-mark.svg', 'favicon.ico', 'favicon-16.png', 'favicon-32.png', 'favicon-48.png', 'apple-touch-icon.png']) {
+  for (const name of ['favicon.svg', 'osr-mark.svg', 'og-image.png', 'favicon.ico', 'favicon-16.png', 'favicon-32.png', 'favicon-48.png', 'apple-touch-icon.png']) {
     const packed = zip.get(name);
     assert.ok(packed, `${name} must be in the bundle`);
     assert.equal(digest(packed), digest(fs.readFileSync(`${siteDir}${name}`)),
