@@ -1379,7 +1379,7 @@ img,svg{max-width:100%; height:auto}
       <a href="#help" data-nav>Student Help <span>→</span></a>
       <a href="#track" data-nav>Track My Concern <span>→</span></a>
       <a href="#about" data-nav>About OSR <span>→</span></a>
-      <a href="#ideal-bulsu" data-nav>Build Your Ideal BulSU <span>→</span></a>
+      <a class="drawer__link--ideal" href="#ideal-bulsu" data-nav>Build Your Ideal BulSU <span>→</span></a>
       <a href="#academic-calendar" data-nav>Academic Calendar <span>→</span></a>
     </nav>
     <div class="drawer__section">
@@ -1462,6 +1462,11 @@ img,svg{max-width:100%; height:auto}
       <a href="#track" data-nav>
         <span class="quick__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
         <span><b>Track My Concern</b><span class="sub">Check if the OSR has responded.</span></span>
+      </a>
+      <a class="quick__ideal" href="#ideal-bulsu" data-nav>
+        <span class="quick__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.8 5.7 5.7 1.8-5.7 1.8L12 18.5l-1.8-5.7L4.5 11l5.7-1.8Z"/></svg></span>
+        <span><b>Build Your Ideal BulSU</b><span class="sub">Split 10 points across what matters.</span></span>
+        <span class="quick__spark" aria-hidden="true"><svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span>
       </a>
     </nav>
 
@@ -1606,7 +1611,7 @@ img,svg{max-width:100%; height:auto}
 .ideal-cta__btn-arrow{position:relative; z-index:2; animation:ideal-arrow 2.6s var(--ease) infinite}
 .ideal-cta__sheen{position:absolute; top:-40%; bottom:-40%; left:-60%; width:45%; transform:skewX(-18deg);
   background:linear-gradient(90deg, transparent, rgba(255,255,255,.42), transparent); animation:ideal-sheen 4.2s ease-in-out infinite}
-@keyframes ideal-ring{0%,100%{box-shadow:0 1px 0 rgba(0,0,0,.08), 0 8px 20px rgba(122,16,33,.22), 0 0 0 0 rgba(176,138,46,.42)} 55%{box-shadow:0 1px 0 rgba(0,0,0,.08), 0 10px 24px rgba(122,16,33,.26), 0 0 0 9px rgba(176,138,46,0)}}
+@keyframes ideal-ring{0%,100%{box-shadow:0 1px 0 rgba(0,0,0,.08), 0 8px 20px rgba(95,72,14,.32), 0 0 0 0 rgba(126,95,20,.5)} 55%{box-shadow:0 1px 0 rgba(0,0,0,.08), 0 10px 24px rgba(95,72,14,.38), 0 0 0 10px rgba(126,95,20,0)}}
 @keyframes ideal-arrow{0%,72%,100%{transform:translateX(0)} 82%{transform:translateX(4px)}}
 @keyframes ideal-sheen{0%,68%{left:-60%} 88%,100%{left:118%}}
 .ideal-cta__quiet{font:600 12.5px "IBM Plex Sans",sans-serif; color:#6B4E0E; text-decoration:none; border-bottom:1px solid rgba(107,78,14,.35); padding-bottom:1px}
@@ -1812,6 +1817,78 @@ img,svg{max-width:100%; height:auto}
 /* ensure text never overlaps */
 .cal-event .cal-activity, .cal-upcoming__item .cal-activity, 
 .feed__title, .board-row__title{overflow-wrap:anywhere}
+
+/* ===== GOLD ACCENT — reserved for the Build Your Ideal BulSU entry points ====
+   Gold marks one thing only: the student-consultation flow. Every button that
+   opens or completes a build carries the same gold, so the way in reads the
+   same in the dashboard band, the quick tiles, the menu, the palette and the
+   builder itself. Motion stays in the site's vocabulary: lift, sheen, ring. */
+:root{
+  --gold:#B08A2E; --gold-2:#8A6A18; --gold-3:#E8CE86; --gold-bg:#FFF8E7;
+  --gold-line:rgba(176,138,46,.45); --gold-ink:#2A1F03; --gold-on:#FFF8E7;
+  --gold-fill:linear-gradient(135deg, #8E6B1A 0%, #75570F 52%, #59430C 100%);
+  --gold-fill-soft:linear-gradient(135deg, #8E6B1A 0%, #7E5F14 52%, #5F480E 100%);
+}
+.btn--gold{position:relative; overflow:hidden; border-color:#9A7620; color:var(--gold-on); background:var(--gold-fill);
+  box-shadow:inset 0 1px 0 rgba(255,248,231,.28), 0 1px 0 rgba(0,0,0,.06), 0 6px 16px rgba(138,106,24,.24)}
+.btn--gold:hover{background:var(--gold-fill); border-color:#B08A2E; transform:translateY(-1px);
+  box-shadow:inset 0 1px 0 rgba(255,248,231,.34), 0 1px 0 rgba(0,0,0,.06), 0 10px 22px rgba(138,106,24,.32), 0 0 0 3px rgba(232,206,134,.35)}
+.btn--gold:disabled{cursor:not-allowed; transform:none; box-shadow:none}
+.btn--gold:before{content:""; position:absolute; top:-40%; bottom:-40%; left:-70%; width:45%; transform:skewX(-18deg);
+  opacity:0; pointer-events:none; background:linear-gradient(90deg, transparent, rgba(255,248,231,.55), transparent)}
+.btn--gold:hover:before{animation:gold-sheen 1.05s var(--ease) 1}
+@keyframes gold-sheen{0%{left:-70%; opacity:.9} 100%{left:135%; opacity:0}}
+.btn--gold .btn__icon{position:relative; z-index:2; transition:transform .18s var(--ease)}
+.btn--gold:hover .btn__icon{transform:translateX(2px)}
+
+/* the dashboard band's button: same gold, keeps its ring / sheen / arrow */
+.ideal-cta__btn{background:var(--gold-fill); color:var(--gold-on); border:1px solid #8A6A18;
+  box-shadow:inset 0 1px 0 rgba(255,248,231,.3), 0 1px 0 rgba(0,0,0,.08), 0 8px 20px rgba(95,72,14,.3)}
+.ideal-cta__btn:hover{background:var(--gold-fill); border-color:#B08A2E;
+  box-shadow:inset 0 1px 0 rgba(255,248,231,.34), 0 1px 0 rgba(0,0,0,.08), 0 12px 26px rgba(95,72,14,.36), 0 0 0 3px rgba(232,206,134,.35)}
+.ideal-cta__sheen{background:linear-gradient(90deg, transparent, rgba(255,248,231,.6), transparent)}
+
+/* the builder's own primary actions answer in the same gold */
+#pulseShowResult.is-ready{background:var(--gold-fill); border-color:#9A7620; color:var(--gold-on)}
+#pulseSubmit.btn--gold{opacity:1}
+
+/* dashboard quick access: six tiles, three across — every row balanced */
+.quick{grid-template-columns:repeat(3,minmax(0,1fr))}
+.quick a:nth-child(3n){border-right:0}
+.quick a:nth-last-child(-n+3){border-bottom:0}
+@media(max-width:860px){
+  .quick{grid-template-columns:1fr 1fr}
+  .quick a:nth-child(3n){border-right:1px solid var(--line)}
+  .quick a:nth-child(2n){border-right:0}
+  .quick a:nth-last-child(-n+3){border-bottom:1px solid var(--line)}
+  .quick a:nth-last-child(-n+2){border-bottom:0}
+}
+@media(max-width:480px){
+  .quick{grid-template-columns:1fr}
+  .quick a, .quick a:nth-child(3n){border-right:0}
+  .quick a:nth-last-child(-n+2){border-bottom:1px solid var(--line)}
+  .quick a:last-child{border-bottom:0}
+}
+/* the one gold quick tile */
+.quick a.quick__ideal{position:relative; background:linear-gradient(180deg, #FFFDF6, #FFFBF1)}
+.quick a.quick__ideal:hover{background:linear-gradient(180deg, #FFFCF0, #FFF6DF)}
+.quick__ideal .quick__icon{background:var(--gold-bg); border-color:var(--gold-line); color:var(--gold-2)}
+.quick a.quick__ideal:hover .quick__icon{background:var(--gold-fill); color:var(--gold-on); border-color:#9A7620; transform:translateY(-1px)}
+.quick a.quick__ideal:after{background:linear-gradient(90deg, var(--gold-3), var(--gold))}
+.quick__ideal .quick__spark{position:absolute; top:14px; right:14px; color:#C7A23C; opacity:.55; animation:ideal-spark 6.4s var(--ease) infinite}
+
+/* menu + palette: the same gold marker, so the entry point is recognisable */
+.drawer__nav a.drawer__link--ideal{border-color:var(--gold-line); background:linear-gradient(180deg, #FFFDF6, #FFF8E7); box-shadow:inset 3px 0 0 var(--gold-3)}
+.drawer__nav a.drawer__link--ideal span{color:var(--gold-2)}
+.drawer__nav a.drawer__link--ideal:hover{border-color:#9A7620; background:var(--gold-bg)}
+.cmd__item--ideal b:before{content:""; display:inline-block; width:8px; height:8px; margin-right:8px; border-radius:50%;
+  vertical-align:1px; background:var(--gold-fill); box-shadow:0 0 0 2px var(--gold-bg), 0 0 0 3px var(--gold-line)}
+.cmd__item--ideal b + br + span{color:var(--gold-2)}
+
+@media(prefers-reduced-motion:reduce){
+  .btn--gold:hover:before{animation:none; opacity:0}
+  .quick__ideal .quick__spark{animation:none; opacity:.5}
+}
 
 </style>
 
@@ -2500,7 +2577,7 @@ img,svg{max-width:100%; height:auto}
           </div>
           <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-left:auto">
             <button id="pulseReset" class="btn btn--sm btn--ghost">Reset</button>
-            <button id="pulseShowResult" class="btn btn--sm" disabled style="background:var(--red); border-color:var(--red); color:white; opacity:0.45">Show my build — use 10 points</button>
+            <button id="pulseShowResult" class="btn btn--sm btn--gold" disabled style="opacity:0.45">Show my build — use 10 points</button>
           </div>
         </div>
 
@@ -2525,7 +2602,7 @@ img,svg{max-width:100%; height:auto}
             <h4 style="margin:0; font-size:13px">Add your build to the BulSU Pulse?</h4>
             <p class="small muted" style="margin:4px 0 10px; line-height:1.5">Only your 7 numbers are sent — and only when you choose.</p>
             <div style="display:flex; gap:8px; flex-wrap:wrap">
-              <button id="pulseSubmit" class="btn btn--sm" style="background:var(--red); border-color:var(--red); color:white">Add to BulSU Pulse</button>
+              <button id="pulseSubmit" class="btn btn--sm btn--gold">Add to BulSU Pulse</button>
               <button id="pulseEdit" class="btn btn--sm btn--ghost">Keep editing</button>
             </div>
             <div id="pulseSubmitFeedback" class="mono" style="font-size:11px; color:var(--stone); margin-top:8px"></div>
@@ -3125,7 +3202,7 @@ function renderCmd(q){
     ...RESOURCES.map(r=> ({label:r.title, href:"#resources", cat:r.category})),
   ];
   const filtered = qq ? items.filter(i=> (i.label+" "+i.cat).toLowerCase().includes(qq)) : items.slice(0,8);
-  list.innerHTML = filtered.map(i=> `<div class="cmd__item" role="option" data-href="${i.href}" data-id="${i.id||""}" data-type="${i.type||""}"><span><b>${escapeHtml(i.label)}</b><br><span>${escapeHtml(i.cat)}</span></span><span>→</span></div>`).join("") || `<div style="padding:16px; text-align:center; color:var(--stone)">No results for "${escapeHtml(q)}"</div>`;
+  list.innerHTML = filtered.map(i=> `<div class="cmd__item${i.href === "#ideal-bulsu" ? " cmd__item--ideal" : ""}" role="option" data-href="${i.href}" data-id="${i.id||""}" data-type="${i.type||""}"><span><b>${escapeHtml(i.label)}</b><br><span>${escapeHtml(i.cat)}</span></span><span>→</span></div>`).join("") || `<div style="padding:16px; text-align:center; color:var(--stone)">No results for "${escapeHtml(q)}"</div>`;
   list.querySelectorAll(".cmd__item").forEach(el=> el.addEventListener("click", ()=>{
     const href=el.dataset.href, id=el.dataset.id, type=el.dataset.type;
     closeCmd();
@@ -5527,6 +5604,7 @@ window.updateUpNext = typeof updateUpNext === 'function' ? updateUpNext : undefi
       {sel: '.quick a[href="#initiatives"]', label: 'Initiatives', desc: 'Projects — ongoing & completed.'},
       {sel: '.quick a[href="#resources"]', label: 'Resources', desc: 'Handbook, policies, support docs.'},
       {sel: '.quick a[href="#help"]', label: 'Student Help', desc: 'Raise a concern or contact.'},
+      {sel: '.quick a[href="#ideal-bulsu"]', label: 'Build Your Ideal BulSU', desc: 'Split 10 points — it joins the public Pulse.'},
       {sel: '.dash-stats a[href="#announcements"]', label: 'Announcements count', desc: 'Live total — tap to open archive.'},
       {sel: '#dashCalendar', label: 'Upcoming calendar', desc: 'Next events — tap Calendar for full AY 2026-2027.'}
     ],

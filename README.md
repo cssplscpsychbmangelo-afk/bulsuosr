@@ -128,6 +128,17 @@ Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
 
 ## Recent fixes
 
+- **“Build Your Ideal BulSU” now looks the same everywhere — and the dashboard
+  row is balanced.** The quick-access row held five tiles in a four-column grid,
+  so *Track My Concern* sat alone on a second row. A sixth tile — Build Your
+  Ideal BulSU — joins it, and the row lays out three across (two on a tablet,
+  one on a phone) so every row is full. That tile, the dashboard band’s button,
+  the menu link, the command-palette entries and the builder’s own *Show my
+  build* / *Add to BulSU Pulse* buttons now share one gold accent (`.btn--gold`
+  plus gold tokens in `:root`), which keeps the student-consultation flow
+  recognisable without touching anything else. Motion stays inside the existing
+  vocabulary — hover lift, a single sheen sweep, the band’s slow gold ring — and
+  switches off under `prefers-reduced-motion`.
 - **One rating now produces one prompt.** Submitting “Rate the BulSU OSR” used
   to print the same sentence twice: the message under the button *and* a
   floating toast stacked on top of it. Repeated taps queued more copies that
