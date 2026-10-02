@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { initDb } from '../db/init.js';
 import { seedFromFrontend } from '../db/seed.js';
-import { createApp } from '../app.js';
+import { ADMIN_PATH, createApp } from '../app.js';
 
 test('local SQLite initialization, seed and async rollback still work', async () => {
   // Standalone mode: no ADMIN_PASSWORD env needed
@@ -27,11 +27,14 @@ test('local SQLite initialization, seed and async rollback still work', async ()
     });
     try {
       const port = server.address().port;
-      for (const route of ['/admin', '/admin/', '/admin/login', '/admin/login.html']) {
-        const response = await fetch(`http://127.0.0.1:${port}${route}`, { redirect: 'manual' });
-        assert.equal(response.status, 200, `${route} must render the single admin page`);
+      for (const route of ['', '/', '/login', '/login.html']) {
+        const target = `${ADMIN_PATH}${route}`;
+        const response = await fetch(`http://127.0.0.1:${port}${target}`, { redirect: 'manual' });
+        assert.equal(response.status, 200, `${target} must render the single admin page`);
         assert.match(await response.text(), /<title>OSR Content Administration<\/title>/);
       }
+      const oldAdmin = await fetch(`http://127.0.0.1:${port}/admin`, { redirect: 'manual' });
+      assert.equal(oldAdmin.status, 404, '/admin must no longer serve the admin page');
     } finally {
       await new Promise(resolve => server.close(resolve));
     }

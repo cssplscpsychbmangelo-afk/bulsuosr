@@ -10,11 +10,25 @@
 <meta property="og:description" content="Student representation in the Board of Regents. Verified records, not marketing."/>
 <meta name="theme-color" content="#A6192E"/>
 <meta name="format-detection" content="telephone=no"/>
-<link rel="icon" type="image/png" href="/osr-logo.png"/>
-<link rel="apple-touch-icon" href="/osr-logo.png"/>
+<!-- Tab identity: a cream mark on its own maroon plate. The flat logo washed
+     out on dark and tinted browser chrome, so the icon now carries its own
+     background and stays legible in light, dark, and high-contrast setups. -->
+<link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48"/>
+<link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32"/>
+<link rel="icon" type="image/png" href="/favicon-16.png" sizes="16x16"/>
+<link rel="apple-touch-icon" href="/apple-touch-icon.png"/>
+<meta name="theme-color" content="#A6192E" media="(prefers-color-scheme: light)"/>
+<meta name="theme-color" content="#7A1021" media="(prefers-color-scheme: dark)"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
 <style>
+/* The hero title's face. Self-hosted (one 21 KB latin subset) so the masthead
+   never waits on a third-party request or falls back to a generic grotesque. */
+@font-face{
+  font-family:"Bricolage Grotesque";
+  src:url("/fonts/bricolage-grotesque-800.woff2") format("woff2");
+  font-weight:800; font-style:normal; font-display:swap;
+}
 /* PREMIUM TOKENS — DESIGN.md v2: ENERGY 2 / RHYTHM 3 / MOTION 2 (choreographed, not loops) */
 :root{
   --red:#A6192E; --red-2:#8F1428; --red-3:#FFF0F2; --red-ink:#6E0F1F;
@@ -27,6 +41,14 @@
   --shadow:0 1px 0 rgba(17,18,20,0.04), 0 12px 32px rgba(17,18,20,0.09);
   --shadow-soft:0 1px 0 rgba(17,18,20,0.04), 0 8px 20px rgba(17,18,20,0.07);
   --ease: cubic-bezier(.16,1,.3,1);
+  /* Display type across the site: Fraunces, the family the pages have used all
+     along. The home hero title is the single exception — it carries --font-hero
+     so the masthead can have a face of its own without touching anything else.
+     The hero face is a bold grotesque with a little character in it — black
+     weight for presence, but the tight apertures and squared bowls keep it from
+     reading like a stock corporate sans. */
+  --font-display:"Fraunces","Fraunces 9pt",Georgia,"Times New Roman",serif;
+  --font-hero:"Bricolage Grotesque","Archivo Black",Impact,"Arial Black",sans-serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -138,7 +160,7 @@ img{max-width:100%}
 .section{padding:40px 0 8px; border-top:1px solid var(--ink); margin-top:40px}
 .section--first{border-top:0; margin-top:0; padding-top:28px}
 .section__head{display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:20px}
-.section__head h2{margin:0; font-family:"Fraunces",Georgia,serif; font-weight:600; font-size:28px; line-height:0.95; letter-spacing:-0.025em}
+.section__head h2{margin:0; font-family:var(--font-display); font-weight:600; font-size:28px; line-height:0.95; letter-spacing:-0.025em}
 .section__head p{margin:6px 0 0; color:var(--stone); font-size:14px; max-width:54ch; line-height:1.5}
 .eyebrow{font:700 11px "IBM Plex Mono",monospace; letter-spacing:0.14em; text-transform:uppercase; color:var(--red); display:inline-flex; gap:8px; align-items:center}
 .eyebrow:before{content:""; width:14px; height:1px; background:var(--red); opacity:0.6}
@@ -151,7 +173,7 @@ img{max-width:100%}
 @media(max-width:960px){.hero{grid-template-columns:1fr; gap:20px}}
 .hero__kicker{font:700 11px "IBM Plex Mono",monospace; letter-spacing:0.14em; text-transform:uppercase; color:var(--red); border:1px solid #FFD0D6; background:var(--red-3); padding:6px 10px; border-radius:999px; display:inline-flex; align-items:center; gap:6px}
 .hero__kicker:before{content:"•"; font-size:10px}
-.hero__title{font-family:"Fraunces",Georgia,serif; font-weight:700; font-size:clamp(40px, 6vw, 62px); line-height:0.9; letter-spacing:-0.045em; margin:14px 0 12px}
+.hero__title{font-family:var(--font-display); font-weight:700; font-size:clamp(40px, 6vw, 62px); line-height:0.9; letter-spacing:-0.045em; margin:14px 0 12px}
 .hero__title span{color:var(--red); position:relative}
 .hero__title span:after{content:""; position:absolute; left:0; right:0; bottom:4px; height:6px; background:var(--red-3); z-index:-1; border-radius:2px}
 .hero__lead{font-size:16px; color:var(--ink-2); max-width:52ch; margin:0; line-height:1.6}
@@ -164,7 +186,7 @@ img{max-width:100%}
 .hero__card p{margin:8px 0 0; font-size:13.5px; color:var(--stone); line-height:1.5}
 .hero__stats{display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-top:14px; padding-top:14px; border-top:1px dashed var(--line-2)}
 .hero__stat{font:500 11px "IBM Plex Mono",monospace; color:var(--stone); line-height:1.3}
-.hero__stat b{display:block; font-family:"Fraunces",serif; font-size:18px; color:var(--ink); line-height:1}
+.hero__stat b{display:block; font-family:var(--font-display); font-size:18px; color:var(--ink); line-height:1}
 
 /* quick access — premium: subtle hover lift, not flat */
 .quick{display:grid; grid-template-columns:repeat(4,1fr); gap:0; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:white; box-shadow:0 1px 0 rgba(0,0,0,0.02)}
@@ -185,7 +207,7 @@ img{max-width:100%}
 .feed__item:hover{border-left-color:var(--red); background:var(--paper-2); transform:translateY(-1px); box-shadow:var(--shadow-soft)}
 @media(max-width:640px){.feed__item{grid-template-columns:50px 1fr;}}
 .feed__date{font:500 11px "IBM Plex Mono",monospace; color:var(--stone); line-height:1.2; text-align:center; padding-top:2px}
-.feed__date b{display:block; font-size:20px; color:var(--ink); line-height:1; font-family:"Fraunces",serif}
+.feed__date b{display:block; font-size:20px; color:var(--ink); line-height:1; font-family:var(--font-display)}
 .feed__cat{font:700 10px "IBM Plex Mono",monospace; letter-spacing:0.08em; text-transform:uppercase; color:var(--red); background:var(--red-3); border:1px solid #FFD0D6; padding:4px 7px; border-radius:999px; display:inline-flex; width:fit-content}
 .feed__title{margin:6px 0 5px; font-weight:600; font-size:15.5px; line-height:1.28}
 .feed__summary{margin:0; font-size:13.5px; color:var(--stone); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
@@ -222,7 +244,7 @@ img{max-width:100%}
 .status--completed{background:var(--ink); color:white; border-color:var(--ink)}
 .status--hold{background:white; color:var(--stone)}
 .initiative__body{padding:14px; flex:1}
-.initiative__title{margin:0; font-family:"Fraunces",serif; font-weight:600; font-size:18px; line-height:1.15}
+.initiative__title{margin:0; font-family:var(--font-display); font-weight:600; font-size:18px; line-height:1.15}
 .initiative__desc{margin:7px 0 0; font-size:13.5px; color:var(--stone); line-height:1.5}
 .initiative__purpose{margin-top:10px; padding:10px 12px; background:var(--paper-2); border:1px solid var(--line); border-radius:8px; font-size:13px; color:var(--ink-2); line-height:1.45}
 .initiative__foot{padding:12px 14px; border-top:1px solid var(--line); display:flex; gap:8px; flex-wrap:wrap; align-items:center; justify-content:space-between}
@@ -253,7 +275,7 @@ img{max-width:100%}
 .about-grid{display:grid; grid-template-columns:1.15fr 0.85fr; gap:16px}
 @media(max-width:900px){.about-grid{grid-template-columns:1fr}}
 .about-card{border:1px solid var(--line); border-radius:12px; background:white; padding:16px}
-.about-card h3{margin:0 0 8px; font-family:"Fraunces",serif; font-weight:600; font-size:18px}
+.about-card h3{margin:0 0 8px; font-family:var(--font-display); font-weight:600; font-size:18px}
 .about-card p{margin:0; font-size:13.5px; color:var(--ink-2); line-height:1.55}
 .kv{display:flex; justify-content:space-between; gap:12px; padding:9px 0; border-bottom:1px solid var(--line); font-size:13.5px}
 .kv:last-child{border:0}
@@ -279,9 +301,11 @@ img{max-width:100%}
 .badge--warn{background:var(--warn-bg); border-color:#FDE68A; color:var(--warn)}
 .row{display:flex; gap:8px; flex-wrap:wrap; align-items:center}
 .small{font-size:12px}
-.toast-wrap{position:fixed; bottom:18px; left:50%; transform:translateX(-50%); z-index:80; display:grid; gap:6px; pointer-events:none}
-.toast{background:rgba(255,255,255,0.94); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); color:var(--stone); border:1px solid var(--line); padding:6px 12px; border-radius:999px; font-size:12px; font-weight:500; letter-spacing:0.01em; box-shadow:0 4px 14px rgba(17,18,20,0.07); display:flex; gap:8px; align-items:center; opacity:0; transform:translateY(6px); transition:opacity .24s var(--ease), transform .24s var(--ease)}
+.toast-wrap{position:fixed; bottom:calc(18px + env(safe-area-inset-bottom, 0px)); left:50%; transform:translateX(-50%); z-index:80; display:grid; gap:6px; justify-items:center; width:min(420px, calc(100vw - 24px)); pointer-events:none}
+.toast{max-width:100%; background:rgba(255,255,255,0.94); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); color:var(--stone); border:1px solid var(--line); padding:6px 12px; border-radius:999px; font-size:12px; font-weight:500; line-height:1.35; letter-spacing:0.01em; text-align:left; box-shadow:0 4px 14px rgba(17,18,20,0.07); display:flex; gap:8px; align-items:center; opacity:0; transform:translateY(6px); transition:opacity .24s var(--ease), transform .24s var(--ease)}
 .toast.is-visible{opacity:1; transform:none}
+/* A toast never covers the form message it repeats — the two say the same
+   thing, so the inline status is the one that stays on screen. */
 @media(prefers-reduced-motion:reduce){.toast{transition:none}}
 
 /* command palette */
@@ -455,6 +479,12 @@ img,svg{max-width:100%; height:auto}
 .hero__title{font-size:clamp(38px, 5.2vw, 56px); margin:12px 0 10px}
 .hero__lead{font-size:15px; max-width:50ch}
 .hero__actions{gap:8px; margin-top:18px}
+.hero__meta{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px 12px}
+.hero__meta .hero__dot{display:none}
+/* Location is the long fact: full row, with the two short facts side by side
+   underneath, so nothing collides on a 390px screen. */
+.hero__meta > span:first-child{grid-column:1/-1}
+.hero__meta > span{white-space:normal; min-width:0}
 .hero__card{padding:20px; gap:10px}
 .quick{border-radius:12px; gap:0}
 .quick a{padding:16px; min-height:88px}
@@ -471,7 +501,7 @@ img,svg{max-width:100%; height:auto}
 @media(max-width:480px){.dash-stats{grid-template-columns:1fr 1fr}}
 .dash-stat{border:1px solid var(--line); background:white; border-radius:10px; padding:12px 14px; display:flex; justify-content:space-between; align-items:center; transition:all .14s; cursor:pointer}
 .dash-stat:hover{border-color:var(--line-2); background:var(--paper-2); transform:translateY(-1px); box-shadow:0 4px 12px rgba(17,18,20,0.06)}
-.dash-stat b{font-family:"Fraunces",serif; font-size:22px; line-height:1; display:block}
+.dash-stat b{font-family:var(--font-display); font-size:22px; line-height:1; display:block}
 .dash-stat span{font:600 10px "IBM Plex Mono",monospace; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone)}
 .dash-stat__icon{width:28px; height:28px; border-radius:7px; background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); display:grid; place-items:center; font:700 10px "IBM Plex Mono",monospace}
 
@@ -613,29 +643,42 @@ img,svg{max-width:100%; height:auto}
 
 
 /* ===== HERO UPGRADE — spacious, special, institutional ===== */
-.hero-wrap{position:relative; margin:0 -16px; padding:0 16px; background:linear-gradient(180deg, #F7F5F2 0%, #FFFFFF 65%); border-bottom:1px solid var(--line); overflow:hidden}
+.hero-wrap{position:relative; margin:0 -16px; padding:0 16px; background:#fff; border-bottom:1px solid var(--line); overflow:hidden;
+  --gx:50%; --gy:0px}
 @media(max-width:640px){.hero-wrap{margin:0 -14px; padding:0 14px}}
-.hero{padding:64px 0 48px; gap:56px; align-items:center; min-height:420px}
-@media(max-width:960px){.hero{padding:48px 0 36px; gap:32px; min-height:auto}}
+.hero{padding:56px 0 44px; gap:48px; align-items:start; min-height:380px}
+@media(max-width:960px){.hero{padding:40px 0 32px; gap:28px; min-height:auto}}
 .hero:before{display:none}
-.hero-wrap:before{content:""; position:absolute; inset:0; background:
-  radial-gradient(820px 420px at 18% 8%, rgba(166,25,46,0.07), transparent 62%),
-  radial-gradient(640px 380px at 90% 12%, rgba(17,18,20,0.04), transparent 68%),
-  linear-gradient(90deg, rgba(166,25,46,0.03) 1px, transparent 1px),
-  linear-gradient(rgba(166,25,46,0.02) 1px, transparent 1px);
-  background-size: auto, auto, 28px 28px, 28px 28px;
-  mask-image: linear-gradient(180deg, black 75%, transparent 100%);
-  pointer-events:none}
-.hero-wrap:after{content:""; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--red) 0%, #C41E3A 45%, var(--ink) 100%); opacity:1}
+/* Clean paper. The old hero stacked a grey wash, a pink grid and a masked
+   fade on top of each other, which is what made it look muddy. Now it is one
+   warm wash behind the copy plus seal line-work in the corner: line, not dirt. */
+.hero-wrap:before{content:""; position:absolute; inset:0; pointer-events:none; background:
+  radial-gradient(720px 320px at 12% -8%, rgba(166,25,46,0.055), rgba(166,25,46,0) 64%),
+  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 214px, rgba(166,25,46,0.075) 214px 215px, rgba(166,25,46,0) 215px),
+  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 290px, rgba(166,25,46,0.05) 290px 291px, rgba(166,25,46,0) 291px),
+  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 366px, rgba(166,25,46,0.032) 366px 367px, rgba(166,25,46,0) 367px)}
+.hero-wrap:after{content:""; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--red) 0%, #C41E3A 46%, rgba(166,25,46,0.22) 100%)}
+/* Depth that answers the pointer: a soft light that travels with the cursor.
+   Pure decoration — it is inert for touch, keyboard and reduced motion. */
+.hero__fx{position:absolute; inset:0; overflow:hidden; pointer-events:none}
+.hero__glow{position:absolute; left:-410px; top:-300px; width:820px; height:600px; transform:translate3d(var(--gx), var(--gy), 0);
+  background:radial-gradient(circle, rgba(166,25,46,0.10), rgba(166,25,46,0) 66%); opacity:0; transition:opacity .6s var(--ease)}
+.hero-wrap.is-pointing .hero__glow{opacity:1}
 .hero__kicker{padding:7px 12px; font-size:10.5px; letter-spacing:0.12em; background:white; border-color:var(--line); box-shadow:0 1px 0 rgba(0,0,0,0.03); backdrop-filter:blur(4px)}
-.hero__title{font-size:clamp(44px, 5.8vw, 68px); line-height:0.86; letter-spacing:-0.052em; margin:18px 0 16px; max-width:9ch}
-.hero__title span:after{height:10px; bottom:6px; background:linear-gradient(90deg, var(--red-3), #FFE3E6); opacity:0.9}
-.hero__lead{font-size:17px; line-height:1.7; color:var(--ink-2); max-width:54ch}
-.hero__actions{margin-top:28px; gap:12px}
+/* A slightly smaller display size with a balanced two-line break keeps the
+   title from crowding the lead, and both columns now end on the same line. */
+.hero__title{font-size:clamp(38px, 5vw, 58px); line-height:0.9; letter-spacing:-0.044em; margin:16px 0 14px; max-width:11ch; text-wrap:balance}
+.hero__title span:after{height:9px; bottom:5px; background:linear-gradient(90deg, var(--red-3), #FFE3E6); opacity:0.9}
+.hero__lead{font-size:16.5px; line-height:1.65; color:var(--ink-2); max-width:52ch}
+.hero__actions{margin-top:24px; gap:10px}
 .hero__actions .btn{padding:11px 18px; font-size:13.5px; border-radius:999px}
 .hero__actions .btn--red{box-shadow:0 4px 16px rgba(166,25,46,0.18)}
-.hero__meta{margin-top:28px; padding-top:18px; gap:12px; font-size:12.5px; border-top:1px solid var(--line)}
+.hero__meta{margin-top:22px; padding-top:14px; gap:6px 12px; font-size:12.5px; border-top:1px solid var(--line)}
 .hero__meta b{color:var(--ink)}
+.hero__meta > span{white-space:nowrap}
+/* The third hero button is a shortcut hint, not a call to action — it now reads as one. */
+.hero__actions .hero__cmd{padding:9px 14px; font-size:12.5px; color:var(--stone)}
+.hero__actions .hero__cmd:hover{color:var(--ink)}
 .hero__card{padding:26px; gap:14px; background:rgba(255,255,255,0.92); backdrop-filter:blur(10px) saturate(1.05); border:1px solid rgba(233,230,225,0.9); border-left:4px solid var(--red); border-radius:14px; box-shadow:0 1px 0 rgba(0,0,0,0.02), 0 16px 40px rgba(17,18,20,0.07); transform:translateY(0); transition:transform .3s var(--ease), box-shadow .3s var(--ease)}
 .hero__card:hover{transform:translateY(-2px); box-shadow:0 1px 0 rgba(0,0,0,0.02), 0 20px 48px rgba(17,18,20,0.09)}
 .hero__card:before{display:none}
@@ -646,7 +689,7 @@ img,svg{max-width:100%; height:auto}
 
 /* feed date - vertical stacked, better aligned */
 .feed__date{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; padding:8px 6px; background:white; border:1px solid var(--line); border-radius:10px; min-height:64px; text-align:center}
-.feed__date b{font-size:22px; line-height:1; color:var(--ink); font-family:"Fraunces",serif; font-weight:700}
+.feed__date b{font-size:22px; line-height:1; color:var(--ink); font-family:var(--font-display); font-weight:700}
 .feed__date span:nth-of-type(1){font:700 10px "IBM Plex Mono",monospace; letter-spacing:0.08em; text-transform:uppercase; color:var(--red); line-height:1; margin-top:2px}
 .feed__date span:nth-of-type(2){font:500 10px "IBM Plex Mono",monospace; color:var(--stone); line-height:1; margin-top:1px}
 .feed__item{align-items:center; padding:16px 18px; gap:18px}
@@ -676,7 +719,7 @@ img,svg{max-width:100%; height:auto}
 .dash-stats{margin:24px 0 0 !important; gap:14px}
 .dash-stat{padding:16px 18px; min-height:84px; align-items:center; gap:12px; border-radius:12px}
 .dash-stat span:first-child{display:flex; flex-direction:column; gap:2px; align-items:flex-start}
-.dash-stat b{font-family:"Fraunces",serif; font-size:30px; line-height:0.9; font-weight:700; letter-spacing:-0.03em; color:var(--ink); font-variant-numeric:tabular-nums; min-width:32px}
+.dash-stat b{font-family:var(--font-display); font-size:30px; line-height:0.9; font-weight:700; letter-spacing:-0.03em; color:var(--ink); font-variant-numeric:tabular-nums; min-width:32px}
 .dash-stat span span{font:700 10px "IBM Plex Mono",monospace; letter-spacing:0.09em; text-transform:uppercase; color:var(--stone); line-height:1.2}
 .dash-stat__icon{width:40px; height:40px; border-radius:10px; flex:0 0 40px}
 .dash-stat__icon svg{width:18px; height:18px}
@@ -803,7 +846,7 @@ img,svg{max-width:100%; height:auto}
 .cal-grid{display:grid; grid-template-columns:1fr; gap:24px}
 .cal-month-section{border:1px solid var(--line); border-radius:12px; background:white; overflow:hidden; box-shadow:0 1px 0 rgba(0,0,0,0.02)}
 .cal-month-head{padding:12px 16px; background:linear-gradient(0deg, var(--paper-2), #fff); border-bottom:1px solid var(--line); border-left:3px solid var(--red); display:flex; gap:10px; align-items:center; justify-content:space-between}
-.cal-month-head h3{margin:0; font-family:"Fraunces",serif; font-weight:600; font-size:14px; line-height:1; letter-spacing:-0.01em}
+.cal-month-head h3{margin:0; font-family:var(--font-display); font-weight:600; font-size:14px; line-height:1; letter-spacing:-0.01em}
 .cal-month-head .mono{font-size:11px}
 .cal-list{display:grid; gap:0}
 .cal-event{display:grid; grid-template-columns:96px minmax(0,1fr) auto; gap:14px; padding:14px 16px; border-bottom:1px solid #F0EDE9; align-items:start; background:white; transition:background .12s; border-left:2px solid transparent}
@@ -863,7 +906,7 @@ img,svg{max-width:100%; height:auto}
 .pulse-alloc-row__icon{width:24px; height:24px; border-radius:6px; background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); display:inline-grid; place-items:center; flex:0 0 24px}
 .pulse-alloc-row__desc{font-size:11.5px; line-height:1.4; color:var(--stone); margin:4px 0 0 32px; max-width:54ch; overflow-wrap:anywhere}
 .pulse-counter{display:inline-flex; align-items:center; gap:4px; flex:0 0 auto; background:var(--paper-2); border:1px solid var(--line); padding:2px 4px; border-radius:8px}
-.pulse-num{font:700 17px "Fraunces",serif; width:24px; text-align:center; line-height:1; color:var(--ink)}
+.pulse-num{font:700 17px var(--font-display); width:24px; text-align:center; line-height:1; color:var(--ink)}
 .pulse-btn{position:relative; width:34px; height:34px; border-radius:6px; border:1px solid var(--line); background:white; display:grid; place-items:center; font:700 16px "IBM Plex Sans",sans-serif; cursor:pointer; transition:background .12s, border-color .12s, color .12s; line-height:1; touch-action:manipulation}
 .pulse-btn:after{content:""; position:absolute; inset:-5px}
 .pulse-btn:hover:not(:disabled){border-color:var(--red); background:var(--red-3); color:var(--red)}
@@ -929,7 +972,30 @@ img,svg{max-width:100%; height:auto}
 .pulse-alloc-row:hover{box-shadow:0 3px 10px rgba(17,18,20,0.05); border-color:var(--line-2)}
 .pulse-counter{transition:border-color .15s}
 .pulse-num{transition:transform .15s var(--ease), color .15s}
-.pulse-num.bump{transform:scale(1.15); color:var(--red)}
+.pulse-num.bump{transform:scale(1.18); color:var(--red)}
+/* Build page interactions: an allocated area is visibly "funded", the area a
+   student put the most into is flagged, and the action button celebrates once
+   when all 10 points are placed. */
+.pulse-alloc-row.is-funded{border-color:#E7C9CE; background:linear-gradient(180deg, #FFF9FA, #FFFFFF 55%)}
+.pulse-alloc-row.is-priority{border-color:#D9BC6E; box-shadow:0 0 0 1px rgba(176,138,46,.28), 0 6px 16px rgba(140,106,26,.10)}
+.pulse-alloc-row.is-bumped{animation:pulse-row-bump .42s var(--ease)}
+@keyframes pulse-row-bump{0%{transform:none} 38%{transform:translateY(-2px) scale(1.004)} 100%{transform:none}}
+.pulse-alloc-row.is-funded .pulse-alloc-row__icon{background:var(--red); border-color:var(--red); color:#fff}
+.pulse-alloc-row__tally{position:absolute; top:-8px; right:10px; min-width:22px; height:18px; padding:0 6px; border-radius:999px; display:inline-grid; place-items:center;
+  font:700 10.5px "IBM Plex Mono",monospace; color:#fff; background:var(--red); box-shadow:0 2px 6px rgba(166,25,46,.25); opacity:0; transform:translateY(3px); transition:opacity .2s var(--ease), transform .2s var(--ease)}
+.pulse-alloc-row.is-funded .pulse-alloc-row__tally{opacity:1; transform:none}
+.pulse-alloc-row__flag{font:700 9.5px "IBM Plex Mono",monospace; letter-spacing:.06em; text-transform:uppercase; color:#7A5A12; background:linear-gradient(135deg,#FFF3D6,#F2DDA6); border:1px solid #D9BC6E; padding:2px 6px; border-radius:999px; white-space:nowrap}
+.pulse-points-fill{background:linear-gradient(90deg, var(--red) 0%, #C41E3A 60%, #B08A2E 100%)}
+.pulse-pointsbar.is-complete{border-color:#D9BC6E; box-shadow:0 2px 10px rgba(140,106,26,.14)}
+#pulseShowResult.is-ready{background:linear-gradient(135deg, var(--red) 0%, #7A1021 100%); border-color:#7A1021; color:#fff; opacity:1}
+#pulseShowResult.is-ready.is-celebrating{animation:pulse-ready .9s var(--ease) 1}
+@keyframes pulse-ready{0%{box-shadow:0 0 0 0 rgba(176,138,46,.5)} 70%{box-shadow:0 0 0 12px rgba(176,138,46,0)} 100%{box-shadow:0 0 0 0 rgba(176,138,46,0)}}
+.pulse-live-row.is-top .pulse-live-row__label{font-weight:700; color:var(--ink)}
+.pulse-live-row.is-top .pulse-live-row__fill{background:linear-gradient(90deg, var(--red), #B08A2E)}
+.pulse-live-row.is-top .pulse-live-row__val{color:var(--red)}
+@media(prefers-reduced-motion:reduce){
+  .pulse-alloc-row.is-bumped,#pulseShowResult.is-ready.is-celebrating{animation:none !important}
+}
 
 .pulse-tabs{box-shadow:0 2px 10px rgba(0,0,0,0.04)}
 
@@ -1000,7 +1066,7 @@ img,svg{max-width:100%; height:auto}
 .pulse-overview{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-top:12px}
 .pulse-overview__cell{border:1px solid var(--line); border-radius:9px; background:white; padding:10px 12px; min-width:0}
 .pulse-overview__cell b{display:block; font:600 10px "IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:.04em; color:var(--stone)}
-.pulse-overview__cell strong{display:block; margin-top:4px; font:700 19px "Fraunces",serif; line-height:1.1; overflow-wrap:anywhere}
+.pulse-overview__cell strong{display:block; margin-top:4px; font:700 19px var(--font-display); line-height:1.1; overflow-wrap:anywhere}
 .pulse-overview__cell span{display:block; margin-top:2px; font-size:11px; color:var(--stone); line-height:1.35}
 @media(max-width:640px){
   .pulse-viewnav{gap:4px; border-radius:12px}
@@ -1088,7 +1154,7 @@ img,svg{max-width:100%; height:auto}
 .welcome-top{height:4px; background:linear-gradient(90deg,var(--red), #a31322)}
 .welcome-body{padding:18px 18px 14px; display:grid; gap:12px}
 .welcome-eyebrow{font:700 10.5px 'IBM Plex Mono',monospace; letter-spacing:.08em; text-transform:uppercase; color:var(--red)}
-.welcome-title{font:600 24px/1.05 'Fraunces',serif; letter-spacing:-.02em; margin:0; color:var(--ink)}
+.welcome-title{font:600 24px/1.05 var(--font-display); letter-spacing:-.02em; margin:0; color:var(--ink)}
 .welcome-lead{font:400 14.5px/1.6 'Instrument Sans',sans-serif; color:var(--muted); margin:0}
 .welcome-features{list-style:none; padding:0; margin:0; display:grid; gap:8px}
 .welcome-features li{display:flex; gap:10px; align-items:flex-start; font:400 13.5px/1.5 'Instrument Sans',sans-serif; color:var(--ink); border:1px solid var(--line); background:var(--paper-2, #fcf8f6); border-radius:10px; padding:10px 12px; cursor:pointer; transition:transform .18s var(--ease), border-color .18s, background .18s, box-shadow .18s; user-select:none}
@@ -1136,13 +1202,13 @@ img,svg{max-width:100%; height:auto}
 #page-about .ab-hero{position:relative; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:24px; align-items:end; padding:32px 32px 28px; border-radius:var(--radius); background:var(--red-ink); color:var(--paper); overflow:hidden}
 #page-about .ab-hero:after{content:""; position:absolute; right:-60px; top:-60px; width:240px; height:240px; border-radius:50%; border:36px solid rgba(255,255,255,0.06); pointer-events:none}
 #page-about .ab-hero__eyebrow{font:600 11px "IBM Plex Mono",monospace; letter-spacing:0.12em; text-transform:uppercase; color:#FFC9D1}
-#page-about .ab-hero h2{margin:8px 0 10px; font:600 clamp(28px,4.2vw,44px)/1.04 "Fraunces",serif; letter-spacing:-0.02em; color:var(--paper); max-width:18ch; overflow-wrap:anywhere; min-width:0}
+#page-about .ab-hero h2{margin:8px 0 10px; font:600 clamp(28px,4.2vw,44px)/1.04 var(--font-display); letter-spacing:-0.02em; color:var(--paper); max-width:18ch; overflow-wrap:anywhere; min-width:0}
 #page-about .ab-hero p{margin:0; max-width:58ch; color:rgba(255,255,255,0.82); font-size:14.5px; line-height:1.6}
 #page-about .ab-hero__side{display:grid; gap:12px; justify-items:end; position:relative; z-index:1}
 #page-about .ab-hero__badge{font:600 11px "IBM Plex Mono",monospace; padding:6px 10px; border-radius:var(--radius-pill); background:var(--paper); color:var(--red-ink); white-space:nowrap}
 #page-about .ab-hero__facts{margin:0; display:grid; gap:8px; text-align:right}
 #page-about .ab-hero__facts dt{font:500 10px "IBM Plex Mono",monospace; letter-spacing:0.08em; text-transform:uppercase; color:#FFC9D1}
-#page-about .ab-hero__facts dd{margin:0; font:600 14px "Fraunces",serif}
+#page-about .ab-hero__facts dd{margin:0; font:600 14px var(--font-display)}
 #page-about .ab-jump{position:sticky; top:64px; z-index:15; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; margin:14px 0 6px; padding:6px; background:rgba(255,255,255,0.94); backdrop-filter:blur(8px); border:1px solid var(--line); border-radius:var(--radius-pill)}
 #page-about .ab-jump::-webkit-scrollbar{display:none}
 #page-about .ab-jump button{flex:0 0 auto; border:0; background:transparent; padding:7px 14px; border-radius:var(--radius-pill); font:600 12.5px "IBM Plex Sans",sans-serif; color:var(--ink-2); cursor:pointer; white-space:nowrap}
@@ -1150,11 +1216,11 @@ img,svg{max-width:100%; height:auto}
 #page-about .ab-block{position:relative; padding:34px 0 30px; border-top:1px solid var(--line); scroll-margin-top:120px}
 #page-about .ab-block:first-of-type{border-top:0}
 #page-about .ab-block__num{font:500 12px "IBM Plex Mono",monospace; color:var(--red); letter-spacing:0.08em; margin-bottom:10px}
-#page-about .ab-block__title, #page-about .ab-block h3{margin:0 0 12px; font:600 24px/1.15 "Fraunces",serif; letter-spacing:-0.015em; font-style:normal}
+#page-about .ab-block__title, #page-about .ab-block h3{margin:0 0 12px; font:600 24px/1.15 var(--font-display); letter-spacing:-0.015em; font-style:normal}
 #page-about .ab-note{margin:12px 0 0; font-size:12.5px; color:var(--stone); line-height:1.5}
 #page-about .ab-mono{display:block; margin-top:6px; font:500 11.5px "IBM Plex Mono",monospace; color:var(--stone); white-space:pre-line}
 #page-about .ab-office{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr); gap:36px}
-#page-about .ab-lede{font:400 19px/1.5 "Fraunces",serif; color:var(--ink); margin:0 0 14px}
+#page-about .ab-lede{font:400 19px/1.5 var(--font-display); color:var(--ink); margin:0 0 14px}
 #page-about .ab-office__lead p:not(.ab-lede){margin:0; font-size:14px; line-height:1.65; color:var(--ink-2)}
 #page-about .ab-mandate{padding:20px 22px; border-radius:var(--radius); background:var(--paper-2); border:1px solid var(--line)}
 #page-about .ab-mandate h3{font-size:18px}
@@ -1164,13 +1230,13 @@ img,svg{max-width:100%; height:auto}
 #page-about .ab-people{display:grid; grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr); gap:18px}
 #page-about .ab-regent{padding:24px; border-radius:var(--radius); background:var(--paper-2); border:1px solid var(--line); border-top:4px solid var(--red); text-align:center; display:grid; justify-items:center; align-content:start; gap:4px}
 #page-about .ab-regent__kicker{margin:0 0 12px; font:600 11px "IBM Plex Mono",monospace; letter-spacing:0.1em; text-transform:uppercase; color:var(--red)}
-#page-about .ab-regent__mark{width:84px; height:84px; border-radius:50%; display:grid; place-items:center; background:var(--red); color:var(--paper); font:600 28px "Fraunces",serif; margin-bottom:10px; overflow:hidden}
+#page-about .ab-regent__mark{width:84px; height:84px; border-radius:50%; display:grid; place-items:center; background:var(--red); color:var(--paper); font:600 28px var(--font-display); margin-bottom:10px; overflow:hidden}
 #page-about .ab-regent__mark img{width:100%; height:100%; object-fit:cover}
 #page-about .ab-regent__label{font:500 11px "IBM Plex Mono",monospace; color:var(--stone)}
-#page-about .ab-regent__name{font:600 22px/1.2 "Fraunces",serif; overflow-wrap:anywhere}
+#page-about .ab-regent__name{font:600 22px/1.2 var(--font-display); overflow-wrap:anywhere}
 #page-about .ab-regent__meta{font-size:12.5px; color:var(--stone)}
 #page-about .ab-regent__note{margin:10px 0 0; font-size:12px; color:var(--stone); max-width:34ch}
-#page-about .ab-team h4, #page-about .ab-staff h4{margin:0; font:600 17px "Fraunces",serif}
+#page-about .ab-team h4, #page-about .ab-staff h4{margin:0; font:600 17px var(--font-display)}
 #page-about .ab-role{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:10px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; background:var(--paper)}
 #page-about .ab-role > div{min-width:0}
 #page-about .ab-role b{display:block; font-size:13px}
@@ -1181,7 +1247,7 @@ img,svg{max-width:100%; height:auto}
 #page-about .ab-staff{margin-top:26px}
 #page-about .ab-staff__grid{list-style:none; margin:14px 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap:12px}
 #page-about .ab-person{display:grid; grid-template-columns:52px minmax(0,1fr); gap:12px; align-items:center; padding:14px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper)}
-#page-about .ab-person__mark{width:52px; height:52px; border-radius:50%; display:grid; place-items:center; background:var(--red-3); color:var(--red); font:600 17px "Fraunces",serif; overflow:hidden}
+#page-about .ab-person__mark{width:52px; height:52px; border-radius:50%; display:grid; place-items:center; background:var(--red-3); color:var(--red); font:600 17px var(--font-display); overflow:hidden}
 #page-about .ab-person__mark img{width:100%; height:100%; object-fit:cover}
 #page-about .ab-person b{display:block; font-size:14px; overflow-wrap:anywhere}
 #page-about .ab-person span{display:block; font-size:12px; color:var(--stone); overflow-wrap:anywhere}
@@ -1190,7 +1256,7 @@ img,svg{max-width:100%; height:auto}
 #page-about .ab-block--ink .ab-block__num{color:#FF8FA0}
 #page-about .ab-block--ink .ab-note{color:rgba(255,255,255,0.6)}
 #page-about .ab-vm{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px}
-#page-about .ab-vm p{margin:6px 0 0; font:400 17px/1.55 "Fraunces",serif; color:rgba(255,255,255,0.92)}
+#page-about .ab-vm p{margin:6px 0 0; font:400 17px/1.55 var(--font-display); color:rgba(255,255,255,0.92)}
 #page-about .ab-vm__label{font:600 11px "IBM Plex Mono",monospace; letter-spacing:0.12em; text-transform:uppercase; color:#FF8FA0}
 #page-about .ab-values{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
 #page-about .ab-value{font:600 12px "IBM Plex Sans",sans-serif; padding:7px 12px; border-radius:var(--radius-pill); border:1px solid rgba(255,255,255,0.22); color:var(--paper)}
@@ -1221,7 +1287,7 @@ img,svg{max-width:100%; height:auto}
 
 /* ── Track my concern ── */
 .track-layout{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:24px; align-items:start}
-.track-intro h2{margin:6px 0 8px; font:600 clamp(26px,3.6vw,36px)/1.1 "Fraunces",serif; letter-spacing:-0.02em}
+.track-intro h2{margin:6px 0 8px; font:600 clamp(26px,3.6vw,36px)/1.1 var(--font-display); letter-spacing:-0.02em}
 .track-intro > p{margin:0; max-width:56ch; color:var(--ink-2)}
 .track-form{margin:18px 0 14px; padding:16px; border:1px solid var(--line); border-top:4px solid var(--red); border-radius:var(--radius); background:var(--paper)}
 .track-form__row{display:flex; gap:8px; margin-top:6px}
@@ -1250,7 +1316,7 @@ img,svg{max-width:100%; height:auto}
 .track-response p{margin:6px 0 0; white-space:pre-wrap; line-height:1.6}
 .track-wait{margin:14px 0 0; padding:12px 14px; border-radius:8px; background:var(--paper-2); color:var(--ink-2); font-size:13px}
 .track-side{display:grid; gap:14px; padding:18px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper-2)}
-.track-side h3{margin:0; font:600 17px "Fraunces",serif}
+.track-side h3{margin:0; font:600 17px var(--font-display)}
 .track-saved{list-style:none; margin:0; padding:0; display:grid; gap:6px}
 .track-saved li{display:flex; gap:4px}
 .track-saved__open{flex:1; min-width:0; display:flex; justify-content:space-between; gap:8px; padding:9px 12px; border:1px solid var(--line); border-radius:8px; background:var(--paper); cursor:pointer; text-align:left}
@@ -1332,7 +1398,7 @@ img,svg{max-width:100%; height:auto}
       <a href="#help" data-nav>Student Help <span>→</span></a>
       <a href="#track" data-nav>Track My Concern <span>→</span></a>
       <a href="#about" data-nav>About OSR <span>→</span></a>
-      <a href="#ideal-bulsu" data-nav>Build Your Ideal BulSU <span>→</span></a>
+      <a class="drawer__link--ideal" href="#ideal-bulsu" data-nav>Build Your Ideal BulSU <span>→</span></a>
       <a href="#academic-calendar" data-nav>Academic Calendar <span>→</span></a>
     </nav>
     <div class="drawer__section">
@@ -1362,15 +1428,16 @@ img,svg{max-width:100%; height:auto}
   <!-- HOME -->
   <section class="page" id="page-home" aria-current="true" aria-labelledby="home-title">
     <div class="hero-wrap">
+    <div class="hero__fx" aria-hidden="true"><span class="hero__glow"></span></div>
     <div class="hero">
       <div class="reveal is-visible">
         <span class="hero__kicker">Board of Regents • Student representation</span>
         <h1 class="hero__title" id="home-title">OFFICE OF THE <span>STUDENT&nbsp;REGENT</span></h1>
-        <p class="hero__lead">The Office of the Student Regent represents BulSU students in the Board of Regents. This site is the official record for announcements, Board Meeting documents, initiatives, and verified student resources.</p>
+        <p class="hero__lead">The Office of the Student Regent represents BulSU students in the Board of Regents — the official record for announcements, Board Meeting documents, initiatives, and verified student resources.</p>
         <div class="hero__actions">
           <a class="btn btn--red" href="#announcements" data-nav>View announcements <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
           <a class="btn btn--ghost" href="#board-meetings" data-nav><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 8h10"/></svg> Board archive <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
-          <button class="btn btn--ghost" id="heroCmd"><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/><path d="M8 11h6"/><path d="M11 8v6"/></svg> Jump to anything <span class="mono" style="font-size:10px; background:var(--paper-2); border:1px solid var(--line); padding:2px 6px; border-radius:6px; margin-left:4px">Ctrl/Command+K</span></button>
+          <button class="btn btn--ghost hero__cmd" id="heroCmd"><svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/><path d="M8 11h6"/><path d="M11 8v6"/></svg> Jump to anything <span class="mono" style="font-size:10px; background:var(--paper-2); border:1px solid var(--line); padding:2px 6px; border-radius:6px; margin-left:4px">Ctrl/Command+K</span></button>
         </div>
         <div class="hero__meta" aria-label="Office facts">
           <span><b>Location</b> City of Malolos, Bulacan</span>
@@ -1390,7 +1457,7 @@ img,svg{max-width:100%; height:auto}
           <a class="btn btn--sm" href="#about" data-nav>Understand the mandate</a>
           <a class="btn btn--sm btn--ghost" href="#help" data-nav>Find student support</a>
         </div>
-        <p class="hero__card-note">Content is updated by the OSR. Where information is not yet supplied, you will see an intentional empty state instead of fabricated content.</p>
+        <p class="hero__card-note">Published by the OSR. Where a record is not yet supplied, the page keeps an empty state instead of invented content.</p>
       </div>
     </div>
     </div>
@@ -1416,6 +1483,11 @@ img,svg{max-width:100%; height:auto}
         <span class="quick__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
         <span><b>Track My Concern</b><span class="sub">Check if the OSR has responded.</span></span>
       </a>
+      <a class="quick__ideal" href="#ideal-bulsu" data-nav>
+        <span class="quick__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5l1.8 5.7 5.7 1.8-5.7 1.8L12 18.5l-1.8-5.7L4.5 11l5.7-1.8Z"/></svg></span>
+        <span><b>Build Your Ideal BulSU</b><span class="sub">Split 10 points across what matters.</span></span>
+        <span class="quick__spark" aria-hidden="true"><svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span>
+      </a>
     </nav>
 
     <div class="dash-stats reveal" aria-label="Dashboard at a glance">
@@ -1436,6 +1508,39 @@ img,svg{max-width:100%; height:auto}
         <span class="dash-stat__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21 12 17 5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"/></svg></span>
       </button>
     </div>
+
+    <!-- BUILD YOUR IDEAL BULSU — the one warm accent in the dashboard.
+         Gold is used only here, the way an institutional seal would be: it
+         marks student consultation, not decoration. -->
+    <section class="ideal-cta reveal" id="buildCta" aria-labelledby="buildCtaTitle">
+      <div class="ideal-cta__panel">
+        <span class="ideal-cta__spark ideal-cta__spark--a" aria-hidden="true"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4"/><path d="M12 17v4"/><path d="M3 12h4"/><path d="M17 12h4"/><path d="M5.6 5.6l2.8 2.8"/><path d="M15.6 15.6l2.8 2.8"/><path d="M18.4 5.6l-2.8 2.8"/><path d="M8.4 15.6l-2.8 2.8"/></svg></span>
+        <span class="ideal-cta__spark ideal-cta__spark--b" aria-hidden="true"><svg viewBox="0 0 24 24" width="11" height="11" fill="currentColor"><path d="M12 2l1.6 6.4L20 10l-6.4 1.6L12 18l-1.6-6.4L4 10l6.4-1.6z"/></svg></span>
+        <div class="ideal-cta__body">
+          <div class="ideal-cta__eyebrow">Student consultation • 10 points</div>
+          <h3 class="ideal-cta__title" id="buildCtaTitle">Build Your Ideal BulSU</h3>
+          <p class="ideal-cta__lead">Where should BulSU focus next? Split 10 points across 7 areas — learning, campus, mobility, connectivity, well-being, culture, and student voice. It takes about a minute, and you can add your build to the public Pulse.</p>
+          <div class="ideal-cta__actions">
+            <a class="ideal-cta__btn" href="#ideal-bulsu" data-nav>
+              <span class="ideal-cta__btn-label">Start building</span>
+              <svg class="ideal-cta__btn-arrow" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+              <span class="ideal-cta__sheen" aria-hidden="true"></span>
+            </a>
+            <a class="ideal-cta__quiet" href="#ideal-bulsu" data-nav data-ideal-pulse>See what students prioritize →</a>
+          </div>
+        </div>
+        <div class="ideal-cta__pulse" aria-label="BulSU Pulse snapshot">
+          <div class="ideal-cta__pulse-head">
+            <span class="ideal-cta__pulse-label">BulSU Pulse</span>
+            <span class="ideal-cta__pulse-period" id="buildCtaPeriod">—</span>
+          </div>
+          <div class="ideal-cta__pulse-count"><b id="buildCtaBuilds">—</b><span>builds so far</span></div>
+          <div class="ideal-cta__pulse-top" id="buildCtaTop">Loading the latest period…</div>
+          <div class="ideal-cta__pulse-bars" id="buildCtaBars"></div>
+          <div class="ideal-cta__pulse-note">Aggregates only — individual builds are never shown.</div>
+        </div>
+      </div>
+    </section>
 
     <div class="upnext reveal" id="upnext" style="margin-top:12px">
       <div style="display:flex; gap:12px; align-items:center">
@@ -1493,31 +1598,110 @@ img,svg{max-width:100%; height:auto}
     </div>
     <style>
       @media(max-width:900px){ .dash-engage{grid-template-columns:1fr !important} }
+
+/* ===== BUILD YOUR IDEAL BULSU — the dashboard's gold band =====
+   Gold is the institution's second accent and lives only in this card, so it
+   reads as a seal for student consultation rather than a new site colour. */
+.ideal-cta{margin-top:14px}
+.ideal-cta__panel{position:relative; display:grid; grid-template-columns:minmax(0,1.55fr) minmax(0,1fr); gap:18px; padding:22px; border-radius:14px; overflow:hidden; color:var(--ink);
+  background:linear-gradient(135deg, #FFF8E7 0%, #F7E6B8 42%, #E8CE86 100%);
+  border:1px solid #D9BC6E;
+  box-shadow:0 1px 0 rgba(17,18,20,0.03), 0 14px 34px rgba(140,106,26,0.14)}
+.ideal-cta__panel:before{content:""; position:absolute; inset:0; background:
+  radial-gradient(520px 200px at 12% -10%, rgba(255,255,255,0.75), transparent 62%),
+  radial-gradient(420px 220px at 96% 108%, rgba(140,106,26,0.16), transparent 66%);
+  pointer-events:none}
+.ideal-cta__spark{position:absolute; color:#B08A2E; pointer-events:none; opacity:.85}
+.ideal-cta__spark--a{top:14px; right:18px; animation:ideal-spark 5.5s var(--ease) infinite}
+.ideal-cta__spark--b{bottom:16px; left:14px; animation:ideal-spark 7s var(--ease) infinite .8s}
+@keyframes ideal-spark{0%,72%,100%{opacity:.35; transform:scale(.86) rotate(0deg)} 82%{opacity:1; transform:scale(1.12) rotate(18deg)}}
+.ideal-cta__body{position:relative; min-width:0}
+.ideal-cta__eyebrow{font:700 10px "IBM Plex Mono",monospace; letter-spacing:.1em; text-transform:uppercase; color:#7A5A12}
+.ideal-cta__title{margin:6px 0 8px; font-family:var(--font-display); font-weight:600; font-size:clamp(22px,2.4vw,28px); line-height:1.06; letter-spacing:-0.02em; color:#251A03; max-width:22ch}
+.ideal-cta__lead{margin:0; font-size:13.5px; line-height:1.6; color:#4A3B18; max-width:62ch}
+.ideal-cta__actions{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:16px}
+/* The animated button: a slow gold ring, a sheen that sweeps across, and an
+   arrow that steps forward — motion that shows the way in, never loops loudly. */
+.ideal-cta__btn{position:relative; display:inline-flex; align-items:center; gap:9px; padding:12px 20px; border-radius:999px; overflow:hidden; text-decoration:none;
+  background:linear-gradient(135deg, var(--red) 0%, #7A1021 100%); color:#fff; font:700 13.5px "IBM Plex Sans",sans-serif; letter-spacing:.01em;
+  box-shadow:0 1px 0 rgba(0,0,0,.08), 0 8px 20px rgba(122,16,33,.22); animation:ideal-ring 3.4s ease-in-out infinite}
+.ideal-cta__btn:hover{transform:translateY(-1px); box-shadow:0 1px 0 rgba(0,0,0,.08), 0 12px 26px rgba(122,16,33,.28)}
+.ideal-cta__btn:active{transform:translateY(0)}
+.ideal-cta__btn-label{position:relative; z-index:2}
+.ideal-cta__btn-arrow{position:relative; z-index:2; animation:ideal-arrow 2.6s var(--ease) infinite}
+.ideal-cta__sheen{position:absolute; top:-40%; bottom:-40%; left:-60%; width:45%; transform:skewX(-18deg);
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.42), transparent); animation:ideal-sheen 4.2s ease-in-out infinite}
+@keyframes ideal-ring{0%,100%{box-shadow:0 1px 0 rgba(0,0,0,.08), 0 8px 20px rgba(95,72,14,.32), 0 0 0 0 rgba(126,95,20,.5)} 55%{box-shadow:0 1px 0 rgba(0,0,0,.08), 0 10px 24px rgba(95,72,14,.38), 0 0 0 10px rgba(126,95,20,0)}}
+@keyframes ideal-arrow{0%,72%,100%{transform:translateX(0)} 82%{transform:translateX(4px)}}
+@keyframes ideal-sheen{0%,68%{left:-60%} 88%,100%{left:118%}}
+.ideal-cta__quiet{font:600 12.5px "IBM Plex Sans",sans-serif; color:#6B4E0E; text-decoration:none; border-bottom:1px solid rgba(107,78,14,.35); padding-bottom:1px}
+.ideal-cta__quiet:hover{color:#3F2D05; border-color:#3F2D05}
+.ideal-cta__pulse{position:relative; min-width:0; display:grid; gap:8px; align-content:start; padding:14px; border-radius:12px; background:rgba(255,255,255,.62); border:1px solid rgba(176,138,46,.42); backdrop-filter:blur(3px)}
+.ideal-cta__pulse-head{display:flex; align-items:baseline; justify-content:space-between; gap:10px; flex-wrap:wrap}
+.ideal-cta__pulse-label{font:700 10px "IBM Plex Mono",monospace; letter-spacing:.09em; text-transform:uppercase; color:#7A5A12}
+.ideal-cta__pulse-period{font:600 11px "IBM Plex Mono",monospace; color:#5B4A22}
+.ideal-cta__pulse-count{display:flex; align-items:baseline; gap:6px; color:#251A03}
+.ideal-cta__pulse-count b{font-family:var(--font-display); font-weight:700; font-size:26px; line-height:1}
+.ideal-cta__pulse-count span{font-size:11.5px; color:#5B4A22}
+.ideal-cta__pulse-top{font:600 12.5px/1.4 "IBM Plex Sans",sans-serif; color:#3F2D05}
+.ideal-cta__pulse-bars{display:grid; gap:5px}
+.ideal-cta__bar{display:grid; grid-template-columns:minmax(74px,1fr) minmax(40px,1.5fr) 34px; gap:8px; align-items:center; font-size:11.5px}
+.ideal-cta__bar-label{color:#4A3B18; overflow-wrap:anywhere; line-height:1.25}
+.ideal-cta__bar-track{height:7px; border-radius:999px; background:rgba(176,138,46,.22); border:1px solid rgba(176,138,46,.32); overflow:hidden}
+.ideal-cta__bar-fill{height:100%; width:0; background:linear-gradient(90deg, #B08A2E, #8A6A18); transition:width .5s var(--ease)}
+.ideal-cta__bar-val{font:600 11px "IBM Plex Mono",monospace; color:#5B4A22; text-align:right}
+.ideal-cta__pulse-note{font-size:10.5px; color:#6B5A2E}
+@media(max-width:900px){ .ideal-cta__panel{grid-template-columns:minmax(0,1fr); padding:20px} }
+@media(max-width:520px){
+  .ideal-cta__panel{padding:18px 16px; gap:14px}
+  .ideal-cta__title{font-size:22px}
+  .ideal-cta__actions{display:grid; gap:10px}
+  .ideal-cta__btn{width:100%; justify-content:center}
+  .ideal-cta__quiet{text-align:center}
+  .ideal-cta__spark--a{top:10px; right:12px}
+}
+@media(prefers-reduced-motion:reduce){
+  .ideal-cta__btn,.ideal-cta__btn-arrow,.ideal-cta__sheen,.ideal-cta__spark{animation:none !important}
+  .ideal-cta__sheen{display:none}
+}
     
 /* ===== HERO UPGRADE — spacious, special, institutional ===== */
-.hero-wrap{position:relative; margin:0 -16px; padding:0 16px; background:linear-gradient(180deg, #F7F5F2 0%, #FFFFFF 65%); border-bottom:1px solid var(--line); overflow:hidden}
+.hero-wrap{position:relative; margin:0 -16px; padding:0 16px; background:#fff; border-bottom:1px solid var(--line); overflow:hidden;
+  --gx:50%; --gy:0px}
 @media(max-width:640px){.hero-wrap{margin:0 -14px; padding:0 14px}}
-.hero{padding:64px 0 48px; gap:56px; align-items:center; min-height:420px}
-@media(max-width:960px){.hero{padding:48px 0 36px; gap:32px; min-height:auto}}
+.hero{padding:56px 0 44px; gap:48px; align-items:start; min-height:380px}
+@media(max-width:960px){.hero{padding:40px 0 32px; gap:28px; min-height:auto}}
 .hero:before{display:none}
-.hero-wrap:before{content:""; position:absolute; inset:0; background:
-  radial-gradient(820px 420px at 18% 8%, rgba(166,25,46,0.07), transparent 62%),
-  radial-gradient(640px 380px at 90% 12%, rgba(17,18,20,0.04), transparent 68%),
-  linear-gradient(90deg, rgba(166,25,46,0.03) 1px, transparent 1px),
-  linear-gradient(rgba(166,25,46,0.02) 1px, transparent 1px);
-  background-size: auto, auto, 28px 28px, 28px 28px;
-  mask-image: linear-gradient(180deg, black 75%, transparent 100%);
-  pointer-events:none}
-.hero-wrap:after{content:""; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--red) 0%, #C41E3A 45%, var(--ink) 100%); opacity:1}
+/* Clean paper. The old hero stacked a grey wash, a pink grid and a masked
+   fade on top of each other, which is what made it look muddy. Now it is one
+   warm wash behind the copy plus seal line-work in the corner: line, not dirt. */
+.hero-wrap:before{content:""; position:absolute; inset:0; pointer-events:none; background:
+  radial-gradient(720px 320px at 12% -8%, rgba(166,25,46,0.055), rgba(166,25,46,0) 64%),
+  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 214px, rgba(166,25,46,0.075) 214px 215px, rgba(166,25,46,0) 215px),
+  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 290px, rgba(166,25,46,0.05) 290px 291px, rgba(166,25,46,0) 291px),
+  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 366px, rgba(166,25,46,0.032) 366px 367px, rgba(166,25,46,0) 367px)}
+.hero-wrap:after{content:""; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--red) 0%, #C41E3A 46%, rgba(166,25,46,0.22) 100%)}
+/* Depth that answers the pointer: a soft light that travels with the cursor.
+   Pure decoration — it is inert for touch, keyboard and reduced motion. */
+.hero__fx{position:absolute; inset:0; overflow:hidden; pointer-events:none}
+.hero__glow{position:absolute; left:-410px; top:-300px; width:820px; height:600px; transform:translate3d(var(--gx), var(--gy), 0);
+  background:radial-gradient(circle, rgba(166,25,46,0.10), rgba(166,25,46,0) 66%); opacity:0; transition:opacity .6s var(--ease)}
+.hero-wrap.is-pointing .hero__glow{opacity:1}
 .hero__kicker{padding:7px 12px; font-size:10.5px; letter-spacing:0.12em; background:white; border-color:var(--line); box-shadow:0 1px 0 rgba(0,0,0,0.03); backdrop-filter:blur(4px)}
-.hero__title{font-size:clamp(44px, 5.8vw, 68px); line-height:0.86; letter-spacing:-0.052em; margin:18px 0 16px; max-width:9ch}
-.hero__title span:after{height:10px; bottom:6px; background:linear-gradient(90deg, var(--red-3), #FFE3E6); opacity:0.9}
-.hero__lead{font-size:17px; line-height:1.7; color:var(--ink-2); max-width:54ch}
-.hero__actions{margin-top:28px; gap:12px}
+/* A slightly smaller display size with a balanced two-line break keeps the
+   title from crowding the lead, and both columns now end on the same line. */
+.hero__title{font-size:clamp(38px, 5vw, 58px); line-height:0.9; letter-spacing:-0.044em; margin:16px 0 14px; max-width:11ch; text-wrap:balance}
+.hero__title span:after{height:9px; bottom:5px; background:linear-gradient(90deg, var(--red-3), #FFE3E6); opacity:0.9}
+.hero__lead{font-size:16.5px; line-height:1.65; color:var(--ink-2); max-width:52ch}
+.hero__actions{margin-top:24px; gap:10px}
 .hero__actions .btn{padding:11px 18px; font-size:13.5px; border-radius:999px}
 .hero__actions .btn--red{box-shadow:0 4px 16px rgba(166,25,46,0.18)}
-.hero__meta{margin-top:28px; padding-top:18px; gap:12px; font-size:12.5px; border-top:1px solid var(--line)}
+.hero__meta{margin-top:22px; padding-top:14px; gap:6px 12px; font-size:12.5px; border-top:1px solid var(--line)}
 .hero__meta b{color:var(--ink)}
+.hero__meta > span{white-space:nowrap}
+/* The third hero button is a shortcut hint, not a call to action — it now reads as one. */
+.hero__actions .hero__cmd{padding:9px 14px; font-size:12.5px; color:var(--stone)}
+.hero__actions .hero__cmd:hover{color:var(--ink)}
 .hero__card{padding:26px; gap:14px; background:rgba(255,255,255,0.92); backdrop-filter:blur(10px) saturate(1.05); border:1px solid rgba(233,230,225,0.9); border-left:4px solid var(--red); border-radius:14px; box-shadow:0 1px 0 rgba(0,0,0,0.02), 0 16px 40px rgba(17,18,20,0.07); transform:translateY(0); transition:transform .3s var(--ease), box-shadow .3s var(--ease)}
 .hero__card:hover{transform:translateY(-2px); box-shadow:0 1px 0 rgba(0,0,0,0.02), 0 20px 48px rgba(17,18,20,0.09)}
 .hero__card:before{display:none}
@@ -1528,7 +1712,7 @@ img,svg{max-width:100%; height:auto}
 
 /* feed date - vertical stacked, better aligned */
 .feed__date{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; padding:8px 6px; background:white; border:1px solid var(--line); border-radius:10px; min-height:64px; text-align:center}
-.feed__date b{font-size:22px; line-height:1; color:var(--ink); font-family:"Fraunces",serif; font-weight:700}
+.feed__date b{font-size:22px; line-height:1; color:var(--ink); font-family:var(--font-display); font-weight:700}
 .feed__date span:nth-of-type(1){font:700 10px "IBM Plex Mono",monospace; letter-spacing:0.08em; text-transform:uppercase; color:var(--red); line-height:1; margin-top:2px}
 .feed__date span:nth-of-type(2){font:500 10px "IBM Plex Mono",monospace; color:var(--stone); line-height:1; margin-top:1px}
 .feed__item{align-items:center; padding:16px 18px; gap:18px}
@@ -1558,7 +1742,7 @@ img,svg{max-width:100%; height:auto}
 .dash-stats{margin:24px 0 0 !important; gap:14px}
 .dash-stat{padding:16px 18px; min-height:84px; align-items:center; gap:12px; border-radius:12px}
 .dash-stat span:first-child{display:flex; flex-direction:column; gap:2px; align-items:flex-start}
-.dash-stat b{font-family:"Fraunces",serif; font-size:30px; line-height:0.9; font-weight:700; letter-spacing:-0.03em; color:var(--ink); font-variant-numeric:tabular-nums; min-width:32px}
+.dash-stat b{font-family:var(--font-display); font-size:30px; line-height:0.9; font-weight:700; letter-spacing:-0.03em; color:var(--ink); font-variant-numeric:tabular-nums; min-width:32px}
 .dash-stat span span{font:700 10px "IBM Plex Mono",monospace; letter-spacing:0.09em; text-transform:uppercase; color:var(--stone); line-height:1.2}
 .dash-stat__icon{width:40px; height:40px; border-radius:10px; flex:0 0 40px}
 .dash-stat__icon svg{width:18px; height:18px}
@@ -1660,6 +1844,123 @@ img,svg{max-width:100%; height:auto}
 /* ensure text never overlaps */
 .cal-event .cal-activity, .cal-upcoming__item .cal-activity, 
 .feed__title, .board-row__title{overflow-wrap:anywhere}
+
+/* ===== GOLD ACCENT — reserved for the Build Your Ideal BulSU entry points ====
+   Gold marks one thing only: the student-consultation flow. Every button that
+   opens or completes a build carries the same gold, so the way in reads the
+   same in the dashboard band, the quick tiles, the menu, the palette and the
+   builder itself. Motion stays in the site's vocabulary: lift, sheen, ring. */
+:root{
+  --gold:#B08A2E; --gold-2:#8A6A18; --gold-3:#E8CE86; --gold-bg:#FFF8E7;
+  --gold-line:rgba(176,138,46,.45); --gold-ink:#2A1F03; --gold-on:#FFF8E7;
+  --gold-fill:linear-gradient(135deg, #8E6B1A 0%, #75570F 52%, #59430C 100%);
+  --gold-fill-soft:linear-gradient(135deg, #8E6B1A 0%, #7E5F14 52%, #5F480E 100%);
+}
+.btn--gold{position:relative; overflow:hidden; border-color:#9A7620; color:var(--gold-on); background:var(--gold-fill);
+  box-shadow:inset 0 1px 0 rgba(255,248,231,.28), 0 1px 0 rgba(0,0,0,.06), 0 6px 16px rgba(138,106,24,.24)}
+.btn--gold:hover{background:var(--gold-fill); border-color:#B08A2E; transform:translateY(-1px);
+  box-shadow:inset 0 1px 0 rgba(255,248,231,.34), 0 1px 0 rgba(0,0,0,.06), 0 10px 22px rgba(138,106,24,.32), 0 0 0 3px rgba(232,206,134,.35)}
+.btn--gold:disabled{cursor:not-allowed; transform:none; box-shadow:none}
+.btn--gold:before{content:""; position:absolute; top:-40%; bottom:-40%; left:-70%; width:45%; transform:skewX(-18deg);
+  opacity:0; pointer-events:none; background:linear-gradient(90deg, transparent, rgba(255,248,231,.55), transparent)}
+.btn--gold:hover:before{animation:gold-sheen 1.05s var(--ease) 1}
+@keyframes gold-sheen{0%{left:-70%; opacity:.9} 100%{left:135%; opacity:0}}
+.btn--gold .btn__icon{position:relative; z-index:2; transition:transform .18s var(--ease)}
+.btn--gold:hover .btn__icon{transform:translateX(2px)}
+
+/* the dashboard band's button: same gold, keeps its ring / sheen / arrow */
+.ideal-cta__btn{background:var(--gold-fill); color:var(--gold-on); border:1px solid #8A6A18;
+  box-shadow:inset 0 1px 0 rgba(255,248,231,.3), 0 1px 0 rgba(0,0,0,.08), 0 8px 20px rgba(95,72,14,.3)}
+.ideal-cta__btn:hover{background:var(--gold-fill); border-color:#B08A2E;
+  box-shadow:inset 0 1px 0 rgba(255,248,231,.34), 0 1px 0 rgba(0,0,0,.08), 0 12px 26px rgba(95,72,14,.36), 0 0 0 3px rgba(232,206,134,.35)}
+.ideal-cta__sheen{background:linear-gradient(90deg, transparent, rgba(255,248,231,.6), transparent)}
+
+/* the builder's own primary actions answer in the same gold */
+#pulseShowResult.is-ready{background:var(--gold-fill); border-color:#9A7620; color:var(--gold-on)}
+#pulseSubmit.btn--gold{opacity:1}
+
+/* dashboard quick access: six tiles, three across — every row balanced */
+.quick{grid-template-columns:repeat(3,minmax(0,1fr))}
+.quick a:nth-child(3n){border-right:0}
+.quick a:nth-last-child(-n+3){border-bottom:0}
+@media(max-width:860px){
+  .quick{grid-template-columns:1fr 1fr}
+  .quick a:nth-child(3n){border-right:1px solid var(--line)}
+  .quick a:nth-child(2n){border-right:0}
+  .quick a:nth-last-child(-n+3){border-bottom:1px solid var(--line)}
+  .quick a:nth-last-child(-n+2){border-bottom:0}
+}
+@media(max-width:480px){
+  .quick{grid-template-columns:1fr}
+  .quick a, .quick a:nth-child(3n){border-right:0}
+  .quick a:nth-last-child(-n+2){border-bottom:1px solid var(--line)}
+  .quick a:last-child{border-bottom:0}
+}
+/* the one gold quick tile */
+.quick a.quick__ideal{position:relative; background:linear-gradient(180deg, #FFFDF6, #FFFBF1)}
+.quick a.quick__ideal:hover{background:linear-gradient(180deg, #FFFCF0, #FFF6DF)}
+.quick__ideal .quick__icon{background:var(--gold-bg); border-color:var(--gold-line); color:var(--gold-2)}
+.quick a.quick__ideal:hover .quick__icon{background:var(--gold-fill); color:var(--gold-on); border-color:#9A7620; transform:translateY(-1px)}
+.quick a.quick__ideal:after{background:linear-gradient(90deg, var(--gold-3), var(--gold))}
+.quick__ideal .quick__spark{position:absolute; top:14px; right:14px; color:#C7A23C; opacity:.55; animation:ideal-spark 6.4s var(--ease) infinite}
+
+/* menu + palette: the same gold marker, so the entry point is recognisable */
+.drawer__nav a.drawer__link--ideal{border-color:var(--gold-line); background:linear-gradient(180deg, #FFFDF6, #FFF8E7); box-shadow:inset 3px 0 0 var(--gold-3)}
+.drawer__nav a.drawer__link--ideal span{color:var(--gold-2)}
+.drawer__nav a.drawer__link--ideal:hover{border-color:#9A7620; background:var(--gold-bg)}
+.cmd__item--ideal b:before{content:""; display:inline-block; width:8px; height:8px; margin-right:8px; border-radius:50%;
+  vertical-align:1px; background:var(--gold-fill); box-shadow:0 0 0 2px var(--gold-bg), 0 0 0 3px var(--gold-line)}
+.cmd__item--ideal b + br + span{color:var(--gold-2)}
+
+@media(prefers-reduced-motion:reduce){
+  .btn--gold:hover:before{animation:none; opacity:0}
+  .quick__ideal .quick__spark{animation:none; opacity:.5}
+}
+
+/* ===== HERO — the masthead face, and depth that answers the pointer ========
+   Only the home hero changes here. Everything else on the site keeps Fraunces,
+   which is what --font-display still points at. */
+.hero__title{font-family:var(--font-hero); font-weight:800; letter-spacing:-0.02em}
+
+/* the title arrives once, and the red rule under "STUDENT REGENT" draws in */
+@keyframes hero-title-in{from{opacity:0; transform:translateY(16px); clip-path:inset(0 0 96% 0)} to{opacity:1; transform:none; clip-path:inset(0 0 -14% 0)}}
+@keyframes hero-underline{from{transform:scaleX(0)} to{transform:scaleX(1)}}
+.hero.is-in .hero__title{animation:hero-title-in .95s var(--ease) both}
+.hero.is-in .hero__title span:after{transform-origin:left; animation:hero-underline .85s var(--ease) .34s both}
+.hero.is-in .hero__kicker{animation:hero-title-in .7s var(--ease) both}
+.hero.is-in .hero__lead{animation:hero-title-in .8s var(--ease) .1s both}
+.hero.is-in .hero__actions{animation:hero-title-in .8s var(--ease) .18s both}
+.hero.is-in .hero__meta{animation:hero-title-in .8s var(--ease) .26s both}
+.hero.is-in .hero__card{animation:hero-title-in .9s var(--ease) .12s both}
+
+/* the card leans with the pointer and carries a light that tracks it */
+.hero__card{--cx:50%; --cy:50%; transform-style:preserve-3d; will-change:transform}
+.hero__card:before{content:""; display:block; position:absolute; inset:0; border-radius:inherit; pointer-events:none; opacity:0;
+  transition:opacity .35s var(--ease); background:radial-gradient(240px 180px at var(--cx) var(--cy), rgba(166,25,46,0.07), rgba(166,25,46,0) 72%)}
+.hero__card:hover:before{opacity:1}
+
+/* the fact row answers as a row of small chips, not dead text */
+.hero__meta > span{position:relative; padding:3px 9px; margin-left:-9px; border-radius:999px; transition:background .18s var(--ease), color .18s var(--ease)}
+.hero__meta > span:hover{background:var(--red-3)}
+.hero__meta > span:hover b{color:var(--red)}
+
+/* the primary action gets one sheen as it is hovered — the same vocabulary as
+   the gold Build Your Ideal BulSU button, in the hero's own red */
+.hero__actions .btn--red{overflow:hidden}
+.hero__actions .btn--red:after{content:""; position:absolute; top:-40%; bottom:-40%; left:-70%; width:45%; transform:skewX(-18deg); opacity:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.34), transparent)}
+.hero__actions .btn--red:hover:after{animation:hero-sheen .9s var(--ease) 1}
+@keyframes hero-sheen{0%{left:-70%; opacity:.95} 100%{left:135%; opacity:0}}
+
+@media(max-width:960px){
+  .hero__meta > span:hover{background:transparent}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero.is-in .hero__title,.hero.is-in .hero__title span:after,.hero.is-in .hero__kicker,
+  .hero.is-in .hero__lead,.hero.is-in .hero__actions,.hero.is-in .hero__meta,.hero.is-in .hero__card{animation:none !important}
+  .hero__actions .btn--red:hover:after{animation:none; opacity:0}
+  .hero__glow{display:none}
+}
 
 </style>
 
@@ -2107,10 +2408,10 @@ img,svg{max-width:100%; height:auto}
         <div class="ab-hero__copy">
           <div class="ab-hero__eyebrow" id="aboutEyebrow">The Office</div>
           <h2 id="about-title">About the Office of the Student Regent</h2>
-          <p id="aboutIntro">Structured information that is easy to update when leadership or details change. No invented names.</p>
+          <p id="aboutIntro">The Office of the Student Regent is the student voice in the Bulacan State University Board of Regents — receiving student concerns, consulting student councils and organizations, and publishing verified updates from the University's highest governing body.</p>
         </div>
         <div class="ab-hero__side">
-          <span class="ab-hero__badge" id="aboutBadge">Easy to update</span>
+          <span class="ab-hero__badge" id="aboutBadge">Student representation</span>
           <dl class="ab-hero__facts">
             <div><dt>Seat</dt><dd>Board of Regents</dd></div>
             <div><dt>Serves</dt><dd>All BulSU campuses</dd></div>
@@ -2144,7 +2445,7 @@ img,svg{max-width:100%; height:auto}
               <li>Disseminate Board decisions and advisories that affect students</li>
               <li>Maintain an accessible record of student-related Board actions where authorized</li>
             </ol>
-            <p class="ab-note" id="aboutMandateNote">Mandate wording should be aligned with the BulSU Charter and Board resolutions.</p>
+            <p class="ab-note" id="aboutMandateNote">The mandate follows the BulSU Charter and the resolutions of the Board of Regents.</p>
           </div>
         </div>
       </section>
@@ -2158,23 +2459,23 @@ img,svg{max-width:100%; height:auto}
             <h4 class="ab-regent__kicker" id="aboutSrHeading">Student Regent</h4>
             <div class="ab-regent__mark" aria-hidden="true" id="aboutSrMark">SR</div>
             <div class="ab-regent__label" id="aboutSrLabel">Current Student Regent</div>
-            <div class="ab-regent__name" id="aboutSrName">[Name - to be supplied]</div>
-            <div class="ab-regent__meta" id="aboutSrMeta">Term: [academic year] • Campus: [campus]</div>
-            <p class="ab-regent__note" id="aboutSrNote">Intentionally empty. Replace with the official designation when appointed.</p>
+            <div class="ab-regent__name" id="aboutSrName">To be announced</div>
+            <div class="ab-regent__meta" id="aboutSrMeta">Term and campus are published once the appointment is confirmed</div>
+            <p class="ab-regent__note" id="aboutSrNote">The Student Regent carries the student position to the Board of Regents.</p>
           </article>
           <div class="ab-team">
             <h4 id="aboutDirHeading">Directors &amp; Secretariat</h4>
-            <p class="ab-note" id="aboutDirIntro">Supporting the Student Regent in consultations, records, and student concerns. Update when officially designated.</p>
+            <p class="ab-note" id="aboutDirIntro">Supporting the Student Regent in consultations, records, and student concerns.</p>
             <div class="ab-role">
-              <div><b>Executive Director</b><span id="aboutDirExecName">[Name — to be supplied]</span></div>
+              <div><b>Executive Director</b><span id="aboutDirExecName">To be announced</span></div>
               <span class="ab-tag ab-tag--red" id="aboutDirExecTag">OSR</span>
             </div>
             <div class="ab-role">
-              <div><b>Directors</b><span id="aboutDirNames">[Names — to be supplied]</span></div>
+              <div><b>Directors</b><span id="aboutDirNames">To be announced</span></div>
               <span class="ab-tag" id="aboutDirTag">TBD</span>
             </div>
             <div class="ab-role ab-role--dashed">
-              <div><b id="aboutCollegeTitle">College Representatives</b><span id="aboutCollegeDesc">Per-college coordination for consultation caravan and concerns intake. List updated per term.</span><span class="ab-mono" id="aboutCollegeRows">[Add rows as verified]</span></div>
+              <div><b id="aboutCollegeTitle">College Representatives</b><span id="aboutCollegeDesc">Per-college coordination for consultation caravan and concerns intake. List updated per term.</span><span class="ab-mono" id="aboutCollegeRows">Published per term as representatives are confirmed</span></div>
             </div>
           </div>
         </div>
@@ -2231,7 +2532,7 @@ img,svg{max-width:100%; height:auto}
             <a href="#board-meetings" data-nav class="ab-program__link">Board records →</a>
           </div>
         </div>
-        <p class="ab-note" id="aboutFeaturedNote">Replace with verified dates, venues, and outcomes. This mirrors PDF I. “Featured programs and initiatives (list)”.</p>
+        <p class="ab-note" id="aboutFeaturedNote">Dates, venues, and outcomes are published here as each activity is completed.</p>
       </section>
 
       <!-- 05 · Contact & links -->
@@ -2257,7 +2558,7 @@ img,svg{max-width:100%; height:auto}
               <div class="kv"><b>University</b> <span>Bulacan State University</span></div>
               <div class="kv"><b>Governing body</b> <span>Board of Regents</span></div>
               <div class="kv"><b>Campuses served</b> <span>All BulSU campuses</span></div>
-              <div class="kv"><b>Designation</b> <span>Updated when officially designated</span></div>
+              <div class="kv"><b>Designation</b> <span>Published once officially confirmed</span></div>
             </div>
             <p class="ab-note" id="aboutInfoNote">Fields are updated as official records are released.</p>
           </div>
@@ -2338,7 +2639,7 @@ img,svg{max-width:100%; height:auto}
           <div style="min-width:90px">
             <div class="mono" style="font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone)">Points left</div>
             <div style="display:flex; align-items:baseline; gap:6px; margin-top:2px">
-              <span id="pulsePointsLeft" style="font:700 28px 'Fraunces',serif; line-height:1; color:var(--red)">10</span>
+              <span id="pulsePointsLeft" style="font:700 28px var(--font-display); line-height:1; color:var(--red)">10</span>
               <span class="mono" style="font-size:11px; color:var(--stone)">of 10</span>
             </div>
           </div>
@@ -2348,7 +2649,7 @@ img,svg{max-width:100%; height:auto}
           </div>
           <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-left:auto">
             <button id="pulseReset" class="btn btn--sm btn--ghost">Reset</button>
-            <button id="pulseShowResult" class="btn btn--sm" disabled style="background:var(--red); border-color:var(--red); color:white; opacity:0.45">Show my build — use 10 points</button>
+            <button id="pulseShowResult" class="btn btn--sm btn--gold" disabled style="opacity:0.45">Show my build — use 10 points</button>
           </div>
         </div>
 
@@ -2358,13 +2659,14 @@ img,svg{max-width:100%; height:auto}
           <h3 style="margin:0; font-size:13px; font-weight:700">Where did you put your 10 points?</h3>
           <p class="small muted" style="margin:2px 0 10px">Personal preview only. Your build joins the public Pulse only if you submit it.</p>
           <div id="pulseLiveBars" class="pulse-livebars" style="min-height:40px"></div>
+          <p id="pulseLiveCaption" class="mono" style="font-size:11px; color:var(--red); margin:8px 0 0"></p>
           <div class="mono" style="font-size:10.5px; color:var(--stone); margin-top:8px">Visual weight shows your priorities. No chart library — just bars.</div>
         </div>
 
         <div id="pulseResult" hidden class="pulse-result reveal is-visible" style="position:relative; z-index:1; margin-top:16px">
           <div class="about-card" style="border-left:3px solid var(--red); background:var(--paper-2); margin-top:14px">
             <div class="eyebrow" style="color:var(--red)">Your result</div>
-            <h3 style="margin:4px 0 6px; font-family:'Fraunces',serif; font-size:18px; line-height:1.1">Your Ideal BulSU</h3>
+            <h3 style="margin:4px 0 6px; font-family:var(--font-display); font-size:18px; line-height:1.1">Your Ideal BulSU</h3>
             <p class="small muted" style="margin:0">Your 10-point allocation — university priorities, not a personality test.</p>
           </div>
           <div id="pulseResultBody" class="ideal-card"></div>
@@ -2372,7 +2674,7 @@ img,svg{max-width:100%; height:auto}
             <h4 style="margin:0; font-size:13px">Add your build to the BulSU Pulse?</h4>
             <p class="small muted" style="margin:4px 0 10px; line-height:1.5">Only your 7 numbers are sent — and only when you choose.</p>
             <div style="display:flex; gap:8px; flex-wrap:wrap">
-              <button id="pulseSubmit" class="btn btn--sm" style="background:var(--red); border-color:var(--red); color:white">Add to BulSU Pulse</button>
+              <button id="pulseSubmit" class="btn btn--sm btn--gold">Add to BulSU Pulse</button>
               <button id="pulseEdit" class="btn btn--sm btn--ghost">Keep editing</button>
             </div>
             <div id="pulseSubmitFeedback" class="mono" style="font-size:11px; color:var(--stone); margin-top:8px"></div>
@@ -2385,7 +2687,7 @@ img,svg{max-width:100%; height:auto}
         <div class="ideal-card ideal-card--head">
           <div style="min-width:0">
             <div class="eyebrow" style="color:var(--red)">BulSU Pulse</div>
-            <h3 style="margin:2px 0 4px; font-family:'Fraunces',serif; font-size:18px; line-height:1.15">What are students prioritizing?</h3>
+            <h3 style="margin:2px 0 4px; font-family:var(--font-display); font-size:18px; line-height:1.15">What are students prioritizing?</h3>
             <p class="small muted" style="margin:0">Points share = how students split their 10 points. It is a pulse, not a vote count.</p>
           </div>
           <div style="text-align:right; min-width:140px">
@@ -2403,7 +2705,7 @@ img,svg{max-width:100%; height:auto}
             <div id="pulseLiveDetail" class="small muted" style="margin-top:3px">Only real stored submissions are shown.</div>
           </div>
           <div style="text-align:right">
-            <div class="mono" style="font:700 22px 'Fraunces',serif; line-height:1" id="pulseGeneralStatusNumber">0</div>
+            <div class="mono" style="font:700 22px var(--font-display); line-height:1" id="pulseGeneralStatusNumber">0</div>
             <div class="mono" style="font-size:10.5px; color:var(--stone)">builds</div>
             <button id="pulseRefreshButton" class="btn btn--sm btn--ghost" type="button" style="margin-top:6px">Refresh</button>
           </div>
@@ -2685,7 +2987,7 @@ img,svg{max-width:100%; height:auto}
     <div class="modal__head">
       <div>
         <div class="eyebrow" id="modalEyebrow">Detail</div>
-        <div id="modalTitle" style="font-family:'Fraunces',serif; font-size:20px; line-height:1.15">Title</div>
+        <div id="modalTitle" style="font-family:var(--font-display); font-size:20px; line-height:1.15">Title</div>
         <div id="modalMeta" class="small muted" style="margin-top:4px"></div>
       </div>
       <button class="icon-btn" id="modalClose" aria-label="Close detail"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></button>
@@ -2772,7 +3074,43 @@ const fmtShort = iso=>{ const d=new Date(iso+"T12:00:00"); return {day:d.getDate
 const escapeHtml = s=> s.replace(/[&<>"']/g, m=>({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
 function daysAgo(iso){ return Math.floor((Date.now() - new Date(iso+"T12:00:00"))/86400000); }
 function highlight(text, q){ if(!q) return escapeHtml(text); const re=new RegExp("("+q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","ig"); return escapeHtml(text).replace(re, "<span class='highlight'>$1</span>"); }
-function toast(msg){ const wrap=$("#toastWrap"); const el=document.createElement("div"); el.className="toast"; el.setAttribute("role","status"); el.textContent=msg; wrap.appendChild(el); requestAnimationFrame(()=> el.classList.add("is-visible")); setTimeout(()=>{ el.classList.remove("is-visible"); setTimeout(()=> el.remove(), 240)}, 1800); }
+// Toasts de-duplicate themselves: the same sentence never stacks twice, and a
+// message that is already shown in a form's own status line (role="status" /
+// role="alert" / .error / .ok) is not repeated as a floating toast on top of it.
+const toastState = new Map();
+function toastInlineOwner(text){
+  for(const node of document.querySelectorAll('[role="status"],[role="alert"],.error,.ok')){
+    if(node.closest("#toastWrap")) continue;
+    if(node.hidden || node.offsetParent===null) continue;
+    if(String(node.textContent||"").trim()===text) return true;
+  }
+  return false;
+}
+function dismissToast(text){
+  const live=toastState.get(text); if(!live) return;
+  clearTimeout(live.hideTimer); clearTimeout(live.removeTimer);
+  live.el.classList.remove("is-visible");
+  live.removeTimer=setTimeout(()=>{ live.el.remove(); toastState.delete(text); }, 240);
+}
+function toast(msg){
+  const wrap=$("#toastWrap");
+  const text=String(msg==null?"":msg).trim();
+  if(!wrap || !text) return;
+  const live=toastState.get(text);
+  if(live){
+    // Already on screen: restart its timer instead of printing a second copy.
+    clearTimeout(live.hideTimer); clearTimeout(live.removeTimer);
+    live.el.classList.add("is-visible");
+    live.hideTimer=setTimeout(()=>dismissToast(text), 2600);
+    return;
+  }
+  if(toastInlineOwner(text)) return;
+  while(toastState.size>=3) dismissToast(toastState.keys().next().value);
+  const el=document.createElement("div"); el.className="toast"; el.setAttribute("role","status"); el.textContent=text;
+  wrap.appendChild(el); requestAnimationFrame(()=> el.classList.add("is-visible"));
+  const entry={ el, hideTimer:setTimeout(()=>dismissToast(text), 2600), removeTimer:null };
+  toastState.set(text, entry);
+}
 let saved = new Set();
 try{ const raw=localStorage.getItem("osr-saved"); if(raw) saved=new Set(JSON.parse(raw)); }catch(e){ try{console.warn("storage unavailable",e)}catch(_){} }
 function persistSaved(){ try{ localStorage.setItem("osr-saved", JSON.stringify([...saved])); }catch(e){} updateSavedCounts(); }
@@ -2860,6 +3198,47 @@ $("#dashSavedBtn")?.addEventListener("click", ()=>{
 });
 
 
+/* HERO MOTION — decorative only. The hero reads exactly the same with a
+   keyboard, a touch screen, or "reduce motion" turned on; nothing here carries
+   information and nothing blocks a click. */
+(function heroDynamics(){
+  const hero=document.querySelector(".hero");
+  const wrap=document.querySelector(".hero-wrap");
+  if(!hero || !wrap) return;
+  requestAnimationFrame(()=> hero.classList.add("is-in"));
+  const touchOnly=window.matchMedia("(hover:none) and (pointer:coarse)").matches;
+  const calm=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  if(touchOnly || calm) return;
+  const card=document.querySelector(".hero__card");
+  const cta=document.querySelector(".hero__actions .btn--red");
+  const clamp=(v,a,b)=> Math.max(a, Math.min(b, v));
+  let raf=0, gx=0, gy=0;
+  const paintGlow=()=>{ raf=0; wrap.style.setProperty("--gx", gx+"px"); wrap.style.setProperty("--gy", gy+"px"); };
+  wrap.addEventListener("pointermove", event=>{
+    const box=wrap.getBoundingClientRect();
+    gx=event.clientX-box.left; gy=event.clientY-box.top;
+    if(!raf) raf=requestAnimationFrame(paintGlow);
+    wrap.classList.add("is-pointing");
+    if(card){
+      const c=card.getBoundingClientRect();
+      const dx=(event.clientX-c.left)/c.width-0.5, dy=(event.clientY-c.top)/c.height-0.5;
+      card.style.setProperty("--cx", ((dx+0.5)*100).toFixed(1)+"%");
+      card.style.setProperty("--cy", ((dy+0.5)*100).toFixed(1)+"%");
+      const near=event.clientX>c.left-60 && event.clientX<c.right+60 && event.clientY>c.top-60 && event.clientY<c.bottom+60;
+      card.style.transform=near ? "perspective(900px) rotateX("+(-dy*2.2).toFixed(2)+"deg) rotateY("+(dx*2.4).toFixed(2)+"deg) translateY(-2px)" : "";
+    }
+    if(cta){
+      const r=cta.getBoundingClientRect();
+      const near=event.clientX>r.left-30 && event.clientX<r.right+30 && event.clientY>r.top-26 && event.clientY<r.bottom+26;
+      cta.style.transform=near ? "translate3d("+clamp((event.clientX-(r.left+r.width/2))/12,-3,3).toFixed(1)+"px, "+clamp((event.clientY-(r.top+r.height/2))/14,-2.5,2.5).toFixed(1)+"px, 0)" : "";
+    }
+  }, {passive:true});
+  wrap.addEventListener("pointerleave", ()=>{
+    wrap.classList.remove("is-pointing");
+    if(card) card.style.transform="";
+    if(cta) cta.style.transform="";
+  });
+})();
 const pages={"home":"page-home","announcements":"page-announcements","board-meetings":"page-board-meetings","initiatives":"page-initiatives","resources":"page-resources","help":"page-help","about":"page-about","search":"page-search","ideal-bulsu":"page-ideal-bulsu","academic-calendar":"page-academic-calendar","track":"page-track"};
 function setRoute(hash){
   const key=(hash||location.hash||"#home").replace("#","").split("?")[0].split("/")[0] || "home";
@@ -2936,7 +3315,7 @@ function renderCmd(q){
     ...RESOURCES.map(r=> ({label:r.title, href:"#resources", cat:r.category})),
   ];
   const filtered = qq ? items.filter(i=> (i.label+" "+i.cat).toLowerCase().includes(qq)) : items.slice(0,8);
-  list.innerHTML = filtered.map(i=> `<div class="cmd__item" role="option" data-href="${i.href}" data-id="${i.id||""}" data-type="${i.type||""}"><span><b>${escapeHtml(i.label)}</b><br><span>${escapeHtml(i.cat)}</span></span><span>→</span></div>`).join("") || `<div style="padding:16px; text-align:center; color:var(--stone)">No results for "${escapeHtml(q)}"</div>`;
+  list.innerHTML = filtered.map(i=> `<div class="cmd__item${i.href === "#ideal-bulsu" ? " cmd__item--ideal" : ""}" role="option" data-href="${i.href}" data-id="${i.id||""}" data-type="${i.type||""}"><span><b>${escapeHtml(i.label)}</b><br><span>${escapeHtml(i.cat)}</span></span><span>→</span></div>`).join("") || `<div style="padding:16px; text-align:center; color:var(--stone)">No results for "${escapeHtml(q)}"</div>`;
   list.querySelectorAll(".cmd__item").forEach(el=> el.addEventListener("click", ()=>{
     const href=el.dataset.href, id=el.dataset.id, type=el.dataset.type;
     closeCmd();
@@ -3077,7 +3456,8 @@ $("#concernForm").addEventListener("submit", async e=>{
       <p>Save this code. It is the only way to check your concern if you submitted anonymously. It is also saved on this device.</p>
       <div class="row"><button class="btn btn--sm btn--ghost" type="button" data-copy-code="${escapeHtml(result.code)}">Copy code</button><a class="btn btn--sm btn--red" href="#track?code=${encodeURIComponent(result.code)}">Track it</a></div>
     </div>`;
-    toast("Concern submitted — tracking code "+result.code);
+    // The card above already reports the result next to the button — no second
+    // floating prompt on top of it.
     safeRemove("osr-concern");
     form.reset(); updateAnonState();
     document.querySelectorAll("#concernForm [data-step]").forEach(el=> el.hidden = el.dataset.step!=="3");
@@ -3157,10 +3537,17 @@ window.addEventListener("DOMContentLoaded", ()=>{ renderTrackSaved(); trackFromH
 renderTrackSaved();
 
 /* ── Rate the OSR (name + student number required) ───────────────────────── */
+let ratingSending=false, ratingSent=false;
 document.getElementById("helpFeedbackForm")?.addEventListener("submit", async e=>{
   e.preventDefault();
   const form=e.target, fd=new FormData(form), msg=document.getElementById("helpFeedbackMsg");
-  const fail=text=>{ msg.innerHTML=`<span class="error" role="alert">${escapeHtml(text)}</span>`; toast(text); };
+  if(ratingSending) return;
+  // A stray extra tap right after a recorded rating must not turn into a
+  // "name is required" error on the form that was just emptied.
+  if(ratingSent) return;
+  // The status line under the button is the one prompt for this form: the same
+  // sentence is never repeated as a floating toast, so nothing overlaps.
+  const fail=text=>{ msg.innerHTML=`<span class="error" role="alert">${escapeHtml(text)}</span>`; };
   const name=(fd.get("fb_name")||"").trim(), sn=(fd.get("fb_student_number")||"").trim();
   if(name.length<2) return fail("Your full name is required to rate OSR services.");
   if(!sn) return fail("Your student number is required to rate OSR services.");
@@ -3169,6 +3556,7 @@ document.getElementById("helpFeedbackForm")?.addEventListener("submit", async e=
   if(!fd.get("rating")) return fail("Choose a rating from 1 to 5.");
   if(!(fd.get("feedback")||"").trim()) return fail("Add a short comment about the service.");
   const button=form.querySelector('[type="submit"]');
+  ratingSending=true;
   button.disabled=true; button.textContent="Sending…";
   try{
     const response=await fetch("/api/ratings",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({
@@ -3177,11 +3565,14 @@ document.getElementById("helpFeedbackForm")?.addEventListener("submit", async e=
     const result=await response.json().catch(()=>({}));
     if(!response.ok) throw new Error(result.error||"Your rating could not be sent. Please try again.");
     msg.innerHTML=`<span class="ok" role="status">Thank you. Your rating was recorded and will be included in the OSR's published service summary (names and student numbers are never published).</span>`;
-    toast("Rating sent — thank you");
+    ratingSent=true;
     form.reset();
-  }catch(error){ fail(error.message); }
-  finally{ button.disabled=false; button.textContent="Send rating"; }
+  }catch(error){ fail(error.message||"Your rating could not be sent. Please try again."); }
+  finally{ ratingSending=false; button.disabled=false; button.textContent="Send rating"; }
 });
+// Typing again means a new rating: the "just sent" state ends.
+document.getElementById("helpFeedbackForm")?.addEventListener("input", ()=>{ ratingSent=false; });
+document.getElementById("helpFeedbackForm")?.addEventListener("change", ()=>{ ratingSent=false; });
 // Shared contact details — defaults below; the admin CMS (Settings → Website
 // settings) can override them at runtime via /api/settings/public.
 window.OSR_CONTACT = window.OSR_CONTACT || {
@@ -3749,16 +4140,26 @@ document.addEventListener("visibilitychange", ()=>{
   if(!document.hidden && pulsePulseTabIsActive()) pulseRefreshLive();
 });
 
+function pulseTopKey(){
+  // The area a student put the most points into — used to mark their priority.
+  let top=null, topValue=0;
+  PULSE_CATEGORIES.forEach(cat=>{ const value=pulsePoints[cat.key]||0; if(value>topValue){ top=cat.key; topValue=value; } });
+  return topValue>0 ? top : null;
+}
+
 function pulseRenderAlloc(){
   const wrap=document.getElementById("pulseAlloc");
   if(!wrap) return;
   const left=pulseLeft();
+  const topKey=pulseTopKey();
   wrap.innerHTML=PULSE_CATEGORIES.map(cat=>{
     const value=pulsePoints[cat.key]||0;
     const percent=value*10;
-    return `<div class="pulse-alloc-row" data-cat="${cat.key}">
+    const state=[value>0?"is-funded":"", cat.key===topKey?"is-priority":""].filter(Boolean).join(" ");
+    return `<div class="pulse-alloc-row${state?" "+state:""}" data-cat="${cat.key}">
+      <span class="pulse-alloc-row__tally" aria-hidden="true">${value?`+${value}`:""}</span>
       <div class="pulse-alloc-row__head">
-        <div class="pulse-alloc-row__title"><span class="pulse-alloc-row__icon" aria-hidden="true">${cat.icon}</span><span>${escapeHtml(cat.label)}</span></div>
+        <div class="pulse-alloc-row__title"><span class="pulse-alloc-row__icon" aria-hidden="true">${cat.icon}</span><span>${escapeHtml(cat.label)}</span>${cat.key===topKey?`<span class="pulse-alloc-row__flag">Your priority</span>`:""}</div>
         <div class="pulse-counter" role="group" aria-label="${escapeHtml(cat.label)} point allocation controls">
           <button class="pulse-btn" type="button" data-minus="${cat.key}" aria-label="Decrease ${escapeHtml(cat.label)} allocation" ${value<=0?"disabled":""}>−</button>
           <span class="pulse-num" aria-live="polite">${value}</span>
@@ -3772,6 +4173,14 @@ function pulseRenderAlloc(){
   }).join("");
   wrap.querySelectorAll("[data-minus]").forEach(button=>button.addEventListener("click", ()=>pulseChange(button.dataset.minus,-1)));
   wrap.querySelectorAll("[data-plus]").forEach(button=>button.addEventListener("click", ()=>pulseChange(button.dataset.plus,1)));
+}
+
+function pulseBump(element, className, duration=360){
+  // One-shot animation class. Uses only classList + setTimeout so it also works
+  // in the headless test harness, which has no layout engine or rAF.
+  if(!element || !element.classList || !className) return;
+  element.classList.add(className);
+  setTimeout(()=>{ try{ element.classList.remove(className); }catch{} }, duration);
 }
 
 function pulseChange(key, delta){
@@ -3790,6 +4199,8 @@ function pulseChange(key, delta){
   requestAnimationFrame(()=>{
     const row=document.querySelector(`.pulse-alloc-row[data-cat="${key}"] .pulse-num`);
     if(row){ row.classList.remove("bump"); void row.offsetWidth; row.classList.add("bump"); setTimeout(()=> row.classList.remove("bump"), 220); }
+    const card=document.querySelector(`.pulse-alloc-row[data-cat="${key}"]`);
+    if(card) pulseBump(card, "is-bumped", 420);
   });
 }
 
@@ -3809,9 +4220,12 @@ function pulseUpdateChrome(){
   if(fill) fill.style.width=(total*10)+"%";
   if(btn){
     const ready=total===10;
+    const wasReady=btn.classList.contains("is-ready");
     btn.disabled=!ready;
     btn.style.opacity=ready ? "1" : "0.45";
     btn.textContent=ready ? "Show my build" : `Show my build — ${left} point${left===1?"":"s"} left`;
+    btn.classList.toggle("is-ready", ready);
+    if(ready && !wasReady) pulseBump(btn, "is-celebrating", 1400);
   }
   pulseRenderAlloc();
   pulseRenderLiveMap();
@@ -3819,7 +4233,10 @@ function pulseUpdateChrome(){
   const res=document.getElementById("pulseResult");
   if(res && total!==10) res.hidden=true;
   const pointsBar=document.querySelector(".pulse-pointsbar");
-  if(pointsBar) pointsBar.style.borderColor=total===10 ? "var(--red)" : "var(--line)";
+  if(pointsBar){
+    pointsBar.style.borderColor=total===10 ? "#D9BC6E" : "var(--line)";
+    pointsBar.classList.toggle("is-complete", total===10);
+  }
 }
 
 function pulseRenderLiveMap(){
@@ -3830,9 +4247,15 @@ function pulseRenderLiveMap(){
     wrap.innerHTML='<div class="small muted" style="padding:6px 0">Allocate points to preview your distribution.</div>';
     return;
   }
+  const topKey=pulseTopKey();
+  const caption=document.getElementById("pulseLiveCaption");
+  if(caption){
+    const top= PULSE_CATEGORIES.find(category=>category.key===topKey);
+    caption.textContent = top ? `Your top priority right now: ${top.label} (${pulsePoints[topKey]} of 10 points).` : "";
+  }
   wrap.innerHTML=PULSE_CATEGORIES.map(category=>{
     const value=pulsePoints[category.key]||0;
-    return `<div class="pulse-live-row">
+    return `<div class="pulse-live-row${category.key===topKey?" is-top":""}">
       <span class="pulse-live-row__label">${escapeHtml(category.label)}</span>
       ${pulseProgressMarkup(`${category.label} allocation`, value, 10, `${value} of 10 points`, "pulse-live-row__bar", "pulse-live-row__fill")}
       <span class="pulse-live-row__val">${value}/10</span>
@@ -4045,17 +4468,17 @@ function pulseRenderPeriodView(){
     <div class="pulse-period-summary" style="margin-top:12px">
       <div style="border:1px solid var(--line); border-radius:8px; background:var(--paper-2); padding:10px">
         <div class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone)">Top priority</div>
-        <div style="font:700 14px 'Fraunces',serif; margin-top:2px">${escapeHtml(dist.top.label)}</div>
+        <div style="font:700 14px var(--font-display); margin-top:2px">${escapeHtml(dist.top.label)}</div>
         <div class="mono" style="font-size:11px; color:var(--stone)">${dist.top.pts} pts • ${dist.top.pct}%</div>
       </div>
       <div style="border:1px solid var(--line); border-radius:8px; background:white; padding:10px">
         <div class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone)">Second priority</div>
-        <div style="font:600 13px 'Fraunces',serif; margin-top:2px">${escapeHtml(dist.second.label)}</div>
+        <div style="font:600 13px var(--font-display); margin-top:2px">${escapeHtml(dist.second.label)}</div>
         <div class="mono" style="font-size:11px; color:var(--stone)">${dist.second.pts} pts • ${dist.second.pct}%</div>
       </div>
       <div style="border:1px solid var(--line); border-radius:8px; background:white; padding:10px">
         <div class="mono" style="font-size:10px; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone)">Builds in period</div>
-        <div style="font:700 18px 'Fraunces',serif; margin-top:2px">${agg.responses}</div>
+        <div style="font:700 18px var(--font-display); margin-top:2px">${agg.responses}</div>
         <div class="mono" style="font-size:11px; color:var(--stone)">${escapeHtml(pulsePeriodLabel(period))}</div>
       </div>
     </div>
@@ -5294,6 +5717,7 @@ window.updateUpNext = typeof updateUpNext === 'function' ? updateUpNext : undefi
       {sel: '.quick a[href="#initiatives"]', label: 'Initiatives', desc: 'Projects — ongoing & completed.'},
       {sel: '.quick a[href="#resources"]', label: 'Resources', desc: 'Handbook, policies, support docs.'},
       {sel: '.quick a[href="#help"]', label: 'Student Help', desc: 'Raise a concern or contact.'},
+      {sel: '.quick a[href="#ideal-bulsu"]', label: 'Build Your Ideal BulSU', desc: 'Split 10 points — it joins the public Pulse.'},
       {sel: '.dash-stats a[href="#announcements"]', label: 'Announcements count', desc: 'Live total — tap to open archive.'},
       {sel: '#dashCalendar', label: 'Upcoming calendar', desc: 'Next events — tap Calendar for full AY 2026-2027.'}
     ],
@@ -5601,6 +6025,106 @@ window.updateUpNext = typeof updateUpNext === 'function' ? updateUpNext : undefi
     });
   },{rootMargin:'-35% 0px -55% 0px'});
   buttons.forEach(button=>{ const el=document.getElementById(button.dataset.aboutJump); if(el) observer.observe(el); });
+})();
+</script>
+
+<script>
+/* Dashboard: the gold "Build Your Ideal BulSU" band and its live Pulse snapshot.
+   The snapshot reuses the public aggregates endpoint — it never shows an
+   individual build, only how the latest period is distributed. */
+(function(){
+  const CATEGORIES = [
+    { key:'learning', label:'Learning' },
+    { key:'campus', label:'Campus' },
+    { key:'mobility', label:'Mobility' },
+    { key:'connectivity', label:'Connectivity' },
+    { key:'wellbeing', label:'Well-being' },
+    { key:'cultureCommunity', label:'Culture' },
+    { key:'studentVoice', label:'Student voice' }
+  ];
+  const buildsEl = document.getElementById('buildCtaBuilds');
+  const periodEl = document.getElementById('buildCtaPeriod');
+  const topEl = document.getElementById('buildCtaTop');
+  const barsEl = document.getElementById('buildCtaBars');
+  if(!buildsEl || !barsEl) return;
+
+  function categoryKey(value){
+    const name = String(value || '').trim().toLowerCase();
+    const match = CATEGORIES.find(category => category.key.toLowerCase() === name || category.label.toLowerCase() === name);
+    return match ? match.key : null;
+  }
+  function periodWords(period){
+    const match = /^(\d{4})-(\d{2})$/.exec(String(period || ''));
+    if(!match) return 'Latest period';
+    const date = new Date(Number(match[1]), Number(match[2]) - 1, 1);
+    return date.toLocaleDateString('en-PH', { month:'long', year:'numeric' });
+  }
+  function render(rows){
+    if(!Array.isArray(rows) || !rows.length){
+      buildsEl.textContent = '0';
+      periodEl.textContent = 'No builds yet';
+      topEl.textContent = 'Be the first to build an Ideal BulSU — your 10 points start the record.';
+      barsEl.innerHTML = '';
+      return;
+    }
+    const periods = {};
+    rows.forEach(row => {
+      const period = String(row.period || '');
+      const key = categoryKey(row.category);
+      if(!/^\d{4}-\d{2}$/.test(period) || !key) return;
+      const responses = Math.max(0, Math.floor(Number(row.response_count) || 0));
+      if(!responses) return;
+      const entry = periods[period] || (periods[period] = { period, responses: 0, points: {} });
+      entry.responses = Math.max(entry.responses, responses);
+      entry.points[key] = Math.max(0, Math.floor(Number(row.total_points) || 0));
+    });
+    const latest = Object.values(periods).sort((a, b) => b.period.localeCompare(a.period))[0];
+    if(!latest){
+      buildsEl.textContent = '0';
+      periodEl.textContent = 'No builds yet';
+      topEl.textContent = 'Be the first to build an Ideal BulSU — your 10 points start the record.';
+      barsEl.innerHTML = '';
+      return;
+    }
+    const totalPoints = Object.values(latest.points).reduce((sum, value) => sum + value, 0);
+    const ranked = CATEGORIES
+      .map(category => ({ ...category, points: latest.points[category.key] || 0 }))
+      .filter(category => category.points > 0)
+      .sort((a, b) => b.points - a.points);
+    buildsEl.textContent = String(latest.responses);
+    periodEl.textContent = periodWords(latest.period);
+    topEl.textContent = ranked.length
+      ? `Students put the most weight on ${ranked[0].label} this period.`
+      : 'Waiting for the first points this period.';
+    const max = Math.max(1, ...ranked.map(category => category.points));
+    barsEl.innerHTML = ranked.slice(0, 4).map(category => {
+      const share = totalPoints ? Math.round((category.points / totalPoints) * 100) : 0;
+      return `<div class="ideal-cta__bar">
+        <span class="ideal-cta__bar-label">${category.label}</span>
+        <span class="ideal-cta__bar-track"><span class="ideal-cta__bar-fill" style="width:${Math.max(6, Math.round((category.points / max) * 100))}%"></span></span>
+        <span class="ideal-cta__bar-val">${share}%</span>
+      </div>`;
+    }).join('');
+  }
+
+  window.addEventListener('cms:pulse-updated', event => render(event.detail ? event.detail.rows : null));
+  if(Array.isArray(window.__CMS_PULSE)) render(window.__CMS_PULSE);
+  // The integration script publishes aggregates once it has them; if this band
+  // is still empty (static host or slow start) ask the endpoint directly once.
+  const ask = () => fetch('/api/public/pulse-aggregates', { headers:{ Accept:'application/json' }, cache:'no-store' })
+    .then(response => response.ok ? response.json() : null)
+    .then(data => { if(Array.isArray(data)) render(data); })
+    .catch(() => {});
+  if(!Array.isArray(window.__CMS_PULSE)) ask();
+  window.addEventListener('DOMContentLoaded', () => { if(!Array.isArray(window.__CMS_PULSE)) ask(); }, { once:true });
+
+  // "See what students prioritize" opens the Pulse tab, not just the page.
+  document.querySelectorAll('[data-ideal-pulse]').forEach(link => link.addEventListener('click', () => {
+    setTimeout(() => {
+      const tab = document.querySelector('.pulse-tab[data-tab="pulse"]');
+      if(tab && !tab.classList.contains('is-active')) tab.click();
+    }, 260);
+  }));
 })();
 </script>
 <script src="/js/cms-integration.js"></script>

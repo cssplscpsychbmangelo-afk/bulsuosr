@@ -128,6 +128,74 @@ Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
 
 ## Recent fixes
 
+- **The hero no longer looks muddy, and it responds to the pointer.** The
+  masthead used to stack a grey wash, a pink 28px grid and a masked fade on top
+  of each other; it is now one warm wash plus seal line-work in the far corner
+  (concentric arcs, line not dirt) and a thin red rule on top. On a mouse the
+  background light follows the cursor, the mandate card leans a degree or two
+  and carries a light where the pointer is, the fact chips answer as chips, and
+  the primary button gets one sheen and a small drift — the same motion
+  vocabulary as the gold Build Your Ideal BulSU button. Touch-only screens and
+  `prefers-reduced-motion` skip all of it, and it is decoration only: nothing
+  moves that carries information, and no control is blocked.
+- **The hero title has its own typeface again, and the site keeps Fraunces.**
+  `--font-display` is back to Fraunces, so section headings, card titles, About,
+  the Ideal BulSU board and the admin screens all read as before. Only the home
+  hero title uses the `--font-hero` token: **Bricolage Grotesque at 800** —
+  bold, with tight apertures and squared bowls, so the masthead reads confident
+  rather than like a stock corporate sans. It is self-hosted as one 21 KB latin
+  subset (`osr-website/fonts/bricolage-grotesque-800.woff2`) so the title never
+  waits on a third-party request; the fallback stack is Archivo Black → Impact →
+  Arial Black. Size and break are unchanged: `clamp(42px, 5.4vw, 64px)`, two
+  lines, 34–64 px across 360–1440 px. `font-preview.html` still compares the
+  alternates on the real hero (Archivo, Anton, Oswald, Merriweather, Playfair,
+  Zilla Slab, Libre Franklin, Fraunces) — each is a token change plus its font
+  file.
+- **“Build Your Ideal BulSU” now looks the same everywhere — and the dashboard
+  row is balanced.** The quick-access row held five tiles in a four-column grid,
+  so *Track My Concern* sat alone on a second row. A sixth tile — Build Your
+  Ideal BulSU — joins it, and the row lays out three across (two on a tablet,
+  one on a phone) so every row is full. That tile, the dashboard band’s button,
+  the menu link, the command-palette entries and the builder’s own *Show my
+  build* / *Add to BulSU Pulse* buttons now share one gold accent (`.btn--gold`
+  plus gold tokens in `:root`), which keeps the student-consultation flow
+  recognisable without touching anything else. Motion stays inside the existing
+  vocabulary — hover lift, a single sheen sweep, the band’s slow gold ring — and
+  switches off under `prefers-reduced-motion`.
+- **One rating now produces one prompt.** Submitting “Rate the BulSU OSR” used
+  to print the same sentence twice: the message under the button *and* a
+  floating toast stacked on top of it. Repeated taps queued more copies that
+  overlapped each other, and the button stayed live while the request was in
+  flight, so a single student could post several ratings. The rating form now
+  reports through its own status line only, the send button locks until the
+  request finishes, and a stray tap right after a recorded rating no longer
+  turns into a “name is required” error on the emptied form. Toasts site-wide
+  de-duplicate themselves (the same sentence never stacks twice), skip a
+  message already shown in a form status, cap at three on screen, and keep a
+  width that fits a phone. `OSR/server/test/rating-prompt.test.mjs` checks all
+  of this on every `npm test`.
+- **`/admin` never pre-adds an email or password.** The sign-in form shipped
+  with a placeholder account in the email field, and the browser could restore
+  saved credentials into both fields. Both inputs (and the form) now declare
+  `autocomplete="off"`, the boot path blanks whatever the browser restored, a
+  failed sign-in clears the password field, and creating the first account no
+  longer pre-fills the next sign-in.
+- **Service ratings in the admin now work on a phone.** The filters, stats and
+  wide response table were being laid out inside a grid column that could not
+  shrink, so the whole page scrolled sideways and the numbers were cut off.
+  Sections now cap their column (`minmax(0,1fr)`), the filter bar stacks with
+  full-width controls, the average-rating card spans the row with the counters
+  two-up underneath, and below 680px the responses table becomes one labelled
+  card per rating (date, student, service, stars, comment, Delete) with no
+  sideways scrolling. Long lists paint 50 responses at a time behind a
+  *Show more* button, so a big archive opens fast on a phone.
+- **The About page reads as finished copy.** The header badge said “Easy to
+  update” and the page carried template notes (“Structured information that is
+  easy to update…”, “[Name — to be supplied]”, “Replace with verified dates…”).
+  Those are replaced with pre-written wording in the site's own voice — the
+  badge now reads “Student representation” and unconfirmed roles read “To be
+  announced”. Administrators can still override every line from *Admin → About
+  OSR*; an empty field keeps the wording built into the site.
 - **A stray leftover script fragment was removed from `/admin`.** A duplicated
   `</script></body></html>` tail followed by a bare `AndSetup();` call sat after
   the admin page's closing `</html>`. Nothing executed it, but it was removed so

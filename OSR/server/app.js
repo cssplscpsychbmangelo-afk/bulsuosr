@@ -24,6 +24,10 @@ import dashboardRoutes from './routes/dashboard.js';
 import adminUsersRoutes from './routes/admin-users.js';
 import bulkRoutes from './routes/bulk.js';
 
+// The admin dashboard lives on a single unguessable path. Set ADMIN_PATH to
+// change it; the Netlify build writes the same value into _redirects.
+export const ADMIN_PATH = (process.env.ADMIN_PATH || '/OSRAdminControl2026').replace(/\/+$/, '') || '/OSRAdminControl2026';
+
 export function createApp(db, { mediaStore } = {}) {
 const app = express();
 const isProduction = (process.env.NODE_ENV === 'production' || !!process.env.AWS_LAMBDA_FUNCTION_NAME);
@@ -105,12 +109,15 @@ app.use('/api', (req, res, next) => {
 if (!mediaStore) fs.mkdirSync(uploadDir, { recursive: true });
 if (!mediaStore) {
   // The admin page contains both the sign-in/setup view and the dashboard.
-  // Serving login.html here would bounce /admin ↔ /admin/ because that legacy
-  // file redirects back to the admin root.
+  // It is served under ADMIN_PATH (/OSRAdminControl2026 by default) so the
+  // dashboard is not sitting on an address anyone can guess; the old /admin
+  // address is gone, and nothing in the public site links to the new one.
+  // Serving login.html here would bounce the admin root around, so the single
+  // index.html answers every admin URL.
   const sendAdmin = (req, res) => res.sendFile(path.join(adminDir, 'index.html'));
-  app.get(['/admin', '/admin/', '/admin/login', '/admin/login.html'], sendAdmin);
+  app.get([ADMIN_PATH, `${ADMIN_PATH}/`, `${ADMIN_PATH}/login`, `${ADMIN_PATH}/login.html`], sendAdmin);
   app.use(express.static(publicDir));
-  if (fs.existsSync(adminDir)) app.use('/admin', express.static(adminDir, { index: false, redirect: false }));
+  if (fs.existsSync(adminDir)) app.use(ADMIN_PATH, express.static(adminDir, { index: false, redirect: false }));
 }
 if (!mediaStore) app.use('/uploads', express.static(uploadDir));
 
@@ -186,8 +193,9 @@ app.get('/api/public/:type', async (req, res) => {
 app.get('/api/health', (req, res) => res.json({ ok: true, time: new Date().toISOString() }));
 app.use('/api', (req, res) => res.status(404).json({ error: 'API route not found' }));
 
-// Fallback for SPA admin
-app.get('/admin/{*path}', (req, res) => {
+// Fallback for the single-page admin: every sub-path loads the admin page so
+// the dashboard's client-side routing keeps working on refresh.
+app.get(`${ADMIN_PATH}/{*path}`, (req, res) => {
   const adminPage = path.join(adminDir, 'index.html');
   if (fs.existsSync(adminPage)) return res.sendFile(adminPage);
   res.status(404).send('Admin not found');
