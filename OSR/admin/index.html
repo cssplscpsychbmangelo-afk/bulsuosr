@@ -121,7 +121,6 @@ img{display:block;max-width:100%}
 .topbar-nav-link{border:0;background:transparent;color:var(--stone);font-weight:550;font-size:12px;padding:5px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;transition:all .15s}
 .topbar-nav-link:hover{color:var(--ink);background:rgba(255,255,255,0.7)}
 .topbar-nav-link.is-active{color:var(--red-dark);background:var(--white);font-weight:600;box-shadow:0 1px 2px rgba(17,18,20,0.06)}
-@media(max-width:1120px){.topbar-nav{display:none}}
 .topbar-actions{display:flex;align-items:center;gap:9px;margin-left:auto;flex-shrink:0}
 .site-short{display:none}
 .admin-identity{max-width:260px;margin-right:3px;text-align:right;line-height:1.25}
@@ -145,7 +144,7 @@ img{display:block;max-width:100%}
 .sidebar-logout{display:none;margin-top:10px}
 .nav-backdrop{display:none}
 .mobile-tab-strip{display:none}
-@media(max-width:1120px){
+@media(max-width:860px){
   .mobile-tab-strip{display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;padding:4px 0 16px;margin-bottom:8px;border-bottom:1px solid var(--line)}
   .mobile-tab-strip::-webkit-scrollbar{display:none}
   .mobile-tab-strip .topbar-nav-link{padding:6px 12px;border:1px solid var(--line);background:var(--white);border-radius:6px;font-size:12px}
@@ -283,16 +282,58 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
 .mini-stat strong{display:block;margin-top:6px;font:700 24px 'Fraunces',Georgia,serif}
 .contact-grid{display:grid;grid-template-columns:minmax(320px,1fr) minmax(300px,.85fr);gap:18px;align-items:start}
 .contact-grid .form{width:100%}
-.about-admin-grid{display:grid;grid-template-columns:minmax(340px,1fr) minmax(300px,.8fr);gap:18px;align-items:start}
-.about-admin-grid .form{width:100%}
-.list-editor{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
-.list-editor__head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.list-editor__head h4{margin:0;font:600 12px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--red-dark)}
+.about-editor{display:grid;grid-template-columns:240px minmax(0,1fr);gap:20px;align-items:start}
+.about-editor__nav{position:sticky;top:88px;display:grid;gap:4px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--white)}
+.about-editor__navlabel{margin:4px 8px 6px;font:600 10px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--stone)}
+.about-nav-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;text-align:left;padding:9px 10px;border:1px solid transparent;border-radius:8px;background:transparent;cursor:pointer}
+.about-nav-item:hover{background:var(--paper)}
+.about-nav-item.is-active{background:var(--red-soft);border-color:#E7B3BC}
+.about-nav-item__title{font-weight:650;font-size:13px;display:flex;align-items:center;gap:6px}
+.about-nav-item.is-active .about-nav-item__title{color:var(--red-dark)}
+.about-nav-item__hint{grid-column:1;font-size:11px;color:var(--stone);line-height:1.3}
+.about-nav-item__count{grid-column:2;grid-row:1/3;align-self:center;font:500 10px 'IBM Plex Mono',monospace;color:var(--stone);white-space:nowrap}
+.about-editor__body{display:grid;gap:14px;min-width:0}
+.about-pane{display:grid;gap:16px;padding:22px;border:1px solid var(--line);border-top:4px solid var(--red);border-radius:12px;background:var(--white)}
+.about-pane__head h3{margin:0;font:600 20px/1.2 'Fraunces',Georgia,serif}
+.about-pane__head p{margin:4px 0 0;color:var(--stone);font-size:12.5px}
+.about-pane__fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.about-pane label,.list-editor__row label{display:grid;gap:6px;color:var(--ink-soft);font-weight:600;font-size:12px;min-width:0}
+.about-pane__fields label:has(textarea),.about-pane__fields label:has(small){grid-column:1/-1}
+.about-pane input,.about-pane textarea,.about-pane select{width:100%;min-height:42px;border:1px solid var(--control);border-radius:8px;background:var(--white);color:var(--ink);padding:9px 12px}
+.about-pane textarea{min-height:92px;resize:vertical}
+.about-pane input:focus,.about-pane textarea:focus,.about-pane select:focus{border-color:var(--red);outline:0;box-shadow:0 0 0 3px rgba(166,25,46,.14)}
+.about-pane small{color:var(--stone);font-size:11px;font-weight:400}
+.about-photo-pick{min-height:36px!important;font-size:12px;color:var(--stone)!important}
+.list-editor{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.list-editor__head h4{margin:0;display:flex;align-items:center;gap:8px;font:600 12px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--red-dark)}
+.list-editor__head .count{font-weight:500;color:var(--stone);background:var(--white);border:1px solid var(--line);border-radius:999px;padding:1px 8px}
 .list-editor__rows{display:grid;gap:10px}
-.list-editor__row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--white)}
-.list-editor__row label{display:grid;gap:6px;color:var(--ink-soft);font-weight:600;font-size:11.5px}
+.list-editor__row{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--white)}
+.row-head{display:flex;align-items:center;gap:10px;min-width:0}
+.row-title{flex:1;min-width:0;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-tools{display:flex;gap:2px;flex:none}
+.row-remove{color:var(--red-dark)}
+.row-avatar{width:36px;height:36px;flex:none;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:var(--red-soft);color:var(--red-dark);font:600 13px 'Fraunces',Georgia,serif}
+.row-avatar img{width:100%;height:100%;object-fit:cover}
+.row-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.row-fields .wide{grid-column:1/-1}
 .list-editor__row textarea{min-height:62px}
-.list-editor__row [data-remove-row]{grid-column:1/-1;justify-self:start}
+.list-editor__add{justify-self:start;border-style:dashed}
+.list-editor__empty{margin:0;padding:14px;border:1px dashed var(--line);border-radius:8px;color:var(--stone);font-size:12.5px;text-align:center;background:var(--white)}
+.about-savebar{position:sticky;bottom:12px;z-index:5;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.96);box-shadow:var(--shadow-soft)}
+.about-savebar__state{margin-right:auto;font:500 11px 'IBM Plex Mono',monospace;color:var(--stone)}
+.about-savebar__state.is-dirty{color:var(--amber)}
+@media(max-width:980px){
+  .about-editor{grid-template-columns:minmax(0,1fr)}
+  .about-editor__nav{position:static;display:flex;overflow-x:auto;scrollbar-width:none;padding:6px}
+  .about-editor__navlabel,.about-nav-item__hint,.about-nav-item__count{display:none}
+  .about-nav-item{flex:none;white-space:nowrap}
+}
+@media(max-width:640px){
+  .about-pane{padding:16px}
+  .about-pane__fields,.row-fields{grid-template-columns:minmax(0,1fr)}
+  .about-savebar .btn--quiet{display:none}
+}
 .list-editor__empty{color:var(--stone);font-size:11.5px}
 .preview-card{display:grid;gap:9px;border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:10px;background:var(--white);padding:18px}
 .preview-card h3{margin:0 0 4px}
@@ -401,6 +442,22 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
   html{scroll-behavior:auto}
   *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* Status filter chips and per-row overflow menu (fewer buttons per record) */
+.status-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.status-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--white);font-weight:600;font-size:12px;color:var(--stone);cursor:pointer}
+.status-chip span{font:500 10.5px 'IBM Plex Mono',monospace;padding:1px 6px;border-radius:999px;background:var(--paper)}
+.status-chip:hover{border-color:var(--ink-soft);color:var(--ink)}
+.status-chip.is-active{border-color:var(--red);background:var(--red-soft);color:var(--red-dark)}
+.status-chip.is-active span{background:var(--white)}
+.more-menu{position:relative}
+.more-menu summary{list-style:none}
+.more-menu summary::-webkit-details-marker{display:none}
+.more-menu__list{position:absolute;right:0;top:calc(100% + 4px);z-index:20;min-width:160px;display:grid;padding:4px;border:1px solid var(--line);border-radius:8px;background:var(--white);box-shadow:var(--shadow-soft)}
+.more-menu__list a,.more-menu__list button{display:block;width:100%;text-align:left;padding:8px 10px;border:0;border-radius:6px;background:transparent;color:var(--ink);font-size:13px;cursor:pointer}
+.more-menu__list a:hover,.more-menu__list button:hover{background:var(--paper)}
+.more-menu__list [data-archive]{color:var(--red-dark)}
+.topbar-brand{margin-right:auto}
 </style>
 </head>
 <body>
@@ -483,20 +540,6 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
       <img class="topbar-logo" src="/osr-logo.png" alt=""/>
       <span class="topbar-brand-copy"><b>OSR Administration</b><span>Content workspace</span></span>
     </a>
-    <nav class="topbar-nav" id="topbarNav" aria-label="Quick workspace navigation">
-      <button class="topbar-nav-link is-active" type="button" data-tab="overview" aria-current="page">Overview</button>
-      <button class="topbar-nav-link" type="button" data-tab="activity">Activity</button>
-      <button class="topbar-nav-link" type="button" data-tab="announcements">Announcements</button>
-      <button class="topbar-nav-link" type="button" data-tab="board">Board</button>
-      <button class="topbar-nav-link" type="button" data-tab="initiatives">Initiatives</button>
-      <button class="topbar-nav-link" type="button" data-tab="resources">Resources</button>
-      <button class="topbar-nav-link" type="button" data-tab="calendar">Calendar</button>
-      <button class="topbar-nav-link" type="button" data-tab="media">Media</button>
-      <button class="topbar-nav-link" type="button" data-tab="contact">Contact</button>
-      <button class="topbar-nav-link" type="button" data-tab="about">About</button>
-      <button class="topbar-nav-link" type="button" data-tab="pulse">Pulse</button>
-      <button class="topbar-nav-link" type="button" data-tab="settings">Settings</button>
-    </nav>
     <div class="topbar-actions">
       <div class="admin-identity"><span>Signed in as</span><strong id="adminEmail"></strong></div>
       <a href="/" target="_blank" rel="noopener" class="btn btn--ghost btn--sm topbar-site"><span class="site-full">View public site</span><span class="site-short">Site</span></a>
@@ -1288,8 +1331,11 @@ async function renderTab(tab) {
         <div class="filters">
           <label class="check"><input type="checkbox" data-select-all aria-label="Select every record shown"> Select all</label>
           <input type="search" aria-label="Search ${esc(module.label)}" placeholder="Search ${esc(module.label.toLowerCase())}" data-search>
-          <select aria-label="Filter by status" data-status><option value="">All statuses</option>${['Draft','Published','Archived'].map(value => `<option>${value}</option>`).join('')}</select>
+          <input type="hidden" data-status value="">
           <select aria-label="Sort records" data-sort><option value="new">Newest first</option><option value="old">Oldest first</option></select>
+        </div>
+        <div class="status-chips" role="group" aria-label="Filter by status">
+          ${[['', 'All'], ['Published', 'Published'], ['Draft', 'Drafts'], ['Archived', 'Archived']].map(([value, label]) => `<button type="button" class="status-chip${value === '' ? ' is-active' : ''}" data-status-chip="${value}" aria-pressed="${value === '' ? 'true' : 'false'}">${label} <span>${value ? rows.filter(record => (record[statusKey(tab)] || 'Draft') === value).length : rows.length}</span></button>`).join('')}
         </div>
       </div>
       ${bulkBarHTML(tab)}
@@ -1329,8 +1375,13 @@ async function renderTab(tab) {
           <div class="actions">
             <button class="btn btn--ghost btn--sm" type="button" data-edit="${esc(record.id)}">Edit</button>
             <button class="btn btn--ghost btn--sm" type="button" data-toggle="${esc(record.id)}">${statusValue === 'Published' ? 'Unpublish' : 'Publish'}</button>
-            ${statusValue === 'Archived' ? '' : `<button class="btn btn--ghost btn--sm" type="button" data-archive="${esc(record.id)}">Archive</button>`}
-            ${link ? `<a class="btn btn--ghost btn--sm" target="_blank" rel="noopener" href="${esc(link)}">View on site</a>` : ''}
+            ${statusValue === 'Archived' && !link ? '' : `<details class="more-menu">
+              <summary class="btn btn--quiet btn--sm" aria-label="More actions for ${esc(title)}">More ▾</summary>
+              <div class="more-menu__list">
+                ${link ? `<a target="_blank" rel="noopener" href="${esc(link)}">View on site</a>` : ''}
+                ${statusValue === 'Archived' ? '' : `<button type="button" data-archive="${esc(record.id)}">Archive</button>`}
+              </div>
+            </details>`}
           </div>
         </article>`;
       }).join('');
@@ -1339,6 +1390,14 @@ async function renderTab(tab) {
 
     section.querySelector('[data-new]').addEventListener('click', () => form(tab));
     section.querySelectorAll('.filters input:not([type="checkbox"]),.filters select').forEach(control => control.addEventListener('input', paint));
+    section.querySelectorAll('[data-status-chip]').forEach(chip => chip.addEventListener('click', () => {
+      section.querySelector('[data-status]').value = chip.dataset.statusChip;
+      section.querySelectorAll('[data-status-chip]').forEach(other => {
+        other.classList.toggle('is-active', other === chip);
+        other.setAttribute('aria-pressed', other === chip ? 'true' : 'false');
+      });
+      paint();
+    }));
     bindBulkControls(tab);
     paint();
     if (tab === 'calendar') renderCalendarSource();
@@ -1347,8 +1406,7 @@ async function renderTab(tab) {
       if (event.target.closest('[data-empty-new]')) return form(tab);
       if (event.target.closest('[data-clear-filters]')) {
         section.querySelector('[data-search]').value = '';
-        section.querySelector('[data-status]').value = '';
-        paint();
+        section.querySelector('[data-status-chip=""]').click();
         section.querySelector('[data-search]').focus();
         return;
       }
@@ -1997,99 +2055,128 @@ async function renderContact() {
    Every card on the public "About the Office of the Student Regent" page is
    edited here. A field left empty keeps the wording built into the website, so
    nothing has to be retyped just to change one name or one line. */
-const ABOUT_TEXT_GROUPS = [
-  ['Page header', [
-    ['eyebrow', 'Eyebrow label'],
+// The About editor is split into sections: one is open at a time, picked from
+// the list on the left, so an administrator never scrolls through 60 fields.
+// Each section owns its text fields and (optionally) one repeatable list.
+const ABOUT_SECTIONS = [
+  { id: 'header', title: 'Page header', hint: 'Title band at the top of the page', fields: [
+    ['eyebrow', 'Small label above the title'],
     ['title', 'Page title'],
     ['intro', 'Introduction sentence', 'textarea'],
     ['badge', 'Badge text']
-  ]],
-  ['Office overview', [
-    ['office_heading', 'Card heading'],
-    ['office_p1', 'First paragraph', 'textarea'],
-    ['office_p2', 'Second paragraph', 'textarea']
-  ]],
-  ['Role and mandate', [
-    ['mandate_heading', 'Card heading'],
-    ['mandate_items', 'Mandate bullets — one per line', 'textarea'],
-    ['mandate_note', 'Footnote under the bullets', 'textarea']
-  ]],
-  ['Student Regent', [
+  ] },
+  { id: 'office', title: 'Office & mandate', hint: 'What the office is and does', fields: [
+    ['office_heading', 'Heading'],
+    ['office_p1', 'Lead paragraph (shown larger)', 'textarea'],
+    ['office_p2', 'Second paragraph', 'textarea'],
+    ['mandate_heading', 'Mandate heading'],
+    ['mandate_items', 'Mandate points — one per line', 'textarea'],
+    ['mandate_note', 'Note under the mandate', 'textarea']
+  ] },
+  { id: 'regent', title: 'Student Regent', hint: 'The featured person card', fields: [
     ['sr_heading', 'Card heading'],
     ['sr_label', 'Label above the name'],
     ['sr_name', 'Student Regent name'],
     ['sr_meta', 'Term and campus line'],
+    ['sr_photo', 'Photo link (optional)', 'photo'],
     ['sr_note', 'Note under the name', 'textarea']
-  ]],
-  ['Directors & Secretariat', [
-    ['dir_heading', 'Card heading'],
+  ] },
+  { id: 'staff', title: 'Office staff', hint: 'Add, reorder and remove staff', isNew: true, fields: [
+    ['staff_heading', 'Heading above the staff cards'],
+    ['staff_intro', 'Short introduction (optional)', 'textarea']
+  ], list: 'staff' },
+  { id: 'directors', title: 'Directors & reps', hint: 'Executive director, directors, colleges', fields: [
+    ['dir_heading', 'Heading'],
     ['dir_intro', 'Introduction', 'textarea'],
-    ['dir_exec_name', 'Executive Director'],
+    ['dir_exec_name', 'Executive Director name'],
     ['dir_exec_tag', 'Executive Director tag'],
-    ['dir_names', 'Directors'],
+    ['dir_names', 'Directors (names)'],
     ['dir_tag', 'Directors tag'],
     ['college_title', 'College representatives title'],
     ['college_desc', 'College representatives description', 'textarea'],
-    ['college_rows', 'College representative rows — one per line', 'textarea']
-  ]],
-  ['BulSU vision & mission', [
-    ['vm_heading', 'Card heading'],
+    ['college_rows', 'College representatives — one per line', 'textarea']
+  ] },
+  { id: 'vm', title: 'Vision & mission', hint: 'Dark band with values', fields: [
+    ['vm_heading', 'Heading'],
     ['vision', 'Vision statement', 'textarea'],
     ['mission', 'Mission statement', 'textarea'],
     ['values', 'Core values — one per line', 'textarea'],
-    ['values_note', 'Footnote under the values', 'textarea']
-  ]],
-  ['Office information', [
-    ['info_heading', 'Card heading'],
-    ['info_note', 'Footnote', 'textarea']
-  ]],
-  ['Contact card', [
-    ['contact_heading', 'Card heading'],
-    ['response_time', 'Response time line']
-  ]],
-  ['Featured programs', [
-    ['featured_heading', 'Card heading'],
+    ['values_note', 'Note under the values', 'textarea']
+  ] },
+  { id: 'programs', title: 'Featured programs', hint: 'Program cards', fields: [
+    ['featured_heading', 'Heading'],
     ['featured_intro', 'Introduction', 'textarea'],
-    ['featured_note', 'Footnote', 'textarea']
-  ]],
-  ['Official links', [
-    ['links_heading', 'Card heading'],
-    ['links_note', 'Footnote', 'textarea']
-  ]]
+    ['featured_note', 'Note under the cards', 'textarea']
+  ], list: 'featured' },
+  { id: 'info', title: 'Office information', hint: 'Label / value facts', fields: [
+    ['info_heading', 'Heading'],
+    ['info_note', 'Note', 'textarea']
+  ], list: 'info' },
+  { id: 'contact', title: 'Contact card', hint: 'Email & phone live in Contact & details', fields: [
+    ['contact_heading', 'Heading'],
+    ['response_time', 'Response time line']
+  ] },
+  { id: 'links', title: 'Official links', hint: 'Verified external links', fields: [
+    ['links_heading', 'Heading'],
+    ['links_note', 'Note', 'textarea']
+  ], list: 'links' }
 ];
 
 const ABOUT_ROW_EDITORS = [
-  { key: 'info', label: 'Office information rows', columns: [['label', 'Label'], ['value', 'Value']] },
+  { key: 'info', label: 'Facts', item: 'fact', columns: [['label', 'Label'], ['value', 'Value']] },
   // The fourth column entry marks a link field: those accept an https:// URL or
-  // a #section of this site, so they stay plain text inputs (type="url" would
-  // refuse #anchors and block the whole form).
-  { key: 'featured', label: 'Featured programs & initiatives', columns: [['title', 'Title'], ['tag', 'Tag'], ['description', 'Description', 'textarea'], ['link_label', 'Link label'], ['link_href', 'Link URL or #section', 'text', true]] },
-  { key: 'links', label: 'Official links', columns: [['label', 'Label'], ['href', 'URL or #section', 'text', true]] }
+  // a #section of this site, so they stay plain text inputs.
+  { key: 'featured', label: 'Program cards', item: 'program', columns: [['title', 'Title'], ['tag', 'Tag'], ['description', 'Description', 'textarea'], ['link_label', 'Link label'], ['link_href', 'Link URL or #section', 'text', true]] },
+  { key: 'staff', label: 'Staff members', item: 'staff member', reorder: true, columns: [['name', 'Full name *'], ['role', 'Position / role'], ['unit', 'Unit or campus'], ['email', 'Email', 'email'], ['photo', 'Photo link', 'photo']] },
+  { key: 'links', label: 'Links', item: 'link', reorder: true, columns: [['label', 'Label'], ['href', 'URL or #section', 'text', true]] }
 ];
 
 const ABOUT_LINE_FIELDS = ['mandate_items', 'values', 'college_rows'];
+let aboutMediaImages = [];
 
-function aboutInputs(groups, values) {
-  return groups.map(([title, fields]) => `
-    <div class="field-group">
-      <h4>${esc(title)}</h4>
-      ${fields.map(([key, label, type]) => type === 'textarea'
-        ? `<label>${esc(label)}<textarea name="${key}" rows="3">${esc(values[key] || '')}</textarea></label>`
-        : `<label>${esc(label)}<input name="${key}" type="${type || 'text'}" value="${esc(values[key] || '')}"></label>`).join('')}
-    </div>`).join('');
+function aboutPhotoPicker(name, attr) {
+  if (!aboutMediaImages.length) return '';
+  return `<select class="about-photo-pick" ${attr}="${name}" aria-label="Pick an uploaded photo"><option value="">Pick from media library…</option>${aboutMediaImages.map(item => `<option value="${esc(item.url)}">${esc(item.title || item.original_name || item.url)}</option>`).join('')}</select>`;
+}
+
+function aboutFieldHTML([key, label, type], values) {
+  const value = esc(values[key] || '');
+  if (type === 'textarea') return `<label>${esc(label)}<textarea name="${key}" rows="3">${value}</textarea></label>`;
+  if (type === 'photo') return `<label>${esc(label)}<input name="${key}" value="${value}" placeholder="https://… or /uploads/…"><small>Paste an https:// image link, or pick a file you uploaded in the Media library.</small>${aboutPhotoPicker(key, 'data-pick-name')}</label>`;
+  return `<label>${esc(label)}<input name="${key}" type="text" value="${value}"></label>`;
+}
+
+function aboutInitialsAdmin(name) {
+  const words = String(name || '').split(/\s+/).filter(word => /^[A-Za-zÀ-ÿ]/.test(word));
+  return words.length ? (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase() : '?';
 }
 
 function aboutRowHTML(editor, index, row) {
-  const inputs = editor.columns.map(([field, label, type]) => type === 'textarea'
-    ? `<label>${esc(label)}<textarea data-field="${field}" rows="2">${esc(row[field] || '')}</textarea></label>`
-    : `<label>${esc(label)}<input type="${type || 'text'}" data-field="${field}" value="${esc(row[field] || '')}"></label>`).join('');
-  return `<div class="list-editor__row" data-row="${editor.key}">${inputs}<button class="btn btn--ghost btn--sm" type="button" data-remove-row>Remove row ${index + 1}</button></div>`;
+  const inputs = editor.columns.map(([field, label, type]) => {
+    const value = esc(row[field] || '');
+    if (type === 'textarea') return `<label class="wide">${esc(label)}<textarea data-field="${field}" rows="2">${value}</textarea></label>`;
+    if (type === 'photo') return `<label class="wide">${esc(label)}<input type="text" data-field="${field}" value="${value}" placeholder="https://… or /uploads/…">${aboutPhotoPicker(field, 'data-pick-field')}</label>`;
+    return `<label>${esc(label)}<input type="${type === 'email' ? 'email' : 'text'}" data-field="${field}" value="${value}"></label>`;
+  }).join('');
+  const title = row[editor.columns[0][0]] || '';
+  const avatar = editor.key === 'staff'
+    ? `<span class="row-avatar" aria-hidden="true">${row.photo ? `<img src="${esc(row.photo)}" alt="">` : esc(aboutInitialsAdmin(row.name))}</span>` : '';
+  const move = editor.reorder ? `<button class="btn btn--quiet btn--sm" type="button" data-move-row="-1" aria-label="Move up">↑</button><button class="btn btn--quiet btn--sm" type="button" data-move-row="1" aria-label="Move down">↓</button>` : '';
+  return `<div class="list-editor__row" data-row="${editor.key}">
+    <div class="row-head">${avatar}<b class="row-title">${esc(title) || `New ${esc(editor.item)}`}</b><span class="row-tools">${move}<button class="btn btn--quiet btn--sm row-remove" type="button" data-remove-row>Remove</button></span></div>
+    <div class="row-fields">${inputs}</div>
+  </div>`;
+}
+
+function aboutEmptyRow(editor) {
+  return `<p class="list-editor__empty">No ${esc(editor.item)}s yet.${editor.key === 'staff' ? ' The staff block stays hidden on the public page until you add someone.' : ' The public page keeps its built-in list until you add one.'}</p>`;
 }
 
 function aboutEditorHTML(editor, rows) {
   return `<div class="list-editor" data-list="${editor.key}">
-    <div class="list-editor__head"><h4>${esc(editor.label)}</h4><button class="btn btn--ghost btn--sm" type="button" data-add-row="${editor.key}">Add row</button></div>
-    <div class="list-editor__rows">${rows.length ? rows.map((row, index) => aboutRowHTML(editor, index, row)).join('') : '<p class="list-editor__empty">No rows yet — the public page keeps its built-in list until you add one.</p>'}</div>
+    <div class="list-editor__head"><h4>${esc(editor.label)} <span class="count">${rows.length}</span></h4></div>
+    <div class="list-editor__rows">${rows.length ? rows.map((row, index) => aboutRowHTML(editor, index, row)).join('') : aboutEmptyRow(editor)}</div>
+    <button class="btn btn--ghost list-editor__add" type="button" data-add-row="${editor.key}">+ Add ${esc(editor.item)}</button>
   </div>`;
 }
 
@@ -2104,22 +2191,30 @@ function collectAboutRows(section, key) {
 function validateAboutData(data) {
   for (const editor of ABOUT_ROW_EDITORS) {
     for (const row of data[editor.key] || []) {
-      for (const [field, , , isLink] of editor.columns) {
+      for (const [field, label, type, isLink] of editor.columns) {
         const value = row[field];
-        if (!value || !isLink) continue;
-        if (!/^https?:\/\/\S+$/i.test(value) && !value.startsWith('#')) return `"${value}" must start with https:// or be a #section of this site.`;
+        if (editor.key === 'staff' && field === 'name' && !value) return 'Every staff member needs a full name.';
+        if (!value) continue;
+        if (isLink && !/^https?:\/\/\S+$/i.test(value) && !value.startsWith('#')) return `"${value}" must start with https:// or be a #section of this site.`;
+        if (type === 'photo' && !/^https:\/\/\S+$/i.test(value) && !(value.startsWith('/') && !value.startsWith('//'))) return `Photo "${value}" must be an https:// link or a Media library file.`;
+        if (type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return `"${value}" is not a valid email address.`;
       }
     }
   }
+  if (data.sr_photo && !/^https:\/\/\S+$/i.test(data.sr_photo) && !(data.sr_photo.startsWith('/') && !data.sr_photo.startsWith('//'))) return 'The Student Regent photo must be an https:// link or a Media library file.';
   return '';
 }
+
+let aboutActiveSection = 'header';
 
 async function renderAbout() {
   const section = $('#tab-about');
   section.innerHTML = '<div class="empty loading-state">Loading the About page</div>';
   let stored = {};
   try {
-    stored = (await api('/api/about')) || {};
+    const [about, media] = await Promise.all([api('/api/about'), api('/api/media').catch(() => [])]);
+    stored = about || {};
+    aboutMediaImages = (Array.isArray(media) ? media : []).filter(item => item.url && (item.file_type || '').startsWith('image/'));
   } catch (error) {
     section.innerHTML = `<div class="err show">The About page could not be loaded: ${esc(error.message)} <button class="btn btn--ghost btn--sm" type="button" data-retry>Retry</button></div>`;
     section.querySelector('[data-retry]').addEventListener('click', renderAbout);
@@ -2128,80 +2223,128 @@ async function renderAbout() {
   const values = { ...stored };
   ABOUT_LINE_FIELDS.forEach(key => { if (Array.isArray(values[key])) values[key] = values[key].join('\n'); });
   const rows = Object.fromEntries(ABOUT_ROW_EDITORS.map(editor => [editor.key, Array.isArray(stored[editor.key]) ? stored[editor.key] : []]));
+  const editorFor = key => ABOUT_ROW_EDITORS.find(editor => editor.key === key);
+  if (!ABOUT_SECTIONS.some(item => item.id === aboutActiveSection)) aboutActiveSection = 'header';
+
+  const filledCount = item => item.fields.filter(([key]) => String(values[key] || '').trim()).length + (item.list ? rows[item.list].length : 0);
 
   section.innerHTML = `
-    <div class="about-admin-grid">
-      <form class="form" id="aboutForm">
-        <h3>About the Office of the Student Regent</h3>
-        <p class="form-intro">Everything the public About page shows. Leave a field empty to keep the wording built into the site, and write one bullet per line. Email, phone, address and hours live under Contact &amp; details.</p>
-        ${aboutInputs(ABOUT_TEXT_GROUPS, values)}
-        ${ABOUT_ROW_EDITORS.map(editor => aboutEditorHTML(editor, rows[editor.key])).join('')}
+    <form class="about-editor" id="aboutForm" novalidate>
+      <nav class="about-editor__nav" aria-label="About page sections">
+        <p class="about-editor__navlabel">Page sections</p>
+        ${ABOUT_SECTIONS.map(item => `<button type="button" class="about-nav-item${item.id === aboutActiveSection ? ' is-active' : ''}" data-about-section="${item.id}" ${item.id === aboutActiveSection ? 'aria-current="true"' : ''}>
+          <span class="about-nav-item__title">${esc(item.title)}${item.isNew ? ' <span class="badge badge--green">New</span>' : ''}</span>
+          <span class="about-nav-item__hint">${esc(item.hint)}</span>
+          <span class="about-nav-item__count" data-count-for="${item.id}">${filledCount(item) ? `${filledCount(item)} set` : 'Built-in'}</span>
+        </button>`).join('')}
+      </nav>
+      <div class="about-editor__body">
+        ${ABOUT_SECTIONS.map(item => `<section class="about-pane" data-pane="${item.id}" ${item.id === aboutActiveSection ? '' : 'hidden'}>
+          <header class="about-pane__head"><h3>${esc(item.title)}</h3><p>${esc(item.hint)}. Leave a field empty to keep the site's built-in wording.</p></header>
+          ${item.list === 'staff' ? aboutEditorHTML(editorFor('staff'), rows.staff) : ''}
+          <div class="about-pane__fields">${item.fields.map(field => aboutFieldHTML(field, values)).join('')}</div>
+          ${item.list && item.list !== 'staff' ? aboutEditorHTML(editorFor(item.list), rows[item.list]) : ''}
+        </section>`).join('')}
         <div class="err" role="alert"></div>
-        <button class="btn btn--red" type="submit">Save About page</button>
-      </form>
-      <div>
-        <div class="preview-card" id="aboutPreview"></div>
-        <div class="danger-zone">
-          <h3>Restore the built-in wording</h3>
-          <p>Clears every override above so the public About page shows the wording shipped with the site again.</p>
-          <button class="btn btn--ghost" type="button" id="aboutReset">Reset to built-in wording</button>
+        <div class="about-savebar">
+          <span class="about-savebar__state" id="aboutDirty">All changes saved</span>
+          <button class="btn btn--quiet btn--sm" type="button" id="aboutReset">Reset to built-in wording</button>
+          <a class="btn btn--ghost btn--sm" href="/#about" target="_blank" rel="noopener">View public page</a>
+          <button class="btn btn--red" type="submit">Save About page</button>
         </div>
       </div>
-    </div>`;
+    </form>`;
 
-  const preview = () => {
-    const value = name => (section.querySelector(`[name="${name}"]`)?.value || '').trim();
-    const lines = key => (value(key) || '').split('\n').map(line => line.trim()).filter(Boolean);
-    const info = collectAboutRows(section, 'info').map(row => `${row.label || '—'}: ${row.value || '—'}`);
-    const featured = collectAboutRows(section, 'featured').map(row => `${row.title || '—'}${row.tag ? ` (${row.tag})` : ''}`);
-    const links = collectAboutRows(section, 'links').map(row => row.label || row.href || '—');
-    const summary = [
-      ['Header', [value('eyebrow'), value('title')].filter(Boolean).join(' · ') || '—'],
-      ['Overview', value('office_p1') || '—'],
-      ['Mandate', `${lines('mandate_items').length} bullets · ${value('mandate_note') || 'no footnote'}`],
-      ['Student Regent', [value('sr_name'), value('sr_meta')].filter(Boolean).join(' · ') || '—'],
-      ['Executive Director', [value('dir_exec_name'), value('dir_exec_tag')].filter(Boolean).join(' · ') || '—'],
-      ['Vision', value('vision') || '—'],
-      ['Mission', value('mission') || '—'],
-      ['Core values', `${lines('values').length} values`],
-      ['Office information', info.length ? info.join(' · ') : '—'],
-      ['Response time', value('response_time') || '—'],
-      ['Featured programs', featured.length ? featured.join(' · ') : '—'],
-      ['Official links', links.length ? links.join(' · ') : '—']
-    ];
-    $('#aboutPreview').innerHTML = `<h3>How the public page will read</h3>${summary.map(([label, text]) => `<div class="kv"><b>${esc(label)}</b><span>${esc(text)}</span></div>`).join('')}`;
+  const form = $('#aboutForm');
+  const dirty = $('#aboutDirty');
+  const markDirty = () => { dirty.textContent = 'Unsaved changes'; dirty.classList.add('is-dirty'); };
+  const refreshRow = row => {
+    const editor = editorFor(row.dataset.row);
+    const first = row.querySelector(`[data-field="${editor.columns[0][0]}"]`).value.trim();
+    row.querySelector('.row-title').textContent = first || `New ${editor.item}`;
+    const avatar = row.querySelector('.row-avatar');
+    if (avatar) {
+      const photo = row.querySelector('[data-field="photo"]').value.trim();
+      avatar.innerHTML = photo ? `<img src="${esc(photo)}" alt="">` : esc(aboutInitialsAdmin(first));
+    }
   };
-  preview();
-  section.querySelectorAll('#aboutForm input, #aboutForm textarea').forEach(input => input.addEventListener('input', preview));
+  const refreshCounts = () => {
+    ABOUT_SECTIONS.forEach(item => {
+      let count = item.fields.filter(([key]) => (form.querySelector(`[name="${key}"]`)?.value || '').trim()).length;
+      if (item.list) count += form.querySelectorAll(`[data-row="${item.list}"]`).length;
+      const el = form.querySelector(`[data-count-for="${item.id}"]`);
+      if (el) el.textContent = count ? `${count} set` : 'Built-in';
+    });
+    form.querySelectorAll('.list-editor').forEach(list => { list.querySelector('.count').textContent = list.querySelectorAll('[data-row]').length; });
+  };
 
-  section.addEventListener('click', event => {
+  form.addEventListener('input', event => {
+    markDirty();
+    const row = event.target.closest('[data-row]');
+    if (row) refreshRow(row);
+    refreshCounts();
+  });
+  form.addEventListener('change', event => {
+    const pick = event.target.closest('.about-photo-pick');
+    if (!pick || !pick.value) return;
+    const target = pick.dataset.pickName ? form.querySelector(`[name="${pick.dataset.pickName}"]`) : pick.closest('[data-row]').querySelector(`[data-field="${pick.dataset.pickField}"]`);
+    target.value = pick.value;
+    pick.value = '';
+    target.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+
+  form.addEventListener('click', event => {
+    const nav = event.target.closest('[data-about-section]');
+    if (nav) {
+      aboutActiveSection = nav.dataset.aboutSection;
+      form.querySelectorAll('[data-about-section]').forEach(button => {
+        const on = button === nav;
+        button.classList.toggle('is-active', on);
+        if (on) button.setAttribute('aria-current', 'true'); else button.removeAttribute('aria-current');
+      });
+      form.querySelectorAll('[data-pane]').forEach(pane => { pane.hidden = pane.dataset.pane !== aboutActiveSection; });
+      form.querySelector(`[data-pane="${aboutActiveSection}"]`).scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      return;
+    }
     const add = event.target.closest('[data-add-row]');
     if (add) {
-      const editor = ABOUT_ROW_EDITORS.find(item => item.key === add.dataset.addRow);
-      const host = section.querySelector(`[data-list="${editor.key}"] .list-editor__rows`);
+      const editor = editorFor(add.dataset.addRow);
+      const host = form.querySelector(`[data-list="${editor.key}"] .list-editor__rows`);
       host.querySelector('.list-editor__empty')?.remove();
       host.insertAdjacentHTML('beforeend', aboutRowHTML(editor, host.querySelectorAll('[data-row]').length, {}));
-      preview();
+      host.lastElementChild.querySelector('input, textarea')?.focus();
+      markDirty(); refreshCounts();
+      return;
+    }
+    const move = event.target.closest('[data-move-row]');
+    if (move) {
+      const row = move.closest('[data-row]');
+      const sibling = move.dataset.moveRow === '-1' ? row.previousElementSibling : row.nextElementSibling;
+      if (sibling?.matches('[data-row]')) {
+        if (move.dataset.moveRow === '-1') sibling.before(row); else sibling.after(row);
+        markDirty();
+      }
       return;
     }
     const remove = event.target.closest('[data-remove-row]');
     if (remove) {
       const host = remove.closest('.list-editor__rows');
+      const editor = editorFor(remove.closest('[data-row]').dataset.row);
       remove.closest('[data-row]').remove();
-      if (!host.querySelector('[data-row]')) host.insertAdjacentHTML('beforeend', '<p class="list-editor__empty">No rows yet — the public page keeps its built-in list until you add one.</p>');
-      preview();
+      if (!host.querySelector('[data-row]')) host.insertAdjacentHTML('beforeend', aboutEmptyRow(editor));
+      markDirty(); refreshCounts();
     }
   });
 
-  $('#aboutForm').addEventListener('submit', async event => {
+  form.addEventListener('submit', async event => {
     event.preventDefault();
-    const error = $('#aboutForm .err');
-    const data = Object.fromEntries(new FormData(event.currentTarget));
-    ABOUT_ROW_EDITORS.forEach(editor => { data[editor.key] = collectAboutRows(section, editor.key); });
+    const error = form.querySelector('.err');
+    const data = Object.fromEntries(new FormData(form));
+    ABOUT_ROW_EDITORS.forEach(editor => { data[editor.key] = collectAboutRows(form, editor.key); });
     const problem = validateAboutData(data);
     if (problem) { error.textContent = problem; error.classList.add('show'); return; }
     error.classList.remove('show');
-    const button = event.currentTarget.querySelector('[type="submit"]');
+    const button = form.querySelector('[type="submit"]');
     button.disabled = true;
     button.textContent = 'Saving';
     try {
@@ -2218,7 +2361,7 @@ async function renderAbout() {
   });
 
   $('#aboutReset').addEventListener('click', async () => {
-    const confirmed = await askConfirm('Reset the About page?', 'Every override is cleared and the public page returns to the wording built into the site.', 'Reset About page');
+    const confirmed = await askConfirm('Reset the About page?', 'Every override, including the staff list, is cleared and the public page returns to the wording built into the site.', 'Reset About page');
     if (!confirmed) return;
     try {
       await api('/api/about', { method: 'PATCH', body: JSON.stringify({}) });
@@ -2387,24 +2530,12 @@ async function initAdmin() {
   await switchTab(pageMeta[requested] ? requested : 'overview', { focus: false });
 }
 
-authScreen.style.display = 'grid';
-checkAuthAndSetup();
-</script>
-</body>
-</html>
-thAndSetup();
-</script>
-</body>
-</html>
-, { focus: false });
-}
+document.addEventListener('click', event => {
+  document.querySelectorAll('.more-menu[open]').forEach(menu => { if (!menu.contains(event.target) || event.target.closest('.more-menu__list')) menu.open = false; });
+});
 
 authScreen.style.display = 'grid';
 checkAuthAndSetup();
-</script>
-</body>
-</html>
-thAndSetup();
 </script>
 </body>
 </html>

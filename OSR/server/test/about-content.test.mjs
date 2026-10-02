@@ -158,3 +158,13 @@ test('About content sanitizer trims, caps and normalizes what the office types',
   assert.match(sanitizeAboutContent({ sr_name: 'x'.repeat(400) }).error, /too long/);
   assert.match(sanitizeAboutContent({ mandate_items: Array.from({ length: 20 }, (_, i) => `Bullet ${i}`) }).error, /at most 12 lines/);
 });
+
+test('About staff list accepts real staff rows and rejects unsafe photos or bad emails', async () => {
+  const { sanitizeAboutContent } = await import('../routes/about.js');
+  const ok = sanitizeAboutContent({ staff: [{ name: 'Ana Reyes', role: 'Secretary', email: 'ana@bulsu.edu.ph', photo: '/uploads/a.jpg' }, { name: '' }] });
+  assert.equal(ok.error, undefined);
+  assert.equal(ok.content.staff.length, 1, 'empty staff rows are dropped');
+  assert.match(sanitizeAboutContent({ staff: [{ name: 'X', photo: 'javascript:alert(1)' }] }).error, /https/);
+  assert.match(sanitizeAboutContent({ staff: [{ name: 'X', email: 'nope' }] }).error, /email/);
+  assert.match(sanitizeAboutContent({ sr_photo: '//evil.example/x.png' }).error, /https/);
+});
