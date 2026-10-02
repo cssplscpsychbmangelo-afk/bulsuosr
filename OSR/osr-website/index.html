@@ -871,10 +871,10 @@ img,svg{max-width:100%; height:auto}
 .pulse-btn:focus-visible{outline:2px solid var(--red); outline-offset:2px}
 .pulse-bar{height:6px; background:var(--paper-3); border-radius:999px; overflow:hidden; border:1px solid var(--line-2); margin-top:8px; flex-shrink:0}
 .pulse-bar__fill{height:100%; background:var(--red); width:0%; transition:width .2s ease}
-.pulse-alloc-meta{font:500 10px "IBM Plex Mono",monospace; color:var(--stone); margin-top:3px; display:flex; justify-content:space-between; gap:8px}
+.pulse-alloc-meta{font:500 10px "IBM Plex Mono",monospace; color:var(--stone); margin-top:3px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:2px 8px}
 .pulse-share-track{display:block; height:8px; background:var(--paper-3); border-radius:999px; overflow:hidden; border:1px solid var(--line-2); min-width:0}
 .pulse-share-fill{display:block; height:100%; background:var(--red); transition:width .2s ease}
-.pulse-category-row{display:grid; grid-template-columns:minmax(125px, 0.9fr) minmax(72px, 2fr) 70px; gap:10px; align-items:center; min-width:0}
+.pulse-category-row{display:grid; grid-template-columns:minmax(0, 0.9fr) minmax(60px, 2fr) minmax(52px, auto); gap:10px; align-items:center; min-width:0}
 .pulse-category-row__label{min-width:0; color:var(--ink-2); line-height:1.25; overflow-wrap:anywhere}
 .pulse-category-row__value{min-width:0; text-align:right; white-space:nowrap; color:var(--stone)}
 .pulse-map{border:1px solid var(--line); border-radius:12px; background:white; padding:14px; margin-top:16px; position:relative; z-index:1}
@@ -883,7 +883,11 @@ img,svg{max-width:100%; height:auto}
 .pulse-live-row__label{font:500 11px "IBM Plex Sans",sans-serif; color:var(--ink-2); line-height:1.25; min-width:0; overflow-wrap:anywhere}
 .pulse-live-row__bar{height:8px; background:var(--paper-3); border-radius:999px; overflow:hidden; border:1px solid var(--line-2); min-width:0}
 .pulse-live-row__fill{height:100%; background:var(--red); width:0%; transition:width .2s ease}
-.pulse-live-row__val{font:600 11px "IBM Plex Mono",monospace; color:var(--ink-2); min-width:40px; text-align:right}
+.pulse-live-row__val{font:600 11px "IBM Plex Mono",monospace; color:var(--ink-2); min-width:40px; text-align:right; white-space:nowrap}
+/* The points bar used to stay pinned while scrolling and slid over the category rows and their percentages.
+   It is pinned only on phones now, where it sits below the header with a solid backdrop. */
+@media(min-width:861px){.pulse-pointsbar, #page-ideal-bulsu .pulse-pointsbar{position:relative; top:auto}}
+.pulse-period-summary > div{min-width:0; overflow-wrap:anywhere}
 .pulse-result{margin-top:14px}
 .pulse-subtabs{display:flex; gap:6px; flex-wrap:wrap}
 .pulse-subtab{padding:6px 10px; border-radius:999px; border:1px solid var(--line); background:white; font:600 11.5px "IBM Plex Sans",sans-serif; cursor:pointer; transition:all .12s}
@@ -1127,6 +1131,144 @@ img,svg{max-width:100%; height:auto}
 @keyframes guideIn{from{opacity:0; transform:translateY(6px) scale(.98)} to{opacity:1; transform:none}}
 @media (prefers-reduced-motion:reduce){ .guide-highlight, #guideTooltip{transition:none; animation:none} }
 
+
+/* ── About page (rebrand): numbered blocks, regent feature, staff grid, ink vision band ── */
+#page-about .ab-hero{position:relative; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:24px; align-items:end; padding:32px 32px 28px; border-radius:var(--radius); background:var(--red-ink); color:var(--paper); overflow:hidden}
+#page-about .ab-hero:after{content:""; position:absolute; right:-60px; top:-60px; width:240px; height:240px; border-radius:50%; border:36px solid rgba(255,255,255,0.06); pointer-events:none}
+#page-about .ab-hero__eyebrow{font:600 11px "IBM Plex Mono",monospace; letter-spacing:0.12em; text-transform:uppercase; color:#FFC9D1}
+#page-about .ab-hero h2{margin:8px 0 10px; font:600 clamp(28px,4.2vw,44px)/1.04 "Fraunces",serif; letter-spacing:-0.02em; color:var(--paper); max-width:18ch; overflow-wrap:anywhere; min-width:0}
+#page-about .ab-hero p{margin:0; max-width:58ch; color:rgba(255,255,255,0.82); font-size:14.5px; line-height:1.6}
+#page-about .ab-hero__side{display:grid; gap:12px; justify-items:end; position:relative; z-index:1}
+#page-about .ab-hero__badge{font:600 11px "IBM Plex Mono",monospace; padding:6px 10px; border-radius:var(--radius-pill); background:var(--paper); color:var(--red-ink); white-space:nowrap}
+#page-about .ab-hero__facts{margin:0; display:grid; gap:8px; text-align:right}
+#page-about .ab-hero__facts dt{font:500 10px "IBM Plex Mono",monospace; letter-spacing:0.08em; text-transform:uppercase; color:#FFC9D1}
+#page-about .ab-hero__facts dd{margin:0; font:600 14px "Fraunces",serif}
+#page-about .ab-jump{position:sticky; top:64px; z-index:15; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; margin:14px 0 6px; padding:6px; background:rgba(255,255,255,0.94); backdrop-filter:blur(8px); border:1px solid var(--line); border-radius:var(--radius-pill)}
+#page-about .ab-jump::-webkit-scrollbar{display:none}
+#page-about .ab-jump button{flex:0 0 auto; border:0; background:transparent; padding:7px 14px; border-radius:var(--radius-pill); font:600 12.5px "IBM Plex Sans",sans-serif; color:var(--ink-2); cursor:pointer; white-space:nowrap}
+#page-about .ab-jump button:hover, #page-about .ab-jump button.is-active{background:var(--red-3); color:var(--red)}
+#page-about .ab-block{position:relative; padding:34px 0 30px; border-top:1px solid var(--line); scroll-margin-top:120px}
+#page-about .ab-block:first-of-type{border-top:0}
+#page-about .ab-block__num{font:500 12px "IBM Plex Mono",monospace; color:var(--red); letter-spacing:0.08em; margin-bottom:10px}
+#page-about .ab-block__title, #page-about .ab-block h3{margin:0 0 12px; font:600 24px/1.15 "Fraunces",serif; letter-spacing:-0.015em; font-style:normal}
+#page-about .ab-note{margin:12px 0 0; font-size:12.5px; color:var(--stone); line-height:1.5}
+#page-about .ab-mono{display:block; margin-top:6px; font:500 11.5px "IBM Plex Mono",monospace; color:var(--stone); white-space:pre-line}
+#page-about .ab-office{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr); gap:36px}
+#page-about .ab-lede{font:400 19px/1.5 "Fraunces",serif; color:var(--ink); margin:0 0 14px}
+#page-about .ab-office__lead p:not(.ab-lede){margin:0; font-size:14px; line-height:1.65; color:var(--ink-2)}
+#page-about .ab-mandate{padding:20px 22px; border-radius:var(--radius); background:var(--paper-2); border:1px solid var(--line)}
+#page-about .ab-mandate h3{font-size:18px}
+#page-about .ab-mandate__list{margin:0; padding:0; list-style:none; counter-reset:m; display:grid; gap:10px}
+#page-about .ab-mandate__list li{counter-increment:m; display:grid; grid-template-columns:28px minmax(0,1fr); gap:8px; font-size:13.5px; line-height:1.5}
+#page-about .ab-mandate__list li:before{content:counter(m, decimal-leading-zero); font:600 11px/1.9 "IBM Plex Mono",monospace; color:var(--red)}
+#page-about .ab-people{display:grid; grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr); gap:18px}
+#page-about .ab-regent{padding:24px; border-radius:var(--radius); background:var(--paper-2); border:1px solid var(--line); border-top:4px solid var(--red); text-align:center; display:grid; justify-items:center; align-content:start; gap:4px}
+#page-about .ab-regent__kicker{margin:0 0 12px; font:600 11px "IBM Plex Mono",monospace; letter-spacing:0.1em; text-transform:uppercase; color:var(--red)}
+#page-about .ab-regent__mark{width:84px; height:84px; border-radius:50%; display:grid; place-items:center; background:var(--red); color:var(--paper); font:600 28px "Fraunces",serif; margin-bottom:10px; overflow:hidden}
+#page-about .ab-regent__mark img{width:100%; height:100%; object-fit:cover}
+#page-about .ab-regent__label{font:500 11px "IBM Plex Mono",monospace; color:var(--stone)}
+#page-about .ab-regent__name{font:600 22px/1.2 "Fraunces",serif; overflow-wrap:anywhere}
+#page-about .ab-regent__meta{font-size:12.5px; color:var(--stone)}
+#page-about .ab-regent__note{margin:10px 0 0; font-size:12px; color:var(--stone); max-width:34ch}
+#page-about .ab-team h4, #page-about .ab-staff h4{margin:0; font:600 17px "Fraunces",serif}
+#page-about .ab-role{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:10px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; background:var(--paper)}
+#page-about .ab-role > div{min-width:0}
+#page-about .ab-role b{display:block; font-size:13px}
+#page-about .ab-role span:not(.ab-tag):not(.ab-mono){display:block; font-size:12.5px; color:var(--stone); margin-top:2px}
+#page-about .ab-role--dashed{border-style:dashed; background:var(--paper-2)}
+#page-about .ab-tag{flex:0 0 auto; font:600 10px "IBM Plex Mono",monospace; padding:3px 8px; border-radius:var(--radius-pill); background:var(--paper-2); border:1px solid var(--line); color:var(--ink-2); white-space:nowrap}
+#page-about .ab-tag--red{background:var(--red-3); border-color:#FFD0D6; color:var(--red)}
+#page-about .ab-staff{margin-top:26px}
+#page-about .ab-staff__grid{list-style:none; margin:14px 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap:12px}
+#page-about .ab-person{display:grid; grid-template-columns:52px minmax(0,1fr); gap:12px; align-items:center; padding:14px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper)}
+#page-about .ab-person__mark{width:52px; height:52px; border-radius:50%; display:grid; place-items:center; background:var(--red-3); color:var(--red); font:600 17px "Fraunces",serif; overflow:hidden}
+#page-about .ab-person__mark img{width:100%; height:100%; object-fit:cover}
+#page-about .ab-person b{display:block; font-size:14px; overflow-wrap:anywhere}
+#page-about .ab-person span{display:block; font-size:12px; color:var(--stone); overflow-wrap:anywhere}
+#page-about .ab-person a{font-size:12px; overflow-wrap:anywhere}
+#page-about .ab-block--ink{margin:8px 0; padding:34px 32px; border:0; border-radius:var(--radius); background:var(--ink); color:var(--paper)}
+#page-about .ab-block--ink .ab-block__num{color:#FF8FA0}
+#page-about .ab-block--ink .ab-note{color:rgba(255,255,255,0.6)}
+#page-about .ab-vm{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px}
+#page-about .ab-vm p{margin:6px 0 0; font:400 17px/1.55 "Fraunces",serif; color:rgba(255,255,255,0.92)}
+#page-about .ab-vm__label{font:600 11px "IBM Plex Mono",monospace; letter-spacing:0.12em; text-transform:uppercase; color:#FF8FA0}
+#page-about .ab-values{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+#page-about .ab-value{font:600 12px "IBM Plex Sans",sans-serif; padding:7px 12px; border-radius:var(--radius-pill); border:1px solid rgba(255,255,255,0.22); color:var(--paper)}
+#page-about .ab-programs{display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap:12px; margin-top:14px}
+#page-about .ab-program{display:flex; flex-direction:column; padding:16px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper); transition:border-color .15s, transform .15s}
+#page-about .ab-program:hover{border-color:var(--red); transform:translateY(-2px)}
+#page-about .ab-program__head{display:flex; justify-content:space-between; align-items:flex-start; gap:8px}
+#page-about .ab-program__head b{font-size:14px; min-width:0}
+#page-about .ab-program p{margin:8px 0 0; font-size:12.5px; line-height:1.5; color:var(--stone); flex:1}
+#page-about .ab-program__link{margin-top:12px; font:600 12px "IBM Plex Mono",monospace; color:var(--red)}
+#page-about .ab-contact{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px}
+#page-about .ab-card{padding:20px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper); min-width:0}
+#page-about .ab-card h3{font-size:18px}
+#page-about .ab-card--accent{border-top:4px solid var(--red)}
+#page-about .ab-links{margin:0; padding-left:16px; font-size:13.5px; line-height:1.7}
+@media(max-width:900px){
+  #page-about .ab-office, #page-about .ab-people, #page-about .ab-vm{grid-template-columns:minmax(0,1fr); gap:18px}
+  #page-about .ab-contact{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:640px){
+  #page-about .ab-hero{grid-template-columns:minmax(0,1fr); padding:24px 20px}
+  #page-about .ab-hero__side{justify-items:start}
+  #page-about .ab-hero__facts{text-align:left; grid-template-columns:repeat(2,minmax(0,1fr))}
+  #page-about .ab-jump{top:56px}
+  #page-about .ab-block--ink{padding:26px 20px}
+  #page-about .ab-lede{font-size:17px}
+}
+
+/* ── Track my concern ── */
+.track-layout{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:24px; align-items:start}
+.track-intro h2{margin:6px 0 8px; font:600 clamp(26px,3.6vw,36px)/1.1 "Fraunces",serif; letter-spacing:-0.02em}
+.track-intro > p{margin:0; max-width:56ch; color:var(--ink-2)}
+.track-form{margin:18px 0 14px; padding:16px; border:1px solid var(--line); border-top:4px solid var(--red); border-radius:var(--radius); background:var(--paper)}
+.track-form__row{display:flex; gap:8px; margin-top:6px}
+.track-form__row .input{flex:1; min-width:0; font:600 16px "IBM Plex Mono",monospace; letter-spacing:0.06em; text-transform:uppercase; border-radius:8px}
+.track-card{padding:18px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper)}
+.track-card--loading{color:var(--stone); font-size:13px}
+.track-card__label{display:block; font:600 10.5px "IBM Plex Mono",monospace; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone)}
+.track-card__head{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap}
+.track-card__code{display:block; font:700 20px "IBM Plex Mono",monospace; letter-spacing:0.04em; margin-top:2px}
+.track-pill{font:600 11px "IBM Plex Mono",monospace; padding:5px 10px; border-radius:var(--radius-pill); white-space:nowrap}
+.track-pill--ok{background:var(--ok-bg); color:var(--ok); border:1px solid #9CCBAE}
+.track-pill--wait{background:var(--warn-bg); color:var(--warn); border:1px solid #E7C46A}
+.track-steps{list-style:none; margin:18px 0 6px; padding:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); counter-reset:t}
+.track-steps li{position:relative; display:grid; justify-items:center; gap:6px; text-align:center; font-size:11.5px; color:var(--stone)}
+.track-steps li:before{content:""; position:absolute; top:7px; left:-50%; right:50%; height:2px; background:var(--line-2)}
+.track-steps li:first-child:before{display:none}
+.track-steps__dot{position:relative; z-index:1; width:16px; height:16px; border-radius:50%; background:var(--paper); border:2px solid var(--line-2)}
+.track-steps li.is-done, .track-steps li.is-current{color:var(--ink); font-weight:600}
+.track-steps li.is-done:before, .track-steps li.is-current:before{background:var(--red)}
+.track-steps li.is-done .track-steps__dot{background:var(--red); border-color:var(--red)}
+.track-steps li.is-current .track-steps__dot{border-color:var(--red); box-shadow:0 0 0 4px var(--red-3)}
+.track-meta{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin:14px 0 0}
+.track-meta dt{font:500 10px "IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:0.06em; color:var(--stone)}
+.track-meta dd{margin:2px 0 0; font-size:13px}
+.track-response{margin-top:14px; padding:14px; border-left:3px solid var(--ok); border-radius:8px; background:var(--ok-bg)}
+.track-response p{margin:6px 0 0; white-space:pre-wrap; line-height:1.6}
+.track-wait{margin:14px 0 0; padding:12px 14px; border-radius:8px; background:var(--paper-2); color:var(--ink-2); font-size:13px}
+.track-side{display:grid; gap:14px; padding:18px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper-2)}
+.track-side h3{margin:0; font:600 17px "Fraunces",serif}
+.track-saved{list-style:none; margin:0; padding:0; display:grid; gap:6px}
+.track-saved li{display:flex; gap:4px}
+.track-saved__open{flex:1; min-width:0; display:flex; justify-content:space-between; gap:8px; padding:9px 12px; border:1px solid var(--line); border-radius:8px; background:var(--paper); cursor:pointer; text-align:left}
+.track-saved__open b{font:600 12.5px "IBM Plex Mono",monospace}
+.track-saved__open span{font-size:11px; color:var(--stone); white-space:nowrap}
+.track-saved__open:hover{border-color:var(--red)}
+.track-saved__x{width:34px; border:1px solid var(--line); border-radius:8px; background:var(--paper); cursor:pointer; color:var(--stone)}
+.track-saved__empty{font-size:12.5px; color:var(--stone)}
+.track-legend h4{margin:0 0 6px; font-size:12px}
+.track-legend dl{margin:0; display:grid; gap:6px}
+.track-legend dt{font-weight:600; font-size:12.5px}
+.track-legend dd{margin:0; font-size:12px; color:var(--stone)}
+.track-issued{display:grid; gap:6px; padding:14px; border:1px solid #9CCBAE; border-radius:10px; background:var(--ok-bg)}
+.track-issued__label{font:600 10.5px "IBM Plex Mono",monospace; letter-spacing:0.08em; text-transform:uppercase; color:var(--ok)}
+.track-issued__code{font:700 22px "IBM Plex Mono",monospace; letter-spacing:0.05em; color:var(--ink)}
+.track-issued p{margin:0; font-size:12.5px; color:var(--ink-2)}
+@media(max-width:860px){ .track-layout{grid-template-columns:minmax(0,1fr)} }
+@media(max-width:480px){ .track-form__row{flex-direction:column} .track-steps li{font-size:10.5px} }
 </style>
 </head>
 <body>
@@ -1147,6 +1289,7 @@ img,svg{max-width:100%; height:auto}
       <a href="#board-meetings" data-nav>Board Meetings</a>
       <a href="#initiatives" data-nav>Initiatives</a>
       <a href="#resources" data-nav>Resources</a>
+      <a href="#track" data-nav>Track Concern</a>
       <div class="nav__actions">
         <button id="replayTourBtn" type="button" title="Guide" style="border:1px solid var(--line); background:white; color:var(--ink); border-radius:999px; padding:6px 10px; font:600 12px 'IBM Plex Mono',monospace; display:inline-flex; align-items:center; gap:6px; cursor:pointer">
           <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 12 a3.5 3.5 0 0 0 5 3.2"/><path d="M12 9v3h3"/></svg> Tour
@@ -1187,6 +1330,7 @@ img,svg{max-width:100%; height:auto}
       <a href="#initiatives" data-nav>Initiatives <span>→</span></a>
       <a href="#resources" data-nav>Resources <span>→</span></a>
       <a href="#help" data-nav>Student Help <span>→</span></a>
+      <a href="#track" data-nav>Track My Concern <span>→</span></a>
       <a href="#about" data-nav>About OSR <span>→</span></a>
       <a href="#ideal-bulsu" data-nav>Build Your Ideal BulSU <span>→</span></a>
       <a href="#academic-calendar" data-nav>Academic Calendar <span>→</span></a>
@@ -1267,6 +1411,10 @@ img,svg{max-width:100%; height:auto}
       <a href="#help" data-nav>
         <span class="quick__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.09 9a3 3 0 0 1 5.82 0c0 2-3 3-3 3"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg></span>
         <span><b>Student Help</b><span class="sub">Raise a concern or contact the office.</span></span>
+      </a>
+      <a href="#track" data-nav>
+        <span class="quick__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
+        <span><b>Track My Concern</b><span class="sub">Check if the OSR has responded.</span></span>
       </a>
     </nav>
 
@@ -1816,13 +1964,19 @@ img,svg{max-width:100%; height:auto}
             </div>
             <div data-step="2" hidden>
               <div style="display:grid; gap:10px; margin-top:14px">
+                <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Type of concern
+                  <select class="select" name="category" style="border-radius:8px; width:100%; margin-top:5px">
+                    <option value="">Select a type</option>
+                    <option>Academic</option><option>Fees &amp; scholarships</option><option>Facilities</option><option>Student welfare</option><option>Policy / Board matter</option><option>Other</option>
+                  </select>
+                </label>
                 <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Concern <span style="color:var(--red)">*</span>
                   <textarea class="input" name="concern" required rows="4" style="border-radius:10px; margin-top:5px; width:100%" placeholder="Describe factually. Who, what, where, when."></textarea>
                 </label>
                 <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Desired outcome
                   <input class="input" name="outcome" style="border-radius:8px; margin-top:5px; width:100%" placeholder="What would help?"/>
                 </label>
-                <p class="small muted" style="margin:0">Attach files in production: add a file input connected to your storage. Demo saves text locally.</p>
+                <p class="small muted" style="margin:0">After you submit you get a tracking code. Use it on <a href="#track" data-nav>Track My Concern</a> to see when the OSR responds.</p>
               </div>
               <div class="row" style="margin-top:14px; justify-content:space-between">
                 <button class="btn btn--ghost" type="button" id="backStep1">Back</button>
@@ -1835,31 +1989,46 @@ img,svg{max-width:100%; height:auto}
                 <button class="btn btn--ghost" type="button" id="backStep2">Back</button>
                 <div class="row">
                   <button class="btn btn--ghost" type="reset" id="concernReset">Clear</button>
-                  <button class="btn btn--red" type="submit">Submit concern (demo)</button>
+                  <button class="btn btn--red" type="submit" id="concernSubmitBtn">Submit concern</button>
                 </div>
               </div>
-              <p class="small muted" style="margin:8px 0 0">Demo only. Does not send data until connected to your endpoint. Add consent text in production.</p>
+              <p class="small muted" style="margin:8px 0 0">By submitting, you agree that the OSR may use these details only to act on and respond to your concern.</p>
               <div id="concernFeedback" role="status" aria-live="polite" style="margin-top:8px"></div>
             </div>
           </form>
         </div>
         <div style="display:grid; gap:14px">
           <div class="about-card" id="feedbackFormCard" style="border:1px solid var(--line); border-left:4px solid var(--red)">
-            <h3 style="display:flex; align-items:center; gap:8px"><span style="background:var(--red); color:white; font:700 10px 'IBM Plex Mono',monospace; padding:3px 7px; border-radius:999px; letter-spacing:.05em">IV. FEEDBACK</span> Feedback Form</h3>
-            <p class="small muted" style="margin:6px 0 0; line-height:1.6">Share feedback and suggestions regarding OSR services. Build by default — no name or student number required.</p>
+            <h3 style="display:flex; align-items:center; gap:8px"><span style="background:var(--red); color:white; font:700 10px 'IBM Plex Mono',monospace; padding:3px 7px; border-radius:999px; letter-spacing:.05em">IV. FEEDBACK</span> Rate the BulSU OSR</h3>
+            <p class="small muted" style="margin:6px 0 0; line-height:1.6">Rate an OSR service. Your name and student number are required so each rating comes from a real student; they are kept private and never published.</p>
             <form id="helpFeedbackForm" style="display:grid; gap:10px; margin-top:12px" novalidate>
-              <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Service <span class="small muted" style="text-transform:none; letter-spacing:0; font:400 10px 'Instrument Sans',sans-serif; color:var(--muted)">— choose one</span>
-                <select class="select" name="service" style="border-radius:8px; width:100%; margin-top:5px">
+              <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr)); gap:10px">
+                <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Full name <span style="color:var(--red)">*</span>
+                  <input class="input" name="fb_name" required autocomplete="name" style="border-radius:8px; margin-top:5px; width:100%" placeholder="Juan D. Dela Cruz"/>
+                </label>
+                <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Student number <span style="color:var(--red)">*</span>
+                  <input class="input" name="fb_student_number" required inputmode="numeric" autocomplete="off" style="border-radius:8px; margin-top:5px; width:100%" placeholder="2021-123456"/>
+                </label>
+              </div>
+              <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Campus
+                <select class="select" name="fb_campus" style="border-radius:8px; width:100%; margin-top:5px">
+                  <option value="">Select campus</option>
+                  <option>Main - Malolos</option><option>Bustos</option><option>Sarmiento</option><option>Meneses</option><option>San Rafael</option><option>Hagonoy</option><option>Other</option>
+                </select>
+              </label>
+              <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Service <span class="small muted" style="text-transform:none; letter-spacing:0; font:400 10px 'Instrument Sans',sans-serif; color:var(--muted)">— choose one</span> <span style="color:var(--red)">*</span>
+                <select class="select" name="service" required style="border-radius:8px; width:100%; margin-top:5px">
                   <option value="">Select service</option>
                   <option>Free Printing Services</option>
                   <option>Scholarships / Endorsements</option>
                   <option>Medical Mission / Dialogues</option>
                   <option>Consultation Caravan</option>
                   <option>Board Updates / Advisories</option>
+                  <option>Concern handling</option>
                   <option>Other OSR service</option>
                 </select>
               </label>
-              <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Rating
+              <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Rating <span style="color:var(--red)">*</span> <span class="small muted" style="text-transform:none; letter-spacing:0; font:400 10px 'Instrument Sans',sans-serif">— 5 is excellent, 1 is poor</span>
                 <div style="display:flex; gap:6px; margin-top:6px" role="radiogroup" aria-label="Rating">
                   <label style="flex:1; border:1px solid var(--line); border-radius:999px; padding:8px 6px; text-align:center; cursor:pointer; font:600 12px 'Instrument Sans',sans-serif"><input type="radio" name="rating" value="5" style="accent-color:var(--red)"/> 5</label>
                   <label style="flex:1; border:1px solid var(--line); border-radius:999px; padding:8px 6px; text-align:center; cursor:pointer; font:600 12px 'Instrument Sans',sans-serif"><input type="radio" name="rating" value="4" style="accent-color:var(--red)"/> 4</label>
@@ -1875,7 +2044,7 @@ img,svg{max-width:100%; height:auto}
                 <input class="input" name="fb_email" type="email" style="border-radius:8px; margin-top:5px; width:100%" placeholder="name@bulsu.edu.ph"/>
               </label>
               <div class="row" style="justify-content:flex-end; margin-top:2px">
-                <button class="btn btn--red" type="submit" style="border-radius:999px">Send feedback</button>
+                <button class="btn btn--red" type="submit" style="border-radius:999px">Send rating</button>
               </div>
               <div id="helpFeedbackMsg" role="status" aria-live="polite" class="small muted"></div>
             </form>
@@ -1933,83 +2102,155 @@ img,svg{max-width:100%; height:auto}
   <section class="page" id="page-about" aria-labelledby="about-title">
     <div class="section section--first">
       <a href="#home" class="btn btn--ghost btn--sm" style="margin-bottom:12px; display:inline-flex; align-items:center; gap:6px; font-size:12px; border-color:var(--line)"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg> Back to home</a>
-      <div class="section__head">
-        <div>
-          <div class="eyebrow" id="aboutEyebrow">The Office</div>
+
+      <header class="ab-hero">
+        <div class="ab-hero__copy">
+          <div class="ab-hero__eyebrow" id="aboutEyebrow">The Office</div>
           <h2 id="about-title">About the Office of the Student Regent</h2>
           <p id="aboutIntro">Structured information that is easy to update when leadership or details change. No invented names.</p>
         </div>
-        <span class="badge" id="aboutBadge">Easy to update</span>
-      </div>
-      <div class="about-grid">
-        <div style="display:grid; gap:14px">
-          <div class="about-card">
+        <div class="ab-hero__side">
+          <span class="ab-hero__badge" id="aboutBadge">Easy to update</span>
+          <dl class="ab-hero__facts">
+            <div><dt>Seat</dt><dd>Board of Regents</dd></div>
+            <div><dt>Serves</dt><dd>All BulSU campuses</dd></div>
+          </dl>
+        </div>
+      </header>
+
+      <nav class="ab-jump" aria-label="About page sections">
+        <button type="button" data-about-jump="aboutSecOffice">The office</button>
+        <button type="button" data-about-jump="aboutSecPeople">People</button>
+        <button type="button" data-about-jump="aboutSecVm">Vision &amp; mission</button>
+        <button type="button" data-about-jump="aboutSecPrograms">Programs</button>
+        <button type="button" data-about-jump="aboutSecContact">Contact &amp; links</button>
+      </nav>
+
+      <!-- 01 · The office -->
+      <section class="ab-block" id="aboutSecOffice" aria-labelledby="aboutOfficeHeading">
+        <div class="ab-block__num" aria-hidden="true">01</div>
+        <div class="ab-office">
+          <div class="ab-office__lead">
             <h3 id="aboutOfficeHeading">Office of the Student Regent</h3>
-            <p id="aboutOfficeP1">The Office of the Student Regent is the student representation arm within the Bulacan State University Board of Regents. It serves as the formal channel through which BulSU students participate in university governance.</p>
-            <div class="divider"></div>
+            <p class="ab-lede" id="aboutOfficeP1">The Office of the Student Regent is the student representation arm within the Bulacan State University Board of Regents. It serves as the formal channel through which BulSU students participate in university governance.</p>
             <p id="aboutOfficeP2">The Office receives student concerns, consults student councils and organizations, and prepares student positions for Board deliberations. Official announcements and meeting records are published on this site when verified.</p>
           </div>
-          <div class="about-card">
+          <div class="ab-mandate">
             <h3 id="aboutMandateHeading">Role and mandate</h3>
-            <ul id="aboutMandateList" style="margin:0; padding-left:16px; font-size:13.5px; line-height:1.6">
+            <ol id="aboutMandateList" class="ab-mandate__list">
               <li>Represent the studentry in the Board of Regents, the highest governing body of the University</li>
               <li>Consult students and student councils on matters affecting student welfare and academic life</li>
               <li>Bring student positions, concerns, and proposals to the Board</li>
               <li>Disseminate Board decisions and advisories that affect students</li>
               <li>Maintain an accessible record of student-related Board actions where authorized</li>
-            </ul>
-            <div class="divider"></div>
-            <p class="small muted" id="aboutMandateNote">Mandate wording should be aligned with the BulSU Charter and Board resolutions.</p>
+            </ol>
+            <p class="ab-note" id="aboutMandateNote">Mandate wording should be aligned with the BulSU Charter and Board resolutions.</p>
           </div>
-          <div class="about-card">
-            <h3 id="aboutSrHeading">Student Regent</h3>
-            <div style="border:1px dashed var(--line); background:var(--paper-2); border-radius:10px; padding:14px; text-align:center">
-              <div class="mono small" style="color:var(--stone)" id="aboutSrLabel">Current Student Regent</div>
-              <div style="font-family:'Fraunces',serif; font-size:20px; margin-top:4px" id="aboutSrName">[Name - to be supplied]</div>
-              <div class="small muted" style="margin-top:4px" id="aboutSrMeta">Term: [academic year] • Campus: [campus]</div>
-              <div class="small muted" style="margin-top:8px" id="aboutSrNote">Intentionally empty. Replace with the official designation when appointed.</div>
+        </div>
+      </section>
+
+      <!-- 02 · People -->
+      <section class="ab-block" id="aboutSecPeople" aria-labelledby="aboutPeopleTitle">
+        <div class="ab-block__num" aria-hidden="true">02</div>
+        <h3 class="ab-block__title" id="aboutPeopleTitle">The people behind the office</h3>
+        <div class="ab-people">
+          <article class="ab-regent" aria-labelledby="aboutSrHeading">
+            <h4 class="ab-regent__kicker" id="aboutSrHeading">Student Regent</h4>
+            <div class="ab-regent__mark" aria-hidden="true" id="aboutSrMark">SR</div>
+            <div class="ab-regent__label" id="aboutSrLabel">Current Student Regent</div>
+            <div class="ab-regent__name" id="aboutSrName">[Name - to be supplied]</div>
+            <div class="ab-regent__meta" id="aboutSrMeta">Term: [academic year] • Campus: [campus]</div>
+            <p class="ab-regent__note" id="aboutSrNote">Intentionally empty. Replace with the official designation when appointed.</p>
+          </article>
+          <div class="ab-team">
+            <h4 id="aboutDirHeading">Directors &amp; Secretariat</h4>
+            <p class="ab-note" id="aboutDirIntro">Supporting the Student Regent in consultations, records, and student concerns. Update when officially designated.</p>
+            <div class="ab-role">
+              <div><b>Executive Director</b><span id="aboutDirExecName">[Name — to be supplied]</span></div>
+              <span class="ab-tag ab-tag--red" id="aboutDirExecTag">OSR</span>
             </div>
-          </div>
-          <div class="about-card">
-            <h3 id="aboutDirHeading">Directors &amp; Secretariat</h3>
-            <p class="small muted" style="margin:0 0 8px" id="aboutDirIntro">Supporting the Student Regent in consultations, records, and student concerns. Update when officially designated.</p>
-            <div style="display:grid; gap:8px">
-              <div style="border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--paper-2); display:flex; justify-content:space-between; align-items:center">
-                <div><b style="font-size:13px">Executive Director</b><div class="small muted" id="aboutDirExecName">[Name — to be supplied]</div></div>
-                <span class="mono" id="aboutDirExecTag" style="font-size:10px; background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:3px 7px; border-radius:999px">OSR</span>
-              </div>
-              <div style="border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:white; display:flex; justify-content:space-between; align-items:center">
-                <div><b style="font-size:13px">Directors</b><div class="small muted" id="aboutDirNames">[Names — to be supplied]</div></div>
-                <span class="mono" id="aboutDirTag" style="font-size:10px; background:var(--paper-2); border:1px solid var(--line); padding:3px 7px; border-radius:999px">TBD</span>
-              </div>
-              <div style="border:1px dashed var(--line); border-radius:10px; padding:10px 12px; background:var(--paper-2)">
-                <b style="font-size:12px" id="aboutCollegeTitle">College Representatives</b>
-                <div class="small muted" style="margin-top:2px" id="aboutCollegeDesc">Per-college coordination for consultation caravan and concerns intake. List updated per term.</div>
-                <div class="mono small" style="margin-top:6px; color:var(--stone)" id="aboutCollegeRows">[Add rows as verified]</div>
-              </div>
+            <div class="ab-role">
+              <div><b>Directors</b><span id="aboutDirNames">[Names — to be supplied]</span></div>
+              <span class="ab-tag" id="aboutDirTag">TBD</span>
             </div>
-          </div>
-          <div class="about-card" style="border-left:4px solid var(--red)">
-            <h3 id="aboutVmHeading">BulSU Vision &amp; Mission</h3>
-            <div style="margin-top:8px">
-              <b style="font:700 12px 'IBM Plex Mono',monospace; letter-spacing:0.04em; color:var(--red)">VISION</b>
-              <p style="margin:4px 0 10px; font-size:13.5px; line-height:1.6" id="aboutVision">Bulacan State University is a progressive <em>knowledge-generating institution</em>, globally recognized for excellent instruction, pioneering research, and responsive community engagements.</p>
-              <b style="font:700 12px 'IBM Plex Mono',monospace; letter-spacing:0.04em; color:var(--red)">MISSION</b>
-              <p style="margin:4px 0 10px; font-size:13.5px; line-height:1.6" id="aboutMission">Bulacan State University exists to produce highly competent, ethical and service-oriented professionals that contribute to the sustainable socio-economic growth and development of the nation.</p>
-              <div class="divider"></div>
-              <b style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Core Values</b>
-              <div id="aboutValuesList" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:8px">
-                <span style="font:600 11px 'IBM Plex Mono',monospace; background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:5px 8px; border-radius:999px">Service to God &amp; Community</span>
-                <span style="font:600 11px 'IBM Plex Mono',monospace; background:var(--paper-2); border:1px solid var(--line); padding:5px 8px; border-radius:999px">Order &amp; Peace</span>
-                <span style="font:600 11px 'IBM Plex Mono',monospace; background:var(--paper-2); border:1px solid var(--line); padding:5px 8px; border-radius:999px">Assurance of Quality &amp; Accountability</span>
-                <span style="font:600 11px 'IBM Plex Mono',monospace; background:var(--paper-2); border:1px solid var(--line); padding:5px 8px; border-radius:999px">Respect &amp; Responsibility</span>
-              </div>
-              <p class="small muted" style="margin:8px 0 0" id="aboutValuesNote">Values per BulSU Student Handbook &amp; institutional statements. See Resources for the official handbook PDF.</p>
+            <div class="ab-role ab-role--dashed">
+              <div><b id="aboutCollegeTitle">College Representatives</b><span id="aboutCollegeDesc">Per-college coordination for consultation caravan and concerns intake. List updated per term.</span><span class="ab-mono" id="aboutCollegeRows">[Add rows as verified]</span></div>
             </div>
           </div>
         </div>
-        <div style="display:grid; gap:14px; align-content:start">
-          <div class="about-card">
+        <div class="ab-staff" id="aboutStaffWrap" hidden>
+          <h4 id="aboutStaffHeading">Office staff</h4>
+          <p class="ab-note" id="aboutStaffIntro" hidden></p>
+          <ul class="ab-staff__grid" id="aboutStaffGrid"></ul>
+        </div>
+      </section>
+
+      <!-- 03 · Vision & mission -->
+      <section class="ab-block ab-block--ink" id="aboutSecVm" aria-labelledby="aboutVmHeading">
+        <div class="ab-block__num" aria-hidden="true">03</div>
+        <h3 class="ab-block__title" id="aboutVmHeading">BulSU Vision &amp; Mission</h3>
+        <div class="ab-vm">
+          <div>
+            <div class="ab-vm__label">Vision</div>
+            <p id="aboutVision">Bulacan State University is a progressive <em>knowledge-generating institution</em>, globally recognized for excellent instruction, pioneering research, and responsive community engagements.</p>
+          </div>
+          <div>
+            <div class="ab-vm__label">Mission</div>
+            <p id="aboutMission">Bulacan State University exists to produce highly competent, ethical and service-oriented professionals that contribute to the sustainable socio-economic growth and development of the nation.</p>
+          </div>
+        </div>
+        <div class="ab-vm__label" style="margin-top:22px">Core values</div>
+        <div id="aboutValuesList" class="ab-values">
+          <span class="ab-value">Service to God &amp; Community</span>
+          <span class="ab-value">Order &amp; Peace</span>
+          <span class="ab-value">Assurance of Quality &amp; Accountability</span>
+          <span class="ab-value">Respect &amp; Responsibility</span>
+        </div>
+        <p class="ab-note" id="aboutValuesNote">Values per BulSU Student Handbook &amp; institutional statements. See Resources for the official handbook PDF.</p>
+      </section>
+
+      <!-- 04 · Programs -->
+      <section class="ab-block" id="aboutSecPrograms" aria-labelledby="aboutFeaturedHeading">
+        <div class="ab-block__num" aria-hidden="true">04</div>
+        <h3 class="ab-block__title" id="aboutFeaturedHeading">Featured programs &amp; initiatives</h3>
+        <p class="ab-note" id="aboutFeaturedIntro">Recurring services consolidated for Board records with date, purpose, and outcomes. See Initiatives for full list.</p>
+        <div id="aboutFeaturedList" class="ab-programs">
+          <div class="ab-program">
+            <div class="ab-program__head"><b>Free Printing Services</b><span class="ab-tag">Ongoing</span></div>
+            <p>Document printing support for students — intake, schedule, and outcomes tracked per activity.</p>
+            <a href="#initiatives" data-nav class="ab-program__link">View in Initiatives →</a>
+          </div>
+          <div class="ab-program">
+            <div class="ab-program__head"><b>Scholarships</b><span class="ab-tag">GWA-Based • LHS</span></div>
+            <p>Endorsements and advisories — e.g., BatSU GWA-Based Scholarship, LHS Tuition Fee Increase letters.</p>
+            <a href="#announcements" data-nav class="ab-program__link">See Letters →</a>
+          </div>
+          <div class="ab-program">
+            <div class="ab-program__head"><b>Medical Mission</b><span class="ab-tag">Dialogues &amp; Minutes</span></div>
+            <p>Consultations, dialogues, and minutes — one of the Meetings/Dialogues/Speakerships tracked under Reports.</p>
+            <a href="#board-meetings" data-nav class="ab-program__link">Board records →</a>
+          </div>
+        </div>
+        <p class="ab-note" id="aboutFeaturedNote">Replace with verified dates, venues, and outcomes. This mirrors PDF I. “Featured programs and initiatives (list)”.</p>
+      </section>
+
+      <!-- 05 · Contact & links -->
+      <section class="ab-block" id="aboutSecContact" aria-label="Contact and links">
+        <div class="ab-block__num" aria-hidden="true">05</div>
+        <div class="ab-contact">
+          <div class="ab-card ab-card--accent">
+            <h3 id="aboutContactHeading">Contact information</h3>
+            <div class="kv"><b>Email</b> <span><a id="acEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a></span></div>
+            <div class="kv"><b>Telephone</b> <span><a id="acPhone" class="phone-link" href="tel:+63447963817">+63 44 796 3817</a></span></div>
+            <div class="kv"><b>Office address</b> <span id="acAddress">Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan</span></div>
+            <div class="kv"><b>Office hours</b> <span id="acHours">Monday to Friday, within office hours</span></div>
+            <div class="kv"><b>Response time</b> <span id="aboutResponseTime">Within office hours</span></div>
+            <div class="row" style="margin-top:12px">
+              <a class="btn btn--sm btn--red" href="#help" data-nav>Contact form</a>
+              <a class="btn btn--sm btn--ghost" id="acMailto" href="mailto:bulsusg1983@gmail.com">Send email</a>
+            </div>
+          </div>
+          <div class="ab-card">
             <h3 id="aboutInfoHeading">Office information</h3>
             <div id="aboutInfoRows">
               <div class="kv"><b>Office name</b> <span>Office of the Student Regent</span></div>
@@ -2018,47 +2259,11 @@ img,svg{max-width:100%; height:auto}
               <div class="kv"><b>Campuses served</b> <span>All BulSU campuses</span></div>
               <div class="kv"><b>Designation</b> <span>Updated when officially designated</span></div>
             </div>
-            <div class="divider"></div>
-            <p class="small muted" id="aboutInfoNote">Fields are updated as official records are released.</p>
+            <p class="ab-note" id="aboutInfoNote">Fields are updated as official records are released.</p>
           </div>
-          <div class="about-card">
-            <h3 id="aboutContactHeading">Contact information</h3>
-            <div class="kv"><b>Email</b> <span><a id="acEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a></span></div>
-            <div class="kv"><b>Telephone</b> <span><a id="acPhone" class="phone-link" href="tel:+63447963817">+63 44 796 3817</a></span></div>
-            <div class="kv"><b>Office address</b> <span id="acAddress">Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan</span></div>
-            <div class="kv"><b>Office hours</b> <span id="acHours">Monday to Friday, within office hours</span></div>
-            <div class="kv"><b>Response time</b> <span id="aboutResponseTime">Within office hours</span></div>
-            <div class="row" style="margin-top:10px">
-              <a class="btn btn--sm btn--red" href="#help" data-nav>Contact form</a>
-              <a class="btn btn--sm btn--ghost" id="acMailto" href="mailto:bulsusg1983@gmail.com">Send email</a>
-            </div>
-          </div>
-          <div class="about-card">
-            <h3 id="aboutFeaturedHeading">Featured programs &amp; initiatives</h3>
-            <p class="small muted" style="margin:0 0 8px" id="aboutFeaturedIntro">Recurring services consolidated for Board records with date, purpose, and outcomes. See Initiatives for full list.</p>
-            <div id="aboutFeaturedList" style="display:grid; gap:8px">
-              <div style="border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--paper-2)">
-                <div style="display:flex; justify-content:space-between; align-items:center"><b style="font-size:13px">Free Printing Services</b><span class="mono" style="font-size:10px; background:white; border:1px solid var(--line); padding:2px 6px; border-radius:999px">Ongoing</span></div>
-                <p class="small muted" style="margin:4px 0 0; line-height:1.5">Document printing support for students — intake, schedule, and outcomes tracked per activity.</p>
-                <a href="#initiatives" data-nav style="font:600 12px 'IBM Plex Mono',monospace; color:var(--red); text-decoration:none; display:inline-flex; gap:4px; margin-top:6px">View in Initiatives →</a>
-              </div>
-              <div style="border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:white">
-                <div style="display:flex; justify-content:space-between; align-items:center"><b style="font-size:13px">Scholarships</b><span class="mono" style="font-size:10px; background:var(--paper-2); border:1px solid var(--line); padding:2px 6px; border-radius:999px">GWA-Based • LHS</span></div>
-                <p class="small muted" style="margin:4px 0 0; line-height:1.5">Endorsements and advisories — e.g., BatSU GWA-Based Scholarship, LHS Tuition Fee Increase letters.</p>
-                <a href="#announcements" data-nav style="font:600 12px 'IBM Plex Mono',monospace; color:var(--red); text-decoration:none; display:inline-flex; gap:4px; margin-top:6px">See Letters →</a>
-              </div>
-              <div style="border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:var(--paper-2)">
-                <div style="display:flex; justify-content:space-between; align-items:center"><b style="font-size:13px">Medical Mission</b><span class="mono" style="font-size:10px; background:white; border:1px solid var(--line); padding:2px 6px; border-radius:999px">Dialogues & Minutes</span></div>
-                <p class="small muted" style="margin:4px 0 0; line-height:1.5">Consultations, dialogues, and minutes — one of the Meetings/Dialogues/Speakerships tracked under Reports.</p>
-                <a href="#board-meetings" data-nav style="font:600 12px 'IBM Plex Mono',monospace; color:var(--red); text-decoration:none; display:inline-flex; gap:4px; margin-top:6px">Board records →</a>
-              </div>
-            </div>
-            <div class="divider"></div>
-            <p class="small muted" id="aboutFeaturedNote">Replace with verified dates, venues, and outcomes. This mirrors PDF I. “Featured programs and initiatives (list)”.</p>
-          </div>
-          <div class="about-card">
+          <div class="ab-card">
             <h3 id="aboutLinksHeading">Official links</h3>
-            <ul id="aboutLinksList" style="margin:0; padding-left:16px; font-size:13.5px; line-height:1.6">
+            <ul id="aboutLinksList" class="ab-links">
               <li><a href="https://bulsu.edu.ph" target="_blank" rel="noopener">Bulacan State University - bulsu.edu.ph</a></li>
               <li><a href="https://www.bulsu.edu.ph/assets/downloads/files/student_handbook.pdf" target="_blank" rel="noopener">BulSU Student Handbook (PDF)</a></li>
               <li><a href="#board-meetings" data-nav>Board Meeting Archive (this site)</a></li>
@@ -2066,10 +2271,45 @@ img,svg{max-width:100%; height:auto}
               <li>[Official Facebook page - to be supplied]</li>
               <li>[Additional official page - to be supplied]</li>
             </ul>
-            <div class="divider"></div>
-            <p class="small muted" id="aboutLinksNote">Add only verified official links.</p>
+            <p class="ab-note" id="aboutLinksNote">Add only verified official links.</p>
           </div>
         </div>
+      </section>
+    </div>
+  </section>
+
+  <!-- TRACK MY CONCERN -->
+  <section class="page" id="page-track" aria-labelledby="trackTitle">
+    <div class="section section--first">
+      <a href="#home" class="btn btn--ghost btn--sm" style="margin-bottom:12px; display:inline-flex; align-items:center; gap:6px; font-size:12px; border-color:var(--line)"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg> Back to home</a>
+      <div class="track-layout">
+        <div class="track-intro">
+          <div class="eyebrow">Student Help</div>
+          <h2 id="trackTitle">Track my concern</h2>
+          <p>Enter the tracking code you got after submitting a concern. You'll see whether the OSR has responded, and read the response here.</p>
+          <form class="track-form" id="trackForm" role="search" aria-label="Find a concern by tracking code">
+            <label for="trackCode" class="track-card__label">Tracking code</label>
+            <div class="track-form__row">
+              <input id="trackCode" class="input" autocomplete="off" spellcheck="false" placeholder="OSR-ABCD-2345" maxlength="20"/>
+              <button class="btn btn--red" type="submit">Check status</button>
+            </div>
+          </form>
+          <div id="trackResult" aria-live="polite"></div>
+        </div>
+        <aside class="track-side">
+          <h3>Saved on this device</h3>
+          <ul class="track-saved" id="trackSaved"></ul>
+          <div class="track-legend">
+            <h4>What the steps mean</h4>
+            <dl>
+              <div><dt>Received</dt><dd>Your concern is in the OSR inbox.</dd></div>
+              <div><dt>In review</dt><dd>Someone at the office is looking into it.</dd></div>
+              <div><dt>Responded</dt><dd>The OSR has posted a reply — read it above.</dd></div>
+              <div><dt>Closed</dt><dd>The concern is resolved or referred.</dd></div>
+            </dl>
+          </div>
+          <a class="btn btn--ghost btn--block" href="#help" data-nav data-help="concern">Raise a new concern</a>
+        </aside>
       </div>
     </div>
   </section>
@@ -2620,7 +2860,7 @@ $("#dashSavedBtn")?.addEventListener("click", ()=>{
 });
 
 
-const pages={"home":"page-home","announcements":"page-announcements","board-meetings":"page-board-meetings","initiatives":"page-initiatives","resources":"page-resources","help":"page-help","about":"page-about","search":"page-search","ideal-bulsu":"page-ideal-bulsu","academic-calendar":"page-academic-calendar"};
+const pages={"home":"page-home","announcements":"page-announcements","board-meetings":"page-board-meetings","initiatives":"page-initiatives","resources":"page-resources","help":"page-help","about":"page-about","search":"page-search","ideal-bulsu":"page-ideal-bulsu","academic-calendar":"page-academic-calendar","track":"page-track"};
 function setRoute(hash){
   const key=(hash||location.hash||"#home").replace("#","").split("?")[0].split("/")[0] || "home";
   const pageId=pages[key]||pages.home;
@@ -2812,23 +3052,135 @@ function updateAnonState(){
 }
 $("#concernAnon")?.addEventListener("change", ()=>{ updateAnonState(); const fd=new FormData($("#concernForm")); safeSet("osr-concern", JSON.stringify(Object.fromEntries(fd.entries()))); });
 
-$("#concernForm").addEventListener("submit", e=>{
+$("#concernForm").addEventListener("submit", async e=>{
   e.preventDefault();
-  const fd=new FormData(e.target);
+  const form=e.target;
+  const fd=new FormData(form);
   const isAnon = $("#concernAnon")?.checked;
-  if(!fd.get("concern")?.trim()){
-    $("#concernFeedback").innerHTML=`<div class="error" role="alert">Please describe your concern.</div>`; toast("Describe your concern"); return;
+  const fail=(msg)=>{ $("#concernFeedback").innerHTML=`<div class="error" role="alert">${escapeHtml(msg)}</div>`; toast(msg); };
+  if(!fd.get("concern")?.trim()) return fail("Please describe your concern.");
+  if(!isAnon && (!fd.get("name")?.trim()||!fd.get("email")?.trim())) return fail("Please complete name and email — or submit anonymously.");
+  if(fd.get("email")?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fd.get("email").trim())) return fail("Enter a valid email or leave it blank if anonymous.");
+  const button=$("#concernSubmitBtn");
+  button.disabled=true; button.textContent="Submitting…";
+  try{
+    const response=await fetch("/api/concerns",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({
+      anonymous:!!isAnon, name:fd.get("name")||"", studentNumber:fd.get("studentNumber")||"", email:fd.get("email")||"",
+      campus:fd.get("campus")||"", category:fd.get("category")||"", concern:fd.get("concern")||"", outcome:fd.get("outcome")||""
+    })});
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok || !result.code) throw new Error(result.error||"The concern could not be sent. Please try again.");
+    trackRemember(result.code);
+    $("#concernFeedback").innerHTML=`<div class="track-issued" role="status">
+      <span class="track-issued__label">Your tracking code</span>
+      <span class="track-issued__code">${escapeHtml(result.code)}</span>
+      <p>Save this code. It is the only way to check your concern if you submitted anonymously. It is also saved on this device.</p>
+      <div class="row"><button class="btn btn--sm btn--ghost" type="button" data-copy-code="${escapeHtml(result.code)}">Copy code</button><a class="btn btn--sm btn--red" href="#track?code=${encodeURIComponent(result.code)}">Track it</a></div>
+    </div>`;
+    toast("Concern submitted — tracking code "+result.code);
+    safeRemove("osr-concern");
+    form.reset(); updateAnonState();
+    document.querySelectorAll("#concernForm [data-step]").forEach(el=> el.hidden = el.dataset.step!=="3");
+  }catch(error){
+    fail(error.message);
+  }finally{
+    button.disabled=false; button.textContent="Submit concern";
   }
-  if(!isAnon && (!fd.get("name")?.trim()||!fd.get("email")?.trim())){
-    $("#concernFeedback").innerHTML=`<div class="error" role="alert">Please complete name and email — or submit anonymously.</div>`; toast("Complete required fields"); return;
+});
+document.addEventListener("click", e=>{
+  const copy=e.target.closest("[data-copy-code]");
+  if(!copy) return;
+  navigator.clipboard?.writeText(copy.dataset.copyCode).then(()=>toast("Tracking code copied"), ()=>toast(copy.dataset.copyCode));
+});
+
+/* ── Track my concern ─────────────────────────────────────────────────────── */
+const TRACK_KEY="osr-tracked-concerns";
+function trackSaved(){ try{ const list=JSON.parse(safeGet(TRACK_KEY,"[]")); return Array.isArray(list)?list:[]; }catch{ return []; } }
+function trackRemember(code){ const list=trackSaved().filter(item=>item.code!==code); list.unshift({code, saved:new Date().toISOString()}); safeSet(TRACK_KEY, JSON.stringify(list.slice(0,10))); renderTrackSaved(); }
+function trackForget(code){ safeSet(TRACK_KEY, JSON.stringify(trackSaved().filter(item=>item.code!==code))); renderTrackSaved(); }
+const TRACK_STEPS=["Received","In review","Responded","Closed"];
+function trackDate(value){ if(!value) return ""; const d=new Date(String(value).replace(" ","T")+(String(value).includes("Z")?"":"Z")); return isNaN(d)?"":d.toLocaleString("en-PH",{dateStyle:"medium", timeStyle:"short"}); }
+async function trackLookup(code){
+  const out=document.getElementById("trackResult");
+  if(!out) return;
+  const clean=String(code||"").trim();
+  if(!clean){ out.innerHTML=`<div class="error" role="alert">Enter the tracking code you received, e.g. OSR-ABCD-2345.</div>`; return; }
+  out.innerHTML=`<div class="track-card track-card--loading">Checking ${escapeHtml(clean)}…</div>`;
+  try{
+    const response=await fetch(`/api/concerns/track/${encodeURIComponent(clean)}`,{headers:{Accept:"application/json"},cache:"no-store"});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok) throw new Error(data.error||"Lookup failed. Try again.");
+    const at=Math.max(0, TRACK_STEPS.indexOf(data.status));
+    const responded=data.responded;
+    out.innerHTML=`<article class="track-card">
+      <header class="track-card__head">
+        <div><span class="track-card__label">Tracking code</span><b class="track-card__code">${escapeHtml(data.code)}</b></div>
+        <span class="track-pill ${responded?"track-pill--ok":"track-pill--wait"}">${responded?"Responded":"Not yet responded"}</span>
+      </header>
+      <ol class="track-steps" aria-label="Progress">
+        ${TRACK_STEPS.map((step,i)=>`<li class="${i<at?"is-done":i===at?"is-current":""}"><span class="track-steps__dot" aria-hidden="true"></span><span>${step}</span></li>`).join("")}
+      </ol>
+      <dl class="track-meta">
+        <div><dt>Submitted</dt><dd>${escapeHtml(trackDate(data.submitted_at)||"—")}</dd></div>
+        <div><dt>Last update</dt><dd>${escapeHtml(trackDate(data.updated_at)||"—")}</dd></div>
+        ${data.category?`<div><dt>Type</dt><dd>${escapeHtml(data.category)}</dd></div>`:""}
+        ${data.campus?`<div><dt>Campus</dt><dd>${escapeHtml(data.campus)}</dd></div>`:""}
+      </dl>
+      ${responded?`<div class="track-response"><span class="track-card__label">Response from the OSR${data.responded_at?` · ${escapeHtml(trackDate(data.responded_at))}`:""}</span><p>${escapeHtml(data.response)}</p></div>`
+        :`<p class="track-wait">The OSR has received your concern and has not posted a response yet. Concerns are reviewed within office hours — check back here anytime.</p>`}
+    </article>`;
+    if(!trackSaved().some(item=>item.code===data.code)) trackRemember(data.code);
+  }catch(error){
+    out.innerHTML=`<div class="error" role="alert">${escapeHtml(error.message)}</div>`;
   }
-  if(fd.get("email")?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fd.get("email").trim())){
-    $("#concernFeedback").innerHTML=`<div class="error" role="alert">Enter a valid email or leave blank if anonymous.</div>`; toast("Check email"); return;
-  }
-  $("#concernFeedback").innerHTML=`<div class="ok" role="status"><b>Demo received.</b> In production this would be sent to the OSR endpoint. Not transmitted in demo. The Office triages during office hours.</div>`;
-  toast("Concern submitted — demo only");
-  safeRemove("osr-concern");
-  setTimeout(()=>{ e.target.reset(); updateAnonState(); setConcernStep(1); }, 900);
+}
+function renderTrackSaved(){
+  const host=document.getElementById("trackSaved");
+  if(!host) return;
+  const list=trackSaved();
+  host.innerHTML=list.length?list.map(item=>`<li><button type="button" class="track-saved__open" data-track-open="${escapeHtml(item.code)}"><b>${escapeHtml(item.code)}</b><span>Saved ${escapeHtml(new Date(item.saved).toLocaleDateString("en-PH",{dateStyle:"medium"}))}</span></button><button type="button" class="track-saved__x" data-track-forget="${escapeHtml(item.code)}" aria-label="Remove ${escapeHtml(item.code)} from this device">×</button></li>`).join("")
+    :`<li class="track-saved__empty">Concerns you submit on this device appear here automatically.</li>`;
+}
+document.getElementById("trackForm")?.addEventListener("submit", e=>{ e.preventDefault(); trackLookup(document.getElementById("trackCode").value); });
+document.addEventListener("click", e=>{
+  const open=e.target.closest("[data-track-open]");
+  if(open){ document.getElementById("trackCode").value=open.dataset.trackOpen; trackLookup(open.dataset.trackOpen); return; }
+  const forget=e.target.closest("[data-track-forget]");
+  if(forget) trackForget(forget.dataset.trackForget);
+});
+function trackFromHash(){
+  const m=location.hash.match(/^#track\?code=([A-Za-z0-9-]+)/);
+  if(m){ const code=decodeURIComponent(m[1]); const input=document.getElementById("trackCode"); if(input) input.value=code; trackLookup(code); }
+}
+window.addEventListener("hashchange", trackFromHash);
+window.addEventListener("DOMContentLoaded", ()=>{ renderTrackSaved(); trackFromHash(); });
+renderTrackSaved();
+
+/* ── Rate the OSR (name + student number required) ───────────────────────── */
+document.getElementById("helpFeedbackForm")?.addEventListener("submit", async e=>{
+  e.preventDefault();
+  const form=e.target, fd=new FormData(form), msg=document.getElementById("helpFeedbackMsg");
+  const fail=text=>{ msg.innerHTML=`<span class="error" role="alert">${escapeHtml(text)}</span>`; toast(text); };
+  const name=(fd.get("fb_name")||"").trim(), sn=(fd.get("fb_student_number")||"").trim();
+  if(name.length<2) return fail("Your full name is required to rate OSR services.");
+  if(!sn) return fail("Your student number is required to rate OSR services.");
+  if(!/^\d{4}-?\d{4,7}$/.test(sn)) return fail("Student number should look like 2021-123456.");
+  if(!fd.get("service")) return fail("Choose the service you are rating.");
+  if(!fd.get("rating")) return fail("Choose a rating from 1 to 5.");
+  if(!(fd.get("feedback")||"").trim()) return fail("Add a short comment about the service.");
+  const button=form.querySelector('[type="submit"]');
+  button.disabled=true; button.textContent="Sending…";
+  try{
+    const response=await fetch("/api/ratings",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({
+      name, studentNumber:sn, campus:fd.get("fb_campus")||"", service:fd.get("service"), rating:Number(fd.get("rating")), feedback:fd.get("feedback")||"", email:fd.get("fb_email")||""
+    })});
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok) throw new Error(result.error||"Your rating could not be sent. Please try again.");
+    msg.innerHTML=`<span class="ok" role="status">Thank you. Your rating was recorded and will be included in the OSR's published service summary (names and student numbers are never published).</span>`;
+    toast("Rating sent — thank you");
+    form.reset();
+  }catch(error){ fail(error.message); }
+  finally{ button.disabled=false; button.textContent="Send rating"; }
 });
 // Shared contact details — defaults below; the admin CMS (Settings → Website
 // settings) can override them at runtime via /api/settings/public.
@@ -4551,23 +4903,27 @@ function renderDashCalendar(){
     track.style.transform = `translateY(-${offset * rowH}px)`;
     dots.forEach((d,i)=> d.classList.toggle('is-active', i===offset));
   };
-  // pause on hover is CSS, but also pause interval
-  let paused = false;
-  wrap.addEventListener('mouseenter', ()=> paused=true);
-  wrap.addEventListener('mouseleave', ()=> paused=false);
-  wrap.addEventListener('focusin', ()=> paused=true);
-  wrap.addEventListener('focusout', ()=> paused=false);
-  // auto rotate every 2.2s, bounce back
+  // Pause only while the pointer or keyboard focus is on the list. State lives
+  // on the element so re-renders never stack stale listeners.
+  wrap._dashPaused = false;
+  if(!wrap._dashBound){
+    wrap._dashBound = true;
+    wrap.addEventListener('mouseenter', ()=> wrap._dashPaused=true);
+    wrap.addEventListener('mouseleave', ()=> wrap._dashPaused=false);
+    wrap.addEventListener('focusin', ()=> wrap._dashPaused=true);
+    wrap.addEventListener('focusout', ()=> wrap._dashPaused=false);
+  }
+  // Rotate every 3s on every device. Desktop browsers often report
+  // prefers-reduced-motion (Windows "Show animations" off), which used to stop
+  // the list entirely; CSS already removes the slide animation in that case,
+  // so the rows simply step instead of gliding.
   wrap._dashInterval = setInterval(()=>{
-    if(paused || document.hidden) return;
-    // respect reduced motion
-    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if(wrap._dashPaused || document.hidden || maxOffset===0) return;
     offset += dir;
     if(offset >= maxOffset){ offset = maxOffset; dir = -1; }
     else if(offset <= 0){ offset = 0; dir = 1; }
     update();
-  }, 2200);
-  // allow manual dot click
+  }, 3000);
   dots.forEach((dot,i)=>{
     dot.style.cursor='pointer';
     dot.addEventListener('click', ()=>{
@@ -4577,10 +4933,6 @@ function renderDashCalendar(){
     });
   });
   update();
-  // cleanup on page hide
-  document.addEventListener('visibilitychange', ()=>{
-    if(document.hidden && wrap._dashInterval) clearInterval(wrap._dashInterval);
-  }, {once:true});
 }
 
 function populateCalMonths(){
@@ -5231,6 +5583,26 @@ window.updateUpNext = typeof updateUpNext === 'function' ? updateUpNext : undefi
 })();
 </script>
 
+<script>
+/* About page: section jump bar scrolls within the page and tracks the section in view. */
+(function(){
+  const nav=document.querySelector('#page-about .ab-jump');
+  if(!nav) return;
+  const buttons=[...nav.querySelectorAll('[data-about-jump]')];
+  buttons.forEach(button=>button.addEventListener('click',()=>{
+    const target=document.getElementById(button.dataset.aboutJump);
+    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+  }));
+  if(!('IntersectionObserver' in window)) return;
+  const observer=new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(!entry.isIntersecting) return;
+      buttons.forEach(button=>button.classList.toggle('is-active', button.dataset.aboutJump===entry.target.id));
+    });
+  },{rootMargin:'-35% 0px -55% 0px'});
+  buttons.forEach(button=>{ const el=document.getElementById(button.dataset.aboutJump); if(el) observer.observe(el); });
+})();
+</script>
 <script src="/js/cms-integration.js"></script>
 </body>
 </html>

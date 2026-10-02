@@ -337,7 +337,7 @@
     if(!el || !Array.isArray(values) || !values.length) return;
     const items = values.filter(value => typeof value === 'string' && value.trim()).map(value => value.trim());
     if(!items.length) return;
-    el.innerHTML = items.map((value, index) => `<span style="font:600 11px 'IBM Plex Mono',monospace; ${index === 0 ? 'background:var(--red-3); border:1px solid #FFD0D6; color:var(--red)' : 'background:var(--paper-2); border:1px solid var(--line)'}; padding:5px 8px; border-radius:999px">${aboutEsc(value)}</span>`).join('');
+    el.innerHTML = items.map(value => `<span class="ab-value">${aboutEsc(value)}</span>`).join('');
   }
   function aboutKV(id, rows){
     const el = document.getElementById(id);
@@ -366,36 +366,99 @@
     const items = rows.filter(row => row && (row.title || row.description));
     if(!items.length) return;
     el.innerHTML = '';
-    items.forEach((row, index) => {
+    items.forEach(row => {
       const card = document.createElement('div');
-      const tint = index % 2 === 0 ? 'var(--paper-2)' : 'white';
-      card.setAttribute('style', `border:1px solid var(--line); border-radius:10px; padding:10px 12px; background:${tint}`);
+      card.className = 'ab-program';
       const head = document.createElement('div');
-      head.setAttribute('style', 'display:flex; justify-content:space-between; align-items:center');
+      head.className = 'ab-program__head';
       const title = document.createElement('b');
-      title.setAttribute('style', 'font-size:13px');
       title.textContent = row.title || '';
       head.appendChild(title);
       if(row.tag){
         const tag = document.createElement('span');
-        tag.className = 'mono';
-        tag.setAttribute('style', `font-size:10px; background:${index % 2 === 0 ? 'white' : 'var(--paper-2)'}; border:1px solid var(--line); padding:2px 6px; border-radius:999px`);
+        tag.className = 'ab-tag';
         tag.textContent = row.tag;
         head.appendChild(tag);
       }
       card.appendChild(head);
       if(row.description){
         const text = document.createElement('p');
-        text.className = 'small muted';
-        text.setAttribute('style', 'margin:4px 0 0; line-height:1.5');
         text.textContent = row.description;
         card.appendChild(text);
       }
       if(row.link_href){
-        card.appendChild(aboutAnchor(row.link_href, row.link_label || 'Open', 'font:600 12px \'IBM Plex Mono\',monospace; color:var(--red); text-decoration:none; display:inline-flex; gap:4px; margin-top:6px'));
+        const link = aboutAnchor(row.link_href, row.link_label || 'Open');
+        link.className = 'ab-program__link';
+        card.appendChild(link);
       }
       el.appendChild(card);
     });
+  }
+  function aboutInitials(name){
+    const words = String(name || '').replace(/\[.*?\]/g, '').split(/\s+/).filter(word => /^[A-Za-zÀ-ÿ]/.test(word));
+    if(!words.length) return '';
+    return (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase();
+  }
+  function aboutPhoto(url){
+    return typeof url === 'string' && (/^https:\/\//i.test(url) || url.startsWith('/')) ? url : '';
+  }
+  function aboutStaff(rows, heading, intro){
+    const wrap = document.getElementById('aboutStaffWrap');
+    const grid = document.getElementById('aboutStaffGrid');
+    if(!wrap || !grid) return;
+    const items = Array.isArray(rows) ? rows.filter(row => row && row.name) : [];
+    wrap.hidden = !items.length;
+    if(!items.length) return;
+    aboutText('aboutStaffHeading', heading);
+    const introEl = document.getElementById('aboutStaffIntro');
+    if(introEl){ introEl.hidden = !(intro && intro.trim()); if(intro) introEl.textContent = intro.trim(); }
+    grid.innerHTML = '';
+    items.forEach(row => {
+      const item = document.createElement('li');
+      item.className = 'ab-person';
+      const mark = document.createElement('span');
+      mark.className = 'ab-person__mark';
+      mark.setAttribute('aria-hidden', 'true');
+      const photo = aboutPhoto(row.photo);
+      if(photo){
+        const img = document.createElement('img');
+        img.src = photo; img.alt = ''; img.loading = 'lazy';
+        mark.appendChild(img);
+      } else {
+        mark.textContent = aboutInitials(row.name) || '•';
+      }
+      const body = document.createElement('div');
+      const name = document.createElement('b');
+      name.textContent = row.name;
+      body.appendChild(name);
+      [row.role, row.unit].filter(Boolean).forEach(text => {
+        const line = document.createElement('span');
+        line.textContent = text;
+        body.appendChild(line);
+      });
+      if(row.email){
+        const mail = document.createElement('a');
+        mail.href = `mailto:${row.email}`;
+        mail.textContent = row.email;
+        body.appendChild(mail);
+      }
+      item.append(mark, body);
+      grid.appendChild(item);
+    });
+  }
+  function aboutRegentMark(name, photoUrl){
+    const mark = document.getElementById('aboutSrMark');
+    if(!mark) return;
+    const photo = aboutPhoto(photoUrl);
+    if(photo){
+      mark.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = photo; img.alt = '';
+      mark.appendChild(img);
+    } else {
+      const initials = aboutInitials(name);
+      if(initials) mark.textContent = initials;
+    }
   }
   function aboutLinks(id, rows){
     const el = document.getElementById(id);
@@ -427,6 +490,8 @@
     aboutText('aboutSrName', a.sr_name);
     aboutText('aboutSrMeta', a.sr_meta);
     aboutText('aboutSrNote', a.sr_note);
+    aboutRegentMark(a.sr_name, a.sr_photo);
+    aboutStaff(a.staff, a.staff_heading, a.staff_intro);
     aboutText('aboutDirHeading', a.dir_heading);
     aboutText('aboutDirIntro', a.dir_intro);
     aboutText('aboutDirExecName', a.dir_exec_name);

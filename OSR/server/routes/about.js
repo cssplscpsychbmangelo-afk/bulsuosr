@@ -26,6 +26,9 @@ const ABOUT_TEXT_FIELDS = {
   sr_name: 200,
   sr_meta: 200,
   sr_note: 400,
+  sr_photo: 400,
+  staff_heading: 160,
+  staff_intro: 400,
   dir_heading: 160,
   dir_intro: 400,
   dir_exec_name: 200,
@@ -72,6 +75,17 @@ const ABOUT_LIST_FIELDS = {
       link_href: { max: 400, link: true }
     }
   },
+  // Office staff shown as cards under "The people behind the office".
+  staff: {
+    max: 40,
+    fields: {
+      name: { max: 160 },
+      role: { max: 160 },
+      unit: { max: 160 },
+      email: { max: 200, email: true },
+      photo: { max: 400, photo: true }
+    }
+  },
   links: {
     max: 12,
     fields: { label: { max: 160 }, href: { max: 400, link: true } }
@@ -85,6 +99,14 @@ function isSafeLink(value) {
   if (!link) return true; // empty means "keep the built-in link"
   if (link.startsWith('#')) return true;
   return /^https?:\/\/\S+$/i.test(link);
+}
+
+// Photos: an uploaded file on this site (/uploads/...) or an https:// image URL.
+function isSafePhoto(value) {
+  const link = String(value || '').trim();
+  if (!link) return true;
+  if (link.startsWith('/') && !link.startsWith('//')) return true;
+  return /^https:\/\/\S+$/i.test(link);
 }
 
 // Returns { error } for a rejected payload, or { content } with a clean copy.
@@ -103,6 +125,7 @@ export function sanitizeAboutContent(body) {
     if (text.length > max) return { error: `"${key}" is too long — ${text.length} characters, the limit is ${max}.` };
     content[key] = text;
   }
+  if (content.sr_photo && !isSafePhoto(content.sr_photo)) return { error: '"sr_photo" must be an https:// image link or a file from the media library.' };
 
   for (const [key, rule] of Object.entries(ABOUT_LINE_FIELDS)) {
     if (!(key in body)) continue;
@@ -138,6 +161,8 @@ export function sanitizeAboutContent(body) {
         entry[field] = text;
         if (text) filled = true;
         if (column.link && !isSafeLink(text)) return { error: `"${field}" must start with https:// or be a #section of this site.` };
+        if (column.photo && !isSafePhoto(text)) return { error: `"${field}" must be an https:// image link or a file from the media library.` };
+        if (column.email && text && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text)) return { error: `"${text}" is not a valid email address.` };
       }
       if (filled) cleaned.push(entry); // drop rows where nothing was typed
     }

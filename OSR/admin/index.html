@@ -121,7 +121,6 @@ img{display:block;max-width:100%}
 .topbar-nav-link{border:0;background:transparent;color:var(--stone);font-weight:550;font-size:12px;padding:5px 10px;border-radius:6px;cursor:pointer;white-space:nowrap;transition:all .15s}
 .topbar-nav-link:hover{color:var(--ink);background:rgba(255,255,255,0.7)}
 .topbar-nav-link.is-active{color:var(--red-dark);background:var(--white);font-weight:600;box-shadow:0 1px 2px rgba(17,18,20,0.06)}
-@media(max-width:1120px){.topbar-nav{display:none}}
 .topbar-actions{display:flex;align-items:center;gap:9px;margin-left:auto;flex-shrink:0}
 .site-short{display:none}
 .admin-identity{max-width:260px;margin-right:3px;text-align:right;line-height:1.25}
@@ -145,7 +144,7 @@ img{display:block;max-width:100%}
 .sidebar-logout{display:none;margin-top:10px}
 .nav-backdrop{display:none}
 .mobile-tab-strip{display:none}
-@media(max-width:1120px){
+@media(max-width:860px){
   .mobile-tab-strip{display:flex;align-items:center;gap:4px;overflow-x:auto;scrollbar-width:none;padding:4px 0 16px;margin-bottom:8px;border-bottom:1px solid var(--line)}
   .mobile-tab-strip::-webkit-scrollbar{display:none}
   .mobile-tab-strip .topbar-nav-link{padding:6px 12px;border:1px solid var(--line);background:var(--white);border-radius:6px;font-size:12px}
@@ -283,16 +282,58 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
 .mini-stat strong{display:block;margin-top:6px;font:700 24px 'Fraunces',Georgia,serif}
 .contact-grid{display:grid;grid-template-columns:minmax(320px,1fr) minmax(300px,.85fr);gap:18px;align-items:start}
 .contact-grid .form{width:100%}
-.about-admin-grid{display:grid;grid-template-columns:minmax(340px,1fr) minmax(300px,.8fr);gap:18px;align-items:start}
-.about-admin-grid .form{width:100%}
-.list-editor{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
-.list-editor__head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-.list-editor__head h4{margin:0;font:600 12px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--red-dark)}
+.about-editor{display:grid;grid-template-columns:240px minmax(0,1fr);gap:20px;align-items:start}
+.about-editor__nav{position:sticky;top:88px;display:grid;gap:4px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--white)}
+.about-editor__navlabel{margin:4px 8px 6px;font:600 10px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--stone)}
+.about-nav-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;text-align:left;padding:9px 10px;border:1px solid transparent;border-radius:8px;background:transparent;cursor:pointer}
+.about-nav-item:hover{background:var(--paper)}
+.about-nav-item.is-active{background:var(--red-soft);border-color:#E7B3BC}
+.about-nav-item__title{font-weight:650;font-size:13px;display:flex;align-items:center;gap:6px}
+.about-nav-item.is-active .about-nav-item__title{color:var(--red-dark)}
+.about-nav-item__hint{grid-column:1;font-size:11px;color:var(--stone);line-height:1.3}
+.about-nav-item__count{grid-column:2;grid-row:1/3;align-self:center;font:500 10px 'IBM Plex Mono',monospace;color:var(--stone);white-space:nowrap}
+.about-editor__body{display:grid;gap:14px;min-width:0}
+.about-pane{display:grid;gap:16px;padding:22px;border:1px solid var(--line);border-top:4px solid var(--red);border-radius:12px;background:var(--white)}
+.about-pane__head h3{margin:0;font:600 20px/1.2 'Fraunces',Georgia,serif}
+.about-pane__head p{margin:4px 0 0;color:var(--stone);font-size:12.5px}
+.about-pane__fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.about-pane label,.list-editor__row label{display:grid;gap:6px;color:var(--ink-soft);font-weight:600;font-size:12px;min-width:0}
+.about-pane__fields label:has(textarea),.about-pane__fields label:has(small){grid-column:1/-1}
+.about-pane input,.about-pane textarea,.about-pane select{width:100%;min-height:42px;border:1px solid var(--control);border-radius:8px;background:var(--white);color:var(--ink);padding:9px 12px}
+.about-pane textarea{min-height:92px;resize:vertical}
+.about-pane input:focus,.about-pane textarea:focus,.about-pane select:focus{border-color:var(--red);outline:0;box-shadow:0 0 0 3px rgba(166,25,46,.14)}
+.about-pane small{color:var(--stone);font-size:11px;font-weight:400}
+.about-photo-pick{min-height:36px!important;font-size:12px;color:var(--stone)!important}
+.list-editor{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
+.list-editor__head h4{margin:0;display:flex;align-items:center;gap:8px;font:600 12px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--red-dark)}
+.list-editor__head .count{font-weight:500;color:var(--stone);background:var(--white);border:1px solid var(--line);border-radius:999px;padding:1px 8px}
 .list-editor__rows{display:grid;gap:10px}
-.list-editor__row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--white)}
-.list-editor__row label{display:grid;gap:6px;color:var(--ink-soft);font-weight:600;font-size:11.5px}
+.list-editor__row{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--white)}
+.row-head{display:flex;align-items:center;gap:10px;min-width:0}
+.row-title{flex:1;min-width:0;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row-tools{display:flex;gap:2px;flex:none}
+.row-remove{color:var(--red-dark)}
+.row-avatar{width:36px;height:36px;flex:none;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:var(--red-soft);color:var(--red-dark);font:600 13px 'Fraunces',Georgia,serif}
+.row-avatar img{width:100%;height:100%;object-fit:cover}
+.row-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.row-fields .wide{grid-column:1/-1}
 .list-editor__row textarea{min-height:62px}
-.list-editor__row [data-remove-row]{grid-column:1/-1;justify-self:start}
+.list-editor__add{justify-self:start;border-style:dashed}
+.list-editor__empty{margin:0;padding:14px;border:1px dashed var(--line);border-radius:8px;color:var(--stone);font-size:12.5px;text-align:center;background:var(--white)}
+.about-savebar{position:sticky;bottom:12px;z-index:5;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.96);box-shadow:var(--shadow-soft)}
+.about-savebar__state{margin-right:auto;font:500 11px 'IBM Plex Mono',monospace;color:var(--stone)}
+.about-savebar__state.is-dirty{color:var(--amber)}
+@media(max-width:980px){
+  .about-editor{grid-template-columns:minmax(0,1fr)}
+  .about-editor__nav{position:static;display:flex;overflow-x:auto;scrollbar-width:none;padding:6px}
+  .about-editor__navlabel,.about-nav-item__hint,.about-nav-item__count{display:none}
+  .about-nav-item{flex:none;white-space:nowrap}
+}
+@media(max-width:640px){
+  .about-pane{padding:16px}
+  .about-pane__fields,.row-fields{grid-template-columns:minmax(0,1fr)}
+  .about-savebar .btn--quiet{display:none}
+}
 .list-editor__empty{color:var(--stone);font-size:11.5px}
 .preview-card{display:grid;gap:9px;border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:10px;background:var(--white);padding:18px}
 .preview-card h3{margin:0 0 4px}
@@ -401,6 +442,80 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
   html{scroll-behavior:auto}
   *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
+
+/* Status filter chips and per-row overflow menu (fewer buttons per record) */
+.status-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.status-chip{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--white);font-weight:600;font-size:12px;color:var(--stone);cursor:pointer}
+.status-chip span{font:500 10.5px 'IBM Plex Mono',monospace;padding:1px 6px;border-radius:999px;background:var(--paper)}
+.status-chip:hover{border-color:var(--ink-soft);color:var(--ink)}
+.status-chip.is-active{border-color:var(--red);background:var(--red-soft);color:var(--red-dark)}
+.status-chip.is-active span{background:var(--white)}
+.more-menu{position:relative}
+.more-menu summary{list-style:none}
+.more-menu summary::-webkit-details-marker{display:none}
+.more-menu__list{position:absolute;right:0;top:calc(100% + 4px);z-index:20;min-width:160px;display:grid;padding:4px;border:1px solid var(--line);border-radius:8px;background:var(--white);box-shadow:var(--shadow-soft)}
+.more-menu__list a,.more-menu__list button{display:block;width:100%;text-align:left;padding:8px 10px;border:0;border-radius:6px;background:transparent;color:var(--ink);font-size:13px;cursor:pointer}
+.more-menu__list a:hover,.more-menu__list button:hover{background:var(--paper)}
+.more-menu__list [data-archive]{color:var(--red-dark)}
+.topbar-brand{margin-right:auto}
+
+/* Students: concerns inbox + ratings */
+.tab-count{margin-left:auto;min-width:20px;padding:1px 7px;border-radius:999px;background:var(--red);color:var(--white);font:600 10.5px 'IBM Plex Mono',monospace;text-align:center}
+.inbox{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);gap:14px;align-items:start}
+.inbox__list{display:grid;gap:10px;position:sticky;top:88px;max-height:calc(100vh - 110px);overflow:auto}
+.inbox__list .status-chips{margin-top:0}
+.inbox__search{width:100%;min-height:40px;border:1px solid var(--control);border-radius:8px;padding:8px 12px}
+.inbox__items{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.inbox__item{width:100%;display:grid;gap:3px;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--white);cursor:pointer}
+.inbox__item:hover{border-color:var(--ink-soft)}
+.inbox__item.is-active{border-color:var(--red);background:var(--red-soft)}
+.inbox__row{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.inbox__who{font-size:12.5px;font-weight:600}
+.inbox__snippet{font-size:12px;color:var(--stone);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.inbox__date{font:500 10.5px 'IBM Plex Mono',monospace;color:var(--stone)}
+.inbox__detail{display:grid;gap:14px;min-width:0}
+.inbox__head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.inbox__code{font-size:12px;color:var(--red-dark);font-weight:600}
+.inbox__head h3{margin:2px 0 0}
+.inbox__facts{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;padding:12px;border-radius:9px;background:var(--paper)}
+.inbox__facts dt{font:500 10px 'IBM Plex Mono',monospace;text-transform:uppercase;color:var(--stone)}
+.inbox__facts dd{margin:2px 0 0;font-size:13px;overflow-wrap:anywhere}
+.inbox__body h4{margin:0 0 4px;font:600 11px 'IBM Plex Mono',monospace;text-transform:uppercase;color:var(--red-dark)}
+.inbox__body p{margin:0 0 12px;white-space:pre-wrap;line-height:1.6}
+.inbox__reply{display:grid;gap:10px;padding-top:14px;border-top:1px solid var(--line)}
+.inbox__reply label{display:grid;gap:6px;font-weight:600;font-size:12px}
+.inbox__reply textarea{width:100%;min-height:120px;border:1px solid var(--control);border-radius:8px;padding:10px 12px;resize:vertical}
+.inbox__reply small{color:var(--stone);font-size:11px}
+.inbox__status{display:flex;gap:6px;flex-wrap:wrap}
+.status-radio{display:inline-flex!important;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;cursor:pointer;font-weight:600}
+.status-radio:has(input:checked){border-color:var(--red);background:var(--red-soft);color:var(--red-dark)}
+.status-radio input{accent-color:var(--red)}
+.report-bar{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.report-bar__range{display:flex;gap:10px;flex-wrap:wrap}
+.report-bar__range label{display:grid;gap:5px;font-weight:600;font-size:12px}
+.report-bar__range input,.report-bar__range select{min-height:40px;border:1px solid var(--control);border-radius:8px;padding:6px 10px;background:var(--white)}
+.report-bar__actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.rating-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
+.rating-stat{display:grid;gap:4px}
+.rating-stat span{font:600 10.5px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--stone)}
+.rating-stat b{font:600 28px/1.1 'Fraunces',Georgia,serif}
+.rating-stat b small{font-size:14px;color:var(--stone)}
+.rating-stat em{font-style:normal;font-size:12px;font-weight:600}
+.rating-stat__text{font-size:16px!important;overflow-wrap:anywhere}
+.rating-stat--hero{background:var(--red);border-color:var(--red);color:var(--white)}
+.rating-stat--hero span,.rating-stat--hero b small{color:#FFD5DC}
+.rating-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:14px;margin-top:14px}
+.rating-grid h3{margin-bottom:12px}
+.rating-bar{display:grid;grid-template-columns:30px minmax(0,1fr) 72px;gap:10px;align-items:center;margin-bottom:8px;font-weight:600;font-size:12.5px}
+.rating-bar__track{height:10px;border-radius:999px;background:var(--paper);overflow:hidden;border:1px solid var(--line)}
+.rating-bar__track span{display:block;height:100%;background:var(--red)}
+.rating-bar .mono{font-size:11px;color:var(--stone);text-align:right}
+.rating-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.rating-table th{text-align:left;font:600 10.5px 'IBM Plex Mono',monospace;text-transform:uppercase;color:var(--stone);padding:8px;border-bottom:1px solid var(--line)}
+.rating-table td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.stars{color:var(--red);letter-spacing:1px;white-space:nowrap}
+.stars span{color:var(--line)}
+@media(max-width:980px){.inbox,.rating-grid{grid-template-columns:minmax(0,1fr)}.inbox__list{position:static;max-height:none}.rating-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -483,20 +598,6 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
       <img class="topbar-logo" src="/osr-logo.png" alt=""/>
       <span class="topbar-brand-copy"><b>OSR Administration</b><span>Content workspace</span></span>
     </a>
-    <nav class="topbar-nav" id="topbarNav" aria-label="Quick workspace navigation">
-      <button class="topbar-nav-link is-active" type="button" data-tab="overview" aria-current="page">Overview</button>
-      <button class="topbar-nav-link" type="button" data-tab="activity">Activity</button>
-      <button class="topbar-nav-link" type="button" data-tab="announcements">Announcements</button>
-      <button class="topbar-nav-link" type="button" data-tab="board">Board</button>
-      <button class="topbar-nav-link" type="button" data-tab="initiatives">Initiatives</button>
-      <button class="topbar-nav-link" type="button" data-tab="resources">Resources</button>
-      <button class="topbar-nav-link" type="button" data-tab="calendar">Calendar</button>
-      <button class="topbar-nav-link" type="button" data-tab="media">Media</button>
-      <button class="topbar-nav-link" type="button" data-tab="contact">Contact</button>
-      <button class="topbar-nav-link" type="button" data-tab="about">About</button>
-      <button class="topbar-nav-link" type="button" data-tab="pulse">Pulse</button>
-      <button class="topbar-nav-link" type="button" data-tab="settings">Settings</button>
-    </nav>
     <div class="topbar-actions">
       <div class="admin-identity"><span>Signed in as</span><strong id="adminEmail"></strong></div>
       <a href="/" target="_blank" rel="noopener" class="btn btn--ghost btn--sm topbar-site"><span class="site-full">View public site</span><span class="site-short">Site</span></a>
@@ -527,6 +628,12 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
         <button class="tab" type="button" data-tab="calendar"><span class="tab-index">07</span><span>Calendar</span></button>
       </nav>
 
+      <p class="nav-label">Students</p>
+      <nav class="tabs" id="studentTabs" aria-label="Student submissions">
+        <button class="tab" type="button" data-tab="concerns"><span class="tab-index">◆</span><span>Concerns</span><span class="tab-count" id="concernsBadge" hidden></span></button>
+        <button class="tab" type="button" data-tab="ratings"><span class="tab-index">★</span><span>Service ratings</span></button>
+      </nav>
+
       <p class="nav-label">Administration</p>
       <nav class="tabs" id="adminTabs" aria-label="Administration sections">
         <button class="tab" type="button" data-tab="media"><span class="tab-index">08</span><span>Media library</span></button>
@@ -549,6 +656,8 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
         <button class="topbar-nav-link" type="button" data-tab="initiatives">Initiatives</button>
         <button class="topbar-nav-link" type="button" data-tab="resources">Resources</button>
         <button class="topbar-nav-link" type="button" data-tab="calendar">Calendar</button>
+        <button class="topbar-nav-link" type="button" data-tab="concerns">Concerns</button>
+        <button class="topbar-nav-link" type="button" data-tab="ratings">Ratings</button>
         <button class="topbar-nav-link" type="button" data-tab="media">Media</button>
         <button class="topbar-nav-link" type="button" data-tab="contact">Contact</button>
         <button class="topbar-nav-link" type="button" data-tab="about">About</button>
@@ -593,6 +702,8 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
       <section id="tab-initiatives" class="section" aria-label="Initiatives"></section>
       <section id="tab-resources" class="section" aria-label="Resources"></section>
       <section id="tab-calendar" class="section" aria-label="Calendar"></section>
+      <section id="tab-concerns" class="section" aria-label="Student concerns"></section>
+      <section id="tab-ratings" class="section" aria-label="Service ratings"></section>
       <section id="tab-media" class="section" aria-label="Media library"></section>
       <section id="tab-contact" class="section" aria-label="Contact details"></section>
       <section id="tab-about" class="section" aria-label="About OSR page"></section>
@@ -897,6 +1008,8 @@ const pageMeta = {
   initiatives: ['Content 05', 'Initiatives', 'Track student-centered work and its public status.', 'Add initiative', 'initiatives'],
   resources: ['Content 06', 'Resources', 'Keep useful documents and external links easy to find.', 'Add resource', 'resources'],
   calendar: ['Content 07', 'Calendar', 'Manage activities by hand, or keep them synced from the OSR Google Document.', 'Add event', 'calendar'],
+  concerns: ['Students', 'Concerns', 'Read student concerns, reply, and move each one through Received → In review → Responded → Closed. Students see your reply with their tracking code.', '', ''],
+  ratings: ['Students', 'Service ratings', 'Every “Rate the BulSU OSR” submission, with a one-click PDF summary for transparency.', '', ''],
   media: ['Administration 08', 'Media library', 'Manage uploaded files and externally hosted images.', 'Add media', 'media'],
   contact: ['Administration 09', 'Contact & details', 'Control the email, phone, office and social details shown on the public site.', '', ''],
   about: ['Administration 10', 'About OSR', 'Update the public About page: mandate, Student Regent, directors, vision and mission, office information, featured programs and official links.', '', ''],
@@ -1268,6 +1381,8 @@ async function renderTab(tab) {
   if (tab === 'contact') return renderContact();
   if (tab === 'about') return renderAbout();
   if (tab === 'pulse') return renderPulseData();
+  if (tab === 'concerns') return renderConcerns();
+  if (tab === 'ratings') return renderRatings();
   const module = modules[tab];
   const section = $(`#tab-${tab}`);
   section.innerHTML = `<div class="empty loading-state">Loading ${esc(module.label.toLowerCase())}</div>`;
@@ -1288,8 +1403,11 @@ async function renderTab(tab) {
         <div class="filters">
           <label class="check"><input type="checkbox" data-select-all aria-label="Select every record shown"> Select all</label>
           <input type="search" aria-label="Search ${esc(module.label)}" placeholder="Search ${esc(module.label.toLowerCase())}" data-search>
-          <select aria-label="Filter by status" data-status><option value="">All statuses</option>${['Draft','Published','Archived'].map(value => `<option>${value}</option>`).join('')}</select>
+          <input type="hidden" data-status value="">
           <select aria-label="Sort records" data-sort><option value="new">Newest first</option><option value="old">Oldest first</option></select>
+        </div>
+        <div class="status-chips" role="group" aria-label="Filter by status">
+          ${[['', 'All'], ['Published', 'Published'], ['Draft', 'Drafts'], ['Archived', 'Archived']].map(([value, label]) => `<button type="button" class="status-chip${value === '' ? ' is-active' : ''}" data-status-chip="${value}" aria-pressed="${value === '' ? 'true' : 'false'}">${label} <span>${value ? rows.filter(record => (record[statusKey(tab)] || 'Draft') === value).length : rows.length}</span></button>`).join('')}
         </div>
       </div>
       ${bulkBarHTML(tab)}
@@ -1329,8 +1447,13 @@ async function renderTab(tab) {
           <div class="actions">
             <button class="btn btn--ghost btn--sm" type="button" data-edit="${esc(record.id)}">Edit</button>
             <button class="btn btn--ghost btn--sm" type="button" data-toggle="${esc(record.id)}">${statusValue === 'Published' ? 'Unpublish' : 'Publish'}</button>
-            ${statusValue === 'Archived' ? '' : `<button class="btn btn--ghost btn--sm" type="button" data-archive="${esc(record.id)}">Archive</button>`}
-            ${link ? `<a class="btn btn--ghost btn--sm" target="_blank" rel="noopener" href="${esc(link)}">View on site</a>` : ''}
+            ${statusValue === 'Archived' && !link ? '' : `<details class="more-menu">
+              <summary class="btn btn--quiet btn--sm" aria-label="More actions for ${esc(title)}">More ▾</summary>
+              <div class="more-menu__list">
+                ${link ? `<a target="_blank" rel="noopener" href="${esc(link)}">View on site</a>` : ''}
+                ${statusValue === 'Archived' ? '' : `<button type="button" data-archive="${esc(record.id)}">Archive</button>`}
+              </div>
+            </details>`}
           </div>
         </article>`;
       }).join('');
@@ -1339,6 +1462,14 @@ async function renderTab(tab) {
 
     section.querySelector('[data-new]').addEventListener('click', () => form(tab));
     section.querySelectorAll('.filters input:not([type="checkbox"]),.filters select').forEach(control => control.addEventListener('input', paint));
+    section.querySelectorAll('[data-status-chip]').forEach(chip => chip.addEventListener('click', () => {
+      section.querySelector('[data-status]').value = chip.dataset.statusChip;
+      section.querySelectorAll('[data-status-chip]').forEach(other => {
+        other.classList.toggle('is-active', other === chip);
+        other.setAttribute('aria-pressed', other === chip ? 'true' : 'false');
+      });
+      paint();
+    }));
     bindBulkControls(tab);
     paint();
     if (tab === 'calendar') renderCalendarSource();
@@ -1347,8 +1478,7 @@ async function renderTab(tab) {
       if (event.target.closest('[data-empty-new]')) return form(tab);
       if (event.target.closest('[data-clear-filters]')) {
         section.querySelector('[data-search]').value = '';
-        section.querySelector('[data-status]').value = '';
-        paint();
+        section.querySelector('[data-status-chip=""]').click();
         section.querySelector('[data-search]').focus();
         return;
       }
@@ -1997,99 +2127,128 @@ async function renderContact() {
    Every card on the public "About the Office of the Student Regent" page is
    edited here. A field left empty keeps the wording built into the website, so
    nothing has to be retyped just to change one name or one line. */
-const ABOUT_TEXT_GROUPS = [
-  ['Page header', [
-    ['eyebrow', 'Eyebrow label'],
+// The About editor is split into sections: one is open at a time, picked from
+// the list on the left, so an administrator never scrolls through 60 fields.
+// Each section owns its text fields and (optionally) one repeatable list.
+const ABOUT_SECTIONS = [
+  { id: 'header', title: 'Page header', hint: 'Title band at the top of the page', fields: [
+    ['eyebrow', 'Small label above the title'],
     ['title', 'Page title'],
     ['intro', 'Introduction sentence', 'textarea'],
     ['badge', 'Badge text']
-  ]],
-  ['Office overview', [
-    ['office_heading', 'Card heading'],
-    ['office_p1', 'First paragraph', 'textarea'],
-    ['office_p2', 'Second paragraph', 'textarea']
-  ]],
-  ['Role and mandate', [
-    ['mandate_heading', 'Card heading'],
-    ['mandate_items', 'Mandate bullets — one per line', 'textarea'],
-    ['mandate_note', 'Footnote under the bullets', 'textarea']
-  ]],
-  ['Student Regent', [
+  ] },
+  { id: 'office', title: 'Office & mandate', hint: 'What the office is and does', fields: [
+    ['office_heading', 'Heading'],
+    ['office_p1', 'Lead paragraph (shown larger)', 'textarea'],
+    ['office_p2', 'Second paragraph', 'textarea'],
+    ['mandate_heading', 'Mandate heading'],
+    ['mandate_items', 'Mandate points — one per line', 'textarea'],
+    ['mandate_note', 'Note under the mandate', 'textarea']
+  ] },
+  { id: 'regent', title: 'Student Regent', hint: 'The featured person card', fields: [
     ['sr_heading', 'Card heading'],
     ['sr_label', 'Label above the name'],
     ['sr_name', 'Student Regent name'],
     ['sr_meta', 'Term and campus line'],
+    ['sr_photo', 'Photo link (optional)', 'photo'],
     ['sr_note', 'Note under the name', 'textarea']
-  ]],
-  ['Directors & Secretariat', [
-    ['dir_heading', 'Card heading'],
+  ] },
+  { id: 'staff', title: 'Office staff', hint: 'Add, reorder and remove staff', isNew: true, fields: [
+    ['staff_heading', 'Heading above the staff cards'],
+    ['staff_intro', 'Short introduction (optional)', 'textarea']
+  ], list: 'staff' },
+  { id: 'directors', title: 'Directors & reps', hint: 'Executive director, directors, colleges', fields: [
+    ['dir_heading', 'Heading'],
     ['dir_intro', 'Introduction', 'textarea'],
-    ['dir_exec_name', 'Executive Director'],
+    ['dir_exec_name', 'Executive Director name'],
     ['dir_exec_tag', 'Executive Director tag'],
-    ['dir_names', 'Directors'],
+    ['dir_names', 'Directors (names)'],
     ['dir_tag', 'Directors tag'],
     ['college_title', 'College representatives title'],
     ['college_desc', 'College representatives description', 'textarea'],
-    ['college_rows', 'College representative rows — one per line', 'textarea']
-  ]],
-  ['BulSU vision & mission', [
-    ['vm_heading', 'Card heading'],
+    ['college_rows', 'College representatives — one per line', 'textarea']
+  ] },
+  { id: 'vm', title: 'Vision & mission', hint: 'Dark band with values', fields: [
+    ['vm_heading', 'Heading'],
     ['vision', 'Vision statement', 'textarea'],
     ['mission', 'Mission statement', 'textarea'],
     ['values', 'Core values — one per line', 'textarea'],
-    ['values_note', 'Footnote under the values', 'textarea']
-  ]],
-  ['Office information', [
-    ['info_heading', 'Card heading'],
-    ['info_note', 'Footnote', 'textarea']
-  ]],
-  ['Contact card', [
-    ['contact_heading', 'Card heading'],
-    ['response_time', 'Response time line']
-  ]],
-  ['Featured programs', [
-    ['featured_heading', 'Card heading'],
+    ['values_note', 'Note under the values', 'textarea']
+  ] },
+  { id: 'programs', title: 'Featured programs', hint: 'Program cards', fields: [
+    ['featured_heading', 'Heading'],
     ['featured_intro', 'Introduction', 'textarea'],
-    ['featured_note', 'Footnote', 'textarea']
-  ]],
-  ['Official links', [
-    ['links_heading', 'Card heading'],
-    ['links_note', 'Footnote', 'textarea']
-  ]]
+    ['featured_note', 'Note under the cards', 'textarea']
+  ], list: 'featured' },
+  { id: 'info', title: 'Office information', hint: 'Label / value facts', fields: [
+    ['info_heading', 'Heading'],
+    ['info_note', 'Note', 'textarea']
+  ], list: 'info' },
+  { id: 'contact', title: 'Contact card', hint: 'Email & phone live in Contact & details', fields: [
+    ['contact_heading', 'Heading'],
+    ['response_time', 'Response time line']
+  ] },
+  { id: 'links', title: 'Official links', hint: 'Verified external links', fields: [
+    ['links_heading', 'Heading'],
+    ['links_note', 'Note', 'textarea']
+  ], list: 'links' }
 ];
 
 const ABOUT_ROW_EDITORS = [
-  { key: 'info', label: 'Office information rows', columns: [['label', 'Label'], ['value', 'Value']] },
+  { key: 'info', label: 'Facts', item: 'fact', columns: [['label', 'Label'], ['value', 'Value']] },
   // The fourth column entry marks a link field: those accept an https:// URL or
-  // a #section of this site, so they stay plain text inputs (type="url" would
-  // refuse #anchors and block the whole form).
-  { key: 'featured', label: 'Featured programs & initiatives', columns: [['title', 'Title'], ['tag', 'Tag'], ['description', 'Description', 'textarea'], ['link_label', 'Link label'], ['link_href', 'Link URL or #section', 'text', true]] },
-  { key: 'links', label: 'Official links', columns: [['label', 'Label'], ['href', 'URL or #section', 'text', true]] }
+  // a #section of this site, so they stay plain text inputs.
+  { key: 'featured', label: 'Program cards', item: 'program', columns: [['title', 'Title'], ['tag', 'Tag'], ['description', 'Description', 'textarea'], ['link_label', 'Link label'], ['link_href', 'Link URL or #section', 'text', true]] },
+  { key: 'staff', label: 'Staff members', item: 'staff member', reorder: true, columns: [['name', 'Full name *'], ['role', 'Position / role'], ['unit', 'Unit or campus'], ['email', 'Email', 'email'], ['photo', 'Photo link', 'photo']] },
+  { key: 'links', label: 'Links', item: 'link', reorder: true, columns: [['label', 'Label'], ['href', 'URL or #section', 'text', true]] }
 ];
 
 const ABOUT_LINE_FIELDS = ['mandate_items', 'values', 'college_rows'];
+let aboutMediaImages = [];
 
-function aboutInputs(groups, values) {
-  return groups.map(([title, fields]) => `
-    <div class="field-group">
-      <h4>${esc(title)}</h4>
-      ${fields.map(([key, label, type]) => type === 'textarea'
-        ? `<label>${esc(label)}<textarea name="${key}" rows="3">${esc(values[key] || '')}</textarea></label>`
-        : `<label>${esc(label)}<input name="${key}" type="${type || 'text'}" value="${esc(values[key] || '')}"></label>`).join('')}
-    </div>`).join('');
+function aboutPhotoPicker(name, attr) {
+  if (!aboutMediaImages.length) return '';
+  return `<select class="about-photo-pick" ${attr}="${name}" aria-label="Pick an uploaded photo"><option value="">Pick from media library…</option>${aboutMediaImages.map(item => `<option value="${esc(item.url)}">${esc(item.title || item.original_name || item.url)}</option>`).join('')}</select>`;
+}
+
+function aboutFieldHTML([key, label, type], values) {
+  const value = esc(values[key] || '');
+  if (type === 'textarea') return `<label>${esc(label)}<textarea name="${key}" rows="3">${value}</textarea></label>`;
+  if (type === 'photo') return `<label>${esc(label)}<input name="${key}" value="${value}" placeholder="https://… or /uploads/…"><small>Paste an https:// image link, or pick a file you uploaded in the Media library.</small>${aboutPhotoPicker(key, 'data-pick-name')}</label>`;
+  return `<label>${esc(label)}<input name="${key}" type="text" value="${value}"></label>`;
+}
+
+function aboutInitialsAdmin(name) {
+  const words = String(name || '').split(/\s+/).filter(word => /^[A-Za-zÀ-ÿ]/.test(word));
+  return words.length ? (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase() : '?';
 }
 
 function aboutRowHTML(editor, index, row) {
-  const inputs = editor.columns.map(([field, label, type]) => type === 'textarea'
-    ? `<label>${esc(label)}<textarea data-field="${field}" rows="2">${esc(row[field] || '')}</textarea></label>`
-    : `<label>${esc(label)}<input type="${type || 'text'}" data-field="${field}" value="${esc(row[field] || '')}"></label>`).join('');
-  return `<div class="list-editor__row" data-row="${editor.key}">${inputs}<button class="btn btn--ghost btn--sm" type="button" data-remove-row>Remove row ${index + 1}</button></div>`;
+  const inputs = editor.columns.map(([field, label, type]) => {
+    const value = esc(row[field] || '');
+    if (type === 'textarea') return `<label class="wide">${esc(label)}<textarea data-field="${field}" rows="2">${value}</textarea></label>`;
+    if (type === 'photo') return `<label class="wide">${esc(label)}<input type="text" data-field="${field}" value="${value}" placeholder="https://… or /uploads/…">${aboutPhotoPicker(field, 'data-pick-field')}</label>`;
+    return `<label>${esc(label)}<input type="${type === 'email' ? 'email' : 'text'}" data-field="${field}" value="${value}"></label>`;
+  }).join('');
+  const title = row[editor.columns[0][0]] || '';
+  const avatar = editor.key === 'staff'
+    ? `<span class="row-avatar" aria-hidden="true">${row.photo ? `<img src="${esc(row.photo)}" alt="">` : esc(aboutInitialsAdmin(row.name))}</span>` : '';
+  const move = editor.reorder ? `<button class="btn btn--quiet btn--sm" type="button" data-move-row="-1" aria-label="Move up">↑</button><button class="btn btn--quiet btn--sm" type="button" data-move-row="1" aria-label="Move down">↓</button>` : '';
+  return `<div class="list-editor__row" data-row="${editor.key}">
+    <div class="row-head">${avatar}<b class="row-title">${esc(title) || `New ${esc(editor.item)}`}</b><span class="row-tools">${move}<button class="btn btn--quiet btn--sm row-remove" type="button" data-remove-row>Remove</button></span></div>
+    <div class="row-fields">${inputs}</div>
+  </div>`;
+}
+
+function aboutEmptyRow(editor) {
+  return `<p class="list-editor__empty">No ${esc(editor.item)}s yet.${editor.key === 'staff' ? ' The staff block stays hidden on the public page until you add someone.' : ' The public page keeps its built-in list until you add one.'}</p>`;
 }
 
 function aboutEditorHTML(editor, rows) {
   return `<div class="list-editor" data-list="${editor.key}">
-    <div class="list-editor__head"><h4>${esc(editor.label)}</h4><button class="btn btn--ghost btn--sm" type="button" data-add-row="${editor.key}">Add row</button></div>
-    <div class="list-editor__rows">${rows.length ? rows.map((row, index) => aboutRowHTML(editor, index, row)).join('') : '<p class="list-editor__empty">No rows yet — the public page keeps its built-in list until you add one.</p>'}</div>
+    <div class="list-editor__head"><h4>${esc(editor.label)} <span class="count">${rows.length}</span></h4></div>
+    <div class="list-editor__rows">${rows.length ? rows.map((row, index) => aboutRowHTML(editor, index, row)).join('') : aboutEmptyRow(editor)}</div>
+    <button class="btn btn--ghost list-editor__add" type="button" data-add-row="${editor.key}">+ Add ${esc(editor.item)}</button>
   </div>`;
 }
 
@@ -2104,22 +2263,30 @@ function collectAboutRows(section, key) {
 function validateAboutData(data) {
   for (const editor of ABOUT_ROW_EDITORS) {
     for (const row of data[editor.key] || []) {
-      for (const [field, , , isLink] of editor.columns) {
+      for (const [field, label, type, isLink] of editor.columns) {
         const value = row[field];
-        if (!value || !isLink) continue;
-        if (!/^https?:\/\/\S+$/i.test(value) && !value.startsWith('#')) return `"${value}" must start with https:// or be a #section of this site.`;
+        if (editor.key === 'staff' && field === 'name' && !value) return 'Every staff member needs a full name.';
+        if (!value) continue;
+        if (isLink && !/^https?:\/\/\S+$/i.test(value) && !value.startsWith('#')) return `"${value}" must start with https:// or be a #section of this site.`;
+        if (type === 'photo' && !/^https:\/\/\S+$/i.test(value) && !(value.startsWith('/') && !value.startsWith('//'))) return `Photo "${value}" must be an https:// link or a Media library file.`;
+        if (type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return `"${value}" is not a valid email address.`;
       }
     }
   }
+  if (data.sr_photo && !/^https:\/\/\S+$/i.test(data.sr_photo) && !(data.sr_photo.startsWith('/') && !data.sr_photo.startsWith('//'))) return 'The Student Regent photo must be an https:// link or a Media library file.';
   return '';
 }
+
+let aboutActiveSection = 'header';
 
 async function renderAbout() {
   const section = $('#tab-about');
   section.innerHTML = '<div class="empty loading-state">Loading the About page</div>';
   let stored = {};
   try {
-    stored = (await api('/api/about')) || {};
+    const [about, media] = await Promise.all([api('/api/about'), api('/api/media').catch(() => [])]);
+    stored = about || {};
+    aboutMediaImages = (Array.isArray(media) ? media : []).filter(item => item.url && (item.file_type || '').startsWith('image/'));
   } catch (error) {
     section.innerHTML = `<div class="err show">The About page could not be loaded: ${esc(error.message)} <button class="btn btn--ghost btn--sm" type="button" data-retry>Retry</button></div>`;
     section.querySelector('[data-retry]').addEventListener('click', renderAbout);
@@ -2128,80 +2295,128 @@ async function renderAbout() {
   const values = { ...stored };
   ABOUT_LINE_FIELDS.forEach(key => { if (Array.isArray(values[key])) values[key] = values[key].join('\n'); });
   const rows = Object.fromEntries(ABOUT_ROW_EDITORS.map(editor => [editor.key, Array.isArray(stored[editor.key]) ? stored[editor.key] : []]));
+  const editorFor = key => ABOUT_ROW_EDITORS.find(editor => editor.key === key);
+  if (!ABOUT_SECTIONS.some(item => item.id === aboutActiveSection)) aboutActiveSection = 'header';
+
+  const filledCount = item => item.fields.filter(([key]) => String(values[key] || '').trim()).length + (item.list ? rows[item.list].length : 0);
 
   section.innerHTML = `
-    <div class="about-admin-grid">
-      <form class="form" id="aboutForm">
-        <h3>About the Office of the Student Regent</h3>
-        <p class="form-intro">Everything the public About page shows. Leave a field empty to keep the wording built into the site, and write one bullet per line. Email, phone, address and hours live under Contact &amp; details.</p>
-        ${aboutInputs(ABOUT_TEXT_GROUPS, values)}
-        ${ABOUT_ROW_EDITORS.map(editor => aboutEditorHTML(editor, rows[editor.key])).join('')}
+    <form class="about-editor" id="aboutForm" novalidate>
+      <nav class="about-editor__nav" aria-label="About page sections">
+        <p class="about-editor__navlabel">Page sections</p>
+        ${ABOUT_SECTIONS.map(item => `<button type="button" class="about-nav-item${item.id === aboutActiveSection ? ' is-active' : ''}" data-about-section="${item.id}" ${item.id === aboutActiveSection ? 'aria-current="true"' : ''}>
+          <span class="about-nav-item__title">${esc(item.title)}${item.isNew ? ' <span class="badge badge--green">New</span>' : ''}</span>
+          <span class="about-nav-item__hint">${esc(item.hint)}</span>
+          <span class="about-nav-item__count" data-count-for="${item.id}">${filledCount(item) ? `${filledCount(item)} set` : 'Built-in'}</span>
+        </button>`).join('')}
+      </nav>
+      <div class="about-editor__body">
+        ${ABOUT_SECTIONS.map(item => `<section class="about-pane" data-pane="${item.id}" ${item.id === aboutActiveSection ? '' : 'hidden'}>
+          <header class="about-pane__head"><h3>${esc(item.title)}</h3><p>${esc(item.hint)}. Leave a field empty to keep the site's built-in wording.</p></header>
+          ${item.list === 'staff' ? aboutEditorHTML(editorFor('staff'), rows.staff) : ''}
+          <div class="about-pane__fields">${item.fields.map(field => aboutFieldHTML(field, values)).join('')}</div>
+          ${item.list && item.list !== 'staff' ? aboutEditorHTML(editorFor(item.list), rows[item.list]) : ''}
+        </section>`).join('')}
         <div class="err" role="alert"></div>
-        <button class="btn btn--red" type="submit">Save About page</button>
-      </form>
-      <div>
-        <div class="preview-card" id="aboutPreview"></div>
-        <div class="danger-zone">
-          <h3>Restore the built-in wording</h3>
-          <p>Clears every override above so the public About page shows the wording shipped with the site again.</p>
-          <button class="btn btn--ghost" type="button" id="aboutReset">Reset to built-in wording</button>
+        <div class="about-savebar">
+          <span class="about-savebar__state" id="aboutDirty">All changes saved</span>
+          <button class="btn btn--quiet btn--sm" type="button" id="aboutReset">Reset to built-in wording</button>
+          <a class="btn btn--ghost btn--sm" href="/#about" target="_blank" rel="noopener">View public page</a>
+          <button class="btn btn--red" type="submit">Save About page</button>
         </div>
       </div>
-    </div>`;
+    </form>`;
 
-  const preview = () => {
-    const value = name => (section.querySelector(`[name="${name}"]`)?.value || '').trim();
-    const lines = key => (value(key) || '').split('\n').map(line => line.trim()).filter(Boolean);
-    const info = collectAboutRows(section, 'info').map(row => `${row.label || '—'}: ${row.value || '—'}`);
-    const featured = collectAboutRows(section, 'featured').map(row => `${row.title || '—'}${row.tag ? ` (${row.tag})` : ''}`);
-    const links = collectAboutRows(section, 'links').map(row => row.label || row.href || '—');
-    const summary = [
-      ['Header', [value('eyebrow'), value('title')].filter(Boolean).join(' · ') || '—'],
-      ['Overview', value('office_p1') || '—'],
-      ['Mandate', `${lines('mandate_items').length} bullets · ${value('mandate_note') || 'no footnote'}`],
-      ['Student Regent', [value('sr_name'), value('sr_meta')].filter(Boolean).join(' · ') || '—'],
-      ['Executive Director', [value('dir_exec_name'), value('dir_exec_tag')].filter(Boolean).join(' · ') || '—'],
-      ['Vision', value('vision') || '—'],
-      ['Mission', value('mission') || '—'],
-      ['Core values', `${lines('values').length} values`],
-      ['Office information', info.length ? info.join(' · ') : '—'],
-      ['Response time', value('response_time') || '—'],
-      ['Featured programs', featured.length ? featured.join(' · ') : '—'],
-      ['Official links', links.length ? links.join(' · ') : '—']
-    ];
-    $('#aboutPreview').innerHTML = `<h3>How the public page will read</h3>${summary.map(([label, text]) => `<div class="kv"><b>${esc(label)}</b><span>${esc(text)}</span></div>`).join('')}`;
+  const form = $('#aboutForm');
+  const dirty = $('#aboutDirty');
+  const markDirty = () => { dirty.textContent = 'Unsaved changes'; dirty.classList.add('is-dirty'); };
+  const refreshRow = row => {
+    const editor = editorFor(row.dataset.row);
+    const first = row.querySelector(`[data-field="${editor.columns[0][0]}"]`).value.trim();
+    row.querySelector('.row-title').textContent = first || `New ${editor.item}`;
+    const avatar = row.querySelector('.row-avatar');
+    if (avatar) {
+      const photo = row.querySelector('[data-field="photo"]').value.trim();
+      avatar.innerHTML = photo ? `<img src="${esc(photo)}" alt="">` : esc(aboutInitialsAdmin(first));
+    }
   };
-  preview();
-  section.querySelectorAll('#aboutForm input, #aboutForm textarea').forEach(input => input.addEventListener('input', preview));
+  const refreshCounts = () => {
+    ABOUT_SECTIONS.forEach(item => {
+      let count = item.fields.filter(([key]) => (form.querySelector(`[name="${key}"]`)?.value || '').trim()).length;
+      if (item.list) count += form.querySelectorAll(`[data-row="${item.list}"]`).length;
+      const el = form.querySelector(`[data-count-for="${item.id}"]`);
+      if (el) el.textContent = count ? `${count} set` : 'Built-in';
+    });
+    form.querySelectorAll('.list-editor').forEach(list => { list.querySelector('.count').textContent = list.querySelectorAll('[data-row]').length; });
+  };
 
-  section.addEventListener('click', event => {
+  form.addEventListener('input', event => {
+    markDirty();
+    const row = event.target.closest('[data-row]');
+    if (row) refreshRow(row);
+    refreshCounts();
+  });
+  form.addEventListener('change', event => {
+    const pick = event.target.closest('.about-photo-pick');
+    if (!pick || !pick.value) return;
+    const target = pick.dataset.pickName ? form.querySelector(`[name="${pick.dataset.pickName}"]`) : pick.closest('[data-row]').querySelector(`[data-field="${pick.dataset.pickField}"]`);
+    target.value = pick.value;
+    pick.value = '';
+    target.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+
+  form.addEventListener('click', event => {
+    const nav = event.target.closest('[data-about-section]');
+    if (nav) {
+      aboutActiveSection = nav.dataset.aboutSection;
+      form.querySelectorAll('[data-about-section]').forEach(button => {
+        const on = button === nav;
+        button.classList.toggle('is-active', on);
+        if (on) button.setAttribute('aria-current', 'true'); else button.removeAttribute('aria-current');
+      });
+      form.querySelectorAll('[data-pane]').forEach(pane => { pane.hidden = pane.dataset.pane !== aboutActiveSection; });
+      form.querySelector(`[data-pane="${aboutActiveSection}"]`).scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+      return;
+    }
     const add = event.target.closest('[data-add-row]');
     if (add) {
-      const editor = ABOUT_ROW_EDITORS.find(item => item.key === add.dataset.addRow);
-      const host = section.querySelector(`[data-list="${editor.key}"] .list-editor__rows`);
+      const editor = editorFor(add.dataset.addRow);
+      const host = form.querySelector(`[data-list="${editor.key}"] .list-editor__rows`);
       host.querySelector('.list-editor__empty')?.remove();
       host.insertAdjacentHTML('beforeend', aboutRowHTML(editor, host.querySelectorAll('[data-row]').length, {}));
-      preview();
+      host.lastElementChild.querySelector('input, textarea')?.focus();
+      markDirty(); refreshCounts();
+      return;
+    }
+    const move = event.target.closest('[data-move-row]');
+    if (move) {
+      const row = move.closest('[data-row]');
+      const sibling = move.dataset.moveRow === '-1' ? row.previousElementSibling : row.nextElementSibling;
+      if (sibling?.matches('[data-row]')) {
+        if (move.dataset.moveRow === '-1') sibling.before(row); else sibling.after(row);
+        markDirty();
+      }
       return;
     }
     const remove = event.target.closest('[data-remove-row]');
     if (remove) {
       const host = remove.closest('.list-editor__rows');
+      const editor = editorFor(remove.closest('[data-row]').dataset.row);
       remove.closest('[data-row]').remove();
-      if (!host.querySelector('[data-row]')) host.insertAdjacentHTML('beforeend', '<p class="list-editor__empty">No rows yet — the public page keeps its built-in list until you add one.</p>');
-      preview();
+      if (!host.querySelector('[data-row]')) host.insertAdjacentHTML('beforeend', aboutEmptyRow(editor));
+      markDirty(); refreshCounts();
     }
   });
 
-  $('#aboutForm').addEventListener('submit', async event => {
+  form.addEventListener('submit', async event => {
     event.preventDefault();
-    const error = $('#aboutForm .err');
-    const data = Object.fromEntries(new FormData(event.currentTarget));
-    ABOUT_ROW_EDITORS.forEach(editor => { data[editor.key] = collectAboutRows(section, editor.key); });
+    const error = form.querySelector('.err');
+    const data = Object.fromEntries(new FormData(form));
+    ABOUT_ROW_EDITORS.forEach(editor => { data[editor.key] = collectAboutRows(form, editor.key); });
     const problem = validateAboutData(data);
     if (problem) { error.textContent = problem; error.classList.add('show'); return; }
     error.classList.remove('show');
-    const button = event.currentTarget.querySelector('[type="submit"]');
+    const button = form.querySelector('[type="submit"]');
     button.disabled = true;
     button.textContent = 'Saving';
     try {
@@ -2218,7 +2433,7 @@ async function renderAbout() {
   });
 
   $('#aboutReset').addEventListener('click', async () => {
-    const confirmed = await askConfirm('Reset the About page?', 'Every override is cleared and the public page returns to the wording built into the site.', 'Reset About page');
+    const confirmed = await askConfirm('Reset the About page?', 'Every override, including the staff list, is cleared and the public page returns to the wording built into the site.', 'Reset About page');
     if (!confirmed) return;
     try {
       await api('/api/about', { method: 'PATCH', body: JSON.stringify({}) });
@@ -2229,6 +2444,419 @@ async function renderAbout() {
       toast(`Could not reset: ${error.message}`);
     }
   });
+}
+
+
+/* ── Student concerns inbox ───────────────────────────────────────────────── */
+const CONCERN_STATUSES = ['Received', 'In review', 'Responded', 'Closed'];
+let concernFilter = 'open';
+let concernOpenId = null;
+
+function concernBadge(rows) {
+  const badge = $('#concernsBadge');
+  if (!badge) return;
+  const waiting = rows.filter(row => !row.response && row.status !== 'Closed').length;
+  badge.hidden = !waiting;
+  badge.textContent = waiting;
+}
+function shortDate(value) {
+  if (!value) return '—';
+  const date = new Date(String(value).replace(' ', 'T') + (String(value).includes('Z') ? '' : 'Z'));
+  return isNaN(date) ? String(value).slice(0, 10) : date.toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' });
+}
+const concernStatusClass = status => ({ Received: 'badge--amber', 'In review': 'badge--amber', Responded: 'badge--green', Closed: '' }[status] || '');
+
+async function renderConcerns() {
+  const section = $('#tab-concerns');
+  section.innerHTML = '<div class="empty loading-state">Loading concerns</div>';
+  let rows;
+  try { rows = await api('/api/concerns'); }
+  catch (error) {
+    section.innerHTML = `<div class="err show">Concerns could not be loaded: ${esc(error.message)} <button class="btn btn--ghost btn--sm" type="button" data-retry>Retry</button></div>`;
+    section.querySelector('[data-retry]').addEventListener('click', renderConcerns);
+    return;
+  }
+  concernBadge(rows);
+  const groups = {
+    open: ['Needs a reply', row => !row.response && row.status !== 'Closed'],
+    responded: ['Responded', row => Boolean(row.response) && row.status !== 'Closed'],
+    closed: ['Closed', row => row.status === 'Closed'],
+    all: ['All', () => true]
+  };
+  section.innerHTML = `
+    <div class="inbox">
+      <div class="inbox__list card">
+        <div class="status-chips" role="group" aria-label="Filter concerns">
+          ${Object.entries(groups).map(([key, [label, test]]) => `<button type="button" class="status-chip${key === concernFilter ? ' is-active' : ''}" data-concern-filter="${key}" aria-pressed="${key === concernFilter}">${label} <span>${rows.filter(test).length}</span></button>`).join('')}
+        </div>
+        <input type="search" class="inbox__search" placeholder="Search code, name, text" aria-label="Search concerns" data-concern-search>
+        <ul class="inbox__items" id="concernItems"></ul>
+      </div>
+      <div class="inbox__detail card" id="concernDetail"><div class="empty">Select a concern to read it and reply.</div></div>
+    </div>`;
+
+  const paintList = () => {
+    const query = section.querySelector('[data-concern-search]').value.toLowerCase();
+    const visible = rows.filter(groups[concernFilter][1]).filter(row => !query || [row.code, row.name, row.concern, row.category, row.campus].join(' ').toLowerCase().includes(query));
+    $('#concernItems').innerHTML = visible.length ? visible.map(row => `<li><button type="button" class="inbox__item${row.id === concernOpenId ? ' is-active' : ''}" data-concern-open="${esc(row.id)}">
+      <span class="inbox__row"><b class="mono">${esc(row.code)}</b><span class="badge ${concernStatusClass(row.status)}">${esc(row.status)}</span></span>
+      <span class="inbox__who">${row.anonymous ? 'Anonymous' : esc(row.name || '—')}${row.category ? ` · ${esc(row.category)}` : ''}</span>
+      <span class="inbox__snippet">${esc(String(row.concern).slice(0, 110))}</span>
+      <span class="inbox__date">${esc(shortDate(row.created_at))}</span>
+    </button></li>`).join('') : '<li class="empty">Nothing here. 🎉</li>';
+  };
+
+  const openDetail = id => {
+    const row = rows.find(item => item.id === id);
+    if (!row) return;
+    concernOpenId = id;
+    paintList();
+    $('#concernDetail').innerHTML = `
+      <header class="inbox__head">
+        <div><span class="mono inbox__code">${esc(row.code)}</span><h3>${row.anonymous ? 'Anonymous student' : esc(row.name || 'Student')}</h3></div>
+        <span class="badge ${concernStatusClass(row.status)}">${esc(row.status)}</span>
+      </header>
+      <dl class="inbox__facts">
+        <div><dt>Submitted</dt><dd>${esc(shortDate(row.created_at))}</dd></div>
+        ${row.student_number ? `<div><dt>Student no.</dt><dd>${esc(row.student_number)}</dd></div>` : ''}
+        ${row.email ? `<div><dt>Email</dt><dd><a href="mailto:${esc(row.email)}?subject=${encodeURIComponent('Your OSR concern ' + row.code)}">${esc(row.email)}</a></dd></div>` : ''}
+        ${row.campus ? `<div><dt>Campus</dt><dd>${esc(row.campus)}</dd></div>` : ''}
+        ${row.category ? `<div><dt>Type</dt><dd>${esc(row.category)}</dd></div>` : ''}
+      </dl>
+      <div class="inbox__body"><h4>Concern</h4><p>${esc(row.concern)}</p>${row.outcome ? `<h4>Desired outcome</h4><p>${esc(row.outcome)}</p>` : ''}</div>
+      <form class="inbox__reply" id="concernReply">
+        <label>Response the student will see on Track My Concern
+          <textarea name="response" rows="5" placeholder="Write a clear, factual reply. Saving a reply marks the concern as Responded.">${esc(row.response || '')}</textarea>
+        </label>
+        ${row.responded_at ? `<small>Last replied ${esc(shortDate(row.responded_at))}${row.responded_by ? ` by ${esc(row.responded_by)}` : ''}</small>` : ''}
+        <div class="inbox__status" role="group" aria-label="Status">
+          ${CONCERN_STATUSES.map(status => `<label class="status-radio"><input type="radio" name="status" value="${status}"${status === row.status ? ' checked' : ''}> ${status}</label>`).join('')}
+        </div>
+        <div class="err" role="alert"></div>
+        <div class="actions">
+          <button class="btn btn--red" type="submit">Save reply &amp; status</button>
+          <button class="btn btn--quiet btn--sm" type="button" data-concern-delete>Delete</button>
+        </div>
+      </form>`;
+    $('#concernReply').addEventListener('submit', async event => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(event.currentTarget));
+      if (data.response.trim() && data.status === 'Received') data.status = 'Responded';
+      const button = event.currentTarget.querySelector('[type="submit"]');
+      button.disabled = true; button.textContent = 'Saving';
+      try {
+        const updated = await api(`/api/concerns/${encodeURIComponent(row.id)}`, { method: 'PATCH', body: JSON.stringify(data) });
+        Object.assign(row, updated);
+        toast(`Saved. The student sees “${updated.status}” with code ${updated.code}.`);
+        concernBadge(rows);
+        renderConcernsCounts();
+        openDetail(row.id);
+      } catch (error) {
+        const err = $('#concernReply .err'); err.textContent = error.message; err.classList.add('show');
+        button.disabled = false; button.textContent = 'Save reply & status';
+      }
+    });
+    $('#concernDetail [data-concern-delete]').addEventListener('click', async () => {
+      if (!(await askConfirm('Delete this concern?', `${row.code} will be removed permanently and the student's tracking code will stop working.`, 'Delete concern'))) return;
+      try {
+        await api(`/api/concerns/${encodeURIComponent(row.id)}`, { method: 'DELETE' });
+        toast('Concern deleted.');
+        concernOpenId = null;
+        renderConcerns();
+      } catch (error) { toast(`Could not delete: ${error.message}`); }
+    });
+  };
+  const renderConcernsCounts = () => {
+    section.querySelectorAll('[data-concern-filter]').forEach(chip => { chip.querySelector('span').textContent = rows.filter(groups[chip.dataset.concernFilter][1]).length; });
+    paintList();
+  };
+
+  section.querySelector('[data-concern-search]').addEventListener('input', paintList);
+  section.querySelectorAll('[data-concern-filter]').forEach(chip => chip.addEventListener('click', () => {
+    concernFilter = chip.dataset.concernFilter;
+    section.querySelectorAll('[data-concern-filter]').forEach(other => { other.classList.toggle('is-active', other === chip); other.setAttribute('aria-pressed', other === chip); });
+    paintList();
+  }));
+  $('#concernItems').addEventListener('click', event => {
+    const item = event.target.closest('[data-concern-open]');
+    if (item) openDetail(item.dataset.concernOpen);
+  });
+  paintList();
+  if (concernOpenId && rows.some(row => row.id === concernOpenId)) openDetail(concernOpenId);
+}
+
+/* ── Service ratings + transparency PDF ───────────────────────────────────── */
+function ratingsSummary(rows) {
+  const total = rows.length;
+  const sum = rows.reduce((acc, row) => acc + Number(row.rating || 0), 0);
+  const dist = [5, 4, 3, 2, 1].map(star => ({ star, count: rows.filter(row => Number(row.rating) === star).length }));
+  const satisfied = rows.filter(row => Number(row.rating) >= 4).length;
+  const byKey = key => {
+    const map = new Map();
+    rows.forEach(row => {
+      const name = row[key] || 'Not stated';
+      const entry = map.get(name) || { name, count: 0, sum: 0, satisfied: 0 };
+      entry.count += 1; entry.sum += Number(row.rating || 0); if (Number(row.rating) >= 4) entry.satisfied += 1;
+      map.set(name, entry);
+    });
+    return [...map.values()].map(entry => ({ ...entry, avg: entry.sum / entry.count, pct: Math.round((entry.satisfied / entry.count) * 100) })).sort((a, b) => b.count - a.count);
+  };
+  return {
+    total,
+    avg: total ? sum / total : 0,
+    satisfiedPct: total ? Math.round((satisfied / total) * 100) : 0,
+    dist,
+    services: byKey('service'),
+    campuses: byKey('campus')
+  };
+}
+const ratingAdjective = avg => avg >= 4.5 ? 'Excellent' : avg >= 3.5 ? 'Very satisfactory' : avg >= 2.5 ? 'Satisfactory' : avg >= 1.5 ? 'Fair' : 'Poor';
+
+function ratingsInRange(rows, from, to) {
+  return rows.filter(row => {
+    const day = String(row.created_at || '').slice(0, 10);
+    return (!from || day >= from) && (!to || day <= to);
+  });
+}
+
+async function renderRatings() {
+  const section = $('#tab-ratings');
+  section.innerHTML = '<div class="empty loading-state">Loading service ratings</div>';
+  let rows;
+  try { rows = await api('/api/ratings'); }
+  catch (error) {
+    section.innerHTML = `<div class="err show">Ratings could not be loaded: ${esc(error.message)} <button class="btn btn--ghost btn--sm" type="button" data-retry>Retry</button></div>`;
+    section.querySelector('[data-retry]').addEventListener('click', renderRatings);
+    return;
+  }
+  const days = rows.map(row => String(row.created_at || '').slice(0, 10)).filter(Boolean).sort();
+  section.innerHTML = `
+    <div class="card report-bar">
+      <div class="report-bar__range">
+        <label>From<input type="date" data-from value="${esc(days[0] || '')}"></label>
+        <label>To<input type="date" data-to value="${esc(days[days.length - 1] || '')}"></label>
+        <label>Service<select data-service><option value="">All services</option>${[...new Set(rows.map(row => row.service))].map(service => `<option>${esc(service)}</option>`).join('')}</select></label>
+      </div>
+      <div class="report-bar__actions">
+        <label class="check"><input type="checkbox" data-comments checked> Include comments (no names)</label>
+        <button class="btn btn--red" type="button" data-pdf>Download PDF summary</button>
+      </div>
+    </div>
+    <div id="ratingsBody"></div>`;
+
+  const current = () => {
+    const service = section.querySelector('[data-service]').value;
+    return ratingsInRange(rows, section.querySelector('[data-from]').value, section.querySelector('[data-to]').value).filter(row => !service || row.service === service);
+  };
+  const paint = () => {
+    const list = current();
+    const sum = ratingsSummary(list);
+    const max = Math.max(1, ...sum.dist.map(item => item.count));
+    $('#ratingsBody').innerHTML = !list.length ? '<div class="empty">No ratings in this range yet. Students rate services from Student Help → Rate the BulSU OSR.</div>' : `
+      <div class="rating-stats">
+        <div class="card rating-stat rating-stat--hero"><span>Average rating</span><b>${sum.avg.toFixed(2)}<small> / 5</small></b><em>${ratingAdjective(sum.avg)}</em></div>
+        <div class="card rating-stat"><span>Responses</span><b>${sum.total}</b></div>
+        <div class="card rating-stat"><span>Satisfied (4–5★)</span><b>${sum.satisfiedPct}%</b></div>
+        <div class="card rating-stat"><span>Most rated</span><b class="rating-stat__text">${esc(sum.services[0]?.name || '—')}</b></div>
+      </div>
+      <div class="rating-grid">
+        <div class="card"><h3>Rating distribution</h3>
+          ${sum.dist.map(item => `<div class="rating-bar"><span>${item.star}★</span><span class="rating-bar__track"><span style="width:${(item.count / max) * 100}%"></span></span><span class="mono">${item.count} · ${sum.total ? Math.round((item.count / sum.total) * 100) : 0}%</span></div>`).join('')}
+        </div>
+        <div class="card"><h3>By service</h3>
+          <div class="table-wrap"><table class="rating-table"><thead><tr><th>Service</th><th>Responses</th><th>Average</th><th>Satisfied</th></tr></thead>
+          <tbody>${sum.services.map(item => `<tr><td>${esc(item.name)}</td><td>${item.count}</td><td>${item.avg.toFixed(2)}</td><td>${item.pct}%</td></tr>`).join('')}</tbody></table></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="section-head"><div><h3>All responses</h3><span class="mono">Names and student numbers are visible to administrators only — never printed in the PDF.</span></div></div>
+        <div class="table-wrap"><table class="rating-table"><thead><tr><th>Date</th><th>Student</th><th>Service</th><th>Rating</th><th>Comment</th><th></th></tr></thead>
+        <tbody>${list.map(row => `<tr><td class="mono">${esc(String(row.created_at).slice(0, 10))}</td><td><b>${esc(row.name)}</b><br><span class="mono">${esc(row.student_number)}</span>${row.campus ? ` · ${esc(row.campus)}` : ''}</td><td>${esc(row.service)}</td><td><span class="stars" aria-label="${row.rating} of 5">${'★'.repeat(row.rating)}<span>${'★'.repeat(5 - row.rating)}</span></span></td><td>${esc(row.feedback || '')}</td><td><button class="btn btn--quiet btn--sm" type="button" data-rating-delete="${esc(row.id)}" aria-label="Delete rating">Delete</button></td></tr>`).join('')}</tbody></table></div>
+      </div>`;
+  };
+  section.querySelectorAll('[data-from],[data-to],[data-service]').forEach(input => input.addEventListener('input', paint));
+  section.addEventListener('click', async event => {
+    const del = event.target.closest('[data-rating-delete]');
+    if (del) {
+      if (!(await askConfirm('Delete this rating?', 'It will be removed from the totals and future PDF summaries.', 'Delete rating'))) return;
+      try { await api(`/api/ratings/${encodeURIComponent(del.dataset.ratingDelete)}`, { method: 'DELETE' }); rows = rows.filter(row => row.id !== del.dataset.ratingDelete); toast('Rating deleted.'); paint(); }
+      catch (error) { toast(`Could not delete: ${error.message}`); }
+      return;
+    }
+    if (event.target.closest('[data-pdf]')) {
+      const list = current();
+      if (!list.length) return toast('There are no ratings in this range to summarize.');
+      const button = event.target.closest('[data-pdf]');
+      button.disabled = true; button.textContent = 'Preparing PDF…';
+      try {
+        await ratingsPDF(list, {
+          from: section.querySelector('[data-from]').value,
+          to: section.querySelector('[data-to]').value,
+          service: section.querySelector('[data-service]').value,
+          comments: section.querySelector('[data-comments]').checked
+        });
+      } catch (error) { toast(`PDF failed: ${error.message}`); }
+      finally { button.disabled = false; button.textContent = 'Download PDF summary'; }
+    }
+  });
+  paint();
+}
+
+async function loadJsPDF() {
+  if (window.jspdf?.jsPDF) return window.jspdf.jsPDF;
+  await new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js';
+    script.onload = resolve;
+    script.onerror = () => reject(new Error('the PDF library could not load — check the connection'));
+    document.head.appendChild(script);
+  });
+  return window.jspdf.jsPDF;
+}
+async function loadLogoDataURL() {
+  try {
+    const blob = await (await fetch('/osr-logo.png', { cache: 'force-cache' })).blob();
+    return await new Promise(resolve => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => resolve(null); reader.readAsDataURL(blob); });
+  } catch { return null; }
+}
+
+// Same red-and-white template as the public BulSU Pulse report, with the OSR logo.
+async function ratingsPDF(rows, options) {
+  const [JSPDF, logo] = await Promise.all([loadJsPDF(), loadLogoDataURL()]);
+  const sum = ratingsSummary(rows);
+  const doc = new JSPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight();
+  const RED = [166, 25, 46], INK = [17, 18, 20], STONE = [107, 101, 96], LINE = [233, 230, 225], PAPER = [247, 245, 242];
+  const fmt = day => day ? new Date(day + 'T00:00:00').toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+  const period = options.from || options.to ? `${fmt(options.from) || 'Start'} – ${fmt(options.to) || 'today'}` : 'All recorded ratings';
+
+  const header = () => {
+    doc.setFillColor(...RED); doc.rect(0, 0, W, 24, 'F');
+    if (logo) { doc.setFillColor(255, 255, 255); doc.roundedRect(9, 3, 18, 18, 2, 2, 'F'); doc.addImage(logo, 'PNG', 10, 4, 16, 16, 'osrlogo', 'FAST'); }
+    const x = logo ? 31 : 14;
+    doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(11.5);
+    doc.text('OFFICE OF THE STUDENT REGENT', x, 11);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7);
+    doc.text('BULACAN STATE UNIVERSITY  •  BOARD OF REGENTS', x, 15.5);
+    doc.setFontSize(6.5); doc.text('Service Rating Summary — Transparency Report', W - 10, 13, { align: 'right' });
+  };
+  const footer = () => {
+    const pages = doc.internal.getNumberOfPages();
+    for (let page = 1; page <= pages; page += 1) {
+      doc.setPage(page);
+      doc.setDrawColor(...LINE); doc.line(10, H - 13, W - 10, H - 13);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(...RED);
+      doc.text('Office of the Student Regent, Bulacan State University  •  Aggregated student ratings — no personal data published', 10, H - 8);
+      doc.setTextColor(...STONE); doc.text(`Page ${page} of ${pages}`, W - 10, H - 8, { align: 'right' });
+    }
+  };
+  let y = 0;
+  const ensure = need => { if (y + need > H - 18) { doc.addPage(); header(); y = 32; } };
+  const heading = label => { ensure(12); doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(...INK); doc.text(label, 10, y); y += 2.5; doc.setDrawColor(...LINE); doc.line(10, y, W - 10, y); y += 5; };
+
+  header();
+  doc.setTextColor(...INK); doc.setFont('helvetica', 'bold'); doc.setFontSize(17);
+  doc.text('Rate the BulSU OSR — Results', 10, 35);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...STONE);
+  doc.text(`${period}${options.service ? `  •  ${options.service}` : ''}  •  Generated ${new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' })}`, 10, 40.5);
+  y = 46;
+
+  // Summary tiles
+  const tiles = [['AVERAGE RATING', `${sum.avg.toFixed(2)} / 5`, ratingAdjective(sum.avg)], ['RESPONSES', String(sum.total), 'verified students'], ['SATISFIED', `${sum.satisfiedPct}%`, 'rated 4 or 5'], ['SERVICES RATED', String(sum.services.length), `most: ${sum.services[0]?.name || '—'}`]];
+  const tw = (W - 20 - 9) / 4;
+  tiles.forEach(([label, value, note], index) => {
+    const x = 10 + index * (tw + 3);
+    doc.setFillColor(...(index === 0 ? RED : PAPER)); doc.setDrawColor(...(index === 0 ? RED : LINE));
+    doc.roundedRect(x, y, tw, 24, 2, 2, 'FD');
+    doc.setTextColor(...(index === 0 ? [255, 220, 226] : STONE)); doc.setFont('helvetica', 'bold'); doc.setFontSize(6.5); doc.text(label, x + 4, y + 6);
+    doc.setTextColor(...(index === 0 ? [255, 255, 255] : INK)); doc.setFontSize(15); doc.text(value, x + 4, y + 15);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(...(index === 0 ? [255, 220, 226] : STONE));
+    doc.text(doc.splitTextToSize(note, tw - 8)[0], x + 4, y + 20.5);
+  });
+  y += 33;
+
+  heading('Rating distribution');
+  const maxCount = Math.max(1, ...sum.dist.map(item => item.count));
+  sum.dist.forEach(item => {
+    ensure(8);
+    const pct = sum.total ? Math.round((item.count / sum.total) * 100) : 0;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...INK);
+    doc.text(`${item.star} star${item.star > 1 ? 's' : ''}`, 10, y);
+    const bx = 32, bw = W - 72, by = y - 3.2;
+    doc.setFillColor(...PAPER); doc.setDrawColor(...LINE); doc.roundedRect(bx, by, bw, 4.2, 1, 1, 'FD');
+    const fill = (item.count / maxCount) * bw;
+    if (fill > 0.6) { doc.setFillColor(...RED); doc.roundedRect(bx, by, fill, 4.2, 1, 1, 'F'); }
+    doc.text(String(item.count), W - 26, y, { align: 'right' });
+    doc.setFont('helvetica', 'normal'); doc.setTextColor(...STONE); doc.text(`${pct}%`, W - 10, y, { align: 'right' });
+    y += 7.5;
+  });
+  y += 3;
+
+  const table = (title, columns, data) => {
+    heading(title);
+    const widths = columns.map(column => column[1]);
+    const xs = widths.reduce((acc, width, index) => { acc.push(index ? acc[index - 1] + widths[index - 1] : 10); return acc; }, []);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(...STONE);
+    columns.forEach(([label, , align], index) => doc.text(label, align === 'right' ? xs[index] + widths[index] - 2 : xs[index], y, { align: align || 'left' }));
+    y += 4;
+    data.forEach((cells, rowIndex) => {
+      ensure(7);
+      if (rowIndex % 2 === 0) { doc.setFillColor(...PAPER); doc.rect(10, y - 3.8, W - 20, 6, 'F'); }
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...INK);
+      cells.forEach((cell, index) => {
+        const align = columns[index][2];
+        const textValue = doc.splitTextToSize(String(cell), widths[index] - 3)[0];
+        doc.text(textValue, align === 'right' ? xs[index] + widths[index] - 2 : xs[index] + (index ? 0 : 1), y, { align: align || 'left' });
+      });
+      y += 6;
+    });
+    y += 4;
+  };
+  table('Results by service', [['Service', 86], ['Responses', 26, 'right'], ['Average', 26, 'right'], ['Satisfied (4–5)', 52, 'right']],
+    sum.services.map(item => [item.name, item.count, item.avg.toFixed(2), `${item.pct}%`]));
+  table('Responses by campus', [['Campus', 86], ['Responses', 26, 'right'], ['Average', 26, 'right'], ['Satisfied (4–5)', 52, 'right']],
+    sum.campuses.map(item => [item.name, item.count, item.avg.toFixed(2), `${item.pct}%`]));
+
+  if (options.comments) {
+    const comments = rows.filter(row => (row.feedback || '').trim()).slice(0, 40);
+    if (comments.length) {
+      heading(`Student comments (${comments.length}${rows.filter(row => (row.feedback || '').trim()).length > 40 ? ', most recent 40' : ''}) — names withheld`);
+      comments.forEach(row => {
+        const lines = doc.splitTextToSize(`“${row.feedback.trim()}”`, W - 60);
+        ensure(lines.length * 3.6 + 5);
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(...RED);
+        doc.text(`${row.rating}/5`, 10, y);
+        doc.setTextColor(...STONE); doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5);
+        doc.text(doc.splitTextToSize(row.service, 30)[0], 18, y);
+        doc.setFontSize(7.5); doc.setTextColor(...INK);
+        doc.text(lines, 50, y);
+        y += lines.length * 3.6 + 2.5;
+      });
+      y += 3;
+    }
+  }
+
+  heading('Methodology & privacy');
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(...STONE);
+  [
+    'Ratings were submitted by students through the “Rate the BulSU OSR” form on the official OSR website.',
+    'Each submission required the student’s full name and student number, so every rating comes from an identifiable student. These identifiers are held by the OSR and are not included in this report.',
+    'Ratings use a 1–5 scale (5 = excellent, 1 = poor). “Satisfied” counts ratings of 4 or 5. Averages are simple means of all responses in the period.',
+    'Comments are reproduced as written, without names, and may be shortened in number for length. Ratings removed by an administrator (for example, duplicates or test entries) are excluded.',
+    'Results describe the students who chose to respond and are not a scientifically representative survey.'
+  ].forEach(line => { const split = doc.splitTextToSize(`•  ${line}`, W - 20); ensure(split.length * 3.3 + 1); doc.text(split, 10, y); y += split.length * 3.3 + 1.2; });
+
+  ensure(30); y += 10;
+  doc.setDrawColor(...INK);
+  [['Prepared by', 10], ['Noted by', W / 2 + 5]].forEach(([label, x]) => {
+    doc.line(x, y, x + 70, y);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(...INK); doc.text(label, x, y + 4);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(...STONE); doc.text(label === 'Noted by' ? 'Student Regent, Bulacan State University' : 'Office of the Student Regent', x, y + 7.5);
+  });
+  footer();
+  const stamp = (options.from || 'start') + '_to_' + (options.to || new Date().toISOString().slice(0, 10));
+  doc.save(`OSR-Service-Rating-Summary_${stamp}.pdf`);
+  toast('PDF summary downloaded.');
 }
 
 /* ── BulSU Pulse data ─────────────────────────────────────────────────────── */
@@ -2382,29 +3010,18 @@ async function renderPulseData() {
 
 async function initAdmin() {
   showAdmin();
+  api('/api/concerns').then(concernBadge).catch(() => {});
   $('#guidePanel').hidden = true;
   const requested = location.hash.slice(1);
   await switchTab(pageMeta[requested] ? requested : 'overview', { focus: false });
 }
 
-authScreen.style.display = 'grid';
-checkAuthAndSetup();
-</script>
-</body>
-</html>
-thAndSetup();
-</script>
-</body>
-</html>
-, { focus: false });
-}
+document.addEventListener('click', event => {
+  document.querySelectorAll('.more-menu[open]').forEach(menu => { if (!menu.contains(event.target) || event.target.closest('.more-menu__list')) menu.open = false; });
+});
 
 authScreen.style.display = 'grid';
 checkAuthAndSetup();
-</script>
-</body>
-</html>
-thAndSetup();
 </script>
 </body>
 </html>
