@@ -173,6 +173,23 @@ the suite.
   every unfurler prints the title and description next to it, and type inside the
   picture would only duplicate that in whatever font the reader's platform
   substitutes.
+- **"Show my build" is no longer cut off, and the points bar reads properly on a
+  phone.** The primary action in the sticky points bar clips its own overflow so
+  its sheen can slide inside it, and on a phone it shared its row evenly with
+  Reset — the label "Show my build — 4 points left" is wider than that half, so
+  the text was cut mid-word ("how my build"). Behind it sat a second bug: the
+  phone bar is a two-column grid, and as a plain grid item the action row landed
+  in the first column and set that column's width, squeezing the progress track to
+  a few pixels, so the bar looked empty. The action row now spans both columns,
+  the primary action takes the space it needs while Reset stays compact, the label
+  lives in its own box that can only shorten with an ellipsis, and the count is
+  short enough to fit the narrowest width the site supports ("Show my build · 4
+  left"). The full sentence is still the button's accessible name, so a screen
+  reader hears "Show my build — 4 points left". The bar's three parts are named
+  (`.pulse-pointsbar__count/__track/__actions`) instead of being selected by child
+  position, which is what had forced a pile of `!important` overrides.
+  `builder-bar.test.mjs` drives the builder in jsdom and fails if the label grows
+  back past what fits.
 - **The mark replaced the full stacked lockup in the page's logo slots.** The
   header, mobile menu, footer, welcome card and admin login/top bar/sidebar were
   showing `osr-logo.png` — the whole lockup, wordmark included — at 36-44px,

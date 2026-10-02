@@ -865,7 +865,7 @@ img,svg{max-width:100%; height:auto}
 .pulse-alloc-row__icon{width:24px; height:24px; border-radius:6px; background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); display:inline-grid; place-items:center; flex:0 0 24px}
 .pulse-alloc-row__desc{font-size:11.5px; line-height:1.4; color:var(--stone); margin:4px 0 0 32px; max-width:54ch; overflow-wrap:anywhere}
 .pulse-counter{display:inline-flex; align-items:center; gap:4px; flex:0 0 auto; background:var(--paper-2); border:1px solid var(--line); padding:2px 4px; border-radius:8px}
-.pulse-num{font:700 17px var(--font-display); width:24px; text-align:center; line-height:1; color:var(--ink)}
+.pulse-num{font:700 17px var(--font-display); width:24px; text-align:center; line-height:1; color:var(--ink); white-space:nowrap; font-variant-numeric:tabular-nums}
 .pulse-btn{position:relative; width:34px; height:34px; border-radius:6px; border:1px solid var(--line); background:white; display:grid; place-items:center; font:700 16px "IBM Plex Sans",sans-serif; cursor:pointer; transition:background .12s, border-color .12s, color .12s; line-height:1; touch-action:manipulation}
 .pulse-btn:after{content:""; position:absolute; inset:-5px}
 .pulse-btn:hover:not(:disabled){border-color:var(--red); background:var(--red-3); color:var(--red)}
@@ -903,11 +903,9 @@ img,svg{max-width:100%; height:auto}
 @media(max-width:640px){
   .pulse-howgrid{grid-template-columns:1fr}
   .pulse-pointsbar{top:54px; gap:8px 10px; padding:8px 10px; border-radius:10px; box-shadow:0 2px 6px rgba(17,18,20,0.06)}
-  .pulse-pointsbar > div:first-child{min-width:auto !important}
-  .pulse-pointsbar > div:first-child span:first-child{font-size:22px !important}
-  .pulse-pointsbar > div:nth-child(2){min-width:110px !important}
-  .pulse-pointsbar > div:last-child{width:100%; margin-left:0 !important; display:flex; justify-content:space-between; gap:6px}
-  .pulse-pointsbar > div:last-child .btn{flex:1; min-height:30px; padding:4px 8px; font-size:11.5px}
+  .pulse-pointsbar__count{min-width:auto !important}
+  .pulse-pointsbar__count span:first-child{font-size:22px !important}
+  .pulse-pointsbar__track{min-width:110px !important}
   .pulse-alloc{gap:7px; margin-top:8px}
   .pulse-alloc-row{padding:8px 10px; border-radius:8px}
   .pulse-alloc-row__head{display:flex; justify-content:space-between; align-items:center; gap:6px}
@@ -916,7 +914,7 @@ img,svg{max-width:100%; height:auto}
   .pulse-alloc-row__desc{font-size:11px; line-height:1.35; margin:3px 0 0 28px}
   .pulse-counter{padding:2px 3px; gap:2px}
   .pulse-btn{width:30px; height:30px; font-size:15px}
-  .pulse-num{font-size:15px; width:18px}
+  .pulse-num{font-size:15px; width:auto; min-width:1.6em}
   .pulse-bar{height:5px; margin-top:6px}
   .pulse-alloc-meta{font-size:9.5px; margin-top:3px}
   .pulse-live-row{grid-template-columns:minmax(82px, 1fr) minmax(44px, 2fr) auto; gap:7px}
@@ -948,6 +946,47 @@ img,svg{max-width:100%; height:auto}
 .pulse-pointsbar.is-complete{border-color:#D9BC6E; box-shadow:0 2px 10px rgba(140,106,26,.14)}
 #pulseShowResult.is-ready{background:linear-gradient(135deg, var(--red) 0%, #7A1021 100%); border-color:#7A1021; color:#fff; opacity:1}
 #pulseShowResult.is-ready.is-celebrating{animation:pulse-ready .9s var(--ease) 1}
+
+/* The points bar's action row. The primary action has to be able to fit its own
+   label. The bar is two rows on a phone, and this row used to split the width
+   evenly between "Reset" and the primary button; the longer label — "Show my
+   build — 4 points left" — was then wider than its half. The button clips its
+   own overflow (its sheen slides inside it), so the text was cut off mid-word:
+   "how my build" instead of "Show my build". Now the primary takes the space it
+   needs, Reset stays compact beside it, the label itself can only ever shorten
+   with an ellipsis rather than lose characters, and the count is short enough to
+   fit the smallest width the site supports. */
+.pulse-pointsbar__actions{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-left:auto}
+#pulseShowResult{flex:1 1 auto; min-width:0}
+#pulseShowResult .btn__label{display:block; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+#pulseReset{flex:0 0 auto}
+/* The bar sizes its own buttons, and it has to say so with an id: the section's
+   `#page-ideal-bulsu .btn--sm` rule pins every small button to 34px tall, and an
+   id beats the class selectors above no matter where they sit in the file. That
+   rule is why the two actions in this bar sat 34px tall, ten pixels off the
+   bottom edge of the card, on the most-tapped controls in the whole section.
+   These are the buttons a student uses to finish the exercise, so they get a
+   comfortable height and room to breathe. */
+#page-ideal-bulsu .pulse-pointsbar{padding:12px 14px 14px}
+#page-ideal-bulsu .pulse-pointsbar .btn,
+#page-ideal-bulsu #pulseSubmitArea .btn{min-height:40px; padding:8px 16px; font-size:13px}
+
+@media(max-width:640px){
+  /* The phone bar is a two-column grid (count, track) with the actions as a
+     second row; that grid lives in the section's phone block below. The actions
+     have to span both columns: as a plain grid item they landed in the first
+     column and their content — a 65px Reset plus a button that cannot wrap — set
+     that column's width, squeezing the track down to a few pixels so the progress
+     bar read as empty. */
+  .pulse-pointsbar__actions{grid-column:1 / -1; width:100%; margin-left:0}
+  /* 44px is the smallest comfortable thumb target, and the bar is the one thing
+     on this page a student taps on a phone. Reset gives up a little of its
+     horizontal padding so the primary action still fits "Show my build · 10
+     left" on one line at 320px without an ellipsis. */
+  #page-ideal-bulsu .pulse-pointsbar .btn,
+  #page-ideal-bulsu #pulseSubmitArea .btn{min-height:44px; padding:10px 12px; font-size:12px}
+  #page-ideal-bulsu .pulse-pointsbar #pulseReset{padding-left:10px; padding-right:10px}
+}
 @keyframes pulse-ready{0%{box-shadow:0 0 0 0 rgba(176,138,46,.5)} 70%{box-shadow:0 0 0 12px rgba(176,138,46,0)} 100%{box-shadow:0 0 0 0 rgba(176,138,46,0)}}
 .pulse-live-row.is-top .pulse-live-row__label{font-weight:700; color:var(--ink)}
 .pulse-live-row.is-top .pulse-live-row__fill{background:linear-gradient(90deg, var(--red), #B08A2E)}
@@ -974,7 +1013,6 @@ img,svg{max-width:100%; height:auto}
 #page-ideal-bulsu .pulse-tabs{margin-top:12px}
 #page-ideal-bulsu .pulse-alloc-row{scroll-margin-top:132px}
 #page-ideal-bulsu .pulse-pointsbar{margin-top:4px}
-#page-ideal-bulsu .pulse-pointsbar > div[style*="margin-left:auto"]{row-gap:8px}
 /* Keep every control comfortably tappable and every label readable. */
 #page-ideal-bulsu .btn--sm{min-height:34px; padding:6px 12px}
 #page-ideal-bulsu .pulse-btn{width:38px; height:38px}
@@ -1053,13 +1091,13 @@ img,svg{max-width:100%; height:auto}
   #page-ideal-bulsu .section__head p{margin-top:8px; line-height:1.5}
   .ideal-card{margin-top:12px; padding:13px; border-radius:10px}
   .ideal-card--head{gap:10px}
-  /* Sticky points bar: two tidy rows instead of three squeezed ones. */
-  #page-ideal-bulsu .pulse-pointsbar{display:grid; grid-template-columns:auto minmax(0,1fr); gap:8px 12px; align-items:center; padding:10px 12px; top:54px}
-  #page-ideal-bulsu .pulse-pointsbar > div:first-child{min-width:0 !important}
-  #page-ideal-bulsu .pulse-pointsbar > div:first-child span:first-child{font-size:24px !important}
-  #page-ideal-bulsu .pulse-pointsbar > div:nth-child(2){min-width:0 !important; max-width:none}
-  #page-ideal-bulsu .pulse-pointsbar > div:last-child{width:100%; margin-left:0 !important; display:flex; gap:8px; justify-content:space-between}
-  #page-ideal-bulsu .pulse-pointsbar > div:last-child .btn{flex:1; min-height:38px; padding:6px 10px; font-size:12px}
+  /* Sticky points bar: two tidy rows instead of three squeezed ones. This is the
+     only place the bar's phone box is defined — the count and the track on the
+     first row, the action row spanning both columns beneath them. */
+  #page-ideal-bulsu .pulse-pointsbar{display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px 12px; align-items:center; padding:12px 12px 14px; top:54px}
+  #page-ideal-bulsu .pulse-pointsbar__count{min-width:0 !important}
+  #page-ideal-bulsu .pulse-pointsbar__count span:first-child{font-size:24px !important}
+  #page-ideal-bulsu .pulse-pointsbar__track{min-width:0 !important; max-width:none}
   #page-ideal-bulsu .pulse-tabs{margin-top:10px}
   #page-ideal-bulsu .pulse-tab{padding:8px 14px}
   #page-ideal-bulsu .pulse-alloc{gap:9px; margin-top:12px}
@@ -1068,7 +1106,7 @@ img,svg{max-width:100%; height:auto}
   #page-ideal-bulsu .pulse-alloc-row__title{font-size:13.5px}
   #page-ideal-bulsu .pulse-alloc-row__desc{margin:5px 0 0; font-size:11.5px; line-height:1.45}
   #page-ideal-bulsu .pulse-btn{width:40px; height:40px; font-size:17px}
-  #page-ideal-bulsu .pulse-num{font-size:17px; width:22px}
+  #page-ideal-bulsu .pulse-num{font-size:17px; width:auto; min-width:1.5em}
   #page-ideal-bulsu .pulse-counter{padding:3px 5px; gap:4px}
   #page-ideal-bulsu .pulse-subtabs{gap:8px}
   #page-ideal-bulsu .pulse-subtab{padding:8px 12px}
@@ -2629,20 +2667,20 @@ img,svg{max-width:100%; height:auto}
       <!-- BUILD PANEL -->
       <div id="pulseBuildTab" role="tabpanel">
         <div class="pulse-pointsbar reveal is-visible">
-          <div style="min-width:90px">
+          <div class="pulse-pointsbar__count" style="min-width:90px">
             <div class="mono" style="font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone)">Points left</div>
             <div style="display:flex; align-items:baseline; gap:6px; margin-top:2px">
               <span id="pulsePointsLeft" style="font:700 28px var(--font-display); line-height:1; color:var(--red)">10</span>
               <span class="mono" style="font-size:11px; color:var(--stone)">of 10</span>
             </div>
           </div>
-          <div style="flex:1; min-width:180px; max-width:340px">
+          <div class="pulse-pointsbar__track" style="flex:1; min-width:180px; max-width:340px">
             <div id="pulsePointsTrack" class="pulse-points-track" role="progressbar" aria-label="Points allocated" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" aria-valuetext="0 of 10 points allocated"><div id="pulsePointsFill" class="pulse-points-fill" aria-hidden="true" style="width:0%"></div></div>
             <div class="mono" style="font-size:10px; color:var(--stone); margin-top:4px; display:flex; justify-content:space-between"><span>0 used</span><span>10 used</span></div>
           </div>
-          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-left:auto">
+          <div class="pulse-pointsbar__actions">
             <button id="pulseReset" class="btn btn--sm btn--ghost">Reset</button>
-            <button id="pulseShowResult" class="btn btn--sm btn--gold" disabled style="opacity:0.45">Show my build — use 10 points</button>
+            <button id="pulseShowResult" class="btn btn--sm btn--gold" disabled><span class="btn__label" id="pulseShowResultLabel">Show my build</span></button>
           </div>
         </div>
 
@@ -4276,7 +4314,13 @@ function pulseUpdateChrome(){
     const wasReady=btn.classList.contains("is-ready");
     btn.disabled=!ready;
     btn.style.opacity=ready ? "1" : "0.45";
-    btn.textContent=ready ? "Show my build" : `Show my build — ${left} point${left===1?"":"s"} left`;
+    // Short enough to fit the button at the narrowest width; the full sentence
+    // used to overflow it and get clipped. The count still rides along, and the
+    // points bar right beside it spells out "Points left" in full.
+    const label=document.getElementById("pulseShowResultLabel");
+    const text=ready ? "Show my build" : `Show my build · ${left} left`;
+    if(label) label.textContent=text; else btn.textContent=text;
+    btn.setAttribute("aria-label", ready ? "Show my build" : `Show my build — ${left} point${left===1?"":"s"} left`);
     btn.classList.toggle("is-ready", ready);
     if(ready && !wasReady) pulseBump(btn, "is-celebrating", 1400);
   }
