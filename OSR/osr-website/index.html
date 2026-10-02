@@ -20,7 +20,7 @@
 <meta name="theme-color" content="#A6192E" media="(prefers-color-scheme: light)"/>
 <meta name="theme-color" content="#7A1021" media="(prefers-color-scheme: dark)"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Marcellus&display=swap" rel="stylesheet">
 <style>
 /* PREMIUM TOKENS — DESIGN.md v2: ENERGY 2 / RHYTHM 3 / MOTION 2 (choreographed, not loops) */
 :root{
@@ -34,9 +34,11 @@
   --shadow:0 1px 0 rgba(17,18,20,0.04), 0 12px 32px rgba(17,18,20,0.09);
   --shadow-soft:0 1px 0 rgba(17,18,20,0.04), 0 8px 20px rgba(17,18,20,0.07);
   --ease: cubic-bezier(.16,1,.3,1);
-  /* Display type: IBM Plex Serif keeps display text in the same superfamily as
-     the IBM Plex Sans body and IBM Plex Mono labels used everywhere else. */
-  --font-display:"IBM Plex Serif",Georgia,"Times New Roman",serif;
+  /* Display type across the site: Fraunces, the family the pages have used all
+     along. The home hero title is the single exception — it carries --font-hero
+     so the masthead can have a face of its own without touching anything else. */
+  --font-display:"Fraunces","Fraunces 9pt",Georgia,"Times New Roman",serif;
+  --font-hero:"Marcellus",Georgia,"Times New Roman",serif;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -631,20 +633,27 @@ img,svg{max-width:100%; height:auto}
 
 
 /* ===== HERO UPGRADE — spacious, special, institutional ===== */
-.hero-wrap{position:relative; margin:0 -16px; padding:0 16px; background:linear-gradient(180deg, #F7F5F2 0%, #FFFFFF 65%); border-bottom:1px solid var(--line); overflow:hidden}
+.hero-wrap{position:relative; margin:0 -16px; padding:0 16px; background:#fff; border-bottom:1px solid var(--line); overflow:hidden;
+  --gx:50%; --gy:0px}
 @media(max-width:640px){.hero-wrap{margin:0 -14px; padding:0 14px}}
 .hero{padding:56px 0 44px; gap:48px; align-items:start; min-height:380px}
 @media(max-width:960px){.hero{padding:40px 0 32px; gap:28px; min-height:auto}}
 .hero:before{display:none}
-.hero-wrap:before{content:""; position:absolute; inset:0; background:
-  radial-gradient(820px 420px at 18% 8%, rgba(166,25,46,0.07), transparent 62%),
-  radial-gradient(640px 380px at 90% 12%, rgba(17,18,20,0.04), transparent 68%),
-  linear-gradient(90deg, rgba(166,25,46,0.03) 1px, transparent 1px),
-  linear-gradient(rgba(166,25,46,0.02) 1px, transparent 1px);
-  background-size: auto, auto, 28px 28px, 28px 28px;
-  mask-image: linear-gradient(180deg, black 75%, transparent 100%);
-  pointer-events:none}
-.hero-wrap:after{content:""; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--red) 0%, #C41E3A 45%, var(--ink) 100%); opacity:1}
+/* Clean paper. The old hero stacked a grey wash, a pink grid and a masked
+   fade on top of each other, which is what made it look muddy. Now it is one
+   warm wash behind the copy plus seal line-work in the corner: line, not dirt. */
+.hero-wrap:before{content:""; position:absolute; inset:0; pointer-events:none; background:
+  radial-gradient(720px 320px at 12% -8%, rgba(166,25,46,0.055), rgba(166,25,46,0) 64%),
+  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 214px, rgba(166,25,46,0.075) 214px 215px, rgba(166,25,46,0) 215px),
+  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 290px, rgba(166,25,46,0.05) 290px 291px, rgba(166,25,46,0) 291px),
+  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 366px, rgba(166,25,46,0.032) 366px 367px, rgba(166,25,46,0) 367px)}
+.hero-wrap:after{content:""; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--red) 0%, #C41E3A 46%, rgba(166,25,46,0.22) 100%)}
+/* Depth that answers the pointer: a soft light that travels with the cursor.
+   Pure decoration — it is inert for touch, keyboard and reduced motion. */
+.hero__fx{position:absolute; inset:0; overflow:hidden; pointer-events:none}
+.hero__glow{position:absolute; left:-410px; top:-300px; width:820px; height:600px; transform:translate3d(var(--gx), var(--gy), 0);
+  background:radial-gradient(circle, rgba(166,25,46,0.10), rgba(166,25,46,0) 66%); opacity:0; transition:opacity .6s var(--ease)}
+.hero-wrap.is-pointing .hero__glow{opacity:1}
 .hero__kicker{padding:7px 12px; font-size:10.5px; letter-spacing:0.12em; background:white; border-color:var(--line); box-shadow:0 1px 0 rgba(0,0,0,0.03); backdrop-filter:blur(4px)}
 /* A slightly smaller display size with a balanced two-line break keeps the
    title from crowding the lead, and both columns now end on the same line. */
@@ -1409,6 +1418,7 @@ img,svg{max-width:100%; height:auto}
   <!-- HOME -->
   <section class="page" id="page-home" aria-current="true" aria-labelledby="home-title">
     <div class="hero-wrap">
+    <div class="hero__fx" aria-hidden="true"><span class="hero__glow"></span></div>
     <div class="hero">
       <div class="reveal is-visible">
         <span class="hero__kicker">Board of Regents • Student representation</span>
@@ -1646,20 +1656,27 @@ img,svg{max-width:100%; height:auto}
 }
     
 /* ===== HERO UPGRADE — spacious, special, institutional ===== */
-.hero-wrap{position:relative; margin:0 -16px; padding:0 16px; background:linear-gradient(180deg, #F7F5F2 0%, #FFFFFF 65%); border-bottom:1px solid var(--line); overflow:hidden}
+.hero-wrap{position:relative; margin:0 -16px; padding:0 16px; background:#fff; border-bottom:1px solid var(--line); overflow:hidden;
+  --gx:50%; --gy:0px}
 @media(max-width:640px){.hero-wrap{margin:0 -14px; padding:0 14px}}
 .hero{padding:56px 0 44px; gap:48px; align-items:start; min-height:380px}
 @media(max-width:960px){.hero{padding:40px 0 32px; gap:28px; min-height:auto}}
 .hero:before{display:none}
-.hero-wrap:before{content:""; position:absolute; inset:0; background:
-  radial-gradient(820px 420px at 18% 8%, rgba(166,25,46,0.07), transparent 62%),
-  radial-gradient(640px 380px at 90% 12%, rgba(17,18,20,0.04), transparent 68%),
-  linear-gradient(90deg, rgba(166,25,46,0.03) 1px, transparent 1px),
-  linear-gradient(rgba(166,25,46,0.02) 1px, transparent 1px);
-  background-size: auto, auto, 28px 28px, 28px 28px;
-  mask-image: linear-gradient(180deg, black 75%, transparent 100%);
-  pointer-events:none}
-.hero-wrap:after{content:""; position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg, var(--red) 0%, #C41E3A 45%, var(--ink) 100%); opacity:1}
+/* Clean paper. The old hero stacked a grey wash, a pink grid and a masked
+   fade on top of each other, which is what made it look muddy. Now it is one
+   warm wash behind the copy plus seal line-work in the corner: line, not dirt. */
+.hero-wrap:before{content:""; position:absolute; inset:0; pointer-events:none; background:
+  radial-gradient(720px 320px at 12% -8%, rgba(166,25,46,0.055), rgba(166,25,46,0) 64%),
+  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 214px, rgba(166,25,46,0.075) 214px 215px, rgba(166,25,46,0) 215px),
+  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 290px, rgba(166,25,46,0.05) 290px 291px, rgba(166,25,46,0) 291px),
+  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 366px, rgba(166,25,46,0.032) 366px 367px, rgba(166,25,46,0) 367px)}
+.hero-wrap:after{content:""; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--red) 0%, #C41E3A 46%, rgba(166,25,46,0.22) 100%)}
+/* Depth that answers the pointer: a soft light that travels with the cursor.
+   Pure decoration — it is inert for touch, keyboard and reduced motion. */
+.hero__fx{position:absolute; inset:0; overflow:hidden; pointer-events:none}
+.hero__glow{position:absolute; left:-410px; top:-300px; width:820px; height:600px; transform:translate3d(var(--gx), var(--gy), 0);
+  background:radial-gradient(circle, rgba(166,25,46,0.10), rgba(166,25,46,0) 66%); opacity:0; transition:opacity .6s var(--ease)}
+.hero-wrap.is-pointing .hero__glow{opacity:1}
 .hero__kicker{padding:7px 12px; font-size:10.5px; letter-spacing:0.12em; background:white; border-color:var(--line); box-shadow:0 1px 0 rgba(0,0,0,0.03); backdrop-filter:blur(4px)}
 /* A slightly smaller display size with a balanced two-line break keeps the
    title from crowding the lead, and both columns now end on the same line. */
@@ -1888,6 +1905,51 @@ img,svg{max-width:100%; height:auto}
 @media(prefers-reduced-motion:reduce){
   .btn--gold:hover:before{animation:none; opacity:0}
   .quick__ideal .quick__spark{animation:none; opacity:.5}
+}
+
+/* ===== HERO — the masthead face, and depth that answers the pointer ========
+   Only the home hero changes here. Everything else on the site keeps Fraunces,
+   which is what --font-display still points at. */
+.hero__title{font-family:var(--font-hero); font-weight:400; letter-spacing:-0.012em}
+
+/* the title arrives once, and the red rule under "STUDENT REGENT" draws in */
+@keyframes hero-title-in{from{opacity:0; transform:translateY(16px); clip-path:inset(0 0 96% 0)} to{opacity:1; transform:none; clip-path:inset(0 0 -14% 0)}}
+@keyframes hero-underline{from{transform:scaleX(0)} to{transform:scaleX(1)}}
+.hero.is-in .hero__title{animation:hero-title-in .95s var(--ease) both}
+.hero.is-in .hero__title span:after{transform-origin:left; animation:hero-underline .85s var(--ease) .34s both}
+.hero.is-in .hero__kicker{animation:hero-title-in .7s var(--ease) both}
+.hero.is-in .hero__lead{animation:hero-title-in .8s var(--ease) .1s both}
+.hero.is-in .hero__actions{animation:hero-title-in .8s var(--ease) .18s both}
+.hero.is-in .hero__meta{animation:hero-title-in .8s var(--ease) .26s both}
+.hero.is-in .hero__card{animation:hero-title-in .9s var(--ease) .12s both}
+
+/* the card leans with the pointer and carries a light that tracks it */
+.hero__card{--cx:50%; --cy:50%; transform-style:preserve-3d; will-change:transform}
+.hero__card:before{content:""; display:block; position:absolute; inset:0; border-radius:inherit; pointer-events:none; opacity:0;
+  transition:opacity .35s var(--ease); background:radial-gradient(240px 180px at var(--cx) var(--cy), rgba(166,25,46,0.07), rgba(166,25,46,0) 72%)}
+.hero__card:hover:before{opacity:1}
+
+/* the fact row answers as a row of small chips, not dead text */
+.hero__meta > span{position:relative; padding:3px 9px; margin-left:-9px; border-radius:999px; transition:background .18s var(--ease), color .18s var(--ease)}
+.hero__meta > span:hover{background:var(--red-3)}
+.hero__meta > span:hover b{color:var(--red)}
+
+/* the primary action gets one sheen as it is hovered — the same vocabulary as
+   the gold Build Your Ideal BulSU button, in the hero's own red */
+.hero__actions .btn--red{overflow:hidden}
+.hero__actions .btn--red:after{content:""; position:absolute; top:-40%; bottom:-40%; left:-70%; width:45%; transform:skewX(-18deg); opacity:0;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.34), transparent)}
+.hero__actions .btn--red:hover:after{animation:hero-sheen .9s var(--ease) 1}
+@keyframes hero-sheen{0%{left:-70%; opacity:.95} 100%{left:135%; opacity:0}}
+
+@media(max-width:960px){
+  .hero__meta > span:hover{background:transparent}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero.is-in .hero__title,.hero.is-in .hero__title span:after,.hero.is-in .hero__kicker,
+  .hero.is-in .hero__lead,.hero.is-in .hero__actions,.hero.is-in .hero__meta,.hero.is-in .hero__card{animation:none !important}
+  .hero__actions .btn--red:hover:after{animation:none; opacity:0}
+  .hero__glow{display:none}
 }
 
 </style>
@@ -3126,6 +3188,47 @@ $("#dashSavedBtn")?.addEventListener("click", ()=>{
 });
 
 
+/* HERO MOTION — decorative only. The hero reads exactly the same with a
+   keyboard, a touch screen, or "reduce motion" turned on; nothing here carries
+   information and nothing blocks a click. */
+(function heroDynamics(){
+  const hero=document.querySelector(".hero");
+  const wrap=document.querySelector(".hero-wrap");
+  if(!hero || !wrap) return;
+  requestAnimationFrame(()=> hero.classList.add("is-in"));
+  const touchOnly=window.matchMedia("(hover:none) and (pointer:coarse)").matches;
+  const calm=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  if(touchOnly || calm) return;
+  const card=document.querySelector(".hero__card");
+  const cta=document.querySelector(".hero__actions .btn--red");
+  const clamp=(v,a,b)=> Math.max(a, Math.min(b, v));
+  let raf=0, gx=0, gy=0;
+  const paintGlow=()=>{ raf=0; wrap.style.setProperty("--gx", gx+"px"); wrap.style.setProperty("--gy", gy+"px"); };
+  wrap.addEventListener("pointermove", event=>{
+    const box=wrap.getBoundingClientRect();
+    gx=event.clientX-box.left; gy=event.clientY-box.top;
+    if(!raf) raf=requestAnimationFrame(paintGlow);
+    wrap.classList.add("is-pointing");
+    if(card){
+      const c=card.getBoundingClientRect();
+      const dx=(event.clientX-c.left)/c.width-0.5, dy=(event.clientY-c.top)/c.height-0.5;
+      card.style.setProperty("--cx", ((dx+0.5)*100).toFixed(1)+"%");
+      card.style.setProperty("--cy", ((dy+0.5)*100).toFixed(1)+"%");
+      const near=event.clientX>c.left-60 && event.clientX<c.right+60 && event.clientY>c.top-60 && event.clientY<c.bottom+60;
+      card.style.transform=near ? "perspective(900px) rotateX("+(-dy*2.2).toFixed(2)+"deg) rotateY("+(dx*2.4).toFixed(2)+"deg) translateY(-2px)" : "";
+    }
+    if(cta){
+      const r=cta.getBoundingClientRect();
+      const near=event.clientX>r.left-30 && event.clientX<r.right+30 && event.clientY>r.top-26 && event.clientY<r.bottom+26;
+      cta.style.transform=near ? "translate3d("+clamp((event.clientX-(r.left+r.width/2))/12,-3,3).toFixed(1)+"px, "+clamp((event.clientY-(r.top+r.height/2))/14,-2.5,2.5).toFixed(1)+"px, 0)" : "";
+    }
+  }, {passive:true});
+  wrap.addEventListener("pointerleave", ()=>{
+    wrap.classList.remove("is-pointing");
+    if(card) card.style.transform="";
+    if(cta) cta.style.transform="";
+  });
+})();
 const pages={"home":"page-home","announcements":"page-announcements","board-meetings":"page-board-meetings","initiatives":"page-initiatives","resources":"page-resources","help":"page-help","about":"page-about","search":"page-search","ideal-bulsu":"page-ideal-bulsu","academic-calendar":"page-academic-calendar","track":"page-track"};
 function setRoute(hash){
   const key=(hash||location.hash||"#home").replace("#","").split("?")[0].split("/")[0] || "home";

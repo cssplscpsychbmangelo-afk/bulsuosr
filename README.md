@@ -128,6 +128,25 @@ Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
 
 ## Recent fixes
 
+- **The hero no longer looks muddy, and it responds to the pointer.** The
+  masthead used to stack a grey wash, a pink 28px grid and a masked fade on top
+  of each other; it is now one warm wash plus seal line-work in the far corner
+  (concentric arcs, line not dirt) and a thin red rule on top. On a mouse the
+  background light follows the cursor, the mandate card leans a degree or two
+  and carries a light where the pointer is, the fact chips answer as chips, and
+  the primary button gets one sheen and a small drift — the same motion
+  vocabulary as the gold Build Your Ideal BulSU button. Touch-only screens and
+  `prefers-reduced-motion` skip all of it, and it is decoration only: nothing
+  moves that carries information, and no control is blocked.
+- **The hero title has its own typeface again, and the site keeps Fraunces.**
+  `--font-display` is back to Fraunces, so section headings, card titles, About,
+  the Ideal BulSU board and the admin screens all read as before. Only the home
+  hero title uses the new `--font-hero` token (`Marcellus`, one weight, same
+  `clamp(42px, 5.4vw, 64px)` size, same two-line break). `font-preview.html`
+  compares seven candidate faces on the real hero — Cinzel, Spectral, DM Serif
+  Display, Playfair Display, IBM Plex Serif and Fraunces — and whichever is
+  chosen is a one-line change. The check page's font request lives in that file
+  only; the shipped page loads Fraunces, Marcellus and IBM Plex.
 - **“Build Your Ideal BulSU” now looks the same everywhere — and the dashboard
   row is balanced.** The quick-access row held five tiles in a four-column grid,
   so *Track My Concern* sat alone on a second row. A sixth tile — Build Your
