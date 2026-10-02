@@ -7,6 +7,10 @@
  * standalone file for use in the page (osr-mark.svg), and keeps every file's
  * colour role explicit in one place.
  *
+ * Framing lives here too. A tab is square and this mark is not, so the script
+ * derives the square the mark sits in and writes it back into favicon.svg along
+ * with the rasters — one framing decision, applied to every file at once.
+ *
  *   node tools/make-tab-icons.mjs           # write the files
  *   node tools/make-tab-icons.mjs --check   # fail if the committed files differ
  *
@@ -51,31 +55,56 @@ const { default: sharp } = await import('sharp').catch(() => {
 });
 
 const svgSource = fs.readFileSync(path.join(siteDir, 'favicon.svg'), 'utf8');
-const viewBox = (svgSource.match(/viewBox="([^"]+)"/) || [])[1];
 const pathData = (svgSource.match(/<path[^>]*\sd="([^"]+)"/) || [])[1];
-if (!viewBox || !pathData) throw new Error('favicon.svg must expose a viewBox and one path');
-const [vx, vy, vw, vh] = viewBox.trim().split(/\s+/).map(Number);
+if (!pathData) throw new Error('favicon.svg must expose one path');
 
-/** The mark centred on a square canvas, spanning `fill` of its width. */
-function markSvg(size, { fill, tint, plate }) {
-  const frame = vw / fill;
-  const padding = (frame - vw) / 2;
-  const originX = vx - padding;
-  const originY = vy - padding;
-  const background = plate ? `<rect x="${originX}" y="${originY}" width="${frame}" height="${frame}" fill="${plate}"/>` : '';
+/** The mark's own tight box: the drawing's extents plus a hair of air, which is
+ *  the frame the page logo and the social card use, where the mark should fill
+ *  the space it is handed. Measured off the path itself, rasterised at 2048px:
+ *  the ink spans x 2.09–1021.40, y 0.58–681.47, so this box is that with ~7
+ *  units of air on every side.
+ *
+ *  A tab is square and this mark is not, so the tab gets a square frame derived
+ *  from this one. Each axis has to be centred on the mark separately: the first
+ *  version of this file worked out the padding its *width* needed and then used
+ *  that same number for the height, which pinned the mark to the top edge of
+ *  the icon and left a dead band of tab underneath it — the icon read as
+ *  sitting too high in every browser that used a raster, Safari and iOS
+ *  included. `boxFor` is the corrected framing, and it is also what favicon.svg
+ *  is written with, so the vector and the rasters cannot disagree about where
+ *  the mark sits. */
+const MARK = { x: -6, y: -6, w: 1036, h: 695 };
+const MARK_CENTRE = { x: MARK.x + MARK.w / 2, y: MARK.y + MARK.h / 2 };
+
+/** A square frame the mark spans `fill` of, centred on the mark on both axes. */
+function boxFor(fill) {
+  const side = MARK.w / fill;
+  return { x: MARK_CENTRE.x - side / 2, y: MARK_CENTRE.y - side / 2, w: side, h: side };
+}
+/** The tab frame. The mark keeps the size it has always had in the tab — 92% of
+ *  the icon's width — and now sits in the middle of it. */
+const TAB = boxFor(FILL);
+const num = value => String(Math.round(value * 1000) / 1000);
+const viewBoxOf = box => [box.x, box.y, box.w, box.h].map(num).join(' ');
+
+/** The mark in a frame, at whatever pixel size the caller needs. */
+function markSvg(size, box, { tint, plate }) {
+  const background = plate
+    ? `<rect x="${num(box.x)}" y="${num(box.y)}" width="${num(box.w)}" height="${num(box.h)}" fill="${plate}"/>`
+    : '';
   return Buffer.from(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="${originX} ${originY} ${frame} ${frame}">` +
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="${viewBoxOf(box)}">` +
       background +
       `<path fill="${tint}" fill-rule="evenodd" d="${pathData}"/>` +
     `</svg>`
   );
 }
 
-/** The mark at its natural 1036x695 proportions, for laying out on a card. */
+/** The mark at its natural proportions, for laying out on a card. */
 const markAtWidth = (width, tint) => {
-  const height = Math.round((width * vh) / vw);
+  const height = Math.round((width * MARK.h) / MARK.w);
   return Buffer.from(
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${vx} ${vy} ${vw} ${vh}">` +
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="${viewBoxOf(MARK)}">` +
       `<path fill="${tint}" fill-rule="evenodd" d="${pathData}"/>` +
     `</svg>`
   );
@@ -91,7 +120,7 @@ const OG_HEIGHT = 630;
 const OG_MARK_WIDTH = 560;
 async function socialCard() {
   const mark = await sharp(markAtWidth(OG_MARK_WIDTH, RED)).png().toBuffer();
-  const markHeight = Math.round((OG_MARK_WIDTH * vh) / vw);
+  const markHeight = Math.round((OG_MARK_WIDTH * MARK.h) / MARK.w);
   const rule = Buffer.from(
     `<svg xmlns="http://www.w3.org/2000/svg" width="${OG_WIDTH}" height="10"><rect width="${OG_WIDTH}" height="10" fill="${RED}"/></svg>`
   );
@@ -106,7 +135,7 @@ async function socialCard() {
     .toBuffer();
 }
 
-const raster = (size, options) => sharp(markSvg(size, options)).png({ compressionLevel: 9 }).toBuffer();
+const raster = (size, box, options) => sharp(markSvg(size, box, options)).png({ compressionLevel: 9 }).toBuffer();
 
 /** ICO is a small container: one header, one 16-byte entry per image, then the
  *  images themselves. Every browser that reads an .ico reads PNG payloads, so
@@ -142,7 +171,7 @@ const files = new Map();
 files.set(
   'osr-mark.svg',
   Buffer.from(
-    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vx} ${vy} ${vw} ${vh}" width="${vw}" height="${vh}" role="img" aria-label="Office of the Student Regent">` +
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${viewBoxOf(MARK)}" width="${MARK.w}" height="${MARK.h}" role="img" aria-label="Office of the Student Regent">` +
       `\n  <title>Office of the Student Regent — Bulacan State University</title>` +
       `\n  <!-- The OSR mark from osr-logo-original.png, the same traced path favicon.svg` +
       `\n       carries. Used in the page header, footer, menu, welcome card and admin` +
@@ -153,17 +182,37 @@ files.set(
   )
 );
 
+// The tab icon. favicon.svg is the drawing's source — the path and the
+// prefers-color-scheme rule are hand-written there — but its *frame* belongs to
+// this script, because the frame is what the rasters have to match. It is
+// rewritten here from the same square the PNGs are drawn in, so the vector and
+// the rasters can never disagree about how big the mark is or where it sits.
+const tabBox = viewBoxOf(TAB);
+files.set(
+  'favicon.svg',
+  Buffer.from(
+    svgSource
+      .replace(/viewBox="[^"]*"/, `viewBox="${tabBox}"`)
+      .replace(/width="[\d.]+" height="[\d.]+"/, `width="${num(TAB.w)}" height="${num(TAB.h)}"`)
+  )
+);
+
+// Safari, iOS and older clients read these instead of the vector. They are the
+// vector's own square frame, so a browser that picks a raster shows exactly the
+// same picture as one that picks the SVG.
 for (const size of [16, 32, 48]) {
-  files.set(`favicon-${size}.png`, await raster(size, { fill: FILL, tint: RED }));
+  files.set(`favicon-${size}.png`, await raster(size, TAB, { tint: RED }));
 }
+// iOS masks the corners and asks for air around the shape, so the home-screen
+// tile zooms the same frame out rather than drawing a different one.
 files.set(
   'apple-touch-icon.png',
-  await raster(180, { fill: TOUCH_FILL, tint: RED, plate: PAPER })
+  await raster(180, boxFor(TOUCH_FILL), { tint: RED, plate: PAPER })
 );
 files.set('og-image.png', await socialCard());
 files.set(
   'favicon.ico',
-  ico(await Promise.all([16, 32, 48].map(async size => ({ size, data: await raster(size, { fill: FILL, tint: RED }) }))))
+  ico(await Promise.all([16, 32, 48].map(async size => ({ size, data: await raster(size, TAB, { tint: RED }) }))))
 );
 
 let changed = 0;
