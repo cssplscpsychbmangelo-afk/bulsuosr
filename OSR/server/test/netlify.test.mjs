@@ -162,10 +162,12 @@ test('PostgreSQL-backed Netlify CMS', async t => {
     assert.equal(postgresSQL("SELECT '?' FROM announcements WHERE title=? -- ?"), "SELECT '?' FROM osr.announcements WHERE title=$1 -- ?");
     assert.match(postgresSQL('INSERT OR IGNORE INTO site_settings (key,value) VALUES (?,?)'), /osr.site_settings.*\$1,\$2.*ON CONFLICT DO NOTHING/);
   });
-  await t.test('build publishes the standalone admin page without a redirect loop', () => {
+  await t.test('build publishes the standalone admin page on its unguessable path only', () => {
     const redirects = fs.readFileSync(new URL('../../osr-website/_redirects', import.meta.url), 'utf8');
-    assert.match(redirects, /\/admin\s+\/admin\/index\.html\s+200!/);
-    assert.doesNotMatch(redirects, /\/admin\s+\/admin\/login\.html/);
+    // The dashboard moved off /admin: that address must not be served at all.
+    assert.match(redirects, /\/OSRAdminControl2026\s+\/OSRAdminControl2026\/index\.html\s+200!/);
+    assert.doesNotMatch(redirects, /^\/admin\b/m, 'the old /admin address must not be routed');
+    assert.doesNotMatch(redirects, /login\.html/);
     assert.doesNotMatch(redirects, /onrender|unavailable/);
   });
 });

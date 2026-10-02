@@ -8,6 +8,7 @@ OSR/server/.env
 OSR/server/db/*.db*
 OSR/server/uploads/
 
-# Admin static output is copied by the Netlify build.
+# Admin static output is copied by the Netlify build (folder name = ADMIN_PATH).
 OSR/osr-website/admin/
+OSR/osr-website/OSRAdminControl2026/
 .netlify/
