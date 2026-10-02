@@ -458,6 +458,64 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
 .more-menu__list a:hover,.more-menu__list button:hover{background:var(--paper)}
 .more-menu__list [data-archive]{color:var(--red-dark)}
 .topbar-brand{margin-right:auto}
+
+/* Students: concerns inbox + ratings */
+.tab-count{margin-left:auto;min-width:20px;padding:1px 7px;border-radius:999px;background:var(--red);color:var(--white);font:600 10.5px 'IBM Plex Mono',monospace;text-align:center}
+.inbox{display:grid;grid-template-columns:minmax(280px,.85fr) minmax(0,1.15fr);gap:14px;align-items:start}
+.inbox__list{display:grid;gap:10px;position:sticky;top:88px;max-height:calc(100vh - 110px);overflow:auto}
+.inbox__list .status-chips{margin-top:0}
+.inbox__search{width:100%;min-height:40px;border:1px solid var(--control);border-radius:8px;padding:8px 12px}
+.inbox__items{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.inbox__item{width:100%;display:grid;gap:3px;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:9px;background:var(--white);cursor:pointer}
+.inbox__item:hover{border-color:var(--ink-soft)}
+.inbox__item.is-active{border-color:var(--red);background:var(--red-soft)}
+.inbox__row{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.inbox__who{font-size:12.5px;font-weight:600}
+.inbox__snippet{font-size:12px;color:var(--stone);overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.inbox__date{font:500 10.5px 'IBM Plex Mono',monospace;color:var(--stone)}
+.inbox__detail{display:grid;gap:14px;min-width:0}
+.inbox__head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.inbox__code{font-size:12px;color:var(--red-dark);font-weight:600}
+.inbox__head h3{margin:2px 0 0}
+.inbox__facts{margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;padding:12px;border-radius:9px;background:var(--paper)}
+.inbox__facts dt{font:500 10px 'IBM Plex Mono',monospace;text-transform:uppercase;color:var(--stone)}
+.inbox__facts dd{margin:2px 0 0;font-size:13px;overflow-wrap:anywhere}
+.inbox__body h4{margin:0 0 4px;font:600 11px 'IBM Plex Mono',monospace;text-transform:uppercase;color:var(--red-dark)}
+.inbox__body p{margin:0 0 12px;white-space:pre-wrap;line-height:1.6}
+.inbox__reply{display:grid;gap:10px;padding-top:14px;border-top:1px solid var(--line)}
+.inbox__reply label{display:grid;gap:6px;font-weight:600;font-size:12px}
+.inbox__reply textarea{width:100%;min-height:120px;border:1px solid var(--control);border-radius:8px;padding:10px 12px;resize:vertical}
+.inbox__reply small{color:var(--stone);font-size:11px}
+.inbox__status{display:flex;gap:6px;flex-wrap:wrap}
+.status-radio{display:inline-flex!important;align-items:center;gap:6px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;cursor:pointer;font-weight:600}
+.status-radio:has(input:checked){border-color:var(--red);background:var(--red-soft);color:var(--red-dark)}
+.status-radio input{accent-color:var(--red)}
+.report-bar{display:flex;justify-content:space-between;align-items:flex-end;gap:14px;flex-wrap:wrap}
+.report-bar__range{display:flex;gap:10px;flex-wrap:wrap}
+.report-bar__range label{display:grid;gap:5px;font-weight:600;font-size:12px}
+.report-bar__range input,.report-bar__range select{min-height:40px;border:1px solid var(--control);border-radius:8px;padding:6px 10px;background:var(--white)}
+.report-bar__actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.rating-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:14px}
+.rating-stat{display:grid;gap:4px}
+.rating-stat span{font:600 10.5px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--stone)}
+.rating-stat b{font:600 28px/1.1 'Fraunces',Georgia,serif}
+.rating-stat b small{font-size:14px;color:var(--stone)}
+.rating-stat em{font-style:normal;font-size:12px;font-weight:600}
+.rating-stat__text{font-size:16px!important;overflow-wrap:anywhere}
+.rating-stat--hero{background:var(--red);border-color:var(--red);color:var(--white)}
+.rating-stat--hero span,.rating-stat--hero b small{color:#FFD5DC}
+.rating-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:14px;margin-top:14px}
+.rating-grid h3{margin-bottom:12px}
+.rating-bar{display:grid;grid-template-columns:30px minmax(0,1fr) 72px;gap:10px;align-items:center;margin-bottom:8px;font-weight:600;font-size:12.5px}
+.rating-bar__track{height:10px;border-radius:999px;background:var(--paper);overflow:hidden;border:1px solid var(--line)}
+.rating-bar__track span{display:block;height:100%;background:var(--red)}
+.rating-bar .mono{font-size:11px;color:var(--stone);text-align:right}
+.rating-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.rating-table th{text-align:left;font:600 10.5px 'IBM Plex Mono',monospace;text-transform:uppercase;color:var(--stone);padding:8px;border-bottom:1px solid var(--line)}
+.rating-table td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.stars{color:var(--red);letter-spacing:1px;white-space:nowrap}
+.stars span{color:var(--line)}
+@media(max-width:980px){.inbox,.rating-grid{grid-template-columns:minmax(0,1fr)}.inbox__list{position:static;max-height:none}.rating-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
@@ -570,6 +628,12 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
         <button class="tab" type="button" data-tab="calendar"><span class="tab-index">07</span><span>Calendar</span></button>
       </nav>
 
+      <p class="nav-label">Students</p>
+      <nav class="tabs" id="studentTabs" aria-label="Student submissions">
+        <button class="tab" type="button" data-tab="concerns"><span class="tab-index">◆</span><span>Concerns</span><span class="tab-count" id="concernsBadge" hidden></span></button>
+        <button class="tab" type="button" data-tab="ratings"><span class="tab-index">★</span><span>Service ratings</span></button>
+      </nav>
+
       <p class="nav-label">Administration</p>
       <nav class="tabs" id="adminTabs" aria-label="Administration sections">
         <button class="tab" type="button" data-tab="media"><span class="tab-index">08</span><span>Media library</span></button>
@@ -592,6 +656,8 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
         <button class="topbar-nav-link" type="button" data-tab="initiatives">Initiatives</button>
         <button class="topbar-nav-link" type="button" data-tab="resources">Resources</button>
         <button class="topbar-nav-link" type="button" data-tab="calendar">Calendar</button>
+        <button class="topbar-nav-link" type="button" data-tab="concerns">Concerns</button>
+        <button class="topbar-nav-link" type="button" data-tab="ratings">Ratings</button>
         <button class="topbar-nav-link" type="button" data-tab="media">Media</button>
         <button class="topbar-nav-link" type="button" data-tab="contact">Contact</button>
         <button class="topbar-nav-link" type="button" data-tab="about">About</button>
@@ -636,6 +702,8 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
       <section id="tab-initiatives" class="section" aria-label="Initiatives"></section>
       <section id="tab-resources" class="section" aria-label="Resources"></section>
       <section id="tab-calendar" class="section" aria-label="Calendar"></section>
+      <section id="tab-concerns" class="section" aria-label="Student concerns"></section>
+      <section id="tab-ratings" class="section" aria-label="Service ratings"></section>
       <section id="tab-media" class="section" aria-label="Media library"></section>
       <section id="tab-contact" class="section" aria-label="Contact details"></section>
       <section id="tab-about" class="section" aria-label="About OSR page"></section>
@@ -940,6 +1008,8 @@ const pageMeta = {
   initiatives: ['Content 05', 'Initiatives', 'Track student-centered work and its public status.', 'Add initiative', 'initiatives'],
   resources: ['Content 06', 'Resources', 'Keep useful documents and external links easy to find.', 'Add resource', 'resources'],
   calendar: ['Content 07', 'Calendar', 'Manage activities by hand, or keep them synced from the OSR Google Document.', 'Add event', 'calendar'],
+  concerns: ['Students', 'Concerns', 'Read student concerns, reply, and move each one through Received → In review → Responded → Closed. Students see your reply with their tracking code.', '', ''],
+  ratings: ['Students', 'Service ratings', 'Every “Rate the BulSU OSR” submission, with a one-click PDF summary for transparency.', '', ''],
   media: ['Administration 08', 'Media library', 'Manage uploaded files and externally hosted images.', 'Add media', 'media'],
   contact: ['Administration 09', 'Contact & details', 'Control the email, phone, office and social details shown on the public site.', '', ''],
   about: ['Administration 10', 'About OSR', 'Update the public About page: mandate, Student Regent, directors, vision and mission, office information, featured programs and official links.', '', ''],
@@ -1311,6 +1381,8 @@ async function renderTab(tab) {
   if (tab === 'contact') return renderContact();
   if (tab === 'about') return renderAbout();
   if (tab === 'pulse') return renderPulseData();
+  if (tab === 'concerns') return renderConcerns();
+  if (tab === 'ratings') return renderRatings();
   const module = modules[tab];
   const section = $(`#tab-${tab}`);
   section.innerHTML = `<div class="empty loading-state">Loading ${esc(module.label.toLowerCase())}</div>`;
@@ -2374,6 +2446,419 @@ async function renderAbout() {
   });
 }
 
+
+/* ── Student concerns inbox ───────────────────────────────────────────────── */
+const CONCERN_STATUSES = ['Received', 'In review', 'Responded', 'Closed'];
+let concernFilter = 'open';
+let concernOpenId = null;
+
+function concernBadge(rows) {
+  const badge = $('#concernsBadge');
+  if (!badge) return;
+  const waiting = rows.filter(row => !row.response && row.status !== 'Closed').length;
+  badge.hidden = !waiting;
+  badge.textContent = waiting;
+}
+function shortDate(value) {
+  if (!value) return '—';
+  const date = new Date(String(value).replace(' ', 'T') + (String(value).includes('Z') ? '' : 'Z'));
+  return isNaN(date) ? String(value).slice(0, 10) : date.toLocaleString('en-PH', { dateStyle: 'medium', timeStyle: 'short' });
+}
+const concernStatusClass = status => ({ Received: 'badge--amber', 'In review': 'badge--amber', Responded: 'badge--green', Closed: '' }[status] || '');
+
+async function renderConcerns() {
+  const section = $('#tab-concerns');
+  section.innerHTML = '<div class="empty loading-state">Loading concerns</div>';
+  let rows;
+  try { rows = await api('/api/concerns'); }
+  catch (error) {
+    section.innerHTML = `<div class="err show">Concerns could not be loaded: ${esc(error.message)} <button class="btn btn--ghost btn--sm" type="button" data-retry>Retry</button></div>`;
+    section.querySelector('[data-retry]').addEventListener('click', renderConcerns);
+    return;
+  }
+  concernBadge(rows);
+  const groups = {
+    open: ['Needs a reply', row => !row.response && row.status !== 'Closed'],
+    responded: ['Responded', row => Boolean(row.response) && row.status !== 'Closed'],
+    closed: ['Closed', row => row.status === 'Closed'],
+    all: ['All', () => true]
+  };
+  section.innerHTML = `
+    <div class="inbox">
+      <div class="inbox__list card">
+        <div class="status-chips" role="group" aria-label="Filter concerns">
+          ${Object.entries(groups).map(([key, [label, test]]) => `<button type="button" class="status-chip${key === concernFilter ? ' is-active' : ''}" data-concern-filter="${key}" aria-pressed="${key === concernFilter}">${label} <span>${rows.filter(test).length}</span></button>`).join('')}
+        </div>
+        <input type="search" class="inbox__search" placeholder="Search code, name, text" aria-label="Search concerns" data-concern-search>
+        <ul class="inbox__items" id="concernItems"></ul>
+      </div>
+      <div class="inbox__detail card" id="concernDetail"><div class="empty">Select a concern to read it and reply.</div></div>
+    </div>`;
+
+  const paintList = () => {
+    const query = section.querySelector('[data-concern-search]').value.toLowerCase();
+    const visible = rows.filter(groups[concernFilter][1]).filter(row => !query || [row.code, row.name, row.concern, row.category, row.campus].join(' ').toLowerCase().includes(query));
+    $('#concernItems').innerHTML = visible.length ? visible.map(row => `<li><button type="button" class="inbox__item${row.id === concernOpenId ? ' is-active' : ''}" data-concern-open="${esc(row.id)}">
+      <span class="inbox__row"><b class="mono">${esc(row.code)}</b><span class="badge ${concernStatusClass(row.status)}">${esc(row.status)}</span></span>
+      <span class="inbox__who">${row.anonymous ? 'Anonymous' : esc(row.name || '—')}${row.category ? ` · ${esc(row.category)}` : ''}</span>
+      <span class="inbox__snippet">${esc(String(row.concern).slice(0, 110))}</span>
+      <span class="inbox__date">${esc(shortDate(row.created_at))}</span>
+    </button></li>`).join('') : '<li class="empty">Nothing here. 🎉</li>';
+  };
+
+  const openDetail = id => {
+    const row = rows.find(item => item.id === id);
+    if (!row) return;
+    concernOpenId = id;
+    paintList();
+    $('#concernDetail').innerHTML = `
+      <header class="inbox__head">
+        <div><span class="mono inbox__code">${esc(row.code)}</span><h3>${row.anonymous ? 'Anonymous student' : esc(row.name || 'Student')}</h3></div>
+        <span class="badge ${concernStatusClass(row.status)}">${esc(row.status)}</span>
+      </header>
+      <dl class="inbox__facts">
+        <div><dt>Submitted</dt><dd>${esc(shortDate(row.created_at))}</dd></div>
+        ${row.student_number ? `<div><dt>Student no.</dt><dd>${esc(row.student_number)}</dd></div>` : ''}
+        ${row.email ? `<div><dt>Email</dt><dd><a href="mailto:${esc(row.email)}?subject=${encodeURIComponent('Your OSR concern ' + row.code)}">${esc(row.email)}</a></dd></div>` : ''}
+        ${row.campus ? `<div><dt>Campus</dt><dd>${esc(row.campus)}</dd></div>` : ''}
+        ${row.category ? `<div><dt>Type</dt><dd>${esc(row.category)}</dd></div>` : ''}
+      </dl>
+      <div class="inbox__body"><h4>Concern</h4><p>${esc(row.concern)}</p>${row.outcome ? `<h4>Desired outcome</h4><p>${esc(row.outcome)}</p>` : ''}</div>
+      <form class="inbox__reply" id="concernReply">
+        <label>Response the student will see on Track My Concern
+          <textarea name="response" rows="5" placeholder="Write a clear, factual reply. Saving a reply marks the concern as Responded.">${esc(row.response || '')}</textarea>
+        </label>
+        ${row.responded_at ? `<small>Last replied ${esc(shortDate(row.responded_at))}${row.responded_by ? ` by ${esc(row.responded_by)}` : ''}</small>` : ''}
+        <div class="inbox__status" role="group" aria-label="Status">
+          ${CONCERN_STATUSES.map(status => `<label class="status-radio"><input type="radio" name="status" value="${status}"${status === row.status ? ' checked' : ''}> ${status}</label>`).join('')}
+        </div>
+        <div class="err" role="alert"></div>
+        <div class="actions">
+          <button class="btn btn--red" type="submit">Save reply &amp; status</button>
+          <button class="btn btn--quiet btn--sm" type="button" data-concern-delete>Delete</button>
+        </div>
+      </form>`;
+    $('#concernReply').addEventListener('submit', async event => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(event.currentTarget));
+      if (data.response.trim() && data.status === 'Received') data.status = 'Responded';
+      const button = event.currentTarget.querySelector('[type="submit"]');
+      button.disabled = true; button.textContent = 'Saving';
+      try {
+        const updated = await api(`/api/concerns/${encodeURIComponent(row.id)}`, { method: 'PATCH', body: JSON.stringify(data) });
+        Object.assign(row, updated);
+        toast(`Saved. The student sees “${updated.status}” with code ${updated.code}.`);
+        concernBadge(rows);
+        renderConcernsCounts();
+        openDetail(row.id);
+      } catch (error) {
+        const err = $('#concernReply .err'); err.textContent = error.message; err.classList.add('show');
+        button.disabled = false; button.textContent = 'Save reply & status';
+      }
+    });
+    $('#concernDetail [data-concern-delete]').addEventListener('click', async () => {
+      if (!(await askConfirm('Delete this concern?', `${row.code} will be removed permanently and the student's tracking code will stop working.`, 'Delete concern'))) return;
+      try {
+        await api(`/api/concerns/${encodeURIComponent(row.id)}`, { method: 'DELETE' });
+        toast('Concern deleted.');
+        concernOpenId = null;
+        renderConcerns();
+      } catch (error) { toast(`Could not delete: ${error.message}`); }
+    });
+  };
+  const renderConcernsCounts = () => {
+    section.querySelectorAll('[data-concern-filter]').forEach(chip => { chip.querySelector('span').textContent = rows.filter(groups[chip.dataset.concernFilter][1]).length; });
+    paintList();
+  };
+
+  section.querySelector('[data-concern-search]').addEventListener('input', paintList);
+  section.querySelectorAll('[data-concern-filter]').forEach(chip => chip.addEventListener('click', () => {
+    concernFilter = chip.dataset.concernFilter;
+    section.querySelectorAll('[data-concern-filter]').forEach(other => { other.classList.toggle('is-active', other === chip); other.setAttribute('aria-pressed', other === chip); });
+    paintList();
+  }));
+  $('#concernItems').addEventListener('click', event => {
+    const item = event.target.closest('[data-concern-open]');
+    if (item) openDetail(item.dataset.concernOpen);
+  });
+  paintList();
+  if (concernOpenId && rows.some(row => row.id === concernOpenId)) openDetail(concernOpenId);
+}
+
+/* ── Service ratings + transparency PDF ───────────────────────────────────── */
+function ratingsSummary(rows) {
+  const total = rows.length;
+  const sum = rows.reduce((acc, row) => acc + Number(row.rating || 0), 0);
+  const dist = [5, 4, 3, 2, 1].map(star => ({ star, count: rows.filter(row => Number(row.rating) === star).length }));
+  const satisfied = rows.filter(row => Number(row.rating) >= 4).length;
+  const byKey = key => {
+    const map = new Map();
+    rows.forEach(row => {
+      const name = row[key] || 'Not stated';
+      const entry = map.get(name) || { name, count: 0, sum: 0, satisfied: 0 };
+      entry.count += 1; entry.sum += Number(row.rating || 0); if (Number(row.rating) >= 4) entry.satisfied += 1;
+      map.set(name, entry);
+    });
+    return [...map.values()].map(entry => ({ ...entry, avg: entry.sum / entry.count, pct: Math.round((entry.satisfied / entry.count) * 100) })).sort((a, b) => b.count - a.count);
+  };
+  return {
+    total,
+    avg: total ? sum / total : 0,
+    satisfiedPct: total ? Math.round((satisfied / total) * 100) : 0,
+    dist,
+    services: byKey('service'),
+    campuses: byKey('campus')
+  };
+}
+const ratingAdjective = avg => avg >= 4.5 ? 'Excellent' : avg >= 3.5 ? 'Very satisfactory' : avg >= 2.5 ? 'Satisfactory' : avg >= 1.5 ? 'Fair' : 'Poor';
+
+function ratingsInRange(rows, from, to) {
+  return rows.filter(row => {
+    const day = String(row.created_at || '').slice(0, 10);
+    return (!from || day >= from) && (!to || day <= to);
+  });
+}
+
+async function renderRatings() {
+  const section = $('#tab-ratings');
+  section.innerHTML = '<div class="empty loading-state">Loading service ratings</div>';
+  let rows;
+  try { rows = await api('/api/ratings'); }
+  catch (error) {
+    section.innerHTML = `<div class="err show">Ratings could not be loaded: ${esc(error.message)} <button class="btn btn--ghost btn--sm" type="button" data-retry>Retry</button></div>`;
+    section.querySelector('[data-retry]').addEventListener('click', renderRatings);
+    return;
+  }
+  const days = rows.map(row => String(row.created_at || '').slice(0, 10)).filter(Boolean).sort();
+  section.innerHTML = `
+    <div class="card report-bar">
+      <div class="report-bar__range">
+        <label>From<input type="date" data-from value="${esc(days[0] || '')}"></label>
+        <label>To<input type="date" data-to value="${esc(days[days.length - 1] || '')}"></label>
+        <label>Service<select data-service><option value="">All services</option>${[...new Set(rows.map(row => row.service))].map(service => `<option>${esc(service)}</option>`).join('')}</select></label>
+      </div>
+      <div class="report-bar__actions">
+        <label class="check"><input type="checkbox" data-comments checked> Include comments (no names)</label>
+        <button class="btn btn--red" type="button" data-pdf>Download PDF summary</button>
+      </div>
+    </div>
+    <div id="ratingsBody"></div>`;
+
+  const current = () => {
+    const service = section.querySelector('[data-service]').value;
+    return ratingsInRange(rows, section.querySelector('[data-from]').value, section.querySelector('[data-to]').value).filter(row => !service || row.service === service);
+  };
+  const paint = () => {
+    const list = current();
+    const sum = ratingsSummary(list);
+    const max = Math.max(1, ...sum.dist.map(item => item.count));
+    $('#ratingsBody').innerHTML = !list.length ? '<div class="empty">No ratings in this range yet. Students rate services from Student Help → Rate the BulSU OSR.</div>' : `
+      <div class="rating-stats">
+        <div class="card rating-stat rating-stat--hero"><span>Average rating</span><b>${sum.avg.toFixed(2)}<small> / 5</small></b><em>${ratingAdjective(sum.avg)}</em></div>
+        <div class="card rating-stat"><span>Responses</span><b>${sum.total}</b></div>
+        <div class="card rating-stat"><span>Satisfied (4–5★)</span><b>${sum.satisfiedPct}%</b></div>
+        <div class="card rating-stat"><span>Most rated</span><b class="rating-stat__text">${esc(sum.services[0]?.name || '—')}</b></div>
+      </div>
+      <div class="rating-grid">
+        <div class="card"><h3>Rating distribution</h3>
+          ${sum.dist.map(item => `<div class="rating-bar"><span>${item.star}★</span><span class="rating-bar__track"><span style="width:${(item.count / max) * 100}%"></span></span><span class="mono">${item.count} · ${sum.total ? Math.round((item.count / sum.total) * 100) : 0}%</span></div>`).join('')}
+        </div>
+        <div class="card"><h3>By service</h3>
+          <div class="table-wrap"><table class="rating-table"><thead><tr><th>Service</th><th>Responses</th><th>Average</th><th>Satisfied</th></tr></thead>
+          <tbody>${sum.services.map(item => `<tr><td>${esc(item.name)}</td><td>${item.count}</td><td>${item.avg.toFixed(2)}</td><td>${item.pct}%</td></tr>`).join('')}</tbody></table></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="section-head"><div><h3>All responses</h3><span class="mono">Names and student numbers are visible to administrators only — never printed in the PDF.</span></div></div>
+        <div class="table-wrap"><table class="rating-table"><thead><tr><th>Date</th><th>Student</th><th>Service</th><th>Rating</th><th>Comment</th><th></th></tr></thead>
+        <tbody>${list.map(row => `<tr><td class="mono">${esc(String(row.created_at).slice(0, 10))}</td><td><b>${esc(row.name)}</b><br><span class="mono">${esc(row.student_number)}</span>${row.campus ? ` · ${esc(row.campus)}` : ''}</td><td>${esc(row.service)}</td><td><span class="stars" aria-label="${row.rating} of 5">${'★'.repeat(row.rating)}<span>${'★'.repeat(5 - row.rating)}</span></span></td><td>${esc(row.feedback || '')}</td><td><button class="btn btn--quiet btn--sm" type="button" data-rating-delete="${esc(row.id)}" aria-label="Delete rating">Delete</button></td></tr>`).join('')}</tbody></table></div>
+      </div>`;
+  };
+  section.querySelectorAll('[data-from],[data-to],[data-service]').forEach(input => input.addEventListener('input', paint));
+  section.addEventListener('click', async event => {
+    const del = event.target.closest('[data-rating-delete]');
+    if (del) {
+      if (!(await askConfirm('Delete this rating?', 'It will be removed from the totals and future PDF summaries.', 'Delete rating'))) return;
+      try { await api(`/api/ratings/${encodeURIComponent(del.dataset.ratingDelete)}`, { method: 'DELETE' }); rows = rows.filter(row => row.id !== del.dataset.ratingDelete); toast('Rating deleted.'); paint(); }
+      catch (error) { toast(`Could not delete: ${error.message}`); }
+      return;
+    }
+    if (event.target.closest('[data-pdf]')) {
+      const list = current();
+      if (!list.length) return toast('There are no ratings in this range to summarize.');
+      const button = event.target.closest('[data-pdf]');
+      button.disabled = true; button.textContent = 'Preparing PDF…';
+      try {
+        await ratingsPDF(list, {
+          from: section.querySelector('[data-from]').value,
+          to: section.querySelector('[data-to]').value,
+          service: section.querySelector('[data-service]').value,
+          comments: section.querySelector('[data-comments]').checked
+        });
+      } catch (error) { toast(`PDF failed: ${error.message}`); }
+      finally { button.disabled = false; button.textContent = 'Download PDF summary'; }
+    }
+  });
+  paint();
+}
+
+async function loadJsPDF() {
+  if (window.jspdf?.jsPDF) return window.jspdf.jsPDF;
+  await new Promise((resolve, reject) => {
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js';
+    script.onload = resolve;
+    script.onerror = () => reject(new Error('the PDF library could not load — check the connection'));
+    document.head.appendChild(script);
+  });
+  return window.jspdf.jsPDF;
+}
+async function loadLogoDataURL() {
+  try {
+    const blob = await (await fetch('/osr-logo.png', { cache: 'force-cache' })).blob();
+    return await new Promise(resolve => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => resolve(null); reader.readAsDataURL(blob); });
+  } catch { return null; }
+}
+
+// Same red-and-white template as the public BulSU Pulse report, with the OSR logo.
+async function ratingsPDF(rows, options) {
+  const [JSPDF, logo] = await Promise.all([loadJsPDF(), loadLogoDataURL()]);
+  const sum = ratingsSummary(rows);
+  const doc = new JSPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight();
+  const RED = [166, 25, 46], INK = [17, 18, 20], STONE = [107, 101, 96], LINE = [233, 230, 225], PAPER = [247, 245, 242];
+  const fmt = day => day ? new Date(day + 'T00:00:00').toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+  const period = options.from || options.to ? `${fmt(options.from) || 'Start'} – ${fmt(options.to) || 'today'}` : 'All recorded ratings';
+
+  const header = () => {
+    doc.setFillColor(...RED); doc.rect(0, 0, W, 24, 'F');
+    if (logo) { doc.setFillColor(255, 255, 255); doc.roundedRect(9, 3, 18, 18, 2, 2, 'F'); doc.addImage(logo, 'PNG', 10, 4, 16, 16, 'osrlogo', 'FAST'); }
+    const x = logo ? 31 : 14;
+    doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(11.5);
+    doc.text('OFFICE OF THE STUDENT REGENT', x, 11);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(7);
+    doc.text('BULACAN STATE UNIVERSITY  •  BOARD OF REGENTS', x, 15.5);
+    doc.setFontSize(6.5); doc.text('Service Rating Summary — Transparency Report', W - 10, 13, { align: 'right' });
+  };
+  const footer = () => {
+    const pages = doc.internal.getNumberOfPages();
+    for (let page = 1; page <= pages; page += 1) {
+      doc.setPage(page);
+      doc.setDrawColor(...LINE); doc.line(10, H - 13, W - 10, H - 13);
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(...RED);
+      doc.text('Office of the Student Regent, Bulacan State University  •  Aggregated student ratings — no personal data published', 10, H - 8);
+      doc.setTextColor(...STONE); doc.text(`Page ${page} of ${pages}`, W - 10, H - 8, { align: 'right' });
+    }
+  };
+  let y = 0;
+  const ensure = need => { if (y + need > H - 18) { doc.addPage(); header(); y = 32; } };
+  const heading = label => { ensure(12); doc.setFont('helvetica', 'bold'); doc.setFontSize(9.5); doc.setTextColor(...INK); doc.text(label, 10, y); y += 2.5; doc.setDrawColor(...LINE); doc.line(10, y, W - 10, y); y += 5; };
+
+  header();
+  doc.setTextColor(...INK); doc.setFont('helvetica', 'bold'); doc.setFontSize(17);
+  doc.text('Rate the BulSU OSR — Results', 10, 35);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...STONE);
+  doc.text(`${period}${options.service ? `  •  ${options.service}` : ''}  •  Generated ${new Date().toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' })}`, 10, 40.5);
+  y = 46;
+
+  // Summary tiles
+  const tiles = [['AVERAGE RATING', `${sum.avg.toFixed(2)} / 5`, ratingAdjective(sum.avg)], ['RESPONSES', String(sum.total), 'verified students'], ['SATISFIED', `${sum.satisfiedPct}%`, 'rated 4 or 5'], ['SERVICES RATED', String(sum.services.length), `most: ${sum.services[0]?.name || '—'}`]];
+  const tw = (W - 20 - 9) / 4;
+  tiles.forEach(([label, value, note], index) => {
+    const x = 10 + index * (tw + 3);
+    doc.setFillColor(...(index === 0 ? RED : PAPER)); doc.setDrawColor(...(index === 0 ? RED : LINE));
+    doc.roundedRect(x, y, tw, 24, 2, 2, 'FD');
+    doc.setTextColor(...(index === 0 ? [255, 220, 226] : STONE)); doc.setFont('helvetica', 'bold'); doc.setFontSize(6.5); doc.text(label, x + 4, y + 6);
+    doc.setTextColor(...(index === 0 ? [255, 255, 255] : INK)); doc.setFontSize(15); doc.text(value, x + 4, y + 15);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(...(index === 0 ? [255, 220, 226] : STONE));
+    doc.text(doc.splitTextToSize(note, tw - 8)[0], x + 4, y + 20.5);
+  });
+  y += 33;
+
+  heading('Rating distribution');
+  const maxCount = Math.max(1, ...sum.dist.map(item => item.count));
+  sum.dist.forEach(item => {
+    ensure(8);
+    const pct = sum.total ? Math.round((item.count / sum.total) * 100) : 0;
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(8); doc.setTextColor(...INK);
+    doc.text(`${item.star} star${item.star > 1 ? 's' : ''}`, 10, y);
+    const bx = 32, bw = W - 72, by = y - 3.2;
+    doc.setFillColor(...PAPER); doc.setDrawColor(...LINE); doc.roundedRect(bx, by, bw, 4.2, 1, 1, 'FD');
+    const fill = (item.count / maxCount) * bw;
+    if (fill > 0.6) { doc.setFillColor(...RED); doc.roundedRect(bx, by, fill, 4.2, 1, 1, 'F'); }
+    doc.text(String(item.count), W - 26, y, { align: 'right' });
+    doc.setFont('helvetica', 'normal'); doc.setTextColor(...STONE); doc.text(`${pct}%`, W - 10, y, { align: 'right' });
+    y += 7.5;
+  });
+  y += 3;
+
+  const table = (title, columns, data) => {
+    heading(title);
+    const widths = columns.map(column => column[1]);
+    const xs = widths.reduce((acc, width, index) => { acc.push(index ? acc[index - 1] + widths[index - 1] : 10); return acc; }, []);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(...STONE);
+    columns.forEach(([label, , align], index) => doc.text(label, align === 'right' ? xs[index] + widths[index] - 2 : xs[index], y, { align: align || 'left' }));
+    y += 4;
+    data.forEach((cells, rowIndex) => {
+      ensure(7);
+      if (rowIndex % 2 === 0) { doc.setFillColor(...PAPER); doc.rect(10, y - 3.8, W - 20, 6, 'F'); }
+      doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(...INK);
+      cells.forEach((cell, index) => {
+        const align = columns[index][2];
+        const textValue = doc.splitTextToSize(String(cell), widths[index] - 3)[0];
+        doc.text(textValue, align === 'right' ? xs[index] + widths[index] - 2 : xs[index] + (index ? 0 : 1), y, { align: align || 'left' });
+      });
+      y += 6;
+    });
+    y += 4;
+  };
+  table('Results by service', [['Service', 86], ['Responses', 26, 'right'], ['Average', 26, 'right'], ['Satisfied (4–5)', 52, 'right']],
+    sum.services.map(item => [item.name, item.count, item.avg.toFixed(2), `${item.pct}%`]));
+  table('Responses by campus', [['Campus', 86], ['Responses', 26, 'right'], ['Average', 26, 'right'], ['Satisfied (4–5)', 52, 'right']],
+    sum.campuses.map(item => [item.name, item.count, item.avg.toFixed(2), `${item.pct}%`]));
+
+  if (options.comments) {
+    const comments = rows.filter(row => (row.feedback || '').trim()).slice(0, 40);
+    if (comments.length) {
+      heading(`Student comments (${comments.length}${rows.filter(row => (row.feedback || '').trim()).length > 40 ? ', most recent 40' : ''}) — names withheld`);
+      comments.forEach(row => {
+        const lines = doc.splitTextToSize(`“${row.feedback.trim()}”`, W - 60);
+        ensure(lines.length * 3.6 + 5);
+        doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(...RED);
+        doc.text(`${row.rating}/5`, 10, y);
+        doc.setTextColor(...STONE); doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5);
+        doc.text(doc.splitTextToSize(row.service, 30)[0], 18, y);
+        doc.setFontSize(7.5); doc.setTextColor(...INK);
+        doc.text(lines, 50, y);
+        y += lines.length * 3.6 + 2.5;
+      });
+      y += 3;
+    }
+  }
+
+  heading('Methodology & privacy');
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(...STONE);
+  [
+    'Ratings were submitted by students through the “Rate the BulSU OSR” form on the official OSR website.',
+    'Each submission required the student’s full name and student number, so every rating comes from an identifiable student. These identifiers are held by the OSR and are not included in this report.',
+    'Ratings use a 1–5 scale (5 = excellent, 1 = poor). “Satisfied” counts ratings of 4 or 5. Averages are simple means of all responses in the period.',
+    'Comments are reproduced as written, without names, and may be shortened in number for length. Ratings removed by an administrator (for example, duplicates or test entries) are excluded.',
+    'Results describe the students who chose to respond and are not a scientifically representative survey.'
+  ].forEach(line => { const split = doc.splitTextToSize(`•  ${line}`, W - 20); ensure(split.length * 3.3 + 1); doc.text(split, 10, y); y += split.length * 3.3 + 1.2; });
+
+  ensure(30); y += 10;
+  doc.setDrawColor(...INK);
+  [['Prepared by', 10], ['Noted by', W / 2 + 5]].forEach(([label, x]) => {
+    doc.line(x, y, x + 70, y);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(7.5); doc.setTextColor(...INK); doc.text(label, x, y + 4);
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(6.5); doc.setTextColor(...STONE); doc.text(label === 'Noted by' ? 'Student Regent, Bulacan State University' : 'Office of the Student Regent', x, y + 7.5);
+  });
+  footer();
+  const stamp = (options.from || 'start') + '_to_' + (options.to || new Date().toISOString().slice(0, 10));
+  doc.save(`OSR-Service-Rating-Summary_${stamp}.pdf`);
+  toast('PDF summary downloaded.');
+}
+
 /* ── BulSU Pulse data ─────────────────────────────────────────────────────── */
 let pulseSort = 'desc';
 
@@ -2525,6 +3010,7 @@ async function renderPulseData() {
 
 async function initAdmin() {
   showAdmin();
+  api('/api/concerns').then(concernBadge).catch(() => {});
   $('#guidePanel').hidden = true;
   const requested = location.hash.slice(1);
   await switchTab(pageMeta[requested] ? requested : 'overview', { focus: false });

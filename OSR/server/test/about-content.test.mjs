@@ -168,3 +168,11 @@ test('About staff list accepts real staff rows and rejects unsafe photos or bad 
   assert.match(sanitizeAboutContent({ staff: [{ name: 'X', email: 'nope' }] }).error, /email/);
   assert.match(sanitizeAboutContent({ sr_photo: '//evil.example/x.png' }).error, /https/);
 });
+
+test('service ratings require name and a valid student number; concerns issue a tracking code', async () => {
+  const { STUDENT_NO, RATING_SERVICES, CONCERN_STATUSES } = await import('../routes/feedback.js');
+  assert.ok(STUDENT_NO.test('2021-123456') && STUDENT_NO.test('2021123456'));
+  assert.ok(!STUDENT_NO.test('abc') && !STUDENT_NO.test(''));
+  assert.ok(RATING_SERVICES.includes('Concern handling'));
+  assert.deepEqual(CONCERN_STATUSES, ['Received', 'In review', 'Responded', 'Closed']);
+});

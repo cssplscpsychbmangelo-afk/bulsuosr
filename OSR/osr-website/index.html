@@ -1218,6 +1218,57 @@ img,svg{max-width:100%; height:auto}
   #page-about .ab-block--ink{padding:26px 20px}
   #page-about .ab-lede{font-size:17px}
 }
+
+/* ── Track my concern ── */
+.track-layout{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,1fr); gap:24px; align-items:start}
+.track-intro h2{margin:6px 0 8px; font:600 clamp(26px,3.6vw,36px)/1.1 "Fraunces",serif; letter-spacing:-0.02em}
+.track-intro > p{margin:0; max-width:56ch; color:var(--ink-2)}
+.track-form{margin:18px 0 14px; padding:16px; border:1px solid var(--line); border-top:4px solid var(--red); border-radius:var(--radius); background:var(--paper)}
+.track-form__row{display:flex; gap:8px; margin-top:6px}
+.track-form__row .input{flex:1; min-width:0; font:600 16px "IBM Plex Mono",monospace; letter-spacing:0.06em; text-transform:uppercase; border-radius:8px}
+.track-card{padding:18px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper)}
+.track-card--loading{color:var(--stone); font-size:13px}
+.track-card__label{display:block; font:600 10.5px "IBM Plex Mono",monospace; letter-spacing:0.08em; text-transform:uppercase; color:var(--stone)}
+.track-card__head{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; flex-wrap:wrap}
+.track-card__code{display:block; font:700 20px "IBM Plex Mono",monospace; letter-spacing:0.04em; margin-top:2px}
+.track-pill{font:600 11px "IBM Plex Mono",monospace; padding:5px 10px; border-radius:var(--radius-pill); white-space:nowrap}
+.track-pill--ok{background:var(--ok-bg); color:var(--ok); border:1px solid #9CCBAE}
+.track-pill--wait{background:var(--warn-bg); color:var(--warn); border:1px solid #E7C46A}
+.track-steps{list-style:none; margin:18px 0 6px; padding:0; display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); counter-reset:t}
+.track-steps li{position:relative; display:grid; justify-items:center; gap:6px; text-align:center; font-size:11.5px; color:var(--stone)}
+.track-steps li:before{content:""; position:absolute; top:7px; left:-50%; right:50%; height:2px; background:var(--line-2)}
+.track-steps li:first-child:before{display:none}
+.track-steps__dot{position:relative; z-index:1; width:16px; height:16px; border-radius:50%; background:var(--paper); border:2px solid var(--line-2)}
+.track-steps li.is-done, .track-steps li.is-current{color:var(--ink); font-weight:600}
+.track-steps li.is-done:before, .track-steps li.is-current:before{background:var(--red)}
+.track-steps li.is-done .track-steps__dot{background:var(--red); border-color:var(--red)}
+.track-steps li.is-current .track-steps__dot{border-color:var(--red); box-shadow:0 0 0 4px var(--red-3)}
+.track-meta{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin:14px 0 0}
+.track-meta dt{font:500 10px "IBM Plex Mono",monospace; text-transform:uppercase; letter-spacing:0.06em; color:var(--stone)}
+.track-meta dd{margin:2px 0 0; font-size:13px}
+.track-response{margin-top:14px; padding:14px; border-left:3px solid var(--ok); border-radius:8px; background:var(--ok-bg)}
+.track-response p{margin:6px 0 0; white-space:pre-wrap; line-height:1.6}
+.track-wait{margin:14px 0 0; padding:12px 14px; border-radius:8px; background:var(--paper-2); color:var(--ink-2); font-size:13px}
+.track-side{display:grid; gap:14px; padding:18px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper-2)}
+.track-side h3{margin:0; font:600 17px "Fraunces",serif}
+.track-saved{list-style:none; margin:0; padding:0; display:grid; gap:6px}
+.track-saved li{display:flex; gap:4px}
+.track-saved__open{flex:1; min-width:0; display:flex; justify-content:space-between; gap:8px; padding:9px 12px; border:1px solid var(--line); border-radius:8px; background:var(--paper); cursor:pointer; text-align:left}
+.track-saved__open b{font:600 12.5px "IBM Plex Mono",monospace}
+.track-saved__open span{font-size:11px; color:var(--stone); white-space:nowrap}
+.track-saved__open:hover{border-color:var(--red)}
+.track-saved__x{width:34px; border:1px solid var(--line); border-radius:8px; background:var(--paper); cursor:pointer; color:var(--stone)}
+.track-saved__empty{font-size:12.5px; color:var(--stone)}
+.track-legend h4{margin:0 0 6px; font-size:12px}
+.track-legend dl{margin:0; display:grid; gap:6px}
+.track-legend dt{font-weight:600; font-size:12.5px}
+.track-legend dd{margin:0; font-size:12px; color:var(--stone)}
+.track-issued{display:grid; gap:6px; padding:14px; border:1px solid #9CCBAE; border-radius:10px; background:var(--ok-bg)}
+.track-issued__label{font:600 10.5px "IBM Plex Mono",monospace; letter-spacing:0.08em; text-transform:uppercase; color:var(--ok)}
+.track-issued__code{font:700 22px "IBM Plex Mono",monospace; letter-spacing:0.05em; color:var(--ink)}
+.track-issued p{margin:0; font-size:12.5px; color:var(--ink-2)}
+@media(max-width:860px){ .track-layout{grid-template-columns:minmax(0,1fr)} }
+@media(max-width:480px){ .track-form__row{flex-direction:column} .track-steps li{font-size:10.5px} }
 </style>
 </head>
 <body>
@@ -1238,6 +1289,7 @@ img,svg{max-width:100%; height:auto}
       <a href="#board-meetings" data-nav>Board Meetings</a>
       <a href="#initiatives" data-nav>Initiatives</a>
       <a href="#resources" data-nav>Resources</a>
+      <a href="#track" data-nav>Track Concern</a>
       <div class="nav__actions">
         <button id="replayTourBtn" type="button" title="Guide" style="border:1px solid var(--line); background:white; color:var(--ink); border-radius:999px; padding:6px 10px; font:600 12px 'IBM Plex Mono',monospace; display:inline-flex; align-items:center; gap:6px; cursor:pointer">
           <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 12 a3.5 3.5 0 0 0 5 3.2"/><path d="M12 9v3h3"/></svg> Tour
@@ -1278,6 +1330,7 @@ img,svg{max-width:100%; height:auto}
       <a href="#initiatives" data-nav>Initiatives <span>→</span></a>
       <a href="#resources" data-nav>Resources <span>→</span></a>
       <a href="#help" data-nav>Student Help <span>→</span></a>
+      <a href="#track" data-nav>Track My Concern <span>→</span></a>
       <a href="#about" data-nav>About OSR <span>→</span></a>
       <a href="#ideal-bulsu" data-nav>Build Your Ideal BulSU <span>→</span></a>
       <a href="#academic-calendar" data-nav>Academic Calendar <span>→</span></a>
@@ -1358,6 +1411,10 @@ img,svg{max-width:100%; height:auto}
       <a href="#help" data-nav>
         <span class="quick__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.09 9a3 3 0 0 1 5.82 0c0 2-3 3-3 3"/><path d="M12 17h.01"/><circle cx="12" cy="12" r="10"/></svg></span>
         <span><b>Student Help</b><span class="sub">Raise a concern or contact the office.</span></span>
+      </a>
+      <a href="#track" data-nav>
+        <span class="quick__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
+        <span><b>Track My Concern</b><span class="sub">Check if the OSR has responded.</span></span>
       </a>
     </nav>
 
@@ -1907,13 +1964,19 @@ img,svg{max-width:100%; height:auto}
             </div>
             <div data-step="2" hidden>
               <div style="display:grid; gap:10px; margin-top:14px">
+                <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Type of concern
+                  <select class="select" name="category" style="border-radius:8px; width:100%; margin-top:5px">
+                    <option value="">Select a type</option>
+                    <option>Academic</option><option>Fees &amp; scholarships</option><option>Facilities</option><option>Student welfare</option><option>Policy / Board matter</option><option>Other</option>
+                  </select>
+                </label>
                 <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Concern <span style="color:var(--red)">*</span>
                   <textarea class="input" name="concern" required rows="4" style="border-radius:10px; margin-top:5px; width:100%" placeholder="Describe factually. Who, what, where, when."></textarea>
                 </label>
                 <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Desired outcome
                   <input class="input" name="outcome" style="border-radius:8px; margin-top:5px; width:100%" placeholder="What would help?"/>
                 </label>
-                <p class="small muted" style="margin:0">Attach files in production: add a file input connected to your storage. Demo saves text locally.</p>
+                <p class="small muted" style="margin:0">After you submit you get a tracking code. Use it on <a href="#track" data-nav>Track My Concern</a> to see when the OSR responds.</p>
               </div>
               <div class="row" style="margin-top:14px; justify-content:space-between">
                 <button class="btn btn--ghost" type="button" id="backStep1">Back</button>
@@ -1926,31 +1989,46 @@ img,svg{max-width:100%; height:auto}
                 <button class="btn btn--ghost" type="button" id="backStep2">Back</button>
                 <div class="row">
                   <button class="btn btn--ghost" type="reset" id="concernReset">Clear</button>
-                  <button class="btn btn--red" type="submit">Submit concern (demo)</button>
+                  <button class="btn btn--red" type="submit" id="concernSubmitBtn">Submit concern</button>
                 </div>
               </div>
-              <p class="small muted" style="margin:8px 0 0">Demo only. Does not send data until connected to your endpoint. Add consent text in production.</p>
+              <p class="small muted" style="margin:8px 0 0">By submitting, you agree that the OSR may use these details only to act on and respond to your concern.</p>
               <div id="concernFeedback" role="status" aria-live="polite" style="margin-top:8px"></div>
             </div>
           </form>
         </div>
         <div style="display:grid; gap:14px">
           <div class="about-card" id="feedbackFormCard" style="border:1px solid var(--line); border-left:4px solid var(--red)">
-            <h3 style="display:flex; align-items:center; gap:8px"><span style="background:var(--red); color:white; font:700 10px 'IBM Plex Mono',monospace; padding:3px 7px; border-radius:999px; letter-spacing:.05em">IV. FEEDBACK</span> Feedback Form</h3>
-            <p class="small muted" style="margin:6px 0 0; line-height:1.6">Share feedback and suggestions regarding OSR services. Build by default — no name or student number required.</p>
+            <h3 style="display:flex; align-items:center; gap:8px"><span style="background:var(--red); color:white; font:700 10px 'IBM Plex Mono',monospace; padding:3px 7px; border-radius:999px; letter-spacing:.05em">IV. FEEDBACK</span> Rate the BulSU OSR</h3>
+            <p class="small muted" style="margin:6px 0 0; line-height:1.6">Rate an OSR service. Your name and student number are required so each rating comes from a real student; they are kept private and never published.</p>
             <form id="helpFeedbackForm" style="display:grid; gap:10px; margin-top:12px" novalidate>
-              <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Service <span class="small muted" style="text-transform:none; letter-spacing:0; font:400 10px 'Instrument Sans',sans-serif; color:var(--muted)">— choose one</span>
-                <select class="select" name="service" style="border-radius:8px; width:100%; margin-top:5px">
+              <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr)); gap:10px">
+                <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Full name <span style="color:var(--red)">*</span>
+                  <input class="input" name="fb_name" required autocomplete="name" style="border-radius:8px; margin-top:5px; width:100%" placeholder="Juan D. Dela Cruz"/>
+                </label>
+                <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Student number <span style="color:var(--red)">*</span>
+                  <input class="input" name="fb_student_number" required inputmode="numeric" autocomplete="off" style="border-radius:8px; margin-top:5px; width:100%" placeholder="2021-123456"/>
+                </label>
+              </div>
+              <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Campus
+                <select class="select" name="fb_campus" style="border-radius:8px; width:100%; margin-top:5px">
+                  <option value="">Select campus</option>
+                  <option>Main - Malolos</option><option>Bustos</option><option>Sarmiento</option><option>Meneses</option><option>San Rafael</option><option>Hagonoy</option><option>Other</option>
+                </select>
+              </label>
+              <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Service <span class="small muted" style="text-transform:none; letter-spacing:0; font:400 10px 'Instrument Sans',sans-serif; color:var(--muted)">— choose one</span> <span style="color:var(--red)">*</span>
+                <select class="select" name="service" required style="border-radius:8px; width:100%; margin-top:5px">
                   <option value="">Select service</option>
                   <option>Free Printing Services</option>
                   <option>Scholarships / Endorsements</option>
                   <option>Medical Mission / Dialogues</option>
                   <option>Consultation Caravan</option>
                   <option>Board Updates / Advisories</option>
+                  <option>Concern handling</option>
                   <option>Other OSR service</option>
                 </select>
               </label>
-              <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Rating
+              <label style="font:600 11px 'IBM Plex Mono',monospace; letter-spacing:0.06em; text-transform:uppercase">Rating <span style="color:var(--red)">*</span> <span class="small muted" style="text-transform:none; letter-spacing:0; font:400 10px 'Instrument Sans',sans-serif">— 5 is excellent, 1 is poor</span>
                 <div style="display:flex; gap:6px; margin-top:6px" role="radiogroup" aria-label="Rating">
                   <label style="flex:1; border:1px solid var(--line); border-radius:999px; padding:8px 6px; text-align:center; cursor:pointer; font:600 12px 'Instrument Sans',sans-serif"><input type="radio" name="rating" value="5" style="accent-color:var(--red)"/> 5</label>
                   <label style="flex:1; border:1px solid var(--line); border-radius:999px; padding:8px 6px; text-align:center; cursor:pointer; font:600 12px 'Instrument Sans',sans-serif"><input type="radio" name="rating" value="4" style="accent-color:var(--red)"/> 4</label>
@@ -1966,7 +2044,7 @@ img,svg{max-width:100%; height:auto}
                 <input class="input" name="fb_email" type="email" style="border-radius:8px; margin-top:5px; width:100%" placeholder="name@bulsu.edu.ph"/>
               </label>
               <div class="row" style="justify-content:flex-end; margin-top:2px">
-                <button class="btn btn--red" type="submit" style="border-radius:999px">Send feedback</button>
+                <button class="btn btn--red" type="submit" style="border-radius:999px">Send rating</button>
               </div>
               <div id="helpFeedbackMsg" role="status" aria-live="polite" class="small muted"></div>
             </form>
@@ -2197,6 +2275,42 @@ img,svg{max-width:100%; height:auto}
           </div>
         </div>
       </section>
+    </div>
+  </section>
+
+  <!-- TRACK MY CONCERN -->
+  <section class="page" id="page-track" aria-labelledby="trackTitle">
+    <div class="section section--first">
+      <a href="#home" class="btn btn--ghost btn--sm" style="margin-bottom:12px; display:inline-flex; align-items:center; gap:6px; font-size:12px; border-color:var(--line)"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg> Back to home</a>
+      <div class="track-layout">
+        <div class="track-intro">
+          <div class="eyebrow">Student Help</div>
+          <h2 id="trackTitle">Track my concern</h2>
+          <p>Enter the tracking code you got after submitting a concern. You'll see whether the OSR has responded, and read the response here.</p>
+          <form class="track-form" id="trackForm" role="search" aria-label="Find a concern by tracking code">
+            <label for="trackCode" class="track-card__label">Tracking code</label>
+            <div class="track-form__row">
+              <input id="trackCode" class="input" autocomplete="off" spellcheck="false" placeholder="OSR-ABCD-2345" maxlength="20"/>
+              <button class="btn btn--red" type="submit">Check status</button>
+            </div>
+          </form>
+          <div id="trackResult" aria-live="polite"></div>
+        </div>
+        <aside class="track-side">
+          <h3>Saved on this device</h3>
+          <ul class="track-saved" id="trackSaved"></ul>
+          <div class="track-legend">
+            <h4>What the steps mean</h4>
+            <dl>
+              <div><dt>Received</dt><dd>Your concern is in the OSR inbox.</dd></div>
+              <div><dt>In review</dt><dd>Someone at the office is looking into it.</dd></div>
+              <div><dt>Responded</dt><dd>The OSR has posted a reply — read it above.</dd></div>
+              <div><dt>Closed</dt><dd>The concern is resolved or referred.</dd></div>
+            </dl>
+          </div>
+          <a class="btn btn--ghost btn--block" href="#help" data-nav data-help="concern">Raise a new concern</a>
+        </aside>
+      </div>
     </div>
   </section>
 
@@ -2746,7 +2860,7 @@ $("#dashSavedBtn")?.addEventListener("click", ()=>{
 });
 
 
-const pages={"home":"page-home","announcements":"page-announcements","board-meetings":"page-board-meetings","initiatives":"page-initiatives","resources":"page-resources","help":"page-help","about":"page-about","search":"page-search","ideal-bulsu":"page-ideal-bulsu","academic-calendar":"page-academic-calendar"};
+const pages={"home":"page-home","announcements":"page-announcements","board-meetings":"page-board-meetings","initiatives":"page-initiatives","resources":"page-resources","help":"page-help","about":"page-about","search":"page-search","ideal-bulsu":"page-ideal-bulsu","academic-calendar":"page-academic-calendar","track":"page-track"};
 function setRoute(hash){
   const key=(hash||location.hash||"#home").replace("#","").split("?")[0].split("/")[0] || "home";
   const pageId=pages[key]||pages.home;
@@ -2938,23 +3052,135 @@ function updateAnonState(){
 }
 $("#concernAnon")?.addEventListener("change", ()=>{ updateAnonState(); const fd=new FormData($("#concernForm")); safeSet("osr-concern", JSON.stringify(Object.fromEntries(fd.entries()))); });
 
-$("#concernForm").addEventListener("submit", e=>{
+$("#concernForm").addEventListener("submit", async e=>{
   e.preventDefault();
-  const fd=new FormData(e.target);
+  const form=e.target;
+  const fd=new FormData(form);
   const isAnon = $("#concernAnon")?.checked;
-  if(!fd.get("concern")?.trim()){
-    $("#concernFeedback").innerHTML=`<div class="error" role="alert">Please describe your concern.</div>`; toast("Describe your concern"); return;
+  const fail=(msg)=>{ $("#concernFeedback").innerHTML=`<div class="error" role="alert">${escapeHtml(msg)}</div>`; toast(msg); };
+  if(!fd.get("concern")?.trim()) return fail("Please describe your concern.");
+  if(!isAnon && (!fd.get("name")?.trim()||!fd.get("email")?.trim())) return fail("Please complete name and email — or submit anonymously.");
+  if(fd.get("email")?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fd.get("email").trim())) return fail("Enter a valid email or leave it blank if anonymous.");
+  const button=$("#concernSubmitBtn");
+  button.disabled=true; button.textContent="Submitting…";
+  try{
+    const response=await fetch("/api/concerns",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({
+      anonymous:!!isAnon, name:fd.get("name")||"", studentNumber:fd.get("studentNumber")||"", email:fd.get("email")||"",
+      campus:fd.get("campus")||"", category:fd.get("category")||"", concern:fd.get("concern")||"", outcome:fd.get("outcome")||""
+    })});
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok || !result.code) throw new Error(result.error||"The concern could not be sent. Please try again.");
+    trackRemember(result.code);
+    $("#concernFeedback").innerHTML=`<div class="track-issued" role="status">
+      <span class="track-issued__label">Your tracking code</span>
+      <span class="track-issued__code">${escapeHtml(result.code)}</span>
+      <p>Save this code. It is the only way to check your concern if you submitted anonymously. It is also saved on this device.</p>
+      <div class="row"><button class="btn btn--sm btn--ghost" type="button" data-copy-code="${escapeHtml(result.code)}">Copy code</button><a class="btn btn--sm btn--red" href="#track?code=${encodeURIComponent(result.code)}">Track it</a></div>
+    </div>`;
+    toast("Concern submitted — tracking code "+result.code);
+    safeRemove("osr-concern");
+    form.reset(); updateAnonState();
+    document.querySelectorAll("#concernForm [data-step]").forEach(el=> el.hidden = el.dataset.step!=="3");
+  }catch(error){
+    fail(error.message);
+  }finally{
+    button.disabled=false; button.textContent="Submit concern";
   }
-  if(!isAnon && (!fd.get("name")?.trim()||!fd.get("email")?.trim())){
-    $("#concernFeedback").innerHTML=`<div class="error" role="alert">Please complete name and email — or submit anonymously.</div>`; toast("Complete required fields"); return;
+});
+document.addEventListener("click", e=>{
+  const copy=e.target.closest("[data-copy-code]");
+  if(!copy) return;
+  navigator.clipboard?.writeText(copy.dataset.copyCode).then(()=>toast("Tracking code copied"), ()=>toast(copy.dataset.copyCode));
+});
+
+/* ── Track my concern ─────────────────────────────────────────────────────── */
+const TRACK_KEY="osr-tracked-concerns";
+function trackSaved(){ try{ const list=JSON.parse(safeGet(TRACK_KEY,"[]")); return Array.isArray(list)?list:[]; }catch{ return []; } }
+function trackRemember(code){ const list=trackSaved().filter(item=>item.code!==code); list.unshift({code, saved:new Date().toISOString()}); safeSet(TRACK_KEY, JSON.stringify(list.slice(0,10))); renderTrackSaved(); }
+function trackForget(code){ safeSet(TRACK_KEY, JSON.stringify(trackSaved().filter(item=>item.code!==code))); renderTrackSaved(); }
+const TRACK_STEPS=["Received","In review","Responded","Closed"];
+function trackDate(value){ if(!value) return ""; const d=new Date(String(value).replace(" ","T")+(String(value).includes("Z")?"":"Z")); return isNaN(d)?"":d.toLocaleString("en-PH",{dateStyle:"medium", timeStyle:"short"}); }
+async function trackLookup(code){
+  const out=document.getElementById("trackResult");
+  if(!out) return;
+  const clean=String(code||"").trim();
+  if(!clean){ out.innerHTML=`<div class="error" role="alert">Enter the tracking code you received, e.g. OSR-ABCD-2345.</div>`; return; }
+  out.innerHTML=`<div class="track-card track-card--loading">Checking ${escapeHtml(clean)}…</div>`;
+  try{
+    const response=await fetch(`/api/concerns/track/${encodeURIComponent(clean)}`,{headers:{Accept:"application/json"},cache:"no-store"});
+    const data=await response.json().catch(()=>({}));
+    if(!response.ok) throw new Error(data.error||"Lookup failed. Try again.");
+    const at=Math.max(0, TRACK_STEPS.indexOf(data.status));
+    const responded=data.responded;
+    out.innerHTML=`<article class="track-card">
+      <header class="track-card__head">
+        <div><span class="track-card__label">Tracking code</span><b class="track-card__code">${escapeHtml(data.code)}</b></div>
+        <span class="track-pill ${responded?"track-pill--ok":"track-pill--wait"}">${responded?"Responded":"Not yet responded"}</span>
+      </header>
+      <ol class="track-steps" aria-label="Progress">
+        ${TRACK_STEPS.map((step,i)=>`<li class="${i<at?"is-done":i===at?"is-current":""}"><span class="track-steps__dot" aria-hidden="true"></span><span>${step}</span></li>`).join("")}
+      </ol>
+      <dl class="track-meta">
+        <div><dt>Submitted</dt><dd>${escapeHtml(trackDate(data.submitted_at)||"—")}</dd></div>
+        <div><dt>Last update</dt><dd>${escapeHtml(trackDate(data.updated_at)||"—")}</dd></div>
+        ${data.category?`<div><dt>Type</dt><dd>${escapeHtml(data.category)}</dd></div>`:""}
+        ${data.campus?`<div><dt>Campus</dt><dd>${escapeHtml(data.campus)}</dd></div>`:""}
+      </dl>
+      ${responded?`<div class="track-response"><span class="track-card__label">Response from the OSR${data.responded_at?` · ${escapeHtml(trackDate(data.responded_at))}`:""}</span><p>${escapeHtml(data.response)}</p></div>`
+        :`<p class="track-wait">The OSR has received your concern and has not posted a response yet. Concerns are reviewed within office hours — check back here anytime.</p>`}
+    </article>`;
+    if(!trackSaved().some(item=>item.code===data.code)) trackRemember(data.code);
+  }catch(error){
+    out.innerHTML=`<div class="error" role="alert">${escapeHtml(error.message)}</div>`;
   }
-  if(fd.get("email")?.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fd.get("email").trim())){
-    $("#concernFeedback").innerHTML=`<div class="error" role="alert">Enter a valid email or leave blank if anonymous.</div>`; toast("Check email"); return;
-  }
-  $("#concernFeedback").innerHTML=`<div class="ok" role="status"><b>Demo received.</b> In production this would be sent to the OSR endpoint. Not transmitted in demo. The Office triages during office hours.</div>`;
-  toast("Concern submitted — demo only");
-  safeRemove("osr-concern");
-  setTimeout(()=>{ e.target.reset(); updateAnonState(); setConcernStep(1); }, 900);
+}
+function renderTrackSaved(){
+  const host=document.getElementById("trackSaved");
+  if(!host) return;
+  const list=trackSaved();
+  host.innerHTML=list.length?list.map(item=>`<li><button type="button" class="track-saved__open" data-track-open="${escapeHtml(item.code)}"><b>${escapeHtml(item.code)}</b><span>Saved ${escapeHtml(new Date(item.saved).toLocaleDateString("en-PH",{dateStyle:"medium"}))}</span></button><button type="button" class="track-saved__x" data-track-forget="${escapeHtml(item.code)}" aria-label="Remove ${escapeHtml(item.code)} from this device">×</button></li>`).join("")
+    :`<li class="track-saved__empty">Concerns you submit on this device appear here automatically.</li>`;
+}
+document.getElementById("trackForm")?.addEventListener("submit", e=>{ e.preventDefault(); trackLookup(document.getElementById("trackCode").value); });
+document.addEventListener("click", e=>{
+  const open=e.target.closest("[data-track-open]");
+  if(open){ document.getElementById("trackCode").value=open.dataset.trackOpen; trackLookup(open.dataset.trackOpen); return; }
+  const forget=e.target.closest("[data-track-forget]");
+  if(forget) trackForget(forget.dataset.trackForget);
+});
+function trackFromHash(){
+  const m=location.hash.match(/^#track\?code=([A-Za-z0-9-]+)/);
+  if(m){ const code=decodeURIComponent(m[1]); const input=document.getElementById("trackCode"); if(input) input.value=code; trackLookup(code); }
+}
+window.addEventListener("hashchange", trackFromHash);
+window.addEventListener("DOMContentLoaded", ()=>{ renderTrackSaved(); trackFromHash(); });
+renderTrackSaved();
+
+/* ── Rate the OSR (name + student number required) ───────────────────────── */
+document.getElementById("helpFeedbackForm")?.addEventListener("submit", async e=>{
+  e.preventDefault();
+  const form=e.target, fd=new FormData(form), msg=document.getElementById("helpFeedbackMsg");
+  const fail=text=>{ msg.innerHTML=`<span class="error" role="alert">${escapeHtml(text)}</span>`; toast(text); };
+  const name=(fd.get("fb_name")||"").trim(), sn=(fd.get("fb_student_number")||"").trim();
+  if(name.length<2) return fail("Your full name is required to rate OSR services.");
+  if(!sn) return fail("Your student number is required to rate OSR services.");
+  if(!/^\d{4}-?\d{4,7}$/.test(sn)) return fail("Student number should look like 2021-123456.");
+  if(!fd.get("service")) return fail("Choose the service you are rating.");
+  if(!fd.get("rating")) return fail("Choose a rating from 1 to 5.");
+  if(!(fd.get("feedback")||"").trim()) return fail("Add a short comment about the service.");
+  const button=form.querySelector('[type="submit"]');
+  button.disabled=true; button.textContent="Sending…";
+  try{
+    const response=await fetch("/api/ratings",{method:"POST",headers:{"Content-Type":"application/json",Accept:"application/json"},body:JSON.stringify({
+      name, studentNumber:sn, campus:fd.get("fb_campus")||"", service:fd.get("service"), rating:Number(fd.get("rating")), feedback:fd.get("feedback")||"", email:fd.get("fb_email")||""
+    })});
+    const result=await response.json().catch(()=>({}));
+    if(!response.ok) throw new Error(result.error||"Your rating could not be sent. Please try again.");
+    msg.innerHTML=`<span class="ok" role="status">Thank you. Your rating was recorded and will be included in the OSR's published service summary (names and student numbers are never published).</span>`;
+    toast("Rating sent — thank you");
+    form.reset();
+  }catch(error){ fail(error.message); }
+  finally{ button.disabled=false; button.textContent="Send rating"; }
 });
 // Shared contact details — defaults below; the admin CMS (Settings → Website
 // settings) can override them at runtime via /api/settings/public.
