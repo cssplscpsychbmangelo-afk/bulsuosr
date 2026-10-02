@@ -8,11 +8,29 @@
 <meta name="description" content="Official record of the Office of the Student Regent, Bulacan State University. Verified announcements, Board Meeting archive, initiatives, resources, and student help."/>
 <meta property="og:title" content="Office of the Student Regent - Bulacan State University"/>
 <meta property="og:description" content="Student representation in the Board of Regents. Verified records, not marketing."/>
+<meta property="og:type" content="website"/>
+<!-- The card a shared link shows. It is the mark on the site's own paper, with no
+     lettering baked in: every unfurler prints the title and description above next
+     to it, and type inside the picture would only duplicate that in whatever font
+     the reader's platform substitutes. Built from the same traced path as the tab
+     icon and the page logo (tools/make-tab-icons.mjs). -->
+<meta property="og:image" content="/og-image.png"/>
+<meta property="og:image:width" content="1200"/>
+<meta property="og:image:height" content="630"/>
+<meta property="og:image:alt" content="The OSR mark — Office of the Student Regent, Bulacan State University"/>
+<meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="Office of the Student Regent - Bulacan State University"/>
+<meta name="twitter:description" content="Student representation in the Board of Regents. Verified records, not marketing."/>
+<meta name="twitter:image" content="/og-image.png"/>
 <meta name="theme-color" content="#A6192E"/>
 <meta name="format-detection" content="telephone=no"/>
-<!-- Tab identity: a cream mark on its own maroon plate. The flat logo washed
-     out on dark and tinted browser chrome, so the icon now carries its own
-     background and stays legible in light, dark, and high-contrast setups. -->
+<!-- Tab identity: the real OSR mark, not a plate with a shrunken logo on it.
+     favicon.svg is the original logo traced to one vector path, and it recolours
+     itself for the tab it lands on — institutional red on light browser chrome,
+     a light tint of the same red on dark. Browsers without an SVG favicon
+     (Safari, iOS, older clients) fall back to the ICO and PNGs, which are
+     rasterised from that same path by tools/make-tab-icons.mjs. -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48"/>
 <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32"/>
 <link rel="icon" type="image/png" href="/favicon-16.png" sizes="16x16"/>
@@ -75,6 +93,12 @@ img{max-width:100%}
 .brand__text{line-height:1.12; max-width:250px; min-width:0}
 .brand__text b{display:block; font-size:12.5px; letter-spacing:0.015em; font-weight:700; overflow-wrap:anywhere}
 .brand__text span{display:block; font-size:10.5px; color:var(--stone); font-weight:500; letter-spacing:0.025em; text-transform:uppercase; overflow-wrap:anywhere}
+/* The OSR mark, not the full stacked lockup: at 34px the lockup's wordmark is an
+   illegible smudge, while the mark is the device people recognise. One file,
+   generated from the same vector path as the tab icon, always institutional red. */
+.osr-mark{display:block; flex:0 0 auto; width:auto; height:34px}
+.osr-mark--sm{height:30px}
+.osr-mark--footer{height:32px}
 .nav{margin-left:auto; display:flex; align-items:center; gap:5px; min-width:0; flex:0 1 auto}
 .nav a{padding:6px 10px; font-size:12.5px; line-height:1.3; font-weight:500; color:var(--ink-2); border-radius:6px; border:1px solid transparent; white-space:nowrap; transition:background .15s, border-color .15s, color .15s}
 .nav a[aria-current="page"]{background:var(--ink); color:white; border-color:var(--ink)}
@@ -137,6 +161,8 @@ img{max-width:100%}
 @media(max-width:380px){
   .header__inner{padding:8px 12px}
   .brand img{width:36px !important; height:36px !important}
+  /* The mark is wider than it is tall, so a square box would shrink it. */
+  .brand .osr-mark{width:auto !important; height:28px !important}
   .brand__text{max-width:170px}
   .brand__text b{font-size:10.5px; line-height:1.15}
   .brand__text span{font-size:8.5px; line-height:1.2; letter-spacing:0}
@@ -642,73 +668,6 @@ img,svg{max-width:100%; height:auto}
 .feed__item:hover{transform:translateY(-1px)}
 
 
-/* ===== HERO UPGRADE — spacious, special, institutional ===== */
-.hero-wrap{position:relative; margin:0 -16px; padding:0 16px; background:#fff; border-bottom:1px solid var(--line); overflow:hidden;
-  --gx:50%; --gy:0px}
-@media(max-width:640px){.hero-wrap{margin:0 -14px; padding:0 14px}}
-.hero{padding:56px 0 44px; gap:48px; align-items:start; min-height:380px}
-@media(max-width:960px){.hero{padding:40px 0 32px; gap:28px; min-height:auto}}
-.hero:before{display:none}
-/* Clean paper. The old hero stacked a grey wash, a pink grid and a masked
-   fade on top of each other, which is what made it look muddy. Now it is one
-   warm wash behind the copy plus seal line-work in the corner: line, not dirt. */
-.hero-wrap:before{content:""; position:absolute; inset:0; pointer-events:none; background:
-  radial-gradient(720px 320px at 12% -8%, rgba(166,25,46,0.055), rgba(166,25,46,0) 64%),
-  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 214px, rgba(166,25,46,0.075) 214px 215px, rgba(166,25,46,0) 215px),
-  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 290px, rgba(166,25,46,0.05) 290px 291px, rgba(166,25,46,0) 291px),
-  radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 366px, rgba(166,25,46,0.032) 366px 367px, rgba(166,25,46,0) 367px)}
-.hero-wrap:after{content:""; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg, var(--red) 0%, #C41E3A 46%, rgba(166,25,46,0.22) 100%)}
-/* Depth that answers the pointer: a soft light that travels with the cursor.
-   Pure decoration — it is inert for touch, keyboard and reduced motion. */
-.hero__fx{position:absolute; inset:0; overflow:hidden; pointer-events:none}
-.hero__glow{position:absolute; left:-410px; top:-300px; width:820px; height:600px; transform:translate3d(var(--gx), var(--gy), 0);
-  background:radial-gradient(circle, rgba(166,25,46,0.10), rgba(166,25,46,0) 66%); opacity:0; transition:opacity .6s var(--ease)}
-.hero-wrap.is-pointing .hero__glow{opacity:1}
-.hero__kicker{padding:7px 12px; font-size:10.5px; letter-spacing:0.12em; background:white; border-color:var(--line); box-shadow:0 1px 0 rgba(0,0,0,0.03); backdrop-filter:blur(4px)}
-/* A slightly smaller display size with a balanced two-line break keeps the
-   title from crowding the lead, and both columns now end on the same line. */
-.hero__title{font-size:clamp(38px, 5vw, 58px); line-height:0.9; letter-spacing:-0.044em; margin:16px 0 14px; max-width:11ch; text-wrap:balance}
-.hero__title span:after{height:9px; bottom:5px; background:linear-gradient(90deg, var(--red-3), #FFE3E6); opacity:0.9}
-.hero__lead{font-size:16.5px; line-height:1.65; color:var(--ink-2); max-width:52ch}
-.hero__actions{margin-top:24px; gap:10px}
-.hero__actions .btn{padding:11px 18px; font-size:13.5px; border-radius:999px}
-.hero__actions .btn--red{box-shadow:0 4px 16px rgba(166,25,46,0.18)}
-.hero__meta{margin-top:22px; padding-top:14px; gap:6px 12px; font-size:12.5px; border-top:1px solid var(--line)}
-.hero__meta b{color:var(--ink)}
-.hero__meta > span{white-space:nowrap}
-/* The third hero button is a shortcut hint, not a call to action — it now reads as one. */
-.hero__actions .hero__cmd{padding:9px 14px; font-size:12.5px; color:var(--stone)}
-.hero__actions .hero__cmd:hover{color:var(--ink)}
-.hero__card{padding:26px; gap:14px; background:rgba(255,255,255,0.92); backdrop-filter:blur(10px) saturate(1.05); border:1px solid rgba(233,230,225,0.9); border-left:4px solid var(--red); border-radius:14px; box-shadow:0 1px 0 rgba(0,0,0,0.02), 0 16px 40px rgba(17,18,20,0.07); transform:translateY(0); transition:transform .3s var(--ease), box-shadow .3s var(--ease)}
-.hero__card:hover{transform:translateY(-2px); box-shadow:0 1px 0 rgba(0,0,0,0.02), 0 20px 48px rgba(17,18,20,0.09)}
-.hero__card:before{display:none}
-.hero__card:after{content:""; position:absolute; top:-1px; right:18px; width:56px; height:3px; background:var(--red); border-radius:0 0 3px 3px; opacity:0.9}
-.hero__card-head h3{font-size:15px}
-.hero__card p{font-size:13.5px; line-height:1.65}
-.hero__card-note{font-size:11.5px; line-height:1.55; color:var(--stone-2); border-top:1px solid var(--line); padding-top:14px; margin-top:2px}
-
-/* feed date - vertical stacked, better aligned */
-.feed__date{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:0; padding:8px 6px; background:white; border:1px solid var(--line); border-radius:10px; min-height:64px; text-align:center}
-.feed__date b{font-size:22px; line-height:1; color:var(--ink); font-family:var(--font-display); font-weight:700}
-.feed__date span:nth-of-type(1){font:700 10px "IBM Plex Mono",monospace; letter-spacing:0.08em; text-transform:uppercase; color:var(--red); line-height:1; margin-top:2px}
-.feed__date span:nth-of-type(2){font:500 10px "IBM Plex Mono",monospace; color:var(--stone); line-height:1; margin-top:1px}
-.feed__item{align-items:center; padding:16px 18px; gap:18px}
-.feed__meta{margin-top:8px}
-.feed__cat{letter-spacing:0.08em}
-
-/* board date - already stacked, refine */
-.board-row__num{justify-content:center; min-height:72px}
-.board-row{align-items:center}
-
-/* hero responsive */
-@media(max-width:640px){
-  .hero__title{font-size:clamp(36px, 10vw, 48px)}
-  .hero__lead{font-size:15.5px}
-  .feed__date{min-height:56px; padding:6px 4px}
-  .feed__date b{font-size:20px}
-}
-
-
 /* FIX: hero title crampled — align properly, more breathing */
 .hero__title{font-size:clamp(42px, 5.2vw, 62px); line-height:0.92; letter-spacing:-0.03em; margin:20px 0 18px; max-width:11ch; font-weight:700; text-wrap:balance}
 .hero__title span{color:var(--red); position:relative; display:inline-block}
@@ -906,7 +865,7 @@ img,svg{max-width:100%; height:auto}
 .pulse-alloc-row__icon{width:24px; height:24px; border-radius:6px; background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); display:inline-grid; place-items:center; flex:0 0 24px}
 .pulse-alloc-row__desc{font-size:11.5px; line-height:1.4; color:var(--stone); margin:4px 0 0 32px; max-width:54ch; overflow-wrap:anywhere}
 .pulse-counter{display:inline-flex; align-items:center; gap:4px; flex:0 0 auto; background:var(--paper-2); border:1px solid var(--line); padding:2px 4px; border-radius:8px}
-.pulse-num{font:700 17px var(--font-display); width:24px; text-align:center; line-height:1; color:var(--ink)}
+.pulse-num{font:700 17px var(--font-display); width:24px; text-align:center; line-height:1; color:var(--ink); white-space:nowrap; font-variant-numeric:tabular-nums}
 .pulse-btn{position:relative; width:34px; height:34px; border-radius:6px; border:1px solid var(--line); background:white; display:grid; place-items:center; font:700 16px "IBM Plex Sans",sans-serif; cursor:pointer; transition:background .12s, border-color .12s, color .12s; line-height:1; touch-action:manipulation}
 .pulse-btn:after{content:""; position:absolute; inset:-5px}
 .pulse-btn:hover:not(:disabled){border-color:var(--red); background:var(--red-3); color:var(--red)}
@@ -944,11 +903,9 @@ img,svg{max-width:100%; height:auto}
 @media(max-width:640px){
   .pulse-howgrid{grid-template-columns:1fr}
   .pulse-pointsbar{top:54px; gap:8px 10px; padding:8px 10px; border-radius:10px; box-shadow:0 2px 6px rgba(17,18,20,0.06)}
-  .pulse-pointsbar > div:first-child{min-width:auto !important}
-  .pulse-pointsbar > div:first-child span:first-child{font-size:22px !important}
-  .pulse-pointsbar > div:nth-child(2){min-width:110px !important}
-  .pulse-pointsbar > div:last-child{width:100%; margin-left:0 !important; display:flex; justify-content:space-between; gap:6px}
-  .pulse-pointsbar > div:last-child .btn{flex:1; min-height:30px; padding:4px 8px; font-size:11.5px}
+  .pulse-pointsbar__count{min-width:auto !important}
+  .pulse-pointsbar__count span:first-child{font-size:22px !important}
+  .pulse-pointsbar__track{min-width:110px !important}
   .pulse-alloc{gap:7px; margin-top:8px}
   .pulse-alloc-row{padding:8px 10px; border-radius:8px}
   .pulse-alloc-row__head{display:flex; justify-content:space-between; align-items:center; gap:6px}
@@ -957,7 +914,7 @@ img,svg{max-width:100%; height:auto}
   .pulse-alloc-row__desc{font-size:11px; line-height:1.35; margin:3px 0 0 28px}
   .pulse-counter{padding:2px 3px; gap:2px}
   .pulse-btn{width:30px; height:30px; font-size:15px}
-  .pulse-num{font-size:15px; width:18px}
+  .pulse-num{font-size:15px; width:auto; min-width:1.6em}
   .pulse-bar{height:5px; margin-top:6px}
   .pulse-alloc-meta{font-size:9.5px; margin-top:3px}
   .pulse-live-row{grid-template-columns:minmax(82px, 1fr) minmax(44px, 2fr) auto; gap:7px}
@@ -989,6 +946,47 @@ img,svg{max-width:100%; height:auto}
 .pulse-pointsbar.is-complete{border-color:#D9BC6E; box-shadow:0 2px 10px rgba(140,106,26,.14)}
 #pulseShowResult.is-ready{background:linear-gradient(135deg, var(--red) 0%, #7A1021 100%); border-color:#7A1021; color:#fff; opacity:1}
 #pulseShowResult.is-ready.is-celebrating{animation:pulse-ready .9s var(--ease) 1}
+
+/* The points bar's action row. The primary action has to be able to fit its own
+   label. The bar is two rows on a phone, and this row used to split the width
+   evenly between "Reset" and the primary button; the longer label — "Show my
+   build — 4 points left" — was then wider than its half. The button clips its
+   own overflow (its sheen slides inside it), so the text was cut off mid-word:
+   "how my build" instead of "Show my build". Now the primary takes the space it
+   needs, Reset stays compact beside it, the label itself can only ever shorten
+   with an ellipsis rather than lose characters, and the count is short enough to
+   fit the smallest width the site supports. */
+.pulse-pointsbar__actions{display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-left:auto}
+#pulseShowResult{flex:1 1 auto; min-width:0}
+#pulseShowResult .btn__label{display:block; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+#pulseReset{flex:0 0 auto}
+/* The bar sizes its own buttons, and it has to say so with an id: the section's
+   `#page-ideal-bulsu .btn--sm` rule pins every small button to 34px tall, and an
+   id beats the class selectors above no matter where they sit in the file. That
+   rule is why the two actions in this bar sat 34px tall, ten pixels off the
+   bottom edge of the card, on the most-tapped controls in the whole section.
+   These are the buttons a student uses to finish the exercise, so they get a
+   comfortable height and room to breathe. */
+#page-ideal-bulsu .pulse-pointsbar{padding:12px 14px 14px}
+#page-ideal-bulsu .pulse-pointsbar .btn,
+#page-ideal-bulsu #pulseSubmitArea .btn{min-height:40px; padding:8px 16px; font-size:13px}
+
+@media(max-width:640px){
+  /* The phone bar is a two-column grid (count, track) with the actions as a
+     second row; that grid lives in the section's phone block below. The actions
+     have to span both columns: as a plain grid item they landed in the first
+     column and their content — a 65px Reset plus a button that cannot wrap — set
+     that column's width, squeezing the track down to a few pixels so the progress
+     bar read as empty. */
+  .pulse-pointsbar__actions{grid-column:1 / -1; width:100%; margin-left:0}
+  /* 44px is the smallest comfortable thumb target, and the bar is the one thing
+     on this page a student taps on a phone. Reset gives up a little of its
+     horizontal padding so the primary action still fits "Show my build · 10
+     left" on one line at 320px without an ellipsis. */
+  #page-ideal-bulsu .pulse-pointsbar .btn,
+  #page-ideal-bulsu #pulseSubmitArea .btn{min-height:44px; padding:10px 12px; font-size:12px}
+  #page-ideal-bulsu .pulse-pointsbar #pulseReset{padding-left:10px; padding-right:10px}
+}
 @keyframes pulse-ready{0%{box-shadow:0 0 0 0 rgba(176,138,46,.5)} 70%{box-shadow:0 0 0 12px rgba(176,138,46,0)} 100%{box-shadow:0 0 0 0 rgba(176,138,46,0)}}
 .pulse-live-row.is-top .pulse-live-row__label{font-weight:700; color:var(--ink)}
 .pulse-live-row.is-top .pulse-live-row__fill{background:linear-gradient(90deg, var(--red), #B08A2E)}
@@ -1015,7 +1013,6 @@ img,svg{max-width:100%; height:auto}
 #page-ideal-bulsu .pulse-tabs{margin-top:12px}
 #page-ideal-bulsu .pulse-alloc-row{scroll-margin-top:132px}
 #page-ideal-bulsu .pulse-pointsbar{margin-top:4px}
-#page-ideal-bulsu .pulse-pointsbar > div[style*="margin-left:auto"]{row-gap:8px}
 /* Keep every control comfortably tappable and every label readable. */
 #page-ideal-bulsu .btn--sm{min-height:34px; padding:6px 12px}
 #page-ideal-bulsu .pulse-btn{width:38px; height:38px}
@@ -1094,13 +1091,13 @@ img,svg{max-width:100%; height:auto}
   #page-ideal-bulsu .section__head p{margin-top:8px; line-height:1.5}
   .ideal-card{margin-top:12px; padding:13px; border-radius:10px}
   .ideal-card--head{gap:10px}
-  /* Sticky points bar: two tidy rows instead of three squeezed ones. */
-  #page-ideal-bulsu .pulse-pointsbar{display:grid; grid-template-columns:auto minmax(0,1fr); gap:8px 12px; align-items:center; padding:10px 12px; top:54px}
-  #page-ideal-bulsu .pulse-pointsbar > div:first-child{min-width:0 !important}
-  #page-ideal-bulsu .pulse-pointsbar > div:first-child span:first-child{font-size:24px !important}
-  #page-ideal-bulsu .pulse-pointsbar > div:nth-child(2){min-width:0 !important; max-width:none}
-  #page-ideal-bulsu .pulse-pointsbar > div:last-child{width:100%; margin-left:0 !important; display:flex; gap:8px; justify-content:space-between}
-  #page-ideal-bulsu .pulse-pointsbar > div:last-child .btn{flex:1; min-height:38px; padding:6px 10px; font-size:12px}
+  /* Sticky points bar: two tidy rows instead of three squeezed ones. This is the
+     only place the bar's phone box is defined — the count and the track on the
+     first row, the action row spanning both columns beneath them. */
+  #page-ideal-bulsu .pulse-pointsbar{display:grid; grid-template-columns:auto minmax(0,1fr); gap:10px 12px; align-items:center; padding:12px 12px 14px; top:54px}
+  #page-ideal-bulsu .pulse-pointsbar__count{min-width:0 !important}
+  #page-ideal-bulsu .pulse-pointsbar__count span:first-child{font-size:24px !important}
+  #page-ideal-bulsu .pulse-pointsbar__track{min-width:0 !important; max-width:none}
   #page-ideal-bulsu .pulse-tabs{margin-top:10px}
   #page-ideal-bulsu .pulse-tab{padding:8px 14px}
   #page-ideal-bulsu .pulse-alloc{gap:9px; margin-top:12px}
@@ -1109,7 +1106,7 @@ img,svg{max-width:100%; height:auto}
   #page-ideal-bulsu .pulse-alloc-row__title{font-size:13.5px}
   #page-ideal-bulsu .pulse-alloc-row__desc{margin:5px 0 0; font-size:11.5px; line-height:1.45}
   #page-ideal-bulsu .pulse-btn{width:40px; height:40px; font-size:17px}
-  #page-ideal-bulsu .pulse-num{font-size:17px; width:22px}
+  #page-ideal-bulsu .pulse-num{font-size:17px; width:auto; min-width:1.5em}
   #page-ideal-bulsu .pulse-counter{padding:3px 5px; gap:4px}
   #page-ideal-bulsu .pulse-subtabs{gap:8px}
   #page-ideal-bulsu .pulse-subtab{padding:8px 12px}
@@ -1342,7 +1339,7 @@ img,svg{max-width:100%; height:auto}
 <header class="header" role="banner" id="header">
   <div class="header__inner">
     <a class="brand" href="#home" data-nav aria-label="Office of the Student Regent home">
-      <img src="osr-logo.png" alt="Office of the Student Regent — Bulacan State University" width="44" height="44" style="width:44px; height:44px; border-radius:8px; object-fit:cover; flex:0 0 auto; display:block">
+      <img class="osr-mark" src="/osr-mark.svg" alt="Office of the Student Regent — Bulacan State University" width="51" height="34">
       <div class="brand__text">
         <b>OFFICE OF THE STUDENT REGENT</b>
         <span>Bulacan State University • Board of Regents</span>
@@ -1380,7 +1377,7 @@ img,svg{max-width:100%; height:auto}
   <div class="drawer__panel" role="dialog" aria-modal="true" aria-label="Navigation menu">
     <div class="drawer__head">
       <div style="display:flex; gap:10px; align-items:center">
-        <img src="osr-logo.png" alt="OSR Logo" width="36" height="36" style="width:36px; height:36px; border-radius:8px; object-fit:cover; flex:0 0 auto; display:block">
+        <img class="osr-mark osr-mark--sm" src="/osr-mark.svg" alt="" width="45" height="30">
         <b>OSR Menu</b>
       </div>
       <button class="icon-btn" id="drawerClose" aria-label="Close menu"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></button>
@@ -1922,44 +1919,78 @@ img,svg{max-width:100%; height:auto}
    which is what --font-display still points at. */
 .hero__title{font-family:var(--font-hero); font-weight:800; letter-spacing:-0.02em}
 
-/* the title arrives once, and the red rule under "STUDENT REGENT" draws in */
-@keyframes hero-title-in{from{opacity:0; transform:translateY(16px); clip-path:inset(0 0 96% 0)} to{opacity:1; transform:none; clip-path:inset(0 0 -14% 0)}}
-@keyframes hero-underline{from{transform:scaleX(0)} to{transform:scaleX(1)}}
-.hero.is-in .hero__title{animation:hero-title-in .95s var(--ease) both}
-.hero.is-in .hero__title span:after{transform-origin:left; animation:hero-underline .85s var(--ease) .34s both}
-.hero.is-in .hero__kicker{animation:hero-title-in .7s var(--ease) both}
-.hero.is-in .hero__lead{animation:hero-title-in .8s var(--ease) .1s both}
-.hero.is-in .hero__actions{animation:hero-title-in .8s var(--ease) .18s both}
-.hero.is-in .hero__meta{animation:hero-title-in .8s var(--ease) .26s both}
-.hero.is-in .hero__card{animation:hero-title-in .9s var(--ease) .12s both}
+/* The entrance arrives once, and then it lets go.
 
-/* the card leans with the pointer and carries a light that tracks it */
-.hero__card{--cx:50%; --cy:50%; transform-style:preserve-3d; will-change:transform}
+   Every line below used to say `both`, which was the whole bug: a finished
+   animation with fill-mode `both` keeps owning the properties it animated, and
+   a settled animation outranks inline styles and hover rules alike. So the
+   moment the title finished arriving, `transform` on the card and on the
+   primary button was pinned to `none` for the rest of the session — the card
+   lean, the button drift and the card's hover lift were all being computed and
+   then thrown away. `backwards` holds the opening frame during the delay and
+   steps aside at the end, which is correct here because the closing frame
+   (opacity 1, no transform, no clipping) is the element's natural state. */
+@keyframes hero-title-in{from{opacity:0; transform:translateY(18px); clip-path:inset(0 0 96% 0)} to{opacity:1; transform:none; clip-path:inset(0 0 -14% 0)}}
+@keyframes hero-underline{from{transform:scaleX(0)} to{transform:scaleX(1)}}
+.hero.is-in .hero__title{animation:hero-title-in .95s var(--ease) backwards}
+.hero.is-in .hero__title span:after{transform-origin:left; animation:hero-underline .85s var(--ease) .34s backwards}
+.hero.is-in .hero__kicker{animation:hero-title-in .7s var(--ease) backwards}
+.hero.is-in .hero__lead{animation:hero-title-in .8s var(--ease) .1s backwards}
+.hero.is-in .hero__actions{animation:hero-title-in .8s var(--ease) .18s backwards}
+.hero.is-in .hero__meta{animation:hero-title-in .8s var(--ease) .26s backwards}
+.hero.is-in .hero__card{animation:hero-title-in .9s var(--ease) .12s backwards}
+
+/* The light in the section. One warm wash with a brighter core, both centred on
+   the pointer and both trailing it — light has weight, it does not teleport. */
+.hero__glow{left:-490px; top:-390px; width:980px; height:780px;
+  transition:transform .22s cubic-bezier(.22,1,.36,1), opacity .5s var(--ease);
+  background:
+    radial-gradient(360px 280px at 50% 50%, rgba(166,25,46,0.15), rgba(166,25,46,0) 72%),
+    radial-gradient(closest-side, rgba(166,25,46,0.10), rgba(166,25,46,0.035) 60%, rgba(166,25,46,0) 100%)}
+
+/* the red rule along the top carries the pointer's own hotspot */
+.hero-wrap:after{background:linear-gradient(90deg, var(--red) 0%, #C41E3A var(--hot,46%), rgba(166,25,46,0.22) 100%)}
+
+/* The card leans toward the pointer from anywhere in the section, takes a small
+   lift when the pointer is on it, and carries a light under the pointer. The
+   numbers are deliberately small: this is depth, not a fairground ride. */
+.hero__card{--cx:50%; --cy:50%; transform-style:preserve-3d; will-change:transform;
+  transition:transform .22s cubic-bezier(.22,1,.36,1), box-shadow .3s var(--ease)}
 .hero__card:before{content:""; display:block; position:absolute; inset:0; border-radius:inherit; pointer-events:none; opacity:0;
-  transition:opacity .35s var(--ease); background:radial-gradient(240px 180px at var(--cx) var(--cy), rgba(166,25,46,0.07), rgba(166,25,46,0) 72%)}
-.hero__card:hover:before{opacity:1}
+  transition:opacity .3s var(--ease); background:radial-gradient(260px 200px at var(--cx) var(--cy), rgba(166,25,46,0.14), rgba(166,25,46,0) 70%)}
+.hero__card:hover:before,.hero__card:focus-within:before,.hero__card.is-lit:before{opacity:1}
 
 /* the fact row answers as a row of small chips, not dead text */
-.hero__meta > span{position:relative; padding:3px 9px; margin-left:-9px; border-radius:999px; transition:background .18s var(--ease), color .18s var(--ease)}
-.hero__meta > span:hover{background:var(--red-3)}
+.hero__meta > span{position:relative; padding:3px 9px; margin-left:-9px; border-radius:999px; transition:background .18s var(--ease), color .18s var(--ease), box-shadow .18s var(--ease)}
+.hero__meta > span:hover{background:var(--red-3); box-shadow:inset 0 0 0 1px #FFD8DD}
 .hero__meta > span:hover b{color:var(--red)}
 
-/* the primary action gets one sheen as it is hovered — the same vocabulary as
-   the gold Build Your Ideal BulSU button, in the hero's own red */
-.hero__actions .btn--red{overflow:hidden}
+/* The primary action leans toward the pointer too, warms up as it gets close,
+   keeps the one sheen it had, and answers a press — mouse or finger — with a
+   single ripple from the point that was pressed. */
+.hero__actions .btn{position:relative; overflow:hidden}
+.hero__actions .btn--red{transition:transform .18s var(--ease), box-shadow .22s var(--ease), background .15s, border-color .15s}
 .hero__actions .btn--red:after{content:""; position:absolute; top:-40%; bottom:-40%; left:-70%; width:45%; transform:skewX(-18deg); opacity:0;
   background:linear-gradient(90deg, transparent, rgba(255,255,255,0.34), transparent)}
 .hero__actions .btn--red:hover:after{animation:hero-sheen .9s var(--ease) 1}
 @keyframes hero-sheen{0%{left:-70%; opacity:.95} 100%{left:135%; opacity:0}}
 
+@keyframes hero-ripple{from{transform:translate(-50%,-50%) scale(.15); opacity:.55} to{transform:translate(-50%,-50%) scale(1); opacity:0}}
+.hero__ripple{position:absolute; pointer-events:none; border-radius:999px;
+  background:radial-gradient(circle, rgba(255,255,255,0.62), rgba(255,255,255,0) 70%);
+  animation:hero-ripple .6s var(--ease) forwards}
+.hero__actions .btn--ghost .hero__ripple,.hero__card-actions .btn--ghost .hero__ripple{
+  background:radial-gradient(circle, rgba(166,25,46,0.26), rgba(166,25,46,0) 70%)}
+
 @media(max-width:960px){
-  .hero__meta > span:hover{background:transparent}
+  .hero__meta > span:hover{background:transparent; box-shadow:none}
 }
 @media(prefers-reduced-motion:reduce){
   .hero.is-in .hero__title,.hero.is-in .hero__title span:after,.hero.is-in .hero__kicker,
   .hero.is-in .hero__lead,.hero.is-in .hero__actions,.hero.is-in .hero__meta,.hero.is-in .hero__card{animation:none !important}
   .hero__actions .btn--red:hover:after{animation:none; opacity:0}
   .hero__glow{display:none}
+  .hero__ripple{display:none}
 }
 
 </style>
@@ -2636,20 +2667,20 @@ img,svg{max-width:100%; height:auto}
       <!-- BUILD PANEL -->
       <div id="pulseBuildTab" role="tabpanel">
         <div class="pulse-pointsbar reveal is-visible">
-          <div style="min-width:90px">
+          <div class="pulse-pointsbar__count" style="min-width:90px">
             <div class="mono" style="font-size:10.5px; letter-spacing:0.06em; text-transform:uppercase; color:var(--stone)">Points left</div>
             <div style="display:flex; align-items:baseline; gap:6px; margin-top:2px">
               <span id="pulsePointsLeft" style="font:700 28px var(--font-display); line-height:1; color:var(--red)">10</span>
               <span class="mono" style="font-size:11px; color:var(--stone)">of 10</span>
             </div>
           </div>
-          <div style="flex:1; min-width:180px; max-width:340px">
+          <div class="pulse-pointsbar__track" style="flex:1; min-width:180px; max-width:340px">
             <div id="pulsePointsTrack" class="pulse-points-track" role="progressbar" aria-label="Points allocated" aria-valuemin="0" aria-valuemax="10" aria-valuenow="0" aria-valuetext="0 of 10 points allocated"><div id="pulsePointsFill" class="pulse-points-fill" aria-hidden="true" style="width:0%"></div></div>
             <div class="mono" style="font-size:10px; color:var(--stone); margin-top:4px; display:flex; justify-content:space-between"><span>0 used</span><span>10 used</span></div>
           </div>
-          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-left:auto">
+          <div class="pulse-pointsbar__actions">
             <button id="pulseReset" class="btn btn--sm btn--ghost">Reset</button>
-            <button id="pulseShowResult" class="btn btn--sm btn--gold" disabled style="opacity:0.45">Show my build — use 10 points</button>
+            <button id="pulseShowResult" class="btn btn--sm btn--gold" disabled><span class="btn__label" id="pulseShowResultLabel">Show my build</span></button>
           </div>
         </div>
 
@@ -2941,7 +2972,7 @@ img,svg{max-width:100%; height:auto}
   <div class="footer__inner">
     <div>
       <div class="footer__brand">
-        <img src="osr-logo.png" alt="Office of the Student Regent — Bulacan State University" width="42" height="42" style="width:42px; height:42px; border-radius:8px; object-fit:cover; flex:0 0 auto; display:block">
+        <img class="osr-mark osr-mark--footer" src="/osr-mark.svg" alt="Office of the Student Regent — Bulacan State University" width="48" height="32">
         <div>
           <h4 style="margin:0; color:white; font-size:13px">OFFICE OF THE STUDENT REGENT</h4>
           <div class="mono" style="font-size:11px; color:#9A9590; letter-spacing:0.04em; text-transform:uppercase">Bulacan State University • Board of Regents</div>
@@ -3198,45 +3229,105 @@ $("#dashSavedBtn")?.addEventListener("click", ()=>{
 });
 
 
-/* HERO MOTION — decorative only. The hero reads exactly the same with a
-   keyboard, a touch screen, or "reduce motion" turned on; nothing here carries
-   information and nothing blocks a click. */
+/* HERO MOTION — the masthead answers the pointer, and says so out loud.
+   Decorative only: every value here is presentation, nothing carries
+   information, nothing blocks a click, and the section reads exactly the same
+   with a keyboard, a touch screen, or "reduce motion" turned on.
+
+   Two things used to keep this from being felt at all. The entrance animations
+   finished with fill-mode `both`, so they went on owning `transform` and threw
+   away every value written below (see the CSS note); and the light was a 10%
+   wash that vanished into white paper. The values here are the corrected ones:
+   the pointer light is a real presence, the card leans up to about 3°, the
+   primary button steps toward the pointer, and a press leaves a ripple — which
+   is also the one part a finger on a phone can feel. */
 (function heroDynamics(){
   const hero=document.querySelector(".hero");
   const wrap=document.querySelector(".hero-wrap");
   if(!hero || !wrap) return;
-  requestAnimationFrame(()=> hero.classList.add("is-in"));
-  const touchOnly=window.matchMedia("(hover:none) and (pointer:coarse)").matches;
-  const calm=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
-  if(touchOnly || calm) return;
   const card=document.querySelector(".hero__card");
   const cta=document.querySelector(".hero__actions .btn--red");
+  const calm=window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  const touchOnly=window.matchMedia("(hover:none) and (pointer:coarse)").matches;
   const clamp=(v,a,b)=> Math.max(a, Math.min(b, v));
-  let raf=0, gx=0, gy=0;
-  const paintGlow=()=>{ raf=0; wrap.style.setProperty("--gx", gx+"px"); wrap.style.setProperty("--gy", gy+"px"); };
+  const near=(x,y,r,pad)=> x>r.left-pad && x<r.right+pad && y>r.top-pad && y<r.bottom+pad;
+  const replay=()=>{ hero.classList.remove("is-in"); void hero.offsetWidth; hero.classList.add("is-in"); };
+  requestAnimationFrame(replay);
+
+  /* Coming back to the home page replays the arrival, so the masthead is never
+     frozen after the first load. Leaving home clears the state, which is what
+     lets the next arrival play from its first frame. */
+  window.addEventListener("hashchange", ()=>{
+    const key=(location.hash||"#home").replace("#","").split("?")[0].split("/")[0]||"home";
+    if(key==="home"){ if(!calm) replay(); } else hero.classList.remove("is-in");
+  });
+
+  /* Press feedback a finger can feel: one ripple from the point pressed, on the
+     hero and card actions alike. Pointer events cover mouse, pen and touch. */
+  const pressPoints=document.querySelectorAll(".hero__actions .btn, .hero__card-actions .btn");
+  for(const el of pressPoints){
+    el.addEventListener("pointerdown", event=>{
+      if(calm) return;
+      const box=el.getBoundingClientRect();
+      const size=Math.max(box.width, box.height)*1.7;
+      const dot=document.createElement("span");
+      dot.className="hero__ripple";
+      dot.style.width=dot.style.height=size+"px";
+      dot.style.left=(event.clientX-box.left)+"px";
+      dot.style.top=(event.clientY-box.top)+"px";
+      el.appendChild(dot);
+      dot.addEventListener("animationend", ()=> dot.remove(), {once:true});
+      setTimeout(()=> dot.remove(), 900);
+    }, {passive:true});
+  }
+
+  /* Pointer-only from here: a device without a hovering pointer keeps the plain
+     section rather than a dressed-up one. */
+  if(touchOnly || calm) return;
+
+  let raf=0, gx=0, gy=0, hot=46;
+  const paint=()=>{
+    raf=0;
+    wrap.style.setProperty("--gx", gx.toFixed(1)+"px");
+    wrap.style.setProperty("--gy", gy.toFixed(1)+"px");
+    wrap.style.setProperty("--hot", hot.toFixed(1)+"%");
+  };
+
   wrap.addEventListener("pointermove", event=>{
+    if(event.pointerType==="touch") return;
     const box=wrap.getBoundingClientRect();
+    if(!box.width || !box.height) return;
     gx=event.clientX-box.left; gy=event.clientY-box.top;
-    if(!raf) raf=requestAnimationFrame(paintGlow);
+    hot=clamp((gx/box.width)*100, 6, 94);
+    if(!raf) raf=requestAnimationFrame(paint);
     wrap.classList.add("is-pointing");
+
     if(card){
       const c=card.getBoundingClientRect();
-      const dx=(event.clientX-c.left)/c.width-0.5, dy=(event.clientY-c.top)/c.height-0.5;
-      card.style.setProperty("--cx", ((dx+0.5)*100).toFixed(1)+"%");
-      card.style.setProperty("--cy", ((dy+0.5)*100).toFixed(1)+"%");
-      const near=event.clientX>c.left-60 && event.clientX<c.right+60 && event.clientY>c.top-60 && event.clientY<c.bottom+60;
-      card.style.transform=near ? "perspective(900px) rotateX("+(-dy*2.2).toFixed(2)+"deg) rotateY("+(dx*2.4).toFixed(2)+"deg) translateY(-2px)" : "";
+      const dx=clamp((event.clientX-(c.left+c.width/2))/(box.width/2), -1, 1);
+      const dy=clamp((event.clientY-(c.top+c.height/2))/(box.height/2), -1, 1);
+      const on=near(event.clientX, event.clientY, c, 36);
+      card.style.setProperty("--cx", clamp(((event.clientX-c.left)/c.width)*100, -15, 115).toFixed(1)+"%");
+      card.style.setProperty("--cy", clamp(((event.clientY-c.top)/c.height)*100, -15, 115).toFixed(1)+"%");
+      card.classList.toggle("is-lit", on);
+      card.style.transform="perspective(900px) rotateX("+(-dy*2.6).toFixed(2)+"deg) rotateY("+(dx*3.4).toFixed(2)+"deg) translateY("+(on?-4:-1.5)+"px)";
+      card.style.boxShadow=on ? "0 1px 0 rgba(0,0,0,0.02), 0 22px 52px rgba(17,18,20,0.12)" : "";
     }
+
     if(cta){
       const r=cta.getBoundingClientRect();
-      const near=event.clientX>r.left-30 && event.clientX<r.right+30 && event.clientY>r.top-26 && event.clientY<r.bottom+26;
-      cta.style.transform=near ? "translate3d("+clamp((event.clientX-(r.left+r.width/2))/12,-3,3).toFixed(1)+"px, "+clamp((event.clientY-(r.top+r.height/2))/14,-2.5,2.5).toFixed(1)+"px, 0)" : "";
+      const on=near(event.clientX, event.clientY, r, 42);
+      cta.style.transform=on
+        ? "translate3d("+clamp((event.clientX-(r.left+r.width/2))/8, -5, 5).toFixed(1)+"px, "+clamp((event.clientY-(r.top+r.height/2))/10, -4, 4).toFixed(1)+"px, 0)"
+        : "";
+      cta.style.boxShadow=on ? "0 8px 22px rgba(166,25,46,0.28)" : "";
     }
   }, {passive:true});
+
   wrap.addEventListener("pointerleave", ()=>{
     wrap.classList.remove("is-pointing");
-    if(card) card.style.transform="";
-    if(cta) cta.style.transform="";
+    if(card){ card.classList.remove("is-lit"); card.style.transform=""; card.style.boxShadow=""; }
+    if(cta){ cta.style.transform=""; cta.style.boxShadow=""; }
   });
 })();
 const pages={"home":"page-home","announcements":"page-announcements","board-meetings":"page-board-meetings","initiatives":"page-initiatives","resources":"page-resources","help":"page-help","about":"page-about","search":"page-search","ideal-bulsu":"page-ideal-bulsu","academic-calendar":"page-academic-calendar","track":"page-track"};
@@ -4223,7 +4314,13 @@ function pulseUpdateChrome(){
     const wasReady=btn.classList.contains("is-ready");
     btn.disabled=!ready;
     btn.style.opacity=ready ? "1" : "0.45";
-    btn.textContent=ready ? "Show my build" : `Show my build — ${left} point${left===1?"":"s"} left`;
+    // Short enough to fit the button at the narrowest width; the full sentence
+    // used to overflow it and get clipped. The count still rides along, and the
+    // points bar right beside it spells out "Points left" in full.
+    const label=document.getElementById("pulseShowResultLabel");
+    const text=ready ? "Show my build" : `Show my build · ${left} left`;
+    if(label) label.textContent=text; else btn.textContent=text;
+    btn.setAttribute("aria-label", ready ? "Show my build" : `Show my build — ${left} point${left===1?"":"s"} left`);
     btn.classList.toggle("is-ready", ready);
     if(ready && !wasReady) pulseBump(btn, "is-celebrating", 1400);
   }
@@ -5556,7 +5653,7 @@ window.updateUpNext = typeof updateUpNext === 'function' ? updateUpNext : undefi
     <div class="welcome-top" aria-hidden="true"></div>
     <div class="welcome-body">
       <div style="display:flex; align-items:center; gap:12px">
-        <img src="osr-logo.png" alt="" width="44" height="44" style="width:44px; height:44px; border-radius:10px; object-fit:cover; border:1px solid var(--line); flex:0 0 auto"/>
+        <img class="osr-mark" src="/osr-mark.svg" alt="" width="45" height="30"/>
         <div>
           <div class="welcome-eyebrow">Bulacan State University</div>
           <div style="font:600 11px 'IBM Plex Mono',monospace; color:var(--muted)">Office of the Student Regent • Verified record</div>

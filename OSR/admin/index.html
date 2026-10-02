@@ -6,9 +6,10 @@
 <meta name="color-scheme" content="light"/>
 <meta name="theme-color" content="#A6192E"/>
 <title>OSR Content Administration</title>
-<!-- Tab identity: a cream mark on its own maroon plate. The flat logo washed
-     out on dark and tinted browser chrome, so the icon now carries its own
-     background and stays legible in light, dark, and high-contrast setups. -->
+<!-- Tab identity: the admin is served from the same published folder as the
+     public site, so it uses the same mark. favicon.svg recolours itself for the
+     tab; the ICO and PNGs are the fallback for Safari, iOS and older clients. -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48"/>
 <link rel="icon" type="image/png" href="/favicon-32.png" sizes="32x32"/>
 <link rel="icon" type="image/png" href="/favicon-16.png" sizes="16x16"/>
@@ -78,8 +79,9 @@ img{display:block;max-width:100%}
 .auth-shell{width:min(1080px,100%);min-height:660px;display:grid;grid-template-columns:minmax(0,.92fr) minmax(420px,1.08fr);overflow:hidden;border:1px solid var(--line);border-radius:16px;background:var(--white);box-shadow:var(--shadow)}
 .auth-intro{position:relative;display:flex;flex-direction:column;padding:50px 48px;background:#EEEAE5;border-right:1px solid var(--line)}
 .auth-intro:before{content:"";position:absolute;inset:0 auto 0 0;width:6px;background:var(--red)}
-.auth-logo-frame{width:126px;height:126px;display:grid;place-items:center;margin-bottom:38px;border:1px solid var(--line);border-radius:12px;background:var(--white)}
-.auth-logo-frame img{width:114px;height:114px;object-fit:contain}
+.auth-logo-frame{width:228px;height:182px;display:grid;place-items:center;margin-bottom:38px;border:1px solid var(--line);border-radius:12px;background:var(--white)}
+/* The mark is 1036x695 — sized here so it stays whole and legible inside the frame. */
+.auth-logo-frame img{width:196px;height:132px;object-fit:contain}
 .auth-kicker{margin:0 0 12px;color:var(--red-dark);font:600 11px/1.4 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em}
 .auth-intro h1{max-width:9ch;margin:0;font:700 clamp(38px,5vw,58px)/.98 'Fraunces',Georgia,serif;letter-spacing:-.035em}
 .auth-intro-copy{max-width:42ch;margin:22px 0 0;color:var(--stone);font-size:15px}
@@ -118,7 +120,7 @@ img{display:block;max-width:100%}
 .topbar{position:sticky;top:0;z-index:40;height:72px;display:flex;align-items:center;gap:12px;padding:0 22px;border-bottom:1px solid var(--line);background:var(--white)}
 .mobile-menu-btn{display:none}
 .topbar-brand{display:flex;align-items:center;gap:11px;min-width:0;color:var(--ink);flex-shrink:0}
-.topbar-logo{width:46px;height:46px;object-fit:contain;flex:none}
+.topbar-logo{width:68px;height:46px;object-fit:contain;flex:none}
 .topbar-brand-copy{min-width:0;line-height:1.15}
 .topbar-brand-copy b{display:block;font:700 15px 'Fraunces',Georgia,serif}
 .topbar-brand-copy span{display:block;margin-top:2px;color:var(--stone);font-size:10px;text-transform:uppercase;letter-spacing:.06em}
@@ -382,14 +384,14 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
 @media(max-width:860px){
   .topbar{height:64px;padding:0 14px;gap:10px}
   .mobile-menu-btn{display:inline-flex;flex:none}
-  .topbar-logo{width:43px;height:43px}
+  .topbar-logo{width:64px;height:43px}
   .topbar-brand-copy span,.admin-identity{display:none}
   .admin-shell{display:block;min-height:calc(100vh - 64px)}
   .sidebar{position:fixed;z-index:70;top:0;bottom:0;left:0;width:min(310px,88vw);height:auto;padding:18px;background:var(--paper);box-shadow:var(--shadow);transform:translateX(-105%);transition:transform .28s var(--ease);overflow-y:auto}
   .sidebar.is-open{transform:none}
   .sidebar-mobile-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-2px 0 22px;padding-bottom:14px;border-bottom:1px solid var(--line)}
   .sidebar-mobile-brand{display:flex;align-items:center;gap:8px;font-family:'Fraunces',Georgia,serif;font-weight:700}
-  .sidebar-mobile-brand img{width:44px;height:44px;object-fit:contain}
+  .sidebar-mobile-brand img{width:66px;height:44px;object-fit:contain}
   .sidebar-logout{display:flex;width:100%}
   .nav-backdrop{position:fixed;z-index:60;inset:0;display:block;background:rgba(17,18,20,.42);opacity:0;pointer-events:none;transition:opacity .2s}
   .nav-backdrop.is-visible{opacity:1;pointer-events:auto}
@@ -403,8 +405,8 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
   .auth-shell{min-height:100vh;min-height:100dvh;display:block;border:0;border-radius:0;box-shadow:none}
   .auth-intro{padding:25px 22px 22px;border-right:0;border-bottom:1px solid var(--line)}
   .auth-intro:before{inset:0 0 auto;height:5px;width:auto}
-  .auth-logo-frame{width:82px;height:82px;margin:0 0 18px}
-  .auth-logo-frame img{width:74px;height:74px}
+  .auth-logo-frame{width:174px;height:140px;margin:0 0 18px}
+  .auth-logo-frame img{width:150px;height:101px}
   .auth-intro h1{max-width:none;font-size:34px}
   .auth-intro-copy{margin-top:12px;font-size:13px}
   .auth-records{display:none}
@@ -437,7 +439,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
 @media(max-width:420px){
   .topbar{padding:0 10px}
   .topbar-brand-copy b{font-size:14px}
-  .topbar-logo{width:38px;height:38px}
+  .topbar-logo{width:57px;height:38px}
   .topbar-actions{gap:5px}
   .topbar-site .site-full{display:none}
   .topbar-site .site-short{display:inline}
@@ -580,7 +582,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
   <div class="auth-shell">
     <section class="auth-intro" aria-labelledby="authBrandTitle">
       <div class="auth-logo-frame">
-        <img src="/osr-logo.png" alt="Office of the Student Regent logo"/>
+        <img src="/osr-mark.svg" alt="Office of the Student Regent logo"/>
       </div>
       <p class="auth-kicker">Bulacan State University</p>
       <h1 id="authBrandTitle">Content administration</h1>
@@ -650,7 +652,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
   <header class="topbar">
     <button id="mobileMenuBtn" class="btn btn--ghost mobile-menu-btn" type="button" aria-controls="adminSidebar" aria-expanded="false">Menu</button>
     <a class="topbar-brand" href="#overview" data-go-tab="overview" aria-label="OSR content administration overview">
-      <img class="topbar-logo" src="/osr-logo.png" alt=""/>
+      <img class="topbar-logo" src="/osr-mark.svg" alt=""/>
       <span class="topbar-brand-copy"><b>OSR Administration</b><span>Content workspace</span></span>
     </a>
     <div class="topbar-actions">
@@ -664,7 +666,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
   <div class="admin-shell">
     <aside id="adminSidebar" class="sidebar" aria-label="Admin navigation">
       <div class="sidebar-mobile-head">
-        <div class="sidebar-mobile-brand"><img src="/osr-logo.png" alt=""/>OSR Admin</div>
+        <div class="sidebar-mobile-brand"><img src="/osr-mark.svg" alt=""/>OSR Admin</div>
         <button id="sidebarClose" class="btn btn--ghost btn--sm" type="button">Close</button>
       </div>
 

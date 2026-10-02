@@ -9,6 +9,9 @@ BulSU students across all campuses who need announcements, Board records, initia
 ## Personality
 Clean, confident, restrained, accessible. Direct language. No hype. Factual and caring: "here is what you need, here is how to reach us."
 
+## Identity — the mark, not a plate
+`favicon.svg` is the original OSR mark (`osr-logo-original.png`, the runner-and-letterforms device) traced to a single vector path, so the tab shows the real logo at any size instead of a raster of the whole lockup shrunk into a 16px square. The mark is drawn in institutional red on light browser chrome and in a light tint of the same red on dark chrome (`prefers-color-scheme` inside the file), because a tab is the one surface the page does not control. The same mark is what the page itself uses (`osr-mark.svg`) in the header, menu, footer, welcome card and admin, rather than the full stacked lockup: at 28-46px the lockup's wordmark is an unreadable smudge, and the device is what people recognise. The in-page mark is always institutional red — it must not flip colour because the operating system is in dark mode; only the tab, which sits on someone else's chrome, adapts. Safari, iOS and older clients read the ICO and PNGs, which `tools/make-tab-icons.mjs` rasterises from the same path so the files can never drift apart. No plate, no background square, no second drawing to keep in sync.
+
 ## Palette — RED + WHITE institutional
 - **Institutional Red #A6192E** — primary accent only. Reason: BulSU institutional red. Used for the one deliberate accent: the left-edge rule, key actions, status markers, and OSR wordmark bar. Not as a background wash. Contrast on white is 7.2:1, passes AA large and normal.
 - **White #FFFFFF** — dominant surface. Reason: formality, readability, institutional paper. Keeps the site light and printable.

@@ -35,7 +35,12 @@ That's it. No `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `JWT_SECRET` required:
 - JWT secret auto-generates and persists in `site_settings.jwt_secret` → sessions survive cold starts
 - Fresh DB: open `/admin` → setup form creates first admin in Neon, or default `admin@osr.bulsu.edu.ph / Admin123456!` is seeded automatically
 
-Redeploy, then open `https://your-site.netlify.app/admin`.
+Redeploy, then open `https://your-site.netlify.app` (and `/OSRAdminControl2026`).
+
+Redeploying is enough — but if you upload `OSR/osr-website/osr-netlify.zip` by
+hand instead of connecting the repository, rebuild that archive first with
+`node OSR/osr-website/netlify-build.mjs`: it is a snapshot, and a stale one
+deploys an old site.
 
 See [deployment instructions](OSR/server/DEPLOY.md) for setup, verification, and troubleshooting. Netlify and Neon usage limits still apply.
 
@@ -116,6 +121,12 @@ npm test --prefix OSR/server
 Integration tests execute PostgreSQL queries in PGlite (a local PostgreSQL engine)
 and use an in-memory media store; they do not connect to your live Neon account.
 Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
+The hero's pointer interactions are driven in jsdom (`hero-motion.test.mjs`), the
+Ideal BulSU points bar is driven the same way (`builder-bar.test.mjs`), the tab
+icon set and the social card are checked against their vector source
+(`tab-identity.test.mjs`), and `osr-netlify.zip` is compared with the files in
+the repository (`netlify-bundle.test.mjs`), so a stale drag-and-drop bundle fails
+the suite.
 
 ## What changed for standalone
 
@@ -128,6 +139,78 @@ Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
 
 ## Recent fixes
 
+- **The hero's interactions can actually be felt again.** They were being
+  neutralised, not missing: every `.hero.is-in` entrance animation ran with
+  fill-mode `both`, and a finished animation with `both` keeps ownership of the
+  properties it animated — the browser ranked the settled animation above both
+  inline styles and hover rules, so `transform` on the card and on the primary
+  button stayed pinned at `none`. The card lean, the button drift and the hover
+  lift were all being computed and thrown away. The entrances now end at
+  `backwards` (the closing frame is the element's natural state), and the whole
+  vocabulary was made more present: a warmer pointer light that trails the
+  pointer, the top rule carrying the pointer's hotspot, a card that leans from
+  anywhere in the section and lights up under the pointer, a primary button that
+  steps toward it — and a ripple from the exact point pressed, which is the one
+  part a finger on a phone can feel. Coming back to Home replays the arrival
+  instead of leaving the masthead frozen. `hero-motion.test.mjs` drives all of it
+  on every `npm test`, and the entrance fill-modes are asserted directly.
+- **The OSR mark is the logo everywhere, and the tab icon reads the tab it lands
+  on.** `favicon.svg` is the original logo traced from `osr-logo-original.png`
+  into one vector path, so the tab shows the logo itself rather than a plate with
+  a shrunken raster of it (which is what looked ugly). Inside that one file,
+  `prefers-color-scheme` swaps the fill: institutional red on light browser
+  chrome, a light tint of the same red on dark chrome, so the mark is never a
+  dark blob on a dark strip. Safari and iOS pick up the ICO and PNGs instead;
+  `tools/make-tab-icons.mjs` rasterises those from the same path
+  (`npm run icons --prefix OSR`, `npm run icons:check --prefix OSR`), so the
+  vector and the rasters cannot drift apart. `tab-identity.test.mjs` checks the
+  sizes, the ICO container, the dark-chrome contrast and that every committed
+  raster still matches the path.
+- **A shared link now unfurls with the mark.** The page had `og:title` and
+  `og:description` but no image, so posting the site anywhere showed a bare text
+  card. `og-image.png` (1200x630) is generated from the same traced path as the
+  tab icon and the page logo, on the site's own paper, with no lettering baked in:
+  every unfurler prints the title and description next to it, and type inside the
+  picture would only duplicate that in whatever font the reader's platform
+  substitutes.
+- **"Show my build" is no longer cut off, and the points bar reads properly on a
+  phone.** The primary action in the sticky points bar clips its own overflow so
+  its sheen can slide inside it, and on a phone it shared its row evenly with
+  Reset — the label "Show my build — 4 points left" is wider than that half, so
+  the text was cut mid-word ("how my build"). Behind it sat a second bug: the
+  phone bar is a two-column grid, and as a plain grid item the action row landed
+  in the first column and set that column's width, squeezing the progress track to
+  a few pixels, so the bar looked empty. The action row now spans both columns,
+  the primary action takes the space it needs while Reset stays compact, the label
+  lives in its own box that can only shorten with an ellipsis, and the count is
+  short enough to fit the narrowest width the site supports ("Show my build · 4
+  left"). The full sentence is still the button's accessible name, so a screen
+  reader hears "Show my build — 4 points left". The bar's three parts are named
+  (`.pulse-pointsbar__count/__track/__actions`) instead of being selected by child
+  position, which is what had forced a pile of `!important` overrides.
+  `builder-bar.test.mjs` drives the builder in jsdom and fails if the label grows
+  back past what fits.
+- **The mark replaced the full stacked lockup in the page's logo slots.** The
+  header, mobile menu, footer, welcome card and admin login/top bar/sidebar were
+  showing `osr-logo.png` — the whole lockup, wordmark included — at 36-44px,
+  where its lettering is an unreadable smudge. They now render `osr-mark.svg`,
+  the same traced mark as the tab icon (generated from the same path, so the two
+  can never show different logos), always in institutional red and never themed
+  by the operating system: a tab has to answer the browser's chrome, a logo on
+  the site's own white paper does not. `osr-logo.png` is still served, and still
+  fetched by the admin's transparency report, which draws the logo into a PDF on
+  a canvas and needs a raster.
+
+  The bundle's freshness check is now derived from the list of files the archive
+  actually packs, so nothing can be silently left out of it again — the admin
+  page had been, which is how a rebuilt archive shipped a stale admin.
+- **A stale drag-and-drop bundle can no longer ship.** `OSR/osr-website/osr-netlify.zip`
+  is the upload-instead-of-Git alternative, and it had gone stale — a deploy from
+  it served an older page with none of the latest work and the old tab icon.
+  `netlify-build.mjs` now rebuilds the archive whenever the site it packs has
+  moved, and `netlify-bundle.test.mjs` fails the suite if the committed archive
+  differs from the repository. The publication itself is unchanged: the site
+  deploys exactly as before.
 - **The hero no longer looks muddy, and it responds to the pointer.** The
   masthead used to stack a grey wash, a pink 28px grid and a masked fade on top
   of each other; it is now one warm wash plus seal line-work in the far corner

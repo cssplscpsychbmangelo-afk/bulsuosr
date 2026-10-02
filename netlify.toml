@@ -50,8 +50,13 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# Images change rarely — one week is a safe cache window.
+# Images and the tab icon change rarely — one week is a safe cache window.
 [[headers]]
   for = "/*.png"
+  [headers.values]
+    Cache-Control = "public, max-age=604800"
+
+[[headers]]
+  for = "/*.svg"
   [headers.values]
     Cache-Control = "public, max-age=604800"
