@@ -1425,7 +1425,7 @@ img,svg{max-width:100%; height:auto}
   <!-- HOME -->
   <section class="page" id="page-home" aria-current="true" aria-labelledby="home-title">
     <div class="hero-wrap">
-    <div class="hero__fx" aria-hidden="true"><span class="hero__glow"></span></div>
+    <div class="hero__fx" aria-hidden="true"><span class="hero__seal"></span><span class="hero__glow"></span></div>
     <div class="hero">
       <div class="reveal is-visible">
         <span class="hero__kicker">Board of Regents • Student representation</span>
@@ -1444,7 +1444,13 @@ img,svg{max-width:100%; height:auto}
           <span><b>Response</b> Office hours</span>
         </div>
       </div>
-      <div class="hero__card reveal is-visible" aria-label="About this office" style="transition-delay:.08s">
+      <!-- The hero's one 3D object: the record sheet on the two sheets filed
+           behind it. Nothing loops; the stack only leans while a pointer is in
+           the section, and settles as soon as it leaves. -->
+      <div class="hero__stage">
+        <span class="hero__plate hero__plate--deep" aria-hidden="true"></span>
+        <span class="hero__plate" aria-hidden="true"></span>
+        <div class="hero__card" aria-label="About this office">
         <div class="hero__card-head">
           <span class="mono" style="font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:var(--red); font-weight:700">The mandate</span>
           <h3>What the Office does</h3>
@@ -1455,6 +1461,7 @@ img,svg{max-width:100%; height:auto}
           <a class="btn btn--sm btn--ghost" href="#help" data-nav>Find student support</a>
         </div>
         <p class="hero__card-note">Published by the OSR. Where a record is not yet supplied, the page keeps an empty state instead of invented content.</p>
+        </div>
       </div>
     </div>
     </div>
@@ -1673,7 +1680,15 @@ img,svg{max-width:100%; height:auto}
    fade on top of each other, which is what made it look muddy. Now it is one
    warm wash behind the copy plus seal line-work in the corner: line, not dirt. */
 .hero-wrap:before{content:""; position:absolute; inset:0; pointer-events:none; background:
-  radial-gradient(720px 320px at 12% -8%, rgba(166,25,46,0.055), rgba(166,25,46,0) 64%),
+  radial-gradient(720px 320px at 12% -8%, rgba(166,25,46,0.055), rgba(166,25,46,0) 64%)}
+/* The seal's line-work moved off the wash and onto its own layer so it can
+   answer the pointer at a third of the pointer's travel. That gives the section
+   three depths — rings behind, paper, the card in front — and it stays inside
+   the rule the motion guidance draws: parallax belongs to decorative layers,
+   never to text or to anything clickable. */
+.hero__seal{position:absolute; inset:0; pointer-events:none;
+  transform:translate3d(var(--px,0px), var(--py,0px), 0); transition:transform .34s var(--ease); will-change:transform;
+  background:
   radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 214px, rgba(166,25,46,0.075) 214px 215px, rgba(166,25,46,0) 215px),
   radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 290px, rgba(166,25,46,0.05) 290px 291px, rgba(166,25,46,0) 291px),
   radial-gradient(circle at 90% 112%, rgba(166,25,46,0) 0 366px, rgba(166,25,46,0.032) 366px 367px, rgba(166,25,46,0) 367px)}
@@ -1699,8 +1714,40 @@ img,svg{max-width:100%; height:auto}
 /* The third hero button is a shortcut hint, not a call to action — it now reads as one. */
 .hero__actions .hero__cmd{padding:9px 14px; font-size:12.5px; color:var(--stone)}
 .hero__actions .hero__cmd:hover{color:var(--ink)}
-.hero__card{padding:26px; gap:14px; background:rgba(255,255,255,0.92); backdrop-filter:blur(10px) saturate(1.05); border:1px solid rgba(233,230,225,0.9); border-left:4px solid var(--red); border-radius:14px; box-shadow:0 1px 0 rgba(0,0,0,0.02), 0 16px 40px rgba(17,18,20,0.07); transform:translateY(0); transition:transform .3s var(--ease), box-shadow .3s var(--ease)}
-.hero__card:hover{transform:translateY(-2px); box-shadow:0 1px 0 rgba(0,0,0,0.02), 0 20px 48px rgba(17,18,20,0.09)}
+.hero__card{padding:26px; gap:14px; background:#fff; border:1px solid rgba(233,230,225,0.9); border-left:4px solid var(--red); border-radius:14px; box-shadow:0 1px 0 rgba(0,0,0,0.02), 0 16px 40px rgba(17,18,20,0.07); transition:box-shadow .3s var(--ease)}
+/* The lift used to live on :hover as a translateY. It moved into the 3D stack
+   below, which owns the card's transform — two rules writing the same property
+   is how the old lean went missing in the first place. Hover and keyboard focus
+   keep the part of the response that does not need a transform. */
+.hero__card:hover,.hero__card:focus-within{box-shadow:0 1px 0 rgba(0,0,0,0.02), 0 20px 48px rgba(17,18,20,0.09)}
+
+/* ===== THE HERO'S ONE 3D OBJECT =====
+   The card is a record sheet, and the two sheets behind it are the file it came
+   out of. That is the whole idea: depth used to say something about the
+   content, not a card floating for effect. One perspective on the stage, the
+   card at z=0 and the plates behind it at -26 and -52, all three driven by the
+   same two angles so the stack moves as one object.
+
+   The angles are written by the pointer script as custom properties, never as
+   an inline transform, so the sheets and the card can share them and nothing
+   has to be told twice. Amplitudes are held down deliberately — 7 degrees
+   across, 4.5 deep, a 10px lift at most — because this is an office, and the
+   motion has to read as weight rather than as a trick. Nothing here loops
+   (MOTION 2, R-19) and the release is quicker than the lean, so the stack feels
+   like it is settling instead of drifting after the pointer has gone. */
+.hero__stage{position:relative; min-width:0; perspective:1100px; perspective-origin:62% 38%; transform-style:preserve-3d}
+.hero__plate{position:absolute; inset:0; border-radius:14px; background:#fff; border:1px solid var(--line); pointer-events:none;
+  transform:translate3d(calc(var(--spread,0) * 9px), calc(9px + var(--spread,0) * 7px), -26px) rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg));
+  transition:transform .3s var(--ease); will-change:transform}
+.hero__plate--deep{opacity:.5;
+  transform:translate3d(calc(var(--spread,0) * 17px), calc(17px + var(--spread,0) * 12px), -52px) rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg))}
+.hero__stage .hero__card{position:relative; will-change:transform;
+  transform:rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg)) translate3d(0, calc(var(--lift,0px) * -1), 0);
+  transition:transform .3s var(--ease), box-shadow .3s var(--ease)}
+/* Exit faster than enter: the pointer's lean is followed at 300ms, the settle
+   back to flat happens in 190ms, so leaving never feels like lag. */
+.hero-wrap:not(.is-pointing) .hero__stage .hero__card,
+.hero-wrap:not(.is-pointing) .hero__plate{transition-duration:.19s}
 .hero__card:before{display:none}
 .hero__card:after{content:""; position:absolute; top:-1px; right:18px; width:56px; height:3px; background:var(--red); border-radius:0 0 3px 3px; opacity:0.9}
 .hero__card-head h3{font-size:15px}
@@ -1726,6 +1773,11 @@ img,svg{max-width:100%; height:auto}
   .hero__lead{font-size:15.5px}
   .feed__date{min-height:56px; padding:6px 4px}
   .feed__date b{font-size:20px}
+  /* The card is the full width of a phone, so the sheets behind it step in too:
+     the same stack, less reach. On a touch screen the angles stay at zero and
+     this reads as a neat pile of paper rather than as an accident. */
+  .hero__plate{transform:translate3d(calc(var(--spread,0) * 6px), calc(6px + var(--spread,0) * 5px), -26px) rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg))}
+  .hero__plate--deep{transform:translate3d(calc(var(--spread,0) * 11px), calc(11px + var(--spread,0) * 8px), -52px) rotateX(var(--tx,0deg)) rotateY(var(--ty,0deg))}
 }
 
 
@@ -1939,6 +1991,9 @@ img,svg{max-width:100%; height:auto}
 .hero.is-in .hero__actions{animation:hero-title-in .8s var(--ease) .18s backwards}
 .hero.is-in .hero__meta{animation:hero-title-in .8s var(--ease) .26s backwards}
 .hero.is-in .hero__card{animation:hero-title-in .9s var(--ease) .12s backwards}
+/* The sheets arrive with the card, not after it: one wipe for the whole stack,
+   and the 300ms transform transition then settles them into place behind it. */
+.hero.is-in .hero__plate{animation:hero-title-in .9s var(--ease) .12s backwards}
 
 /* The light in the section. One warm wash with a brighter core, both centred on
    the pointer and both trailing it — light has weight, it does not teleport. */
@@ -1990,8 +2045,61 @@ img,svg{max-width:100%; height:auto}
   .hero.is-in .hero__lead,.hero.is-in .hero__actions,.hero.is-in .hero__meta,.hero.is-in .hero__card{animation:none !important}
   .hero__actions .btn--red:hover:after{animation:none; opacity:0}
   .hero__glow{display:none}
+  .hero__seal{transform:none}
   .hero__ripple{display:none}
 }
+
+/* ===== THE CURSOR =====
+   Every visitor on a mouse has been holding the operating system's arrow: black,
+   identical over a link, over plain paper and over something disabled, and the
+   one part of the page the site did not design. It is now the site's own
+   instrument in the site's own accent.
+
+   Two parts, because a pointer has to do two jobs at once. The dot sits exactly
+   where the pointer is — no lag, so aiming at a 12px chip is never guesswork —
+   and the ring trails it by about five frames, which is the part that makes the
+   pointer feel like it has weight. The ring is also the state machine: it opens
+   and fills over anything clickable, closes on a press, becomes a text bar over
+   a field, and goes hollow and grey over something disabled, which is the one
+   affordance the plain arrow used to give away for free.
+
+   It is progressive enhancement, and it fails towards the system arrow: the
+   native cursor is only hidden once the script has mounted, so with JavaScript
+   off nothing changes at all. A touch device never gets it, because a finger is
+   already its own cursor, and "reduce motion" gets the pointer without the
+   trail. The dot is 7px, above the 24px target rule only as a pointer, never as
+   a target. */
+.osr-cursor{position:fixed; top:0; left:0; z-index:10000; pointer-events:none; opacity:0; contain:layout style;
+  transition:opacity .18s linear}
+.osr-cursor__i{display:block; will-change:transform}
+.osr-cursor--dot .osr-cursor__i{width:7px; height:7px; margin:-3.5px 0 0 -3.5px; border-radius:999px; background:var(--red);
+  box-shadow:0 0 0 1.5px rgba(255,255,255,0.9);
+  transition:transform .18s var(--ease), width .18s var(--ease), height .18s var(--ease), margin .18s var(--ease), border-radius .18s var(--ease), background .18s var(--ease)}
+.osr-cursor--ring .osr-cursor__i{width:30px; height:30px; margin:-15px 0 0 -15px; border-radius:999px; border:1.5px solid rgba(166,25,46,0.5);
+  transition:transform .22s var(--ease), border-color .22s var(--ease), background .22s var(--ease), opacity .18s var(--ease)}
+html.cursor-on .osr-cursor{opacity:1}
+/* The system arrow is only taken away once the replacement is on screen. It has
+   to be !important: eleven controls on this page set `cursor` in an inline style
+   and three more set it on a `:disabled` rule, and any of them would otherwise
+   outrank this and leave a second, black arrow sitting under the red one. */
+html.cursor-on,html.cursor-on *{cursor:none !important}
+/* Anything clickable: the ring opens and takes a wash of the accent. */
+.osr-cursor.is-link.osr-cursor--ring .osr-cursor__i{transform:scale(1.55); border-color:var(--red); background:rgba(166,25,46,0.08)}
+.osr-cursor.is-link.osr-cursor--dot .osr-cursor__i{transform:scale(.6)}
+/* A press closes the ring and fattens the dot — the same instant the ripple fires. */
+.osr-cursor.is-down.osr-cursor--ring .osr-cursor__i{transform:scale(.86)}
+.osr-cursor.is-down.osr-cursor--dot .osr-cursor__i{transform:scale(1.25)}
+.osr-cursor.is-link.is-down.osr-cursor--ring .osr-cursor__i{transform:scale(1.32)}
+/* Over a field the pointer becomes the caret it is standing in for. */
+.osr-cursor.is-text.osr-cursor--dot .osr-cursor__i{width:2px; height:19px; margin:-9.5px 0 0 -1px; border-radius:1px}
+.osr-cursor.is-text.osr-cursor--ring .osr-cursor__i{opacity:0}
+/* Disabled: the affordance the arrow used to carry, kept. */
+.osr-cursor.is-off.osr-cursor--ring .osr-cursor__i{border-color:var(--line-2); border-style:dashed; background:none}
+.osr-cursor.is-off.osr-cursor--dot .osr-cursor__i{transform:scale(.45); opacity:.55}
+@media(prefers-reduced-motion:reduce){
+  .osr-cursor,.osr-cursor__i{transition:none !important}
+}
+@media print{.osr-cursor{display:none}}
 
 </style>
 
@@ -3285,13 +3393,29 @@ $("#dashSavedBtn")?.addEventListener("click", ()=>{
      section rather than a dressed-up one. */
   if(touchOnly || calm) return;
 
-  let raf=0, gx=0, gy=0, hot=46;
+  /* One frame of state, written to the section as custom properties rather than
+     as inline transforms. The record stack, its two plates and the seal behind
+     the copy all read the same numbers, so a single pointermove moves the whole
+     section as one object instead of three parts arguing over `transform`. */
+  const stage=document.querySelector(".hero__stage");
+  const TILT_Y=7, TILT_X=4.5;          // degrees: across, then deep
+  const LIFT_ON=10, LIFT_OFF=3;        // px the card rises off the stack
+  const REACH=9, RISE=7;               // px the seal drifts against the pointer
+  let raf=0, gx=0, gy=0, hot=46, tx=0, ty=0, lift=0, spread=0, px=0, py=0;
   const paint=()=>{
     raf=0;
-    wrap.style.setProperty("--gx", gx.toFixed(1)+"px");
-    wrap.style.setProperty("--gy", gy.toFixed(1)+"px");
-    wrap.style.setProperty("--hot", hot.toFixed(1)+"%");
+    const style=wrap.style;
+    style.setProperty("--gx", gx.toFixed(1)+"px");
+    style.setProperty("--gy", gy.toFixed(1)+"px");
+    style.setProperty("--hot", hot.toFixed(1)+"%");
+    style.setProperty("--tx", tx.toFixed(2)+"deg");
+    style.setProperty("--ty", ty.toFixed(2)+"deg");
+    style.setProperty("--lift", lift.toFixed(2)+"px");
+    style.setProperty("--spread", spread.toFixed(3));
+    style.setProperty("--px", px.toFixed(2)+"px");
+    style.setProperty("--py", py.toFixed(2)+"px");
   };
+  const settle=()=>{ gx=0; gy=0; hot=46; tx=0; ty=0; lift=0; spread=0; px=0; py=0; paint(); };
 
   wrap.addEventListener("pointermove", event=>{
     if(event.pointerType==="touch") return;
@@ -3299,36 +3423,135 @@ $("#dashSavedBtn")?.addEventListener("click", ()=>{
     if(!box.width || !box.height) return;
     gx=event.clientX-box.left; gy=event.clientY-box.top;
     hot=clamp((gx/box.width)*100, 6, 94);
+    /* The seal answers at a third of the pointer's travel and in the other
+       direction, which is what puts it behind the paper. */
+    px=-((gx/box.width)-0.5)*REACH*2;
+    py=-((gy/box.height)-0.5)*RISE*2;
     if(!raf) raf=requestAnimationFrame(paint);
     wrap.classList.add("is-pointing");
 
     if(card){
       const c=card.getBoundingClientRect();
-      const dx=clamp((event.clientX-(c.left+c.width/2))/(box.width/2), -1, 1);
-      const dy=clamp((event.clientY-(c.top+c.height/2))/(box.height/2), -1, 1);
       const on=near(event.clientX, event.clientY, c, 36);
+      /* The lean is measured against the stack itself, so the sheet turns
+         towards the pointer from anywhere in the section — and it keeps turning
+         a little past the edge (1.6 rather than 1.0) instead of stopping dead
+         the moment the pointer leaves the card. */
+      const origin=stage ? stage.getBoundingClientRect() : c;
+      const nx=clamp((event.clientX-(origin.left+origin.width/2))/(origin.width/2), -1.6, 1.6);
+      const ny=clamp((event.clientY-(origin.top+origin.height/2))/(origin.height/2), -1.6, 1.6);
+      ty=nx*TILT_Y; tx=-ny*TILT_X;
+      lift=on ? LIFT_ON : LIFT_OFF;
+      spread=on ? 1 : 0.3;
       card.style.setProperty("--cx", clamp(((event.clientX-c.left)/c.width)*100, -15, 115).toFixed(1)+"%");
       card.style.setProperty("--cy", clamp(((event.clientY-c.top)/c.height)*100, -15, 115).toFixed(1)+"%");
       card.classList.toggle("is-lit", on);
-      card.style.transform="perspective(900px) rotateX("+(-dy*2.6).toFixed(2)+"deg) rotateY("+(dx*3.4).toFixed(2)+"deg) translateY("+(on?-4:-1.5)+"px)";
-      card.style.boxShadow=on ? "0 1px 0 rgba(0,0,0,0.02), 0 22px 52px rgba(17,18,20,0.12)" : "";
+      card.style.boxShadow=on ? "0 1px 0 rgba(0,0,0,0.02), 0 24px 56px rgba(17,18,20,0.13)" : "";
     }
 
     if(cta){
       const r=cta.getBoundingClientRect();
       const on=near(event.clientX, event.clientY, r, 42);
+      /* Magnetic, but clamped: the button steps towards the pointer and never
+         far enough to leave the pointer behind. One focal element only. */
       cta.style.transform=on
-        ? "translate3d("+clamp((event.clientX-(r.left+r.width/2))/8, -5, 5).toFixed(1)+"px, "+clamp((event.clientY-(r.top+r.height/2))/10, -4, 4).toFixed(1)+"px, 0)"
+        ? "translate3d("+clamp((event.clientX-(r.left+r.width/2))*0.14, -9, 9).toFixed(1)+"px, "+clamp((event.clientY-(r.top+r.height/2))*0.16, -6, 6).toFixed(1)+"px, 0)"
         : "";
-      cta.style.boxShadow=on ? "0 8px 22px rgba(166,25,46,0.28)" : "";
+      cta.style.boxShadow=on ? "0 10px 26px rgba(166,25,46,0.3)" : "";
     }
   }, {passive:true});
 
   wrap.addEventListener("pointerleave", ()=>{
     wrap.classList.remove("is-pointing");
-    if(card){ card.classList.remove("is-lit"); card.style.transform=""; card.style.boxShadow=""; }
+    settle();
+    if(card){ card.classList.remove("is-lit"); card.style.boxShadow=""; }
     if(cta){ cta.style.transform=""; cta.style.boxShadow=""; }
   });
+})();
+
+/* SITE CURSOR — the site's own pointer, in the site's own red. Two parts with
+   two jobs: the dot sits exactly where the pointer is, so aiming at a 12px chip
+   is never guesswork, and the ring trails it by about five frames, which is the
+   part that gives the pointer weight. The ring is also the state machine — it
+   opens and fills over anything clickable, closes on a press, becomes a text
+   bar over a field, and goes hollow and grey over something disabled.
+
+   Progressive enhancement that fails towards the system arrow: the native
+   cursor is only hidden once this has mounted, so with JavaScript off nothing
+   changes. A touch device never gets it, and "reduce motion" keeps the pointer
+   and drops the trail. */
+(function siteCursor(){
+  const fine=window.matchMedia("(hover:hover) and (pointer:fine)");
+  const calm=window.matchMedia("(prefers-reduced-motion:reduce)");
+  if(!fine.matches) return;
+
+  const make=modifier=>{
+    const el=document.createElement("div");
+    el.className="osr-cursor osr-cursor--"+modifier;
+    el.setAttribute("aria-hidden","true");
+    const inner=document.createElement("i");
+    inner.className="osr-cursor__i";
+    el.appendChild(inner);
+    document.body.appendChild(el);
+    return el;
+  };
+  const dot=make("dot"), ring=make("ring");
+  const place=(el,x,y)=>{ el.style.transform="translate3d("+x.toFixed(2)+"px, "+y.toFixed(2)+"px, 0)"; };
+
+  /* What the ring reacts to. A list rather than :hover styling, because the
+     cursor has to know what is under it before anything paints, and because
+     most of this page's controls are built after load. */
+  const CLICKABLE="a[href],button,input,select,summary,label,[role='button'],[role='tab'],[role='menuitem'],[role='option'],[role='link'],[data-nav],[draggable='true'],.chip,.tag,.cmd__item,.dash-chip,.dash-stat,.feed__action,.track-saved__open,.welcome-features li";
+  const FIELD="input:not([type=radio]):not([type=checkbox]):not([type=range]):not([type=color]):not([type=file]):not([type=button]):not([type=submit]):not([type=reset]),textarea,[contenteditable='true'],[contenteditable='']";
+  const OFF="[disabled],[aria-disabled='true']";
+  const STATES=["is-link","is-text","is-off"];
+  let state="";
+  const setState=next=>{
+    if(next===state) return;
+    state=next;
+    for(const el of [dot,ring]) for(const name of STATES) el.classList.toggle(name, name===next);
+  };
+
+  let x=0, y=0, rx=0, ry=0, raf=0, live=false;
+  /* The loop runs only while the ring still has ground to cover, so an idle
+     page pays nothing for the cursor being there. */
+  const follow=()=>{
+    raf=0;
+    rx+=(x-rx)*0.22; ry+=(y-ry)*0.22;
+    if(Math.abs(x-rx)<0.35 && Math.abs(y-ry)<0.35){ rx=x; ry=y; }
+    else raf=requestAnimationFrame(follow);
+    place(ring,rx,ry);
+  };
+
+  document.addEventListener("pointermove", event=>{
+    if(event.pointerType==="touch") return;
+    x=event.clientX; y=event.clientY;
+    if(!live){
+      live=true; rx=x; ry=y; place(ring,rx,ry);
+      document.documentElement.classList.add("cursor-on");   // this is what retires the system arrow
+    }
+    place(dot,x,y);
+    if(calm.matches){ rx=x; ry=y; place(ring,rx,ry); }
+    else if(!raf) raf=requestAnimationFrame(follow);
+    const target=event.target instanceof Element ? event.target : null;
+    setState(!target ? ""
+      : target.closest(FIELD) ? "is-text"
+      : target.closest(OFF) ? "is-off"
+      : target.closest(CLICKABLE) ? "is-link"
+      : "");
+  }, {passive:true});
+
+  /* A press closes the ring at the same instant the ripple fires under it. */
+  const press=on=>()=>{ dot.classList.toggle("is-down", on); ring.classList.toggle("is-down", on); };
+  document.addEventListener("pointerdown", event=>{ if(event.pointerType!=="touch") press(true)(); }, {passive:true});
+  window.addEventListener("pointerup", press(false), {passive:true});
+  window.addEventListener("pointercancel", press(false), {passive:true});
+
+  /* Off the window, or with the tab in the background, the pointer has no
+     business being on screen — and the system arrow comes back with it. */
+  const hide=()=>{ live=false; document.documentElement.classList.remove("cursor-on"); };
+  document.addEventListener("pointerleave", hide);
+  window.addEventListener("blur", hide);
 })();
 const pages={"home":"page-home","announcements":"page-announcements","board-meetings":"page-board-meetings","initiatives":"page-initiatives","resources":"page-resources","help":"page-help","about":"page-about","search":"page-search","ideal-bulsu":"page-ideal-bulsu","academic-calendar":"page-academic-calendar","track":"page-track"};
 function setRoute(hash){

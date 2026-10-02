@@ -87,6 +87,51 @@ test('the raster fallbacks are the sizes they claim to be', () => {
   assert.equal(touch.height, 180);
 });
 
+test('the tab icon is a square frame centred on the mark', () => {
+  // The shipped icon sat high in the tab. A tab is square and this mark is not,
+  // and the generator worked out the padding its *width* needed and then used
+  // that same number for the height, which pinned the drawing to the top edge
+  // with a dead band of tab underneath it. Each axis has to be centred on the
+  // mark separately, which is what these two lines hold on to.
+  const frame = svg.match(/viewBox="([^"]+)"/)[1].trim().split(/\s+/).map(Number);
+  assert.equal(frame[2], frame[3], 'a tab is square, so the icon frame has to be too');
+  const mark = read('osr-mark.svg').toString('utf8').match(/viewBox="([^"]+)"/)[1].trim().split(/\s+/).map(Number);
+  const centre = value => Math.round(value * 100) / 100;
+  assert.equal(centre(frame[0] + frame[2] / 2), centre(mark[0] + mark[2] / 2), 'the frame is centred on the mark across');
+  assert.equal(centre(frame[1] + frame[3] / 2), centre(mark[1] + mark[3] / 2), 'and down — the axis the old frame got wrong');
+});
+
+test('the mark is in the middle of the pixels, not just of the viewBox', async () => {
+  // The rasters are what Safari, iOS and older clients actually show, so the
+  // centring is measured off the ink itself rather than trusted from the frame.
+  const { default: sharp } = await import('sharp');
+  for (const size of [16, 32, 48]) {
+    const { data, info } = await sharp(read(`favicon-${size}.png`)).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+    let top = info.height;
+    let bottom = -1;
+    let left = info.width;
+    let right = -1;
+    for (let y = 0; y < info.height; y += 1) {
+      for (let x = 0; x < info.width; x += 1) {
+        if (data[(y * info.width + x) * 4 + 3] <= 10) continue;
+        if (y < top) top = y;
+        if (y > bottom) bottom = y;
+        if (x < left) left = x;
+        if (x > right) right = x;
+      }
+    }
+    const air = { top, bottom: info.height - 1 - bottom, left, right: info.width - 1 - right };
+    assert.ok(Math.abs(air.top - air.bottom) <= 1,
+      `favicon-${size}.png: the mark sits ${air.top}px from the top and ${air.bottom}px from the bottom`);
+    assert.ok(Math.abs(air.left - air.right) <= 1,
+      `favicon-${size}.png: the mark sits ${air.left}px from the left and ${air.right}px from the right`);
+    // A wide mark in a square tab cannot fill it, and it must not try: the air is
+    // what stops the drawing touching the edges of the tab.
+    assert.ok(air.top >= Math.round(size * 0.15),
+      `favicon-${size}.png: the mark needs air around it in a ${size}px tab (top ${air.top}px)`);
+  }
+});
+
 test('the ICO carries 16, 32 and 48 so tabs never downscale a 32', () => {
   const ico = read('favicon.ico');
   assert.equal(ico.readUInt16LE(0), 0, 'the ICO header starts with the reserved word');

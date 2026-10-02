@@ -122,11 +122,12 @@ Integration tests execute PostgreSQL queries in PGlite (a local PostgreSQL engin
 and use an in-memory media store; they do not connect to your live Neon account.
 Tests verify standalone mode (only DATABASE_URL required, JWT secret persisted).
 The hero's pointer interactions are driven in jsdom (`hero-motion.test.mjs`), the
+site cursor and its states are driven the same way (`site-cursor.test.mjs`), the
 Ideal BulSU points bar is driven the same way (`builder-bar.test.mjs`), the tab
-icon set and the social card are checked against their vector source
-(`tab-identity.test.mjs`), and `osr-netlify.zip` is compared with the files in
-the repository (`netlify-bundle.test.mjs`), so a stale drag-and-drop bundle fails
-the suite.
+icon set and the social card are checked against their vector source and the ink
+is measured in the pixels (`tab-identity.test.mjs`), and `osr-netlify.zip` is
+compared with the files in the repository (`netlify-bundle.test.mjs`), so a stale
+drag-and-drop bundle fails the suite.
 
 ## What changed for standalone
 
@@ -139,6 +140,40 @@ the suite.
 
 ## Recent fixes
 
+- **The tab icon sits in the middle of the tab.** It was drawn high, with a dead
+  band of empty tab underneath it. A tab is square and this mark is not, and
+  `tools/make-tab-icons.mjs` worked out the padding its *width* needed and then
+  applied that same number to the height, which pinned the drawing to the top
+  edge of the frame. Each axis is now centred on the mark separately, the square
+  frame is derived once and written into `favicon.svg` along with the rasters, so
+  the vector and the PNG/ICO set cannot disagree about where the mark sits. At
+  32px the mark had 1px of air above it and 11px below; it now has 6px on both
+  sides. `tab-identity.test.mjs` measures the ink in the pixels on every
+  `npm test`, so the icon cannot quietly sit high again.
+- **The hero has one 3D object, and it moves as one object.** The card is a record
+  sheet on the two sheets filed behind it: a stage owns a single perspective, the
+  card sits at z=0 and the plates behind it at -26 and -52, and all three are
+  turned by the same two angles. Those angles are custom properties written by
+  the pointer, not inline transforms, which is the part that matters — two rules
+  writing `transform` on the same element is how the lean went missing before.
+  The rest of the section answers on the same pointermove: the seal's line-work
+  drifts against the pointer at a third of its travel (which is what puts it
+  behind the paper), the sheet comes 10px off the stack and the file behind it
+  opens, and the primary action steps toward the pointer, clamped so it never
+  leaves the pointer behind. Amplitudes are held to 7 degrees across and 4.5
+  deep, the release is quicker than the lean, and nothing loops, so it stays
+  inside MOTION 2. `hero-motion.test.mjs` drives all of it and now asserts the
+  stack itself.
+- **The pointer belongs to the site now.** Every visitor on a mouse had been
+  holding the operating system's arrow: black, identical over a link, over plain
+  paper and over something disabled, and the one part of the page the site did
+  not design. It is now a red dot that sits exactly where the pointer is, inside
+  a ring that trails it by about five frames and changes shape for what is under
+  it — wider and washed over anything clickable, closed on a press, a caret bar
+  over a field, hollow and grey over something disabled. The system arrow is only
+  retired once the replacement has mounted, so with JavaScript off nothing
+  changes; a touch device never gets it, and "reduce motion" keeps the pointer
+  and drops the trail. `site-cursor.test.mjs` drives the states in jsdom.
 - **The hero's interactions can actually be felt again.** They were being
   neutralised, not missing: every `.hero.is-in` entrance animation ran with
   fill-mode `both`, and a finished animation with `both` keeps ownership of the
