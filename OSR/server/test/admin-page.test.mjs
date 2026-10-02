@@ -31,7 +31,11 @@ test('admin page inline script parses, so /admin can never render blank', async 
   assert.match(html, /checkAuthAndSetup\(\);/);
   assert.match(html, /function showAuth\(/, 'the boot path must be able to reveal a screen');
 
-  assert.match(html, /src="\/osr-logo\.png"/, 'the supplied OSR logo must identify the login and workspace');
+  assert.match(html, /src="\/osr-mark\.svg"/, 'the OSR mark must identify the login, top bar and mobile sidebar');
+  // The transparency report draws the logo into the PDF on a canvas, which needs
+  // a raster: the PNG stays in the page for that one job even though the UI uses
+  // the vector mark.
+  assert.match(html, /fetch\('\/osr-logo\.png'/s, 'the PDF report must keep its raster logo');
   assert.match(html, /id="adminSidebar"/, 'the workspace needs a persistent navigation landmark');
   assert.match(html, /id="mobileMenuBtn"[^>]+aria-controls="adminSidebar"/, 'mobile navigation must be labeled and connected');
   for (const section of ['overview', 'activity', 'announcements', 'board', 'initiatives', 'resources', 'calendar', 'media', 'contact', 'about', 'pulse', 'settings']) {

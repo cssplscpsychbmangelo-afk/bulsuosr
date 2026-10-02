@@ -152,10 +152,10 @@ tab icon set is checked against its vector source (`tab-identity.test.mjs`), and
   part a finger on a phone can feel. Coming back to Home replays the arrival
   instead of leaving the masthead frozen. `hero-motion.test.mjs` drives all of it
   on every `npm test`, and the entrance fill-modes are asserted directly.
-- **The tab icon is the real OSR mark, and it reads the tab it lands on.**
-  `favicon.svg` is the original logo traced from `osr-logo-original.png` into one
-  vector path, so the tab shows the logo itself rather than a plate with a
-  shrunken raster of it (which is what looked ugly). Inside that one file,
+- **The OSR mark is the logo everywhere, and the tab icon reads the tab it lands
+  on.** `favicon.svg` is the original logo traced from `osr-logo-original.png`
+  into one vector path, so the tab shows the logo itself rather than a plate with
+  a shrunken raster of it (which is what looked ugly). Inside that one file,
   `prefers-color-scheme` swaps the fill: institutional red on light browser
   chrome, a light tint of the same red on dark chrome, so the mark is never a
   dark blob on a dark strip. Safari and iOS pick up the ICO and PNGs instead;
@@ -164,6 +164,20 @@ tab icon set is checked against its vector source (`tab-identity.test.mjs`), and
   vector and the rasters cannot drift apart. `tab-identity.test.mjs` checks the
   sizes, the ICO container, the dark-chrome contrast and that every committed
   raster still matches the path.
+- **The mark replaced the full stacked lockup in the page's logo slots.** The
+  header, mobile menu, footer, welcome card and admin login/top bar/sidebar were
+  showing `osr-logo.png` — the whole lockup, wordmark included — at 36-44px,
+  where its lettering is an unreadable smudge. They now render `osr-mark.svg`,
+  the same traced mark as the tab icon (generated from the same path, so the two
+  can never show different logos), always in institutional red and never themed
+  by the operating system: a tab has to answer the browser's chrome, a logo on
+  the site's own white paper does not. `osr-logo.png` is still served, and still
+  fetched by the admin's transparency report, which draws the logo into a PDF on
+  a canvas and needs a raster.
+
+  The bundle's freshness check is now derived from the list of files the archive
+  actually packs, so nothing can be silently left out of it again — the admin
+  page had been, which is how a rebuilt archive shipped a stale admin.
 - **A stale drag-and-drop bundle can no longer ship.** `OSR/osr-website/osr-netlify.zip`
   is the upload-instead-of-Git alternative, and it had gone stale — a deploy from
   it served an older page with none of the latest work and the old tab icon.

@@ -11,10 +11,6 @@ const siteDir = path.dirname(fileURLToPath(import.meta.url));
 const ADMIN_PATH = (process.env.ADMIN_PATH || '/OSRAdminControl2026').replace(/\/+$/, '') || '/OSRAdminControl2026';
 const adminFolder = ADMIN_PATH.replace(/^\//, '');
 
-// Sources the drag-and-drop zip is rebuilt from, relative to siteDir.
-const indexHtmlPath = path.join(siteDir, 'index.html');
-const cmsPath = path.join(siteDir, 'js', 'cms-integration.js');
-const faviconPath = path.join(siteDir, 'favicon.svg');
 
 fs.rmSync(path.join(siteDir, adminFolder), { recursive: true, force: true });
 fs.rmSync(path.join(siteDir, 'admin'), { recursive: true, force: true });
@@ -37,24 +33,44 @@ ${ADMIN_PATH}/*        /${adminFolder}/index.html      200!
 // It is a snapshot, so it silently goes stale as soon as the source moves —
 // that is how a deploy ended up missing the hero work and serving the old tab
 // icon. Rebuilding it here means a fresh clone always packs the current site.
+//
+// Everything the archive packs is listed once, with where it comes from on disk,
+// so a file can never be left out of the freshness check (the admin page was,
+// once) or packed from somewhere unexpected.
+const archive = {
+  folders: ['js', adminFolder],
+  files: [
+    ['index.html', path.join(siteDir, 'index.html')],
+    ['js/cms-integration.js', path.join(siteDir, 'js', 'cms-integration.js')],
+    ['_redirects', path.join(siteDir, '_redirects')],
+    ['_headers', path.join(siteDir, '_headers')],
+    ['osr-logo.png', path.join(siteDir, 'osr-logo.png')],
+    ['osr-logo-original.png', path.join(siteDir, 'osr-logo-original.png')],
+    ['favicon.svg', path.join(siteDir, 'favicon.svg')],
+    ['osr-mark.svg', path.join(siteDir, 'osr-mark.svg')],
+    ['favicon.ico', path.join(siteDir, 'favicon.ico')],
+    ['favicon-16.png', path.join(siteDir, 'favicon-16.png')],
+    ['favicon-32.png', path.join(siteDir, 'favicon-32.png')],
+    ['favicon-48.png', path.join(siteDir, 'favicon-48.png')],
+    ['apple-touch-icon.png', path.join(siteDir, 'apple-touch-icon.png')],
+    [`${adminFolder}/index.html`, path.join(siteDir, '..', 'admin', 'index.html')],
+    [`${adminFolder}/design-preview.html`, path.join(siteDir, '..', 'admin', 'design-preview.html')],
+  ],
+};
+
 if (process.env.OSR_SKIP_ZIP !== '1') {
   const { execFileSync } = await import('node:child_process');
   const zipPath = path.join(siteDir, 'osr-netlify.zip');
-  const stale = [indexHtmlPath, cmsPath, faviconPath].filter(file => {
-    const newest = fs.statSync(file).mtimeMs;
-    return !fs.existsSync(zipPath) || fs.statSync(zipPath).mtimeMs < newest;
-  });
-  if (stale.length) {
+  const packedAt = fs.existsSync(zipPath) ? fs.statSync(zipPath).mtimeMs : 0;
+  const stale = archive.files.filter(([, file]) => fs.statSync(file).mtimeMs > packedAt).map(([name]) => name);
+  if (!packedAt || stale.length) {
     fs.rmSync(zipPath, { force: true });
-    const entries = ['index.html', 'osr-logo.png', 'osr-logo-original.png', 'favicon.svg', 'favicon.ico',
-      'favicon-16.png', 'favicon-32.png', 'favicon-48.png', 'apple-touch-icon.png', 'js',
-      '_redirects', '_headers', adminFolder];
-    // The archive holds no secrets — index.html, the logo, the icons, the icons'
-    // generator output and the admin page — and `zip` is present on Netlify's
-    // build image. If it is missing, say so rather than shipping a stale file.
+    // The archive holds no secrets — the page, the logo, the icons and the admin
+    // page — and `zip` is present on Netlify's build image. If it is missing, say
+    // so rather than leaving a stale file behind.
     try {
-      execFileSync('zip', ['-q', '-r', '-X', zipPath, ...entries], { cwd: siteDir });
-      console.log(`[Netlify] Rebuilt osr-netlify.zip (${stale.length} newer source file(s)).`);
+      execFileSync('zip', ['-q', '-r', '-X', zipPath, ...archive.files.map(([name]) => name), ...archive.folders], { cwd: siteDir });
+      console.log(`[Netlify] Rebuilt osr-netlify.zip (${stale.length || 'new'} file(s) moved).`);
     } catch (error) {
       console.warn(`[Netlify] Could not rebuild osr-netlify.zip (${error.message}). Upload the published folder instead.`);
     }
