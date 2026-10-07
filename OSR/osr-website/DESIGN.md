@@ -100,4 +100,35 @@ Reasons per R-31, dial per MOTION 2.
 - Contrast verified: Ink #111214 on white 15.9:1 PASS, Stone #6B6560 on white 5.8:1 PASS, White on Red #A6192E 7.2:1 PASS, Red on light gray fails so never set red text on gray.
 - Every data view has empty, loading, and error states. Reduced-motion support. Scalable text to 200%.
 
+## Implementation notes — page-by-page pass (2026-10)
+
+- **Tokens are three layers.** Layer 1 primitives (`--p-*`) → Layer 2 semantic
+  (`--color-*`, `--status-*`) → Layer 3 component (`--btn-*`, `--field-*`,
+  `--row-*`, `--surface-*`). The old `--red / --ink / --stone / --paper / --line`
+  names are kept as aliases of Layer 2, so nothing had to be renamed to migrate.
+  Component CSS reads tokens only; no component invents a value.
+- **Records, not cards.** One record system carries announcements, Board
+  meetings, initiatives and resources: date cell → meta line (labels + status)
+  → title → excerpt → facts → documents → actions, separated by hairlines.
+  Cards survive only where content is genuinely grouped (the office band, the
+  Ideal BulSU band).
+- **Status is always a word first.** Every chip pairs text with an icon; colour
+  only repeats what the word already said, so the state survives greyscale.
+  Board records distinguish upcoming / completed / documents available /
+  minutes available / pending in words.
+- **Red is an accent, never a field.** The About profile band moved from a red
+  wash to ink with the red filing rule; the rule, the record left-border and
+  the section numerals are where red does its work.
+- **Targets.** Every interactive control is at least 44×44 (`--btn-min-h`,
+  `--field-min-h`), including icon buttons, chips, row actions and the saved-list
+  controls. One focus ring everywhere: `2px solid --color-focus`, offset 2.
+- **Motion stays on arrival and interaction.** The masthead keeps one entrance,
+  a pointer-only depth stack and a press ripple; nothing loops. The dashboard
+  "Coming up" list is static, and its former three-second rotation is gone.
+  Every layer is inert under `prefers-reduced-motion`, on touch, and in print.
+- **Hero face.** The masthead title uses `--font-hero` (Bricolage Grotesque,
+  self-hosted 800 subset) for institutional weight at display size. Every other
+  display heading stays Fraunces. Open question for the office: keep the second
+  face, or set the masthead in Fraunces with the same tracking.
+
 Dial: ENERGY 2 / RHYTHM 3 / MOTION 2

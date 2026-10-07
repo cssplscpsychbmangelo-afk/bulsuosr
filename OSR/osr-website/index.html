@@ -2359,6 +2359,11 @@ textarea.input{min-height:120px; padding:11px 13px; line-height:1.6; resize:vert
   #page-about .ab-hero{padding:22px 18px}
   #page-about .ab-hero__facts{text-align:left}
 }
+
+/* The tracking code is the one thing a student has to type, so it is set in the
+   mono face at a size they can check digit by digit against what they saved. */
+.track-form__code{font:600 17px var(--font-mono); letter-spacing:.08em; text-transform:uppercase}
+.track-form__code::placeholder{text-transform:none; letter-spacing:.02em; font-weight:400}
 </style>
 </head>
 <body>
@@ -3378,7 +3383,7 @@ textarea.input{min-height:120px; padding:11px 13px; line-height:1.6; resize:vert
           <form class="track-form" id="trackForm" role="search" aria-label="Find a concern by tracking code">
             <label for="trackCode" class="track-card__label">Tracking code</label>
             <div class="track-form__row">
-              <input id="trackCode" class="input" autocomplete="off" spellcheck="false" placeholder="OSR-ABCD-2345" maxlength="20"/>
+              <input id="trackCode" class="input track-form__code" autocomplete="off" spellcheck="false" placeholder="OSR-ABCD-2345" maxlength="20" aria-label="Tracking code"/>
               <button class="btn btn--red" type="submit">Check status</button>
             </div>
           </form>
@@ -3386,6 +3391,7 @@ textarea.input{min-height:120px; padding:11px 13px; line-height:1.6; resize:vert
         </div>
         <aside class="track-side">
           <h3>Saved on this device</h3>
+          <p class="small muted" style="margin:4px 0 8px">A convenience list, kept in this browser only. It is not an Office record, and the OSR cannot see it. Clearing your browser data removes it.</p>
           <ul class="track-saved" id="trackSaved"></ul>
           <div class="track-legend">
             <h4>What the steps mean</h4>
@@ -4019,7 +4025,8 @@ function announcementRowHtml(a, opts){
     ${recDateCell(a.date, lead)}
     <div class="record__body">
       <div class="meta">
-        ${chip(a.category, lead?"live":"live")}
+        ${lead?chip("Latest","live",'<path d="M12 5v14"/><path d="M5 12l7-7 7 7"/>')+META_SEP:""}
+        ${chip(a.category, "live")}
         ${META_SEP}
         <span class="meta__item">${escapeHtml(fmtDate(a.date))}</span>
         ${a._placeholder?META_SEP+exampleChip():META_SEP+verifiedNote()}
@@ -4744,7 +4751,7 @@ function renderTrackSaved(){
   if(!host) return;
   const list=trackSaved();
   host.innerHTML=list.length?list.map(item=>`<li><button type="button" class="track-saved__open" data-track-open="${escapeHtml(item.code)}"><b>${escapeHtml(item.code)}</b><span>Saved ${escapeHtml(new Date(item.saved).toLocaleDateString("en-PH",{dateStyle:"medium"}))}</span></button><button type="button" class="track-saved__x" data-track-forget="${escapeHtml(item.code)}" aria-label="Remove ${escapeHtml(item.code)} from this device">×</button></li>`).join("")
-    :`<li class="track-saved__empty">Concerns you submit on this device appear here automatically.</li>`;
+    :`<li class="track-saved__empty">Concerns you submit on this device appear here automatically. The list is kept in this browser only.</li>`;
 }
 document.getElementById("trackForm")?.addEventListener("submit", e=>{ e.preventDefault(); trackLookup(document.getElementById("trackCode").value); });
 document.addEventListener("click", e=>{
@@ -4944,24 +4951,33 @@ function boardRowHtml(b, isHome, q){
         return `<a class="doc" href="${d.href||"#"}"${ext?' target="_blank" rel="noopener"':""}>${escapeHtml(d.label||"Related document")} <span class="doc__type">${boardDocType(d.href,"Related document")}</span></a>`;
       }).join("")
     : `<span class="doc doc--pending">No related documents filed <span class="doc__type">Pending</span></span>`;
+  /* Four states a reader has to be able to tell apart — upcoming, completed,
+     documents available, minutes available, and pending — and every one of them
+     is a word with an icon, so colour is never the only signal. */
+  const meetingDay=new Date(b.date+"T12:00:00");
+  const upcoming=!isNaN(meetingDay) && meetingDay>new Date();
+  const timeline = upcoming
+    ? chip("Upcoming","open",'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>')
+    : chip("Completed","done",'<path d="M20 6 9 17l-5-5"/>');
   const status = released
-    ? chip("Minutes released","done",'<path d="M20 6 9 17l-5-5"/>')
-    : chip("Minutes pending","open",'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>');
+    ? chip("Minutes available","done",'<path d="M14 2H7a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/>')
+    : chip(upcoming?"Minutes pending":"Minutes not released","open",'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>');
   return `<div class="record record--board" role="listitem">
     ${recDateCell(b.date)}
     <div class="record__body">
       <div class="meta">
-        <span class="meta__item meta__id">${escapeHtml(b.meetingNumber)}</span>
+        <span class="meta__item meta__id">Meeting ${escapeHtml(b.meetingNumber)}</span>
         ${META_SEP}
-        <span class="meta__item">${escapeHtml(b.type)}</span>
+        <span class="meta__item">${escapeHtml(b.type)} session</span>
         ${META_SEP}
-        <span class="meta__item">AY ${escapeHtml(b.academicYear)}</span>
+        <span class="meta__item">Session AY ${escapeHtml(b.academicYear)}</span>
       </div>
       <h3 class="record__title">${highlight(b.title, q)}</h3>
       <p class="record__excerpt record__excerpt--clamp">${highlight(b.description, q)}</p>
       <div class="record__statusline">
+        ${timeline}
         ${status}
-        ${chip(docs.length?`${docs.length} related ${docs.length===1?"document":"documents"}`:"No related documents","plain")}
+        ${docs.length?chip(`${docs.length} related ${docs.length===1?"document":"documents"} available`,"plain"):chip("No related documents filed","plain")}
         ${b._placeholder?exampleChip():""}
       </div>
       ${isHome?"":`<div class="record__docs doc-list">${docRows}${minutes}</div>`}
