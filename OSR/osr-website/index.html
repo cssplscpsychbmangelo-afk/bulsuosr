@@ -2340,6 +2340,25 @@ textarea.input{min-height:120px; padding:11px 13px; line-height:1.6; resize:vert
 /* Focus: one ring, everywhere, and never removed without a replacement. */
 :where(a,button,summary,[tabindex],[role="button"],input,select,textarea):focus-visible{
   outline:var(--focus-ring); outline-offset:var(--focus-ring-offset); border-radius:var(--radius-control)}
+
+/* ===== ABOUT · the institutional profile band =====
+   The band used to be poured in institutional red, which the design language
+   reserves for accents — a red field on every visit also flattens the page it
+   is supposed to open. It is now ink with the red kept as the filing rule, so
+   the profile reads like a record cover rather than a banner. */
+#page-about .ab-hero{background:var(--color-text); color:var(--color-text-inverse);
+  border-top:3px solid var(--color-accent); border-radius:var(--radius-record); padding:30px 30px 26px}
+#page-about .ab-hero h2{color:var(--color-text-inverse)}
+#page-about .ab-hero p{color:rgba(255,255,255,.82)}
+#page-about .ab-hero__eyebrow{color:rgba(255,255,255,.72)}
+#page-about .ab-hero__facts dt{color:rgba(255,255,255,.65)}
+#page-about .ab-hero__facts dd{color:var(--color-text-inverse)}
+#page-about .ab-hero__badge{background:var(--color-text-inverse); color:var(--color-accent-deep); border-color:transparent}
+#page-about .ab-hero:after{display:none}
+@media(max-width:720px){
+  #page-about .ab-hero{padding:22px 18px}
+  #page-about .ab-hero__facts{text-align:left}
+}
 </style>
 </head>
 <body>
@@ -2650,7 +2669,7 @@ textarea.input{min-height:120px; padding:11px 13px; line-height:1.6; resize:vert
           <button class="btn btn--sm" id="viewSaved">Saved (<span id="savedCount">0</span>)</button>
         </div>
       </div>
-      <div id="homeResources" class="resource-list" role="list"></div>
+      <div id="homeResources" class="resource-list"></div>
       <div class="section__foot">
         <a class="btn btn--sm btn--ghost" href="#resources" data-nav>Browse every resource</a>
       </div>
@@ -2738,7 +2757,7 @@ textarea.input{min-height:120px; padding:11px 13px; line-height:1.6; resize:vert
       </div>
       <div class="filters-wrap">
         <div class="filters" role="search" aria-label="Announcement filters">
-          <input class="input" id="annSearch" type="search" placeholder="Search announcements"/>
+          <input class="input" id="annSearch" type="search" aria-label="Search announcements" placeholder="Search announcements"/>
           <select class="select" id="annCategory" aria-label="Category filter">
             <option value="all">All categories</option>
             <option value="Accomplishment Report">Accomplishment Report</option>
@@ -2778,7 +2797,7 @@ textarea.input{min-height:120px; padding:11px 13px; line-height:1.6; resize:vert
       </div>
       <div class="filters-wrap">
         <div class="filters" role="search" aria-label="Board meeting filters">
-          <input class="input" id="boardSearch" type="search" placeholder="Search meetings by title, number, or description"/>
+          <input class="input" id="boardSearch" type="search" aria-label="Search Board Meeting records" placeholder="Search meetings by title, number, or description"/>
           <select class="select" id="boardYear" aria-label="Academic year">
             <option value="all">All academic years</option>
             <option value="2024-2025">2024-2025</option>
@@ -2826,7 +2845,7 @@ textarea.input{min-height:120px; padding:11px 13px; line-height:1.6; resize:vert
       </div>
       <div class="filters-wrap">
         <div class="filters" role="search" aria-label="Initiative filters">
-          <input class="input" id="initSearch" type="search" placeholder="Search initiatives"/>
+          <input class="input" id="initSearch" type="search" aria-label="Search initiatives" placeholder="Search initiatives"/>
           <select class="select" id="initStatus" aria-label="Status filter">
             <option value="all">All statuses</option>
             <option value="PLANNED">PLANNED</option>
@@ -2866,7 +2885,7 @@ textarea.input{min-height:120px; padding:11px 13px; line-height:1.6; resize:vert
       </div>
       <div class="filters-wrap">
         <div class="filters" role="search" aria-label="Resource filters">
-          <input class="input" id="resSearch" type="search" placeholder="Search resources by title or description"/>
+          <input class="input" id="resSearch" type="search" aria-label="Search resources" placeholder="Search resources by title or description"/>
           <select class="select" id="resCategory" aria-label="Category">
             <option value="all">All categories</option>
             <option value="STUDENT RIGHTS & POLICIES">STUDENT RIGHTS & POLICIES</option>
@@ -2877,7 +2896,7 @@ textarea.input{min-height:120px; padding:11px 13px; line-height:1.6; resize:vert
           </select>
         </div>
       </div>
-      <div id="resList" class="resource-list" role="list"></div>
+      <div id="resList" class="resource-list" role="region" aria-label="Resources, grouped by task"></div>
       <div id="resEmpty" class="empty" hidden></div>
       <div class="note-line" style="border-top-color:var(--color-border-rule)">
         <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v4h1"/></svg>
@@ -3423,7 +3442,7 @@ textarea.input{min-height:120px; padding:11px 13px; line-height:1.6; resize:vert
 
         <div id="pulseAlloc" class="pulse-alloc"></div>
 
-        <div class="pulse-map reveal is-visible" id="pulseLiveMap" class="ideal-card">
+        <div class="pulse-map ideal-card reveal is-visible" id="pulseLiveMap">
           <h3 style="margin:0; font-size:13px; font-weight:700">Where did you put your 10 points?</h3>
           <p class="small muted" style="margin:2px 0 10px">Personal preview only. Your build joins the public Pulse only if you submit it.</p>
           <div id="pulseLiveBars" class="pulse-livebars" style="min-height:40px"></div>
@@ -3656,7 +3675,7 @@ textarea.input{min-height:120px; padding:11px 13px; line-height:1.6; resize:vert
       </div>
 
       <div class="cal-controls reveal" style="margin-top:14px">
-        <input class="input" id="calSearch" type="search" placeholder="Search calendar — e.g. enrollment, examination, holiday, GSAT" style="flex:1 1 240px"/>
+        <input class="input" id="calSearch" type="search" aria-label="Search calendar events" placeholder="Search calendar — e.g. enrollment, examination, holiday, GSAT" style="flex:1 1 240px"/>
         <select class="select" id="calMonth" aria-label="Month"><option value="all">All months</option></select>
         <select class="select" id="calCategory" aria-label="Category"><option value="all">All categories</option><option>Holiday</option><option>Enrollment</option><option>Examinations</option><option>Academic</option><option>Graduation</option><option>General</option></select>
         <select class="select" id="calView" aria-label="View"><option value="month">Month sections</option><option value="list">List • soonest first</option></select>
@@ -4645,6 +4664,34 @@ $("#concernForm").addEventListener("submit", async e=>{
     button.disabled=false; button.textContent="Submit concern";
   }
 });
+/* Cross-page and in-page helpers: a link can send a student straight to the
+   resource category it named, and a button can put the cursor in the field it
+   points at instead of dropping them at the top of the page. */
+document.addEventListener("click", e=>{
+  const scroll=e.target.closest("[data-scroll-to]");
+  if(scroll){
+    const target=document.querySelector(scroll.dataset.scrollTo);
+    if(target){
+      e.preventDefault();
+      target.scrollIntoView({behavior:"smooth", block:"start"});
+      const field=target.querySelector("input,select,textarea");
+      if(field) setTimeout(()=> field.focus({preventScroll:true}), 220);
+      else if(!target.hasAttribute("tabindex")) target.setAttribute("tabindex","-1"), target.focus({preventScroll:true});
+    }
+    return;
+  }
+  const jump=e.target.closest("[data-scroll-link]");
+  if(jump){
+    const target=document.getElementById(jump.dataset.scrollLink);
+    if(target){ e.preventDefault(); target.scrollIntoView({behavior:"smooth", block:"start"}); }
+    return;
+  }
+  const filter=e.target.closest("[data-filter]");
+  if(filter){
+    const select=document.getElementById("resCategory");
+    if(select){ select.value=filter.dataset.filter; renderResources(); }
+  }
+});
 document.addEventListener("click", e=>{
   const copy=e.target.closest("[data-copy-code]");
   if(!copy) return;
@@ -5106,7 +5153,7 @@ function resourceRow(r,q){
   const catIcon=resourceCategoryIcon(category);
   let host="";
   if(!disabled){ try{ host=new URL(r.link, location.href).hostname.replace(/^www\./,""); }catch(e){ host=""; } }
-  return `<div class="resource ${isSaved?"is-saved":""}" role="listitem">
+  return `<div class="resource ${isSaved?"is-saved":""}">
     <div class="resource__main">
       <div class="meta">
         <span class="meta__item">${catIcon} ${highlight(category, q)}</span>
@@ -5654,20 +5701,28 @@ function pulseRenderLiveMap(){
   }).join("");
 }
 
+/* Two answers, never mixed: what this student chose, and what everyone else has
+   chosen so far. The student's own allocation leads; the aggregate is labelled
+   with its period and its response count, and when nothing has been submitted
+   it says so instead of showing a shape that looks like data. */
 function pulseRenderResult(){
   const body=document.getElementById("pulseResultBody");
   if(!body || pulseTotal()!==10) return;
   const entries=PULSE_CATEGORIES.map(category=>({
     ...category,
-    value:pulsePoints[category.key]||0,
-    percent:(pulsePoints[category.key]||0)*10
+    value:pulsePoints[category.key]||0
   })).sort((a,b)=>b.value-a.value);
-  const top=entries[0];
-  const second=entries[1];
-  body.innerHTML=`
-    <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px">
-      <span class="mono" style="background:var(--red-3); border:1px solid #FFD0D6; color:var(--red); padding:4px 8px; border-radius:6px; font-size:11px">Highest: ${escapeHtml(top.label)} · ${top.value} points</span>
-      <span class="mono" style="background:var(--paper-2); border:1px solid var(--line); color:var(--ink); padding:4px 8px; border-radius:6px; font-size:11px">Next: ${escapeHtml(second.label)} · ${second.value} points</span>
+  const top=entries[0], second=entries[1];
+  const period=pulseLatestPeriod();
+  const agg=period ? pulseGetPeriod(period) : null;
+  const aggTotal=agg ? Object.values(agg.points||{}).reduce((a,b)=>a+(b||0),0) : 0;
+
+  const mine=`<div class="result-split__col">
+    <h4>Your priorities</h4>
+    <p class="small muted" style="margin:0 0 10px">Your 10 points, exactly as you placed them. Nothing here is public until you choose to submit.</p>
+    <div class="row" style="gap:8px; margin-bottom:12px">
+      <span class="chip chip--ink">Highest: ${escapeHtml(top.label)} · ${top.value} pts</span>
+      <span class="chip chip--plain">Next: ${escapeHtml(second?second.label:"—")} · ${second?second.value:0} pts</span>
     </div>
     <div style="display:grid; gap:8px">
       ${entries.map(entry=>`<div class="pulse-live-row">
@@ -5676,9 +5731,36 @@ function pulseRenderResult(){
         <span class="pulse-live-row__val">${entry.value}/10</span>
       </div>`).join("")}
     </div>
-    <div class="small muted" style="margin-top:10px">Your allocation of 10 points across the seven areas.</div>
-  `;
+  </div>`;
+
+  let others;
+  if(agg && aggTotal>0){
+    const rows=PULSE_CATEGORIES.map(category=>{
+      const points=(agg.points||{})[category.key]||0;
+      const pct=Math.round((points/aggTotal)*100);
+      return {label:category.label, pts:points, pct};
+    }).sort((a,b)=> b.pct-a.pct);
+    others=`<div class="result-split__col result-split__col--aggregate">
+      <h4>How students answered so far</h4>
+      <p class="small muted" style="margin:0 0 10px">${escapeHtml(pulsePeriodLabel(period))} · ${agg.responses} ${agg.responses===1?"build":"builds"} counted. Aggregates only — no individual build is ever shown.</p>
+      <div style="display:grid; gap:8px">
+        ${rows.map(row=>`<div class="pulse-category-row">
+          <span class="pulse-category-row__label">${escapeHtml(row.label)}</span>
+          ${pulseShareBar(`${row.label} share of aggregate points`, row.pct, `${row.pts} points · ${row.pct}% of all points`)}
+          <span class="pulse-category-row__value mono">${row.pct}%</span>
+        </div>`).join("")}
+      </div>
+    </div>`;
+  } else {
+    others=`<div class="result-split__col result-split__col--aggregate">
+      <h4>How students answered so far</h4>
+      <div class="ideal-empty" role="status" style="margin-top:10px">${pulseNoDataCopy()}</div>
+    </div>`;
+  }
+
+  body.innerHTML=`<div class="result-split">${mine}${others}</div>`;
 }
+
 
 // Aggregates helpers
 function pulseGetPeriod(period){
