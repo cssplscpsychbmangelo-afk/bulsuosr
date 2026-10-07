@@ -25,7 +25,7 @@ to hold it there.
 - **White #FFFFFF** — dominant surface. Reason: formality, readability, institutional paper. Keeps the site light and printable.
 - **Ink #111214** — typography. Reason: near-black for maximum legibility without harsh pure black.
 - **Light Gray #F4F2EF / #E9E6E1** — secondary surface and dividers. Reason: subtle separation without turning every section into a card. Neutrals do not count toward palette cap per R-29.
-- **Stone #6B6560** — secondary text. Reason: muted but still AA on white for small text at 4.6:1.
+- **Stone #5C5651** — secondary text. Reason: descriptions under headings, card text and small print are read on phones, outdoors, at arm's length; the previous #6B6560 cleared AA at 5.7:1 but had nothing left in it for glare. One step darker on the same warm gray is 7.2:1 on white and 6.8:1 on the light-gray surface, so the hierarchy is unchanged — ink still reads as the heading colour, stone still reads as the second voice — and the second voice carries further. `--muted` is the same tone: inline form hints asked for it by name and it was never defined, so they silently inherited whatever colour surrounded them.
 
 Palette is 2 core (ink, white) + 1 accent (red) + neutrals. Complies with R-29, R-01 (no gradients as decoration), R-29.
 
@@ -35,6 +35,13 @@ Palette is 2 core (ink, white) + 1 accent (red) + neutrals. Complies with R-29, 
 - **Mono: IBM Plex Mono (500)** — meeting numbers, archive IDs, metadata tags. Reason: functional differentiation of records, not aesthetic.
 
 All type set with fluid clamp, line-height 1.5 for body, 1.0-1.1 for display. No wide-tracked uppercase labels without purpose.
+
+Only these three families are loaded. Twenty rules asked for "Instrument Sans",
+a face the page never requests, so the small form hints and the guide tooltip
+were being set in the browser's generic sans — a fourth, unintended voice in the
+middle of the smallest text on the site. They ask for IBM Plex Sans now. The
+smallest text a student has to read (the "— required unless anonymous" hints)
+was 10px; it is 11.5px, in the family the rest of the page uses, in `--muted`.
 
 ## Dial
 ENERGY 2 / RHYTHM 3 / MOTION 2
@@ -97,7 +104,52 @@ Reasons per R-31, dial per MOTION 2.
 
 ## Human / Mobile (R-03, R-25, R-27, R-32)
 - Mobile-first, no horizontal overflow at 320. Tap targets minimum 44px. Keyboard order follows visual order, visible focus ring (red).
-- Contrast verified: Ink #111214 on white 15.9:1 PASS, Stone #6B6560 on white 5.8:1 PASS, White on Red #A6192E 7.2:1 PASS, Red on light gray fails so never set red text on gray.
+- Contrast verified: Ink #111214 on white 13.8:1 PASS, Stone #5C5651 on white 7.2:1 PASS, Stone on Light Gray #F7F5F2 6.8:1 PASS, White on Red #A6192E 7.5:1 PASS, footer #E8E0D6 on Ink 14.3:1 PASS, Red on light gray fails so never set red text on gray.
 - Every data view has empty, loading, and error states. Reduced-motion support. Scalable text to 200%.
+
+## Finished page — nothing a student reads is a note to whoever edits it
+A page for students carries only finished, student-facing content. Three rules
+came out of that, and they are the reason the About page and the homepage look
+the way they do now:
+- **Unconfirmed means hidden, not placeholder.** "To be announced", "TBD",
+  "[to be supplied]" and an empty card are all the same failure: the page is
+  asking the reader to wait. The cards stay in the document with their ids
+  intact so the CMS keeps writing to them, they carry `hidden`, and
+  `applyAboutVisibility()` reveals each one the moment a confirmed value reaches
+  it. Structure is kept; the student never sees the scaffolding.
+- **Instructions to the editor do not ship.** "Add only verified official
+  links.", "Fields are updated as official records are released.", "Easy to
+  update" — these belong in the README and the admin, not on the page.
+- **A number is either counted or absent.** The homepage's four number boxes are
+  gone rather than zero-filled, and the calendar heading states no event total:
+  the badge prints the length of the record it is actually showing.
+
+## The masthead's card is a person
+The card beside the hero is the Student Regent — photo, name, term, one line in
+their own words, and **Ask the Regent** into the concern form. It is the same
+card the pointer tilts, so nothing about the motion changed; only its contents
+did. `STUDENT_REGENT` at the top of the site script and the Student Regent
+fields in *Admin → About OSR* both feed it, and until a name and a message exist
+the card is hidden and `.hero--solo` gives the masthead the full width, so no
+empty column is left beside it.
+
+## Office details have one home
+`OFFICIAL_LINKS`, `FOOTER_OFFICE`, `PRIVACY_RETENTION` and `STUDENT_REGENT` sit
+together at the top of the site script. The footer's Office column, the Contact
+OSR card on Get Help, the Official links list on About and the homepage card all
+read from them, and *Admin → Contact & details* / *Admin → About OSR* override
+them at runtime through `js/cms-integration.js`. One value, one place, every
+page — which is also why the footer is rendered once outside every page section
+rather than repeated per page.
+
+## Forms: consent is a gate, not fine print
+Every form on Get Help carries a privacy notice under its title — what is
+collected, why, who can see it, how long it is kept — and an "I agree to the
+privacy notice." checkbox immediately above its send button. The row turns red
+when a submission is refused for want of it, the page's own submit handler stops
+the request, and the API refuses it again, because a control that only looks
+required is not required. The retention sentence is `PRIVACY_RETENTION`: empty,
+because the office has not published a period, so the notice describes what the
+system does instead of inventing a number of months.
 
 Dial: ENERGY 2 / RHYTHM 3 / MOTION 2

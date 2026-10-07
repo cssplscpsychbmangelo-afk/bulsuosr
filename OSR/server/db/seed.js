@@ -127,6 +127,8 @@ export async function seedFromFrontend(db, sourcePath) {
         office_hours: 'Monday to Friday, within office hours',
         office_hours_short: 'Office hours • Within office hours',
         official_page: 'https://www.facebook.com/BulSUSG1983/',
+        social_facebook: 'https://www.facebook.com/BulSUSG1983/',
+        social_messenger: 'https://m.me/BulSUSG1983',
         footer_credit: 'OSR™ 2026–2027 • Made by Angelo Alvarado'
       };
       const stmt = db.prepare('INSERT OR IGNORE INTO site_settings (key, value) VALUES (?,?)');

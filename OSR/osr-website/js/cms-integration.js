@@ -136,7 +136,6 @@
     if(replaceArray(target, mapped)){
       try{ (window.renderAnnouncements || (typeof renderAnnouncements === 'function' ? renderAnnouncements : null))?.(); }catch(e){ console.warn('[CMS] re-render announcements failed', e); }
       try{ (window.renderHomeAnnouncements || (typeof renderHomeAnnouncements === 'function' ? renderHomeAnnouncements : null))?.(); }catch(e){}
-      try{ (window.updateDashStats || (typeof updateDashStats === 'function' ? updateDashStats : null))?.(); }catch(e){}
       try{ (window.renderSearch || (typeof renderSearch === 'function' ? renderSearch : null))?.(); }catch(e){}
       console.log('[CMS] Announcements hydrated:', mapped.length);
     }
@@ -155,7 +154,6 @@
     const target = window.RESOURCES || (typeof RESOURCES !== 'undefined' ? RESOURCES : null);
     if(replaceArray(target, mapped)){
       try{ (window.renderResources || (typeof renderResources === 'function' ? renderResources : null))?.(); }catch(e){ console.warn('[CMS] re-render resources failed', e); }
-      try{ (window.updateDashStats || (typeof updateDashStats === 'function' ? updateDashStats : null))?.(); }catch(e){}
       try{ (window.updateSavedCounts || (typeof updateSavedCounts === 'function' ? updateSavedCounts : null))?.(); }catch(e){}
       try{ (window.renderSearch || (typeof renderSearch === 'function' ? renderSearch : null))?.(); }catch(e){}
       console.log('[CMS] Resources hydrated:', mapped.length);
@@ -181,7 +179,6 @@
     const target = window.BOARD_MEETINGS || (typeof BOARD_MEETINGS !== 'undefined' ? BOARD_MEETINGS : null);
     if(replaceArray(target, mapped)){
       try{ (window.renderBoard || (typeof renderBoard === 'function' ? renderBoard : null))?.(); }catch(e){}
-      try{ (window.updateDashStats || (typeof updateDashStats === 'function' ? updateDashStats : null))?.(); }catch(e){}
       try{ (window.renderSearch || (typeof renderSearch === 'function' ? renderSearch : null))?.(); }catch(e){}
     }
     window.__CMS_BOARD = data;
@@ -205,7 +202,6 @@
     const target = window.INITIATIVES || (typeof INITIATIVES !== 'undefined' ? INITIATIVES : null);
     if(replaceArray(target, mapped)){
       try{ (window.renderInitiatives || (typeof renderInitiatives === 'function' ? renderInitiatives : null))?.(); }catch(e){}
-      try{ (window.updateDashStats || (typeof updateDashStats === 'function' ? updateDashStats : null))?.(); }catch(e){}
       try{ (window.renderSearch || (typeof renderSearch === 'function' ? renderSearch : null))?.(); }catch(e){}
     }
     window.__CMS_INITIATIVES = data;
@@ -230,7 +226,6 @@
       }
       try{ (window.renderCalendar || (typeof renderCalendar === 'function' ? renderCalendar : null))?.(); }catch(e){}
       try{ (window.updateUpNext || (typeof updateUpNext === 'function' ? updateUpNext : null))?.(); }catch(e){}
-      try{ (window.updateDashStats || (typeof updateDashStats === 'function' ? updateDashStats : null))?.(); }catch(e){}
     }
     window.__CMS_CALENDAR = data;
   }
@@ -287,11 +282,20 @@
     tel('acPhone', s.contact_phone);
 
     href('hcPage', safeLink(s.official_page));
-    if(s.social_facebook) {
-      document.querySelectorAll('a[href*="facebook.com"]').forEach(a => {
-        a.href = safeLink(s.social_facebook);
-      });
+    // The official Facebook page and its Messenger link live in one place on the
+    // page (OFFICIAL_LINKS in index.html); Admin → Contact & details overrides
+    // both here, and every link that points at them follows.
+    if(s.social_facebook || s.official_page) {
+      const facebook = safeLink(s.social_facebook || s.official_page);
+      if(facebook && window.OFFICIAL_LINKS) window.OFFICIAL_LINKS.facebook = facebook;
+      if(facebook) document.querySelectorAll('a[href*="facebook.com"], a[data-official="facebook"]').forEach(a => { a.href = facebook; });
     }
+    if(s.social_messenger) {
+      const messenger = safeLink(s.social_messenger);
+      if(messenger && window.OFFICIAL_LINKS) window.OFFICIAL_LINKS.messenger = messenger;
+      if(messenger) document.querySelectorAll('a[href*="m.me/"], a[href*="facebook.com/messages"]').forEach(a => { a.href = messenger; });
+    }
+    if(typeof window.applyOfficialLinks === 'function') { try{ window.applyOfficialLinks(); }catch(e){} }
 
     window.OSR_CONTACT = Object.assign(window.OSR_CONTACT || {}, {
       email: s.contact_email || (window.OSR_CONTACT || {}).email,
@@ -518,6 +522,14 @@
     aboutText('aboutLinksHeading', a.links_heading);
     aboutLinks('aboutLinksList', a.links);
     aboutText('aboutLinksNote', a.links_note);
+    // A card that has just been given a real name comes back on screen; one
+    // still holding "To be announced" stays hidden. Judged after every field is
+    // written, so the page never shows a half-filled card.
+    if(typeof window.applyAboutVisibility === 'function') { try{ window.applyAboutVisibility(); }catch(e){} }
+    // The homepage Student Regent card reads the same saved person.
+    if(typeof window.renderStudentRegent === 'function') {
+      try{ window.renderStudentRegent({ name: a.sr_name, photo: a.sr_photo, term: a.sr_meta, message: a.sr_note }); }catch(e){}
+    }
     console.log('[CMS] About page content applied');
   }
 

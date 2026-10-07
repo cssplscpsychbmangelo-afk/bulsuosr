@@ -236,14 +236,14 @@ export async function initializeDatabase(db) {
   const guideCount = (await db.prepare('SELECT COUNT(*) as c FROM guide_steps').get()).c;
   if (guideCount === 0) {
     const guides = [
-      {id:'g-home-1', page:'home', target_selector:'a[href="#announcements"].btn--red', title:'View announcements', description:'Tap to see verified posts — 6 types.', step_number:1, is_enabled:1},
+      {id:'g-home-1', page:'home', target_selector:'.hero__actions .btn--red', title:'Raise a concern', description:'The main action — opens the concern form.', step_number:1, is_enabled:1},
       {id:'g-home-2', page:'home', target_selector:'.quick a[href="#board-meetings"]', title:'Board Meetings', description:'BOR archive — numbers, minutes, docs.', step_number:2, is_enabled:1},
       {id:'g-home-3', page:'home', target_selector:'.quick a[href="#initiatives"]', title:'Initiatives', description:'Projects — ongoing & completed.', step_number:3, is_enabled:1},
       {id:'g-home-4', page:'home', target_selector:'.quick a[href="#resources"]', title:'Resources', description:'Handbook, policies, support docs.', step_number:4, is_enabled:1},
       {id:'g-home-5', page:'home', target_selector:'.quick a[href="#help"]', title:'Student Help', description:'Raise a concern or contact.', step_number:5, is_enabled:1},
-      {id:'g-home-6', page:'home', target_selector:'.dash-stats a[href="#announcements"]', title:'Announcements count', description:'Live total — tap to open archive.', step_number:6, is_enabled:1},
+      {id:'g-home-6', page:'home', target_selector:'.hero__actions .btn--ghost', title:'View announcements', description:'Verified posts — tap to open the archive.', step_number:6, is_enabled:1},
       {id:'g-home-7', page:'home', target_selector:'#dashCalendar', title:'Upcoming calendar', description:'Next events — tap Calendar for full AY 2026-2027.', step_number:7, is_enabled:1},
-      {id:'g-about-1', page:'about', target_selector:'#page-about .about-card:first-child', title:'OSR mandate', description:'The mandate — who the Regent represents and what the Office does.', step_number:1, is_enabled:1},
+      {id:'g-about-1', page:'about', target_selector:'#page-about .ab-mandate', title:'Role and mandate', description:'What the Student Regent is empowered to do.', step_number:1, is_enabled:1},
       {id:'g-ann-1', page:'announcements', target_selector:'#annSearch', title:'Search', description:'Type to filter — updates instantly.', step_number:1, is_enabled:1},
       {id:'g-board-1', page:'board-meetings', target_selector:'#boardSearch', title:'Search meetings', description:'Find by title or number.', step_number:1, is_enabled:1},
     ];

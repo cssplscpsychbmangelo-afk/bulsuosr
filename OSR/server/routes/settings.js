@@ -12,7 +12,7 @@ router.get('/', authRequired, superAdminRequired, async (req,res)=>{
 });
 // Contact and site details the public website is allowed to read.
 export const PUBLIC_SETTING_KEYS = [
-  'site_title','site_description','social_facebook','social_instagram','homepage_intro','footer_text',
+  'site_title','site_description','social_facebook','social_messenger','social_instagram','homepage_intro','footer_text',
   'contact_email','contact_email_secondary','contact_phone','contact_phone_secondary','contact_person','contact_role',
   'office_line1','office_line2','office_city','office_address','office_room','office_hours','office_hours_short','office_hours_note',
   'office_map_url','official_page','footer_credit'
@@ -24,7 +24,7 @@ export const CONTACT_SETTING_KEYS = [
   'contact_email','contact_email_secondary','contact_phone','contact_phone_secondary','contact_person','contact_role',
   'office_line1','office_line2','office_city','office_address','office_room','office_postal','office_country',
   'office_hours','office_hours_short','office_hours_note','office_map_url','official_page',
-  'social_facebook','social_instagram','footer_credit'
+  'social_facebook','social_messenger','social_instagram','footer_credit'
 ];
 // Keys the Settings screen may write. Everything else is rejected.
 export const WRITABLE_SETTING_KEYS = new Set([

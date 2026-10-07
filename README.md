@@ -108,6 +108,15 @@ Default login on a fresh DB: `admin@osr.bulsu.edu.ph / Admin123456!`. The setup 
   share") and History is a table that discloses periods beyond the latest six.
   `OSR/server/test/pulse-nav.test.mjs` drives that navigation against synthetic
   submissions on every `npm test`.
+- **Student submissions.** *Admin → Concerns* is the individual intake (reply,
+  then move each one through Received → In review → Responded → Closed; the
+  student sees the reply with their tracking code), *Admin → Service ratings* is
+  every "Rate the BulSU OSR" response with a one-click PDF summary, and
+  *Admin → Org submissions* is what student councils and organizations file from
+  Get Help: the organization, campus, topic, title and contact email, the status
+  (Received → Under review → Endorsed → Published → Returned), a note for the
+  office record, and the signed document itself, which is streamed from
+  `GET /api/submissions/:id/file` to a signed-in administrator only.
 - **Overview.** The dashboard now shows per-section library health (published /
   draft / archived counts) taken from `GET /api/bulk/summary`.
 
@@ -140,6 +149,99 @@ drag-and-drop bundle fails the suite.
 
 ## Recent fixes
 
+- **The public site now shows only finished, student-facing work.** The top bar
+  lost the inline search box that clipped its own placeholder ("…nceme") and the
+  duplicate magnifier beside it; one black search button opens the site search,
+  and the **Menu** button appears only below 1180px, where the full row of
+  destinations no longer fits. That row now carries Calendar, Help and About so
+  nothing is reachable only from a phone. The homepage lost the "Jump to
+  anything" button, the four number boxes that read as zeros before the content
+  loaded, and the four-card Student Help strip that repeated destinations the
+  quick-access list and the footer already carry. The hero's primary action is
+  **Raise a concern** (red, into the concern form) and its secondary is **View
+  announcements**; the "Board archive" button is gone from the hero and from the
+  drawer, because Board Meetings is one click away in the navigation.
+- **The card beside the masthead is the Student Regent.** It replaced the "What
+  the Office does" panel, which the About page already says at length. It is
+  driven by `STUDENT_REGENT` at the top of the site script and by the Student
+  Regent fields in *Admin → About OSR*, and it stays hidden — with the masthead
+  taking the full width — until a confirmed name and a message from the Regent
+  exist. No name, photograph or quotation was invented to fill it.
+- **The About page hides everything the office has not confirmed.** The header
+  badge, the Student Regent card, the Directors / Executive Director / College
+  Representatives cards, the "Contact information" card and the "Office
+  information" card are all still in the document with their ids intact, so the
+  CMS keeps writing to them, but they carry `hidden` and `applyAboutVisibility()`
+  reveals each one the moment a real value reaches it. The two "[to be supplied]"
+  link rows became the office's actual Facebook and Messenger links, and the
+  "Add only verified official links." note — an instruction to whoever edits the
+  page, not to a student — is gone, along with the two gray notes about how the
+  page gets filled in later. Section numbers are a CSS counter over the blocks
+  that are on screen, so hiding one cannot leave 01 · 03 · 04.
+- **Tracking codes read `BulSU - OSR - 4827`.** `routes/feedback.js` issues four
+  random digits behind the office name instead of `OSR-ABCD-2345`. The `code`
+  column keeps its UNIQUE constraint and the insert simply draws again on a
+  collision, so four digits stay sufficient; `canonicalCode()` accepts the code
+  with its spaces, without them, in lower case, or as the four digits alone, and
+  still resolves every legacy `OSR-ABCD-2345` code already in the database. The
+  copy button answers on the button itself ("Copied ✓") and falls back to a
+  select-and-copy prompt where the clipboard API is unavailable.
+- **Both Get Help forms carry a privacy notice and a consent gate.** Under each
+  form title: what is collected, why, who can see it, and how long it is kept.
+  The retention line is `PRIVACY_RETENTION` in the site script — empty, because
+  the office has not published a period, so the notice states only what the
+  system actually does rather than inventing a number of months. "I agree to the
+  privacy notice." is required before Send on both forms *and* on the new
+  council form; it is checked in the page's submit handlers and again by the API,
+  which refuses the record without it.
+- **Get Help stacks instead of leaving a blank column.** The concern form leads
+  at full width, the rating form follows underneath, the new organization form
+  after that, and Contact OSR / Student Support sit side by side at the bottom —
+  one column on a phone. The two-column grid that stretched the shorter form
+  beside the taller one is gone.
+- **Organization & council submissions.** A signed position, resolution, request
+  or statement — including proposals endorsed to SPDO — is filed from Get Help
+  with the organization's name, campus, topic, document title, a PDF/Word/image
+  up to 3 MB, and a contact email. It is visibly not the individual concern
+  form: different heading, different border, and a line pointing individuals
+  back up the page. `routes/submissions.js` reuses the media library's upload
+  mechanism (Netlify Blobs in production, `uploads/submissions/` locally) and
+  keeps the document off any public path: it is streamed only to a signed-in
+  administrator from *Admin → Org submissions*, which lists, annotates, moves
+  and deletes filings.
+- **Proposals are a category on the projects page.** Choosing *Proposals* in the
+  Initiatives category filter swaps the list, the status choices (Submitted /
+  Under review / Approved / Returned) and the empty state over to the proposals
+  record. A proposal card is an initiative card plus the body that filed it, an
+  "Endorsed to SPDO" tag, and the last-update date on a rule of its own. Nothing
+  is listed until the office verifies it, so `PROPOSALS` starts empty and the
+  page says so and points at the filing form rather than filling the row with
+  invented records.
+- **The calendar opens on today.** The record starts in April 2026, so a student
+  arriving in October used to land on a date 179 days in the past. `calCurrentMonth()`
+  sets the month filter to the month today falls in — or the nearest month still
+  ahead once the record has run past today — and *Reset* returns there rather
+  than to the whole academic year. The heading no longer hard-codes an event
+  total that disagreed with the 276 records actually in the file.
+- **The footer's Office column has one source.** It is written from
+  `FOOTER_OFFICE` and `OFFICIAL_LINKS` at the top of the site script, filled in
+  by `renderFooterOffice()` and `applyOfficialLinks()`, and overridable from
+  *Admin → Contact & details* — which now also carries a Messenger link
+  (`social_messenger`) beside the Facebook one. The footer sits outside every
+  page section, so no page holds a second copy of these details.
+- **Small text is darker and a half-step larger.** `--stone` moved from `#6B6560`
+  (5.7:1) to `#5C5651` (7.2:1 on white) and `--muted` — which inline form hints
+  asked for by name and which was never defined, so they silently inherited
+  whatever colour surrounded them — is now that same tone. Descriptions under
+  headings, card text, key/value rows, calendar activities, board summaries and
+  `.small` print each gained about half a pixel. Twenty rules asked for
+  "Instrument Sans", a face the site does not load, and were falling back to the
+  browser's generic sans; they now ask for IBM Plex Sans like everything else.
+- **A link that goes nowhere is no longer a link.** Records whose document has
+  not been supplied carry `href="#"`, which rendered as a `target="_blank"`
+  anchor that opened a second copy of the site in a new tab. Those print as
+  plain text — "… — not published yet" — and become anchors the moment a real
+  address is saved.
 - **The tab icon sits in the middle of the tab.** It was drawn high, with a dead
   band of empty tab underneath it. A tab is square and this mark is not, and
   `tools/make-tab-icons.mjs` worked out the padding its *width* needed and then
@@ -310,10 +412,12 @@ drag-and-drop bundle fails the suite.
 - **The About page reads as finished copy.** The header badge said “Easy to
   update” and the page carried template notes (“Structured information that is
   easy to update…”, “[Name — to be supplied]”, “Replace with verified dates…”).
-  Those are replaced with pre-written wording in the site's own voice — the
-  badge now reads “Student representation” and unconfirmed roles read “To be
-  announced”. Administrators can still override every line from *Admin → About
-  OSR*; an empty field keeps the wording built into the site.
+  Those are replaced with pre-written wording in the site's own voice, and the
+  badge and the unconfirmed role cards — which read “Student representation” and
+  “To be announced” — are now hidden rather than shown, because a placeholder a
+  student can read is still a placeholder. Administrators can still override
+  every line from *Admin → About OSR*; an empty field keeps the wording built
+  into the site, and a filled one brings its card back on screen.
 - **A stray leftover script fragment was removed from `/admin`.** A duplicated
   `</script></body></html>` tail followed by a bare `AndSetup();` call sat after
   the admin page's closing `</html>`. Nothing executed it, but it was removed so

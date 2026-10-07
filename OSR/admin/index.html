@@ -689,6 +689,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
       <nav class="tabs" id="studentTabs" aria-label="Student submissions">
         <button class="tab" type="button" data-tab="concerns"><span class="tab-index">◆</span><span>Concerns</span><span class="tab-count" id="concernsBadge" hidden></span></button>
         <button class="tab" type="button" data-tab="ratings"><span class="tab-index">★</span><span>Service ratings</span></button>
+        <button class="tab" type="button" data-tab="submissions"><span class="tab-index">▤</span><span>Org submissions</span><span class="tab-count" id="submissionsBadge" hidden></span></button>
       </nav>
 
       <p class="nav-label">Administration</p>
@@ -715,6 +716,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
         <button class="topbar-nav-link" type="button" data-tab="calendar">Calendar</button>
         <button class="topbar-nav-link" type="button" data-tab="concerns">Concerns</button>
         <button class="topbar-nav-link" type="button" data-tab="ratings">Ratings</button>
+        <button class="topbar-nav-link" type="button" data-tab="submissions">Submissions</button>
         <button class="topbar-nav-link" type="button" data-tab="media">Media</button>
         <button class="topbar-nav-link" type="button" data-tab="contact">Contact</button>
         <button class="topbar-nav-link" type="button" data-tab="about">About</button>
@@ -761,6 +763,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
       <section id="tab-calendar" class="section" aria-label="Calendar"></section>
       <section id="tab-concerns" class="section" aria-label="Student concerns"></section>
       <section id="tab-ratings" class="section" aria-label="Service ratings"></section>
+      <section id="tab-submissions" class="section" aria-label="Organization submissions"></section>
       <section id="tab-media" class="section" aria-label="Media library"></section>
       <section id="tab-contact" class="section" aria-label="Contact details"></section>
       <section id="tab-about" class="section" aria-label="About OSR page"></section>
@@ -1091,6 +1094,7 @@ const pageMeta = {
   calendar: ['Content 07', 'Calendar', 'Manage activities by hand, or keep them synced from the OSR Google Document.', 'Add event', 'calendar'],
   concerns: ['Students', 'Concerns', 'Read student concerns, reply, and move each one through Received → In review → Responded → Closed. Students see your reply with their tracking code.', '', ''],
   ratings: ['Students', 'Service ratings', 'Every “Rate the BulSU OSR” submission, with a one-click PDF summary for transparency.', '', ''],
+  submissions: ['Students', 'Organization submissions', 'Positions, resolutions, requests and statements filed by student councils and organizations, with the signed document each one carries.', '', ''],
   media: ['Administration 08', 'Media library', 'Manage uploaded files and externally hosted images.', 'Add media', 'media'],
   contact: ['Administration 09', 'Contact & details', 'Control the email, phone, office and social details shown on the public site.', '', ''],
   about: ['Administration 10', 'About OSR', 'Update the public About page: mandate, Student Regent, directors, vision and mission, office information, featured programs and official links.', '', ''],
@@ -1464,6 +1468,7 @@ async function renderTab(tab) {
   if (tab === 'pulse') return renderPulseData();
   if (tab === 'concerns') return renderConcerns();
   if (tab === 'ratings') return renderRatings();
+  if (tab === 'submissions') return renderSubmissions();
   const module = modules[tab];
   const section = $(`#tab-${tab}`);
   section.innerHTML = `<div class="empty loading-state">Loading ${esc(module.label.toLowerCase())}</div>`;
@@ -2063,6 +2068,7 @@ const CONTACT_GROUPS = [
   ['Presence', [
     ['official_page', 'Official page', 'url'],
     ['social_facebook', 'Facebook page', 'url'],
+    ['social_messenger', 'Messenger link', 'url'],
     ['social_instagram', 'Instagram profile', 'url'],
     ['footer_credit', 'Footer credit']
   ]]
@@ -2664,6 +2670,143 @@ async function renderConcerns() {
   });
   paintList();
   if (concernOpenId && rows.some(row => row.id === concernOpenId)) openDetail(concernOpenId);
+}
+
+/* ── Organization & council submissions ─────────────────────────────────────
+   Every signed document a student council or organization filed from the public
+   Get Help page. Same inbox shape as Concerns, because the office works through
+   it the same way: read it, open the document, move it along, answer. */
+const SUBMISSION_STATUSES = ['Received', 'Under review', 'Endorsed', 'Published', 'Returned'];
+let submissionFilter = 'open';
+let submissionOpenId = null;
+const submissionStatusClass = status => ({ Received: 'badge--amber', 'Under review': 'badge--amber', Endorsed: 'badge--green', Published: 'badge--green', Returned: '' }[status] || '');
+
+function submissionsBadge(rows) {
+  const badge = $('#submissionsBadge');
+  if (!badge) return;
+  const waiting = rows.filter(row => row.status === 'Received' || row.status === 'Under review').length;
+  badge.hidden = !waiting;
+  badge.textContent = waiting;
+}
+
+async function renderSubmissions() {
+  const section = $('#tab-submissions');
+  section.innerHTML = '<div class="empty loading-state">Loading submissions</div>';
+  let rows;
+  try { rows = await api('/api/submissions'); }
+  catch (error) {
+    section.innerHTML = `<div class="err show">Submissions could not be loaded: ${esc(error.message)} <button class="btn btn--ghost btn--sm" type="button" data-retry>Retry</button></div>`;
+    section.querySelector('[data-retry]').addEventListener('click', renderSubmissions);
+    return;
+  }
+  submissionsBadge(rows);
+  const groups = {
+    open: ['Needs action', row => row.status === 'Received' || row.status === 'Under review'],
+    endorsed: ['Endorsed', row => row.status === 'Endorsed'],
+    published: ['Published', row => row.status === 'Published'],
+    returned: ['Returned', row => row.status === 'Returned'],
+    all: ['All', () => true]
+  };
+  section.innerHTML = `
+    <div class="inbox">
+      <div class="inbox__list card">
+        <div class="status-chips" role="group" aria-label="Filter submissions">
+          ${Object.entries(groups).map(([key, [label, test]]) => `<button type="button" class="status-chip${key === submissionFilter ? ' is-active' : ''}" data-submission-filter="${key}" aria-pressed="${key === submissionFilter}">${label} <span>${rows.filter(test).length}</span></button>`).join('')}
+        </div>
+        <input type="search" class="inbox__search" placeholder="Search organization, title, topic" aria-label="Search submissions" data-submission-search>
+        <ul class="inbox__items" id="submissionItems"></ul>
+      </div>
+      <div class="inbox__detail card" id="submissionDetail"><div class="empty">Select a submission to read it and open the signed document.</div></div>
+    </div>`;
+
+  const paintList = () => {
+    const query = section.querySelector('[data-submission-search]').value.toLowerCase();
+    const visible = rows.filter(groups[submissionFilter][1]).filter(row => !query || [row.organization, row.title, row.topic, row.campus, row.email].join(' ').toLowerCase().includes(query));
+    $('#submissionItems').innerHTML = visible.length ? visible.map(row => `<li><button type="button" class="inbox__item${row.id === submissionOpenId ? ' is-active' : ''}" data-submission-open="${esc(row.id)}">
+      <span class="inbox__row"><b>${esc(row.organization)}</b><span class="badge ${submissionStatusClass(row.status)}">${esc(row.status)}</span></span>
+      <span class="inbox__who">${esc(row.topic)}${row.campus ? ` · ${esc(row.campus)}` : ''}</span>
+      <span class="inbox__snippet">${esc(row.title)}</span>
+      <span class="inbox__date">${esc(shortDate(row.created_at))}</span>
+    </button></li>`).join('') : '<li class="empty">Nothing filed here yet.</li>';
+  };
+
+  const openDetail = id => {
+    const row = rows.find(item => item.id === id);
+    if (!row) return;
+    submissionOpenId = id;
+    paintList();
+    const size = Number(row.size || 0);
+    $('#submissionDetail').innerHTML = `
+      <header class="inbox__head">
+        <div><span class="mono inbox__code">${esc(row.topic)}</span><h3>${esc(row.title)}</h3></div>
+        <span class="badge ${submissionStatusClass(row.status)}">${esc(row.status)}</span>
+      </header>
+      <dl class="inbox__facts">
+        <div><dt>Organization</dt><dd>${esc(row.organization)}</dd></div>
+        <div><dt>Campus</dt><dd>${esc(row.campus || '—')}</dd></div>
+        <div><dt>Filed</dt><dd>${esc(shortDate(row.created_at))}</dd></div>
+        <div><dt>Contact</dt><dd><a href="mailto:${esc(row.email)}?subject=${encodeURIComponent('Your OSR submission: ' + row.title)}">${esc(row.email)}</a></dd></div>
+        <div><dt>Document</dt><dd>${esc(row.original_name || row.filename || '—')}${size ? ` · ${(size / 1024).toFixed(0)} KB` : ''}</dd></div>
+      </dl>
+      <div class="inbox__body">
+        <h4>Signed document</h4>
+        <p>The file is served through the dashboard only — it is never on a public path.</p>
+        <div class="actions"><a class="btn btn--sm" href="/api/submissions/${encodeURIComponent(row.id)}/file" target="_blank" rel="noopener">Open document</a></div>
+      </div>
+      <form class="inbox__reply" id="submissionReply">
+        <label>Note for the office record
+          <textarea name="note" rows="4" placeholder="What was decided, who it was endorsed to, what the organization was told.">${esc(row.note || '')}</textarea>
+        </label>
+        ${row.reviewed_at ? `<small>Last updated ${esc(shortDate(row.reviewed_at))}${row.reviewed_by ? ` by ${esc(row.reviewed_by)}` : ''}</small>` : ''}
+        <div class="inbox__status" role="group" aria-label="Status">
+          ${SUBMISSION_STATUSES.map(status => `<label class="status-radio"><input type="radio" name="status" value="${status}"${status === row.status ? ' checked' : ''}> ${status}</label>`).join('')}
+        </div>
+        <div class="err" role="alert"></div>
+        <div class="actions">
+          <button class="btn btn--red" type="submit">Save note &amp; status</button>
+          <button class="btn btn--quiet btn--sm" type="button" data-submission-delete>Delete</button>
+        </div>
+      </form>`;
+    $('#submissionReply').addEventListener('submit', async event => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(event.currentTarget));
+      const button = event.currentTarget.querySelector('[type="submit"]');
+      button.disabled = true; button.textContent = 'Saving';
+      try {
+        const updated = await api(`/api/submissions/${encodeURIComponent(row.id)}`, { method: 'PATCH', body: JSON.stringify(data) });
+        Object.assign(row, updated);
+        toast(`Saved. “${updated.title}” is now ${updated.status}.`);
+        submissionsBadge(rows);
+        section.querySelectorAll('[data-submission-filter]').forEach(chip => { chip.querySelector('span').textContent = rows.filter(groups[chip.dataset.submissionFilter][1]).length; });
+        openDetail(row.id);
+      } catch (error) {
+        const err = $('#submissionReply .err'); err.textContent = error.message; err.classList.add('show');
+        button.disabled = false; button.textContent = 'Save note & status';
+      }
+    });
+    $('#submissionDetail [data-submission-delete]').addEventListener('click', async () => {
+      if (!(await askConfirm('Delete this submission?', `“${row.title}” from ${row.organization} will be removed permanently, together with the document filed with it.`, 'Delete submission'))) return;
+      try {
+        await api(`/api/submissions/${encodeURIComponent(row.id)}`, { method: 'DELETE' });
+        toast('Submission deleted.');
+        submissionOpenId = null;
+        renderSubmissions();
+      } catch (error) { toast(`Could not delete: ${error.message}`); }
+    });
+  };
+
+  section.querySelector('[data-submission-search]').addEventListener('input', paintList);
+  section.querySelectorAll('[data-submission-filter]').forEach(chip => chip.addEventListener('click', () => {
+    submissionFilter = chip.dataset.submissionFilter;
+    section.querySelectorAll('[data-submission-filter]').forEach(other => { other.classList.toggle('is-active', other === chip); other.setAttribute('aria-pressed', other === chip); });
+    paintList();
+  }));
+  $('#submissionItems').addEventListener('click', event => {
+    const item = event.target.closest('[data-submission-open]');
+    if (item) openDetail(item.dataset.submissionOpen);
+  });
+  paintList();
+  if (submissionOpenId && rows.some(row => row.id === submissionOpenId)) openDetail(submissionOpenId);
 }
 
 /* ── Service ratings + transparency PDF ───────────────────────────────────── */
