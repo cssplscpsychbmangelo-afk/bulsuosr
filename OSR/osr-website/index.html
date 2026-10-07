@@ -2364,6 +2364,30 @@ textarea.input{min-height:120px; padding:11px 13px; line-height:1.6; resize:vert
    mono face at a size they can check digit by digit against what they saved. */
 .track-form__code{font:600 17px var(--font-mono); letter-spacing:.08em; text-transform:uppercase}
 .track-form__code::placeholder{text-transform:none; letter-spacing:.02em; font-weight:400}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   NARROW SCREENS
+   Small guards only: at 375, 390 and 430 nothing should need a sideways scroll
+   or shrink below its 44px target.
+   ══════════════════════════════════════════════════════════════════════════ */
+.record__title,.cal-row__title,.idea-cta__title,.concern-review__body p,
+.help-side__list span,.resource__desc,.record-facts span{overflow-wrap:anywhere}
+@media(max-width:560px){
+  .concern-review__facts{grid-template-columns:minmax(0,1fr)}
+  .hero__meta > span{margin-left:0}
+  .ideal-cta__bar{grid-template-columns:minmax(0,1fr) minmax(28px,1fr) 34px}
+  .help-first__actions{display:grid; grid-template-columns:minmax(0,1fr); gap:var(--space-sm)}
+  .help-first__actions .btn{width:100%; justify-content:center}
+  .track-form__row{display:grid; grid-template-columns:minmax(0,1fr); gap:var(--space-sm)}
+  .track-form__row .btn{width:100%; justify-content:center}
+  .form-actions{align-items:stretch}
+  .form-actions .btn{flex:1 1 auto}
+  .form-actions .row{margin-left:0}
+}
+@media(max-width:430px){
+  .ab-jump{gap:6px}
+  .cal-controls{gap:8px}
+}
 </style>
 </head>
 <body>
