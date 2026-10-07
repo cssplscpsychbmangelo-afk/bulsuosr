@@ -8,6 +8,11 @@ OSR/server/.env
 OSR/server/db/*.db*
 OSR/server/uploads/
 
+# Python caches from the .claude/skills search scripts.
+__pycache__/
+*.py[cod]
+.coverage
+
 # Admin static output is copied by the Netlify build (folder name = ADMIN_PATH).
 OSR/osr-website/admin/
 OSR/osr-website/OSRAdminControl2026/
