@@ -30,51 +30,34 @@ to hold it there.
 Palette is 2 core (ink, white) + 1 accent (red) + neutrals. Complies with R-29, R-01 (no gradients as decoration), R-29.
 
 ## Typography — reason per R-06, R-31
-- **Display: Fraunces (serif, 700)** — used only for page titles and "OFFICE OF THE STUDENT REGENT" lockup. Reason: editorial authority and institutional gravitas; contrasts with geometric sans defaults. Not used as body.
-- **Body: IBM Plex Sans (400, 500, 600)** — all UI, navigation, lists, documents. Reason: humanist, highly legible at small sizes, excellent at 14px on mobile. Chosen for readability, not trend. Wide coverage of Filipino diacritics.
-- **Mono: IBM Plex Mono (500)** — meeting numbers, archive IDs, metadata tags. Reason: functional differentiation of records, not aesthetic.
-
-All type set with fluid clamp, line-height 1.5 for body, 1.0-1.1 for display. No wide-tracked uppercase labels without purpose.
+- **Display: Fraunces (serif, 700)** — page titles and the masthead only. Reason: editorial authority and institutional gravitas; contrasts with geometric sans defaults. There is exactly one display face in the system.
+- **Body: IBM Plex Sans (400, 500, 600)** — all UI, navigation, lists, documents. Reason: humanist, highly legible, excellent at 14px on mobile, wide coverage of Filipino diacritics.
+- **Mono: IBM Plex Mono (500)** — meeting numbers, record IDs, dates and metadata labels. Reason: functional differentiation of records, not decoration.
+- **One scale.** 16px body, 14px metadata and labels, 18px supporting copy, 22px sub-headings, 28px section headings, plus two display clamps for page titles. Nothing is set below 14px: a date, a status or a document label is never smaller than the smallest body text, because records are read on phones. Line-height 1.5 for body, 1.0–1.1 for display.
 
 ## Dial
 ENERGY 2 / RHYTHM 3 / MOTION 2
 - ENERGY 2 — precise and confident, not flat, not loud. Strong headings, deliberate red accent, ample whitespace.
-- RHYTHM 3 — highly varied section heights and compositions. Announcement strip is a thin bar, hero is editorial split, quick access is a 4-up list, announcements are a vertical feed, board archive is a chronological list, not uniform cards. Fixes R-05.
-- MOTION 2 — choreographed, purposeful motion (scroll progress, reveal on view, modal/drawer slide, hover lift). No endless loops, no decorative pulse. Fixes R-19. Premium institutional direction warrants MOTION 2, documented per R-31.
+- RHYTHM 3 — highly varied section heights and compositions. The masthead is one editorial block, the "now" strip is a thin utility bar, announcements are a dated bulletin, the Board archive is a chronological record list and the Ideal BulSU tool is a single working panel. Nothing is a uniform row of cards. Fixes R-05.
+- MOTION 2 — purposeful motion only: reveal on view, modal/drawer slide, hover and press feedback, state transitions. No endless loops, no decorative pulse, no pointer effects. Fixes R-19, documented per R-31.
 
-## Motion — one 3D object, one pointer, nothing that loops
+## Motion — arrival and interaction only
 Reasons per R-31, dial per MOTION 2.
 
-- **Why the hero has a 3D object at all.** The card is the office's record sheet.
-  Putting it on the two sheets filed behind it is depth doing a job — it says
-  "this one record, out of a file" — rather than a card floating for effect. One
-  perspective on `.hero__stage`, the sheet at z=0, the plates at -26 and -52.
-- **Why the angles are custom properties.** The pointer writes `--tx`, `--ty`,
-  `--lift` and `--spread` on the section and the sheet and both plates read them,
-  so one pointermove moves the whole stack as one object. Two rules writing
-  `transform` on the same element is how the hero's lean was silently dropped
-  once already.
-- **Why the amplitudes are small.** 7 degrees across, 4.5 deep, a 10px lift, the
-  seal drifting 9px against the pointer. This is a university record office; the
-  motion has to read as weight, not as a trick. The release is 190ms against a
-  300ms lean, so leaving the section never feels like lag.
-- **Why nothing loops.** No pulse, no idle float, no sheen on a timer. Every
-  movement in the hero is answered to a pointer or to an arrival, which is what
-  MOTION 2 claims and what R-19 asks for.
-- **Why the pointer is red.** It is the one control every visitor on a mouse
-  already holds, and it was the only part of the page the site did not design.
-  The dot is the institutional accent at 7px — an accent, not a wash — and it
-  sits exactly on the pointer so aiming at a 12px chip is never guesswork. The
-  ring trails by about five frames, which is the part that gives the pointer
-  weight, and it carries the states the system arrow gave away: open over
-  anything clickable, closed on a press, a caret bar over a field, hollow and
-  grey over something disabled.
-- **Why it fails towards the system arrow.** `cursor:none` is applied only under
-  a class the script adds after it has mounted, so with JavaScript off the
-  visitor keeps the OS pointer instead of losing one. Touch devices never get it
-  (a finger is its own cursor) and "reduce motion" keeps the pointer and drops
-  the trail. The admin keeps the system cursor deliberately: it has drag-and-drop
-  reordering, and WCAG 2.2 asks for the native drag affordance there.
+- **Three places, and no others.** A section arrives (reveal on view), a control
+  answers a press or a hover, and a state changes (drawer, modal, command
+  palette, points bar, status chip). If a movement is none of those three, it is
+  decoration and it does not ship.
+- **No pointer layer.** The visitor keeps their own cursor. There is no custom
+  dot, no trailing ring, no glow that follows the mouse, no 3D plate stack, no
+  ripple, and no idle float. Depth and authority come from typography, rules and
+  spacing, which do not need a pointer to exist.
+- **Nothing loops.** No pulse, no sheen on a timer, no rotating banner. Every
+  transition is a response — to an arrival, a press or a state change — which is
+  what MOTION 2 claims and what R-19 asks for.
+- **Every layer is inert under `prefers-reduced-motion`, on touch and in print.**
+  The reveal becomes a static block, the drawer and palette appear without
+  sliding, and the print sheet drops the chrome entirely.
 
 ## Motif — institutional record
 - Left-edge red rule (4px) on key sections — the OSR filing mark, repeated.
@@ -86,6 +69,9 @@ Reasons per R-31, dial per MOTION 2.
 - Spacing scale: 8, 12, 16, 24, 32, 48, 64 — varied deliberately per RHYTHM 3, not uniform.
 - Border radius: 8px for surfaces, 6px for tags, 999px only for search inputs and prescribed capsules where function is tag. No pill-everywhere (R-11).
 - No glassmorphism, no gradients, no blobs, no heavy shadows. Shadows limited to nav dropdown and mobile drawer: 0 8px 24px rgba(16,18,20,0.08).
+- **Responsive in four steps.** Layout changes at 1024 (navigation collapses into the drawer), 768 (two columns become one), 560 and 400 (phone adjustments: full-width actions, tighter gutters). A component is never re-declared at half a dozen intermediate widths; the same rules serve 375, 390 and 430.
+- **One button system.** Primary (the single obvious action in a view), secondary (the alternative beside it), quiet (an action inside a record or toolbar) and icon (a symbol on the same 44px target). No pill-everywhere, no equal-weight rows of buttons, no decorative effects.
+- **Records are a treatment, not the default.** Announcement posts, Board records, official documents and archived information use the record row. Resources, people, help options and interactive tools use typography, rules, spacing and interaction states instead — consistency comes from the system, not from repeating one shape.
 - No stock-photo-heavy hero. Use typography and structure; optional images only where supplied, with honest placeholders.
 
 ## Data views — BulSU Pulse navigation
@@ -99,36 +85,3 @@ Reasons per R-31, dial per MOTION 2.
 - Mobile-first, no horizontal overflow at 320. Tap targets minimum 44px. Keyboard order follows visual order, visible focus ring (red).
 - Contrast verified: Ink #111214 on white 15.9:1 PASS, Stone #6B6560 on white 5.8:1 PASS, White on Red #A6192E 7.2:1 PASS, Red on light gray fails so never set red text on gray.
 - Every data view has empty, loading, and error states. Reduced-motion support. Scalable text to 200%.
-
-## Implementation notes — page-by-page pass (2026-10)
-
-- **Tokens are three layers.** Layer 1 primitives (`--p-*`) → Layer 2 semantic
-  (`--color-*`, `--status-*`) → Layer 3 component (`--btn-*`, `--field-*`,
-  `--row-*`, `--surface-*`). The old `--red / --ink / --stone / --paper / --line`
-  names are kept as aliases of Layer 2, so nothing had to be renamed to migrate.
-  Component CSS reads tokens only; no component invents a value.
-- **Records, not cards.** One record system carries announcements, Board
-  meetings, initiatives and resources: date cell → meta line (labels + status)
-  → title → excerpt → facts → documents → actions, separated by hairlines.
-  Cards survive only where content is genuinely grouped (the office band, the
-  Ideal BulSU band).
-- **Status is always a word first.** Every chip pairs text with an icon; colour
-  only repeats what the word already said, so the state survives greyscale.
-  Board records distinguish upcoming / completed / documents available /
-  minutes available / pending in words.
-- **Red is an accent, never a field.** The About profile band moved from a red
-  wash to ink with the red filing rule; the rule, the record left-border and
-  the section numerals are where red does its work.
-- **Targets.** Every interactive control is at least 44×44 (`--btn-min-h`,
-  `--field-min-h`), including icon buttons, chips, row actions and the saved-list
-  controls. One focus ring everywhere: `2px solid --color-focus`, offset 2.
-- **Motion stays on arrival and interaction.** The masthead keeps one entrance,
-  a pointer-only depth stack and a press ripple; nothing loops. The dashboard
-  "Coming up" list is static, and its former three-second rotation is gone.
-  Every layer is inert under `prefers-reduced-motion`, on touch, and in print.
-- **Hero face.** The masthead title uses `--font-hero` (Bricolage Grotesque,
-  self-hosted 800 subset) for institutional weight at display size. Every other
-  display heading stays Fraunces. Open question for the office: keep the second
-  face, or set the masthead in Fraunces with the same tracking.
-
-Dial: ENERGY 2 / RHYTHM 3 / MOTION 2
