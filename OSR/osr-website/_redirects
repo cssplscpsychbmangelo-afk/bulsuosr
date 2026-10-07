@@ -6,6 +6,4 @@
 /OSRAdminControl2026/*        /OSRAdminControl2026/index.html      200!
 /api/*         /.netlify/functions/cms/:splat 200!
 /uploads/*     /.netlify/functions/media/:splat 200!
-# The typeface review page is a local check file, never part of the public site.
-/font-preview.html  /                      404
 /*             /index.html                200

@@ -33,7 +33,7 @@ Palette is 2 core (ink, white) + 1 accent (red) + neutrals. Complies with R-29, 
 - **Display: Fraunces (serif, 700)** — page titles and the masthead only. Reason: editorial authority and institutional gravitas; contrasts with geometric sans defaults. There is exactly one display face in the system.
 - **Body: IBM Plex Sans (400, 500, 600)** — all UI, navigation, lists, documents. Reason: humanist, highly legible, excellent at 14px on mobile, wide coverage of Filipino diacritics.
 - **Mono: IBM Plex Mono (500)** — meeting numbers, record IDs, dates and metadata labels. Reason: functional differentiation of records, not decoration.
-- **One scale.** 16px body, 14px metadata and labels, 18px supporting copy, 22px sub-headings, 28px section headings, plus two display clamps for page titles. Nothing is set below 14px: a date, a status or a document label is never smaller than the smallest body text, because records are read on phones. Line-height 1.5 for body, 1.0–1.1 for display.
+- **One scale.** 16px body, 14px metadata and labels, 18px supporting copy, 22px sub-headings, 28px section headings, plus two display sizes for titles (`--text-display`, `--text-display-sm`). Nothing is set below 14px: a date, a status or a document label is never smaller than the smallest body text, because records are read on phones. Line-height 1.5 for body, 1.0–1.1 for display.
 
 ## Dial
 ENERGY 2 / RHYTHM 3 / MOTION 2
@@ -65,7 +65,7 @@ Reasons per R-31, dial per MOTION 2.
 - Stamped tags: meeting type, initiative status, category — typographic, not pill-heavy, subtle radius 6px.
 
 ## Layout Principles (R-05, R-14, R-11)
-- Composition uses **borders, dividers, and hierarchy**, not cards for everything. Cards appear only where content needs grouping (initiatives, help cards); otherwise lists and tables.
+- Composition uses **borders, dividers, and hierarchy**, not cards for everything. A framed surface survives only where one piece of content is genuinely one object — the office band, the Ideal BulSU working panel. Everything else is lists, records, tables and rules.
 - Spacing scale: 8, 12, 16, 24, 32, 48, 64 — varied deliberately per RHYTHM 3, not uniform.
 - Border radius: 8px for surfaces, 6px for tags, 999px only for search inputs and prescribed capsules where function is tag. No pill-everywhere (R-11).
 - No glassmorphism, no gradients, no blobs, no heavy shadows. Shadows limited to nav dropdown and mobile drawer: 0 8px 24px rgba(16,18,20,0.08).

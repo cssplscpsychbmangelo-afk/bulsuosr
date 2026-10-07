@@ -68,10 +68,14 @@ Last pass: **cleanup and consolidation (2026-10)**.
   available, minutes pending, not released, in review, responded, closed. Colour
   only repeats what the word already says, so the state survives greyscale.
 
-## Motion
+## Motion, surfaces and effects
 
 - Reveal on view, modal/drawer/palette arrival, hover and press feedback, state
   transitions. Nothing else.
+- No gradients and no glass: the two remaining gradient hairlines are flat rules
+  and the eleven `backdrop-filter` surfaces (overlays, toasts, sticky bars) are
+  opaque surfaces with a hairline. Overlay scrims keep their alpha so focus stays
+  on the panel.
 - Removed in this pass: the hero 3D plate stack and its pointer geometry
   (`--tx/--ty/--lift/--spread`), the custom cursor and its trailing ring, the
   glow that followed the pointer, the press ripple, the second and third hero
@@ -117,12 +121,13 @@ Last pass: **cleanup and consolidation (2026-10)**.
 
 ## Verification
 
-- `audit.mjs` — structural: aria references, heading order, one `h1`, labelled
+- `tools/osr-audit.mjs` — structural: aria references, heading order, one `h1`, labelled
   controls, `noopener` on external links, duplicate ids, skip link, dead anchors.
   Currently **0 issues** across the 11 pages.
-- `harness2.mjs` — behavioural, in jsdom with stubbed endpoints: routing, the
+- `tools/osr-harness.mjs` — behavioural, in jsdom with stubbed endpoints: routing, the
   board and announcement rows, filters, calendar, concern submission and
   tracking, points allocation and the split result. Currently **50 checks, 0
-  failures, 0 errors** — including a parse of the whole stylesheet, which used to
-  fail because nine media blocks had lost their `@media` header.
+  failures, 0 errors** — including a parse of the whole stylesheet
+  (`tools/osr-css-check.mjs`), which used to fail because nine media blocks
+  had lost their `@media` header.
 - Manual widths: 375, 390, 430, 768, 1024, 1440.
