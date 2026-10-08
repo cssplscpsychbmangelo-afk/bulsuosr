@@ -82,7 +82,7 @@ All sections support Create/Edit/Delete, Draft/Published/Archived, Preview, Save
 
 ### 27-29. Security, DB, API
 - No shipped/default admin password in source required for operation, but default seed exists for convenience and can be changed. Passwords hashed with `bcryptjs`; sessions use HttpOnly SameSite=Lax cookie (Secure in production); JWT secret persisted in DB, not required in env; login rate-limited; CORS allowlisted.
-- **DB**: 15 tables with id, timestamps, created_by, etc.
+- **DB**: 15 tables with id, timestamps, created_by, etc. A Neon database created before a table existed gains it from the additive Postgres migration (`schema_migrations`; the leadership archive is version 3) — `CREATE TABLE IF NOT EXISTS`, run from the one definition in `db/schema.js`, so no record is touched and the two copies can never drift apart.
 - **API**: REST clean
   ```
   POST /api/auth/login, /logout, GET /me, PATCH /account

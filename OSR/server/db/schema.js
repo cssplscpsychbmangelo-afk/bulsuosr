@@ -1,5 +1,44 @@
 import bcrypt from 'bcryptjs';
 
+// The leadership archive on the public About page: two primary figures and up to
+// eight directors, each one a record the office can publish or withdraw,
+// reorder, and fill in as far as it has been confirmed. Multi-line fields
+// (responsibilities, previous positions, projects) are stored one per line and
+// leave the API as arrays. `number` is an editorial override — when it is empty
+// the sequence is derived from the order, so dragging a card never leaves the
+// archive reading 03D, 01D, 02D. `is_sample` marks the ten records the dashboard
+// can insert so the layout can be checked before real people are entered, and
+// marks exactly which rows "Remove samples" deletes.
+//
+// Exported because a database that was migrated before this table existed needs
+// the very same statement (db/postgres.js, migration version 3). Two copies of a
+// CREATE TABLE drift apart, and a drifted copy means the dashboard can never
+// publish a profile to the live site.
+export const LEADERSHIP_DDL = `
+    CREATE TABLE IF NOT EXISTS leadership_profiles (
+      id TEXT PRIMARY KEY,
+      category TEXT NOT NULL DEFAULT 'director' CHECK(category IN ('primary','director')),
+      name TEXT NOT NULL,
+      position TEXT,
+      number TEXT,
+      photo TEXT,
+      short_bio TEXT,
+      quote TEXT,
+      biography TEXT,
+      responsibilities TEXT,
+      previous_positions TEXT,
+      projects TEXT,
+      facebook TEXT,
+      instagram TEXT,
+      email TEXT,
+      order_index INTEGER NOT NULL DEFAULT 0,
+      is_published INTEGER NOT NULL DEFAULT 1,
+      is_sample INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    );
+`;
+
 export async function initializeDatabase(db) {
   // admins
   (await db.exec(`
@@ -133,39 +172,9 @@ export async function initializeDatabase(db) {
     );
   `));
 
-  // The leadership archive on the public About page: two primary figures and up
-  // to eight directors, each one a record the office can publish or withdraw,
-  // reorder, and fill in as far as it has been confirmed. Multi-line fields
-  // (responsibilities, previous positions, projects) are stored one per line and
-  // leave the API as arrays. `number` is an editorial override — when it is
-  // empty the sequence is derived from the order, so dragging a card never
-  // leaves the archive reading 03D, 01D, 02D. `is_sample` marks the ten records
-  // the dashboard can insert so the layout can be checked before real people are
-  // entered, and marks exactly which rows "Remove samples" deletes.
-  (await db.exec(`
-    CREATE TABLE IF NOT EXISTS leadership_profiles (
-      id TEXT PRIMARY KEY,
-      category TEXT NOT NULL DEFAULT 'director' CHECK(category IN ('primary','director')),
-      name TEXT NOT NULL,
-      position TEXT,
-      number TEXT,
-      photo TEXT,
-      short_bio TEXT,
-      quote TEXT,
-      biography TEXT,
-      responsibilities TEXT,
-      previous_positions TEXT,
-      projects TEXT,
-      facebook TEXT,
-      instagram TEXT,
-      email TEXT,
-      order_index INTEGER NOT NULL DEFAULT 0,
-      is_published INTEGER NOT NULL DEFAULT 1,
-      is_sample INTEGER NOT NULL DEFAULT 0,
-      created_at TEXT DEFAULT (datetime('now')),
-      updated_at TEXT DEFAULT (datetime('now'))
-    );
-  `));
+  // The leadership archive. One definition, used in two places — see
+  // LEADERSHIP_DDL above.
+  (await db.exec(LEADERSHIP_DDL));
 
   (await db.exec(`
     CREATE TABLE IF NOT EXISTS media (

@@ -162,6 +162,24 @@ test('PostgreSQL-backed Netlify CMS', async t => {
     assert.equal(postgresSQL("SELECT '?' FROM announcements WHERE title=? -- ?"), "SELECT '?' FROM osr.announcements WHERE title=$1 -- ?");
     assert.match(postgresSQL('INSERT OR IGNORE INTO site_settings (key,value) VALUES (?,?)'), /osr.site_settings.*\$1,\$2.*ON CONFLICT DO NOTHING/);
   });
+  await t.test('a database migrated before the archive gains the table, keeping its records', async () => {
+    // The live installation was migrated to version 2 before the leadership
+    // archive existed: no table and no version 3. It still has to be able to
+    // publish profiles, so the additive migration recreates the table from the
+    // same definition a fresh install uses (schema.js LEADERSHIP_DDL) and leaves
+    // every record that is already there alone.
+    await engine.exec('DROP TABLE osr.leadership_profiles');
+    await engine.exec('DELETE FROM osr.schema_migrations WHERE version=3');
+    await engine.exec(`INSERT INTO osr.announcements (id, title, status) VALUES ('pre-archive', 'Written before the archive', 'Published')`);
+    await migrateDatabase(db, sourcePath);
+    assert.equal((await db.prepare('SELECT COUNT(*) AS c FROM leadership_profiles').get()).c, 0, 'the table is back, empty');
+    assert.equal((await db.prepare(`SELECT title FROM announcements WHERE id='pre-archive'`).get()).title, 'Written before the archive');
+    assert.ok(await db.prepare('SELECT version FROM osr.schema_migrations WHERE version=3').get(), 'version 3 is recorded');
+    // A cold start runs this again; the second pass must be as quiet as the first.
+    await migrateDatabase(db, sourcePath);
+    assert.equal((await db.prepare('SELECT COUNT(*) AS c FROM leadership_profiles').get()).c, 0);
+    await engine.exec(`DELETE FROM osr.announcements WHERE id='pre-archive'`);
+  });
   await t.test('build publishes the standalone admin page on its unguessable path only', () => {
     const redirects = fs.readFileSync(new URL('../../osr-website/_redirects', import.meta.url), 'utf8');
     // The dashboard moved off /admin: that address must not be served at all.
