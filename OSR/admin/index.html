@@ -760,6 +760,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
         <button class="tab" type="button" data-tab="media"><span class="tab-index">08</span><span>Media library</span></button>
         <button class="tab" type="button" data-tab="contact"><span class="tab-index">09</span><span>Contact &amp; details</span></button>
         <button class="tab" type="button" data-tab="leadership"><span class="tab-index">10</span><span>Leadership</span></button>
+        <button class="tab" type="button" data-tab="staff"><span class="tab-index">14</span><span>Staff</span></button>
         <button class="tab" type="button" data-tab="about"><span class="tab-index">11</span><span>About OSR</span></button>
         <button class="tab" type="button" data-tab="pulse"><span class="tab-index">12</span><span>Pulse data</span></button>
         <button class="tab" type="button" data-tab="settings"><span class="tab-index">13</span><span>Settings</span></button>
@@ -784,6 +785,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
         <button class="topbar-nav-link" type="button" data-tab="media">Media</button>
         <button class="topbar-nav-link" type="button" data-tab="contact">Contact</button>
         <button class="topbar-nav-link" type="button" data-tab="leadership">Leadership</button>
+        <button class="topbar-nav-link" type="button" data-tab="staff">Staff</button>
         <button class="topbar-nav-link" type="button" data-tab="about">About</button>
         <button class="topbar-nav-link" type="button" data-tab="pulse">Pulse</button>
         <button class="topbar-nav-link" type="button" data-tab="settings">Settings</button>
@@ -832,6 +834,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
       <section id="tab-media" class="section" aria-label="Media library"></section>
       <section id="tab-contact" class="section" aria-label="Contact details"></section>
       <section id="tab-leadership" class="section" aria-label="Leadership archive"></section>
+      <section id="tab-staff" class="section" aria-label="Office staff"></section>
       <section id="tab-about" class="section" aria-label="About OSR page"></section>
       <section id="tab-pulse" class="section" aria-label="BulSU Pulse data"></section>
       <section id="tab-settings" class="section" aria-label="Settings"></section>
@@ -1163,6 +1166,7 @@ const pageMeta = {
   submissions: ['Students', 'Organization submissions', 'Positions, resolutions, requests and statements filed by student councils and organizations, with the signed document each one carries.', '', ''],
   media: ['Administration 08', 'Media library', 'Manage uploaded files and externally hosted images.', 'Add media', 'media'],
   contact: ['Administration 09', 'Contact & details', 'Control the email, phone, office and social details shown on the public site.', '', ''],
+  staff: ['Administration 10a', 'Office staff', 'Add and manage the office staff shown on the site.', 'Add staff', 'staff'],
   leadership: ['Administration 10', 'Leadership', 'The archive on the public About page: two primary figures and a directorate of eight, each one written, ordered and published here.', 'Add a record', 'leadership'],
   about: ['Administration 11', 'About OSR', 'Update the wording of the public About page: the mandate, the Office block, and the Student Regent shown on the homepage.', '', ''],
   pulse: ['Administration 12', 'Pulse data', 'Examine every BulSU Pulse period by date, then wipe what should be removed.', '', ''],
@@ -1532,6 +1536,7 @@ async function renderTab(tab) {
   if (tab === 'activity') return renderActivity();
   if (tab === 'contact') return renderContact();
   if (tab === 'leadership') return renderLeadershipAdmin();
+  if (tab === 'staff') return renderStaff();
   if (tab === 'about') return renderAbout();
   if (tab === 'pulse') return renderPulseData();
   if (tab === 'concerns') return renderConcerns();
@@ -2350,6 +2355,141 @@ function aboutFieldHTML([key, label, type], values) {
 }
 
 let aboutActiveSection = 'header';
+
+async function renderStaff() {
+  const section = $('#tab-staff');
+  section.innerHTML = '<div class="empty loading-state">Loading staff</div>';
+  try {
+    const rows = await api('/api/staff');
+    const formId = 'staffForm';
+    section.innerHTML = `
+      <div class="card">
+        <div class="section-head">
+          <div><h3>Office staff</h3><span class="mono">${rows.length} ${rows.length === 1 ? 'record' : 'records'} · Published staff appear on the site</span></div>
+          <button class="btn btn--red" type="button" data-new-staff>Add staff</button>
+        </div>
+        <div class="filters">
+          <label class="check"><input type="checkbox" data-select-all-staff aria-label="Select all staff"> Select all</label>
+          <input type="search" aria-label="Search staff" placeholder="Search staff" data-search-staff>
+        </div>
+      </div>
+      <div class="list records-list" id="staffRecords"></div>
+      <div id="editor-staff"></div>`;
+
+    const paint = () => {
+      const query = (section.querySelector('[data-search-staff]')?.value || '').toLowerCase();
+      const visible = rows.filter(row => {
+        const hay = [row.name, row.role, row.email, row.bio].join(' ').toLowerCase();
+        return !query || hay.includes(query);
+      });
+      const list = section.querySelector('#staffRecords');
+      if (!visible.length) {
+        list.innerHTML = rows.length ? '<div class="empty">No staff match this filter.</div>' : '<div class="empty">No staff have been added yet. <button class="btn btn--red btn--sm" type="button" data-empty-new-staff>Add the first staff member</button></div>';
+        return;
+      }
+      list.innerHTML = visible.map(row => `
+        <article class="row record" data-staff-id="${esc(row.id)}">
+          <div class="record-main">
+            <div class="row-head" style="gap:10px;align-items:center">
+              <span class="row-avatar" aria-hidden="true">${row.photo ? `<img src="${esc(row.photo)}" alt="">` : esc(row.name ? row.name[0] : '—')}</span>
+              <div style="min-width:0">
+                <b style="font-size:13.5px">${esc(row.name)}</b>
+                <span class="badge" style="margin-left:4px">${esc(row.role || '—')}</span>
+                ${Number(row.is_published) ? '<span class="badge badge--green" style="margin-left:4px">Published</span>' : '<span class="badge" style="margin-left:4px">Hidden</span>'}
+                <br><span style="font-size:12px;color:var(--stone)">${esc(row.email || '')}</span>
+              </div>
+            </div>
+            ${row.bio ? `<p style="margin:6px 0 0;color:var(--ink-soft);font-size:13px;line-height:1.45">${esc(row.bio)}</p>` : ''}
+          </div>
+          <div class="actions">
+            <button class="btn btn--ghost btn--sm" type="button" data-edit-staff="${esc(row.id)}">Edit</button>
+            <button class="btn btn--ghost btn--sm" type="button" data-toggle-staff="${esc(row.id)}">${Number(row.is_published) ? 'Unpublish' : 'Publish'}</button>
+          </div>
+        </article>`).join('');
+    };
+
+    paint();
+    section.querySelector('[data-search-staff]').addEventListener('input', paint);
+    section.querySelector('[data-new-staff]').addEventListener('click', () => showStaffForm());
+    if (section.querySelector('[data-empty-new-staff]')) section.querySelector('[data-empty-new-staff]').addEventListener('click', () => showStaffForm());
+
+    section.addEventListener('click', async event => {
+      const editBtn = event.target.closest('[data-edit-staff]');
+      if (editBtn) {
+        const id = editBtn.dataset.editStaff;
+        const row = rows.find(r => String(r.id) === String(id));
+        if (row) showStaffForm(row);
+        return;
+      }
+      const toggleBtn = event.target.closest('[data-toggle-staff]');
+      if (toggleBtn) {
+        const id = toggleBtn.dataset.toggleStaff;
+        const row = rows.find(r => String(r.id) === String(id));
+        if (!row) return;
+        const newStatus = Number(row.is_published) ? 0 : 1;
+        toggleBtn.disabled = true;
+        try {
+          await api(`/api/staff/${encodeURIComponent(id)}`, { method: 'PATCH', body: JSON.stringify({ is_published: newStatus }) });
+          toast(`Staff ${newStatus ? 'published' : 'hidden'}.`);
+          await renderStaff();
+        } catch (e) {
+          toast(`Failed: ${e.message}`);
+          toggleBtn.disabled = false;
+        }
+        return;
+      }
+    });
+  } catch (error) {
+    section.innerHTML = `<div class="err show">Staff could not be loaded: ${esc(error.message)} <button class="btn btn--ghost btn--sm" type="button" data-retry-staff>Retry</button></div>`;
+    section.querySelector('[data-retry-staff]').addEventListener('click', renderStaff);
+  }
+}
+
+function showStaffForm(record = {}) {
+  const editor = $('#editor-staff');
+  const isNew = !record.id;
+  editor.innerHTML = `
+    <form class="form" id="staffEditForm">
+      <h3>${isNew ? 'Add' : 'Edit'} staff</h3>
+      <label>Name <input name="name" type="text" value="${esc(record.name || '')}" required></label>
+      <label>Role or position <input name="role" type="text" value="${esc(record.role || '')}"></label>
+      <label>Photo URL <input name="photo" type="url" value="${esc(record.photo || '')}" placeholder="https://example.com/photo.jpg"></label>
+      <label>Email <input name="email" type="email" value="${esc(record.email || '')}"></label>
+      <label>Short biography (optional) <textarea name="bio" rows="3">${esc(record.bio || '')}</textarea></label>
+      <label>Visibility <select name="is_published"><option value="1" ${Number(record.is_published ?? 1) ? 'selected' : ''}>Published</option><option value="0" ${!Number(record.is_published ?? 1) ? 'selected' : ''}>Hidden</option></select></label>
+      <div class="err" role="alert"></div>
+      <div class="actions"><button type="button" class="btn btn--ghost" data-cancel-staff>Cancel</button><button class="btn btn--red" type="submit">${isNew ? 'Create staff' : 'Save changes'}</button></div>
+    </form>`;
+  const form = editor.querySelector('#staffEditForm');
+  form.addEventListener('submit', async event => {
+    event.preventDefault();
+    const button = form.querySelector('[type="submit"]');
+    button.disabled = true; button.textContent = 'Saving';
+    const data = Object.fromEntries(new FormData(form));
+    const errorBox = form.querySelector('.err');
+    errorBox.classList.remove('show');
+    try {
+      if (isNew) {
+        await api('/api/staff', { method: 'POST', body: JSON.stringify(data) });
+        toast('Staff member added.');
+      } else {
+        await api(`/api/staff/${encodeURIComponent(record.id)}`, { method: 'PATCH', body: JSON.stringify(data) });
+        toast('Staff member saved.');
+      }
+      await renderStaff();
+      editor.innerHTML = '';
+    } catch (e) {
+      errorBox.textContent = e.message;
+      errorBox.classList.add('show');
+      button.disabled = false;
+      button.textContent = isNew ? 'Create staff' : 'Save changes';
+    }
+  });
+  editor.querySelector('[data-cancel-staff]').addEventListener('click', () => {
+    editor.innerHTML = '';
+  });
+  form.querySelector('input,textarea,select')?.focus({ preventScroll: true });
+}
 
 async function renderAbout() {
   const section = $('#tab-about');
