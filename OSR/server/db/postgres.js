@@ -5,7 +5,7 @@ import { initializeDatabase } from './schema.js';
 import { seedFromFrontend } from './seed.js';
 
 // All identifiers here are fixed application tables, never request input.
-const tables = 'admins|announcements|board_meetings|initiatives|resources|calendar_events|pages|navigation_items|media|guide_steps|pulse_submissions|pulse_aggregates|activity_logs|site_settings|student_concerns|service_ratings';
+const tables = 'admins|announcements|board_meetings|initiatives|resources|calendar_events|pages|navigation_items|leadership_profiles|media|guide_steps|pulse_submissions|pulse_aggregates|activity_logs|site_settings|student_concerns|service_ratings|org_submissions';
 const tableReferences = new RegExp(`\\b(FROM|JOIN|INTO|UPDATE|TABLE(?:\\s+IF\\s+NOT\\s+EXISTS)?)\\s+(${tables})\\b`, 'gi');
 
 export function postgresSQL(source) {

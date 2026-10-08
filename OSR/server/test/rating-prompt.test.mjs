@@ -82,15 +82,30 @@ test('the admin service ratings screen is built for a phone', () => {
 });
 
 // The public About page used to read like a work-in-progress ("Easy to update",
-// "[Name — to be supplied]", "Replace with verified dates…"). It now carries
-// pre-written wording in the site's own voice.
+// "[Name — to be supplied]", "Replace with verified dates…"), and the fix was to
+// keep the unconfirmed cards in the document but hidden. The page has since been
+// rebuilt as an office profile in three sections — the mandate, the Office and
+// the people designated to it, and the university — so there are no cards left
+// to hide: what the office has not confirmed is simply absent, and the list of
+// people says plainly that no officers are published yet. Which sections the
+// page has, which ids the CMS patches and which editor fields survive is
+// asserted in about-content.test.mjs.
+// Judged on what a student actually reads: comments and script source are
+// stripped first, because a detection list inside the page's own JavaScript is
+// how the page keeps placeholders off screen, not a placeholder itself.
+const visibleHtml = siteHtml
+  .replace(/<!--[\s\S]*?-->/g, '')
+  .replace(/<script[\s\S]*?<\/script>/g, '');
+
 test('the About page shows finished wording, not template notes', () => {
-  assert.doesNotMatch(siteHtml, /Easy to update/i);
-  assert.doesNotMatch(siteHtml, /\[Name[^\]]*to be supplied\]/i);
-  assert.doesNotMatch(siteHtml, /Intentionally empty/i);
-  assert.doesNotMatch(siteHtml, /Replace with verified/i);
-  assert.doesNotMatch(siteHtml, /Replaces the original/i);
-  assert.match(siteHtml, /<span class="ab-hero__badge" id="aboutBadge">Student representation<\/span>/);
+  assert.doesNotMatch(visibleHtml, /Easy to update/i);
+  assert.doesNotMatch(visibleHtml, /\[Name[^\]]*to be supplied\]/i);
+  assert.doesNotMatch(visibleHtml, /to be supplied/i);
+  assert.doesNotMatch(visibleHtml, /To be announced/i);
+  assert.doesNotMatch(visibleHtml, /\bTBD\b/);
+  assert.doesNotMatch(visibleHtml, /Add only verified official links/i);
+  assert.doesNotMatch(visibleHtml, /Intentionally empty/i);
+  assert.doesNotMatch(visibleHtml, /Replace with verified/i);
+  assert.doesNotMatch(visibleHtml, /Replaces the original/i);
   assert.match(siteHtml, /id="aboutIntro">The Office of the Student Regent is the student voice/);
-  assert.match(siteHtml, /id="aboutSrName">To be announced</);
 });

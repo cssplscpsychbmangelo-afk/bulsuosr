@@ -25,7 +25,7 @@ to hold it there.
 - **White #FFFFFF** — dominant surface. Reason: formality, readability, institutional paper. Keeps the site light and printable.
 - **Ink #111214** — typography. Reason: near-black for maximum legibility without harsh pure black.
 - **Light Gray #F4F2EF / #E9E6E1** — secondary surface and dividers. Reason: subtle separation without turning every section into a card. Neutrals do not count toward palette cap per R-29.
-- **Stone #6B6560** — secondary text. Reason: muted but still AA on white for small text at 4.6:1.
+- **Stone #5C5651** — secondary text. Reason: descriptions under headings, card text and small print are read on phones, outdoors, at arm's length; the previous #6B6560 cleared AA at 5.7:1 but had nothing left in it for glare. One step darker on the same warm gray is 7.2:1 on white and 6.8:1 on the light-gray surface, so the hierarchy is unchanged — ink still reads as the heading colour, stone still reads as the second voice — and the second voice carries further. `--muted` is the same tone: inline form hints asked for it by name and it was never defined, so they silently inherited whatever colour surrounded them.
 
 Palette is 2 core (ink, white) + 1 accent (red) + neutrals. Complies with R-29, R-01 (no gradients as decoration), R-29.
 
@@ -35,6 +35,13 @@ Palette is 2 core (ink, white) + 1 accent (red) + neutrals. Complies with R-29, 
 - **Mono: IBM Plex Mono (500)** — meeting numbers, archive IDs, metadata tags. Reason: functional differentiation of records, not aesthetic.
 
 All type set with fluid clamp, line-height 1.5 for body, 1.0-1.1 for display. No wide-tracked uppercase labels without purpose.
+
+Only these three families are loaded. Twenty rules asked for "Instrument Sans",
+a face the page never requests, so the small form hints and the guide tooltip
+were being set in the browser's generic sans — a fourth, unintended voice in the
+middle of the smallest text on the site. They ask for IBM Plex Sans now. The
+smallest text a student has to read (the "— required unless anonymous" hints)
+was 10px; it is 11.5px, in the family the rest of the page uses, in `--muted`.
 
 ## Dial
 ENERGY 2 / RHYTHM 3 / MOTION 2
@@ -61,14 +68,23 @@ Reasons per R-31, dial per MOTION 2.
 - **Why nothing loops.** No pulse, no idle float, no sheen on a timer. Every
   movement in the hero is answered to a pointer or to an arrival, which is what
   MOTION 2 claims and what R-19 asks for.
-- **Why the pointer is red.** It is the one control every visitor on a mouse
-  already holds, and it was the only part of the page the site did not design.
-  The dot is the institutional accent at 7px — an accent, not a wash — and it
-  sits exactly on the pointer so aiming at a 12px chip is never guesswork. The
-  ring trails by about five frames, which is the part that gives the pointer
-  weight, and it carries the states the system arrow gave away: open over
-  anything clickable, closed on a press, a caret bar over a field, hollow and
-  grey over something disabled.
+- **Why the pointer is an arrow.** It is the one control every visitor on a mouse
+  already holds, and it was the only part of the page the site did not design —
+  but "designed" cannot mean "unrecognisable". A red dot inside a trailing ring
+  reads as decoration, and the ring covers the very chip it is hovering. So the
+  head is the seven-point arrow every hand already knows, at the 21px a system
+  arrow occupies, cut with `clip-path` in the ink the site writes in, its tip on
+  the hotspot and its `transform-origin` on that same corner so a press shrinks
+  it towards the pixel being aimed at. The paper edge is a `drop-shadow` on the
+  *parent*: a filter is applied before the clip-path that cuts the child, so on
+  the child the edge would be cut away with everything outside the polygon.
+- **Why the ring stayed, and went quiet.** It still trails by about five frames,
+  which is the part that gives the pointer weight, and it still carries the
+  states the system arrow gave away — but it is `opacity:0` over plain paper and
+  appears only where it has something to say: a hairline of the accent over
+  anything clickable, tighter on a press, dashed and grey over something
+  disabled. Over a field the head itself becomes the caret. The accent is for
+  the states, not for the shape.
 - **Why it fails towards the system arrow.** `cursor:none` is applied only under
   a class the script adds after it has mounted, so with JavaScript off the
   visitor keeps the OS pointer instead of losing one. Touch devices never get it
@@ -96,8 +112,216 @@ Reasons per R-31, dial per MOTION 2.
 - History is a real table (period, builds, top priority, share, runner-up) that shows the latest six periods and discloses the rest on request.
 
 ## Human / Mobile (R-03, R-25, R-27, R-32)
-- Mobile-first, no horizontal overflow at 320. Tap targets minimum 44px. Keyboard order follows visual order, visible focus ring (red).
-- Contrast verified: Ink #111214 on white 15.9:1 PASS, Stone #6B6560 on white 5.8:1 PASS, White on Red #A6192E 7.2:1 PASS, Red on light gray fails so never set red text on gray.
+- Mobile-first, no horizontal overflow at 320. Tap targets minimum 44px — on the footer the links grow their hit box under `pointer:coarse` rather than growing the gaps between them, so the type stays at reading size. Keyboard order follows visual order, visible focus ring (red), except on the ink footer, where red measures 2.5:1 against the band and the ring goes white at 18.7:1 instead: a focus indicator below 3:1 is not an indicator.
+- Contrast verified: Ink #111214 on white 13.8:1 PASS, Ink-2 #2B2D31 on white 13.8:1 PASS, Stone #5C5651 on white 7.2:1 PASS, Stone on Light Gray #F7F5F2 6.6:1 PASS, White on Red #A6192E 7.5:1 PASS, footer #E8E0D6 on Ink 14.3:1 PASS, footer #D5CEC7 on Ink 12.0:1 PASS, footer #9A9590 on Ink 6.3:1 PASS, About band #F0DDE0 on Red-Ink #6E0F1F 9.2:1 PASS and its eyebrow #FFC9D1 8.3:1 PASS, Red on light gray fails so never set red text on gray.
 - Every data view has empty, loading, and error states. Reduced-motion support. Scalable text to 200%.
+
+## Finished page — nothing a student reads is a note to whoever edits it
+A page for students carries only finished, student-facing content. Three rules
+came out of that, and they are the reason the About page and the homepage look
+the way they do now:
+- **Unconfirmed means absent, not placeholder.** "To be announced", "TBD" and
+  "[to be supplied]" are all the same failure: the page is asking the reader to
+  wait. `ABOUT_UNCONFIRMED` lists that wording, `confirmedText()` refuses it, and
+  what is left over is shown — a person without a confirmed name is simply not
+  listed, and the list says plainly that no officers are published yet. An honest
+  empty state is the design; an empty card is not.
+- **Instructions to the editor do not ship.** "Add only verified official
+  links.", "Fields are updated as official records are released.", "Easy to
+  update" — these belong in the README and the admin, not on the page.
+- **A number is either counted or absent.** The homepage's four number boxes are
+  gone rather than zero-filled, and the calendar heading states no event total:
+  the badge prints the length of the record it is actually showing.
+
+## About is an office profile, not a brochure
+The About page answers three questions and stops: what the mandate is, what the
+Office is and who is designated to it, and which university it serves. That is
+what an official university office profile carries. Everything else the page used
+to hold — the vision, mission and core values band, the featured-program cards,
+the office-information table, the contact card, the link directory, the directors
+and the college representatives — is either on the page that owns it or nowhere,
+and a student looking for the handbook should land on Resources, not scroll past
+a copy of it.
+- **Three numbered blocks, no jump bar.** The count is a CSS counter over the
+  blocks that render, hairline dividers separate them, and a page this short does
+  not need a sticky pill navigation of its own sections.
+- **One marked block.** The mandate carries the 4px red filing rule and nothing
+  else on the page is boxed. Hierarchy comes from Fraunces against IBM Plex Sans,
+  from the lede against the list, and from the index numbers — not from cards,
+  borders or icons.
+- **The people are an archive, and it is the one block that moves.** The Office
+  block used to be a list of names on hairline dividers. It is now the leadership
+  archive — two primary figures and a directorate of eight, filed and numbered,
+  opening around whoever the visitor points at. See *The leadership archive is a
+  row of prints, not a team grid*. The rest of the page is still quiet: the
+  archive is the only block on it with motion, which is exactly why it can have
+  any.
+
+## The footer says three things
+Identity, six destinations, one way in — on an ink band, with the mark, at the
+quietest volume on the site. It is not a second sitemap: the address, the phone
+number, the opening hours, the calendar, the builder, the concern form and every
+archive have a page or a button that already owns them, and repeating nine links
+at the foot of every page taught nobody where to go.
+- **Six destinations, one list.** The footer's links are the primary navigation's
+  own destinations, and `patchNavigation()` hides any of them an administrator
+  hides there. There is no footer-link editor, because there is no second list.
+- **Three values, one object.** `FOOTER_OFFICE` holds the office name, the
+  one-line description and the email; `OFFICIAL_LINKS` holds the page and its
+  Messenger shortcut. Admin → Contact & details overrides them and the footer is
+  drawn again from the same objects.
+- **A thumb gets 44px.** Under `pointer:coarse` the links grow their hit box
+  rather than the gaps between them, so the type stays at reading size and the
+  targets stay at touching size.
+
+## The calendar shows the record, then walks to today
+The academic year is one document and a student should be able to read all of
+it, so the page opens on the whole record — every month, no filter applied —
+and then walks to the next date on it. Being put where you are and being locked
+there are different things: the old version opened *filtered* to the current
+month, which answered "what is next" by hiding eleven months. `calEnter()` runs
+from `setRoute()` and is the one page that places the student itself, so its
+scroll to the top is instant and the walk down is the only movement; a smooth
+scroll to the top would still be running when the walk starts and the two would
+fight. The date is marked with a warm wash and a hairline of the accent —
+`.cal-event--next` in both views — and the same id feeds the mark, the pill and
+the walk, so the three cannot disagree. A filter that leaves nothing ahead of
+today has no next date, and the pill says so by not being there: pointing at a
+date six months gone and calling it "next" is worse than pointing at nothing.
+
+Two controls live in the bottom-right corner, so they are stacked and not
+layered: the back-to-top button owns the corner at 76px and is 44px tall, the
+calendar's pill sits at 132px with a 12px gap, both clear the home indicator by
+the same inset, and the pill keeps the lower z-index.
+
+## The leadership archive is a row of prints, not a team grid
+Two primary figures, then a directorate of eight as a strip of narrow cards that
+open around whichever one the visitor points at. The reference for the
+*interaction* was an editorial archive that treats a roster as a box of prints:
+many faces, out of focus, and then one of them coming clear — because a person
+becomes legible when you look at them, not when you look at a grid. Nothing else
+was taken from it: no layout, no colours, no wording. The archive is drawn in
+this site's own ink, hairline, accent red and Fraunces, on 4px and 6px radii, and
+it is the only block on the About page that moves.
+
+- **Blur to clear is the signature.** Every portrait sits in one `.ld-media`
+  wrapper carrying `grayscale(1) … blur(3px)` and the red-to-ink wash over it;
+  opening the card lifts the wash to `.16`, clears the blur and lets the image
+  scale from `1.08` to `1.02`. The rest of the row goes the other way —
+  `blur(4.5px)` at `brightness(.42)` — so one person is sharp against a row that
+  recedes. The wrapper is scaled up slightly so the blurred edge never shows
+  against the card's own border.
+- **The row reorganises; it does not pop.** `.ld-card` is `flex:1 1 0` with
+  `transition:flex-grow .5s var(--ease)`, and the open card takes `flex-grow:4.4`
+  of the room the others give up. The strip has a fixed height (320px) so opening
+  a card never pushes the page up and down under the cursor.
+- **One element for the name in both states.** It stays on one line, clipped
+  while the card is narrow, and grows from 13px to 22px with the card. `font-size`
+  is animatable; `writing-mode` and `font-family` are not, so the name is never
+  rotated or re-faced between states — the trick that makes narrow cards look
+  designed is a clip, not a second layout.
+- **The information arrives after the motion.** Role, description and the *Open
+  the record* cue fade up on 80–180ms delays behind the 500ms expansion, so the
+  card finishes moving before it starts talking.
+- **One card is always open.** The first record is selected before anybody points
+  at anything, and leaving the row returns it there: a strip with nothing selected
+  is only blur, and a visitor should not have to earn the first face.
+- **A card is one control.** The card holds headings and copy, so it cannot itself
+  be a `<button>`; a transparent `.ld-hit` is stretched over it with
+  `aria-label="Open the record of …"`, which gives the keyboard exactly the
+  rectangle the mouse gets and keeps the markup honest. Its focus ring is
+  `#FFC9D1` (8.3:1 on ink) because red on ink measures 2.5:1 and a focus
+  indicator below 3:1 is not an indicator.
+- **The record is the site's own modal.** Clicking opens `openModal()` with the
+  portrait, the number, the quotation, the biography and the three lists the
+  office keeps — responsibilities, previous positions, projects — plus published
+  contact links. Reading a person never navigates away from the archive, and the
+  site does not grow a second dialog. A field left empty is not drawn, so a record
+  with only a name is a short record rather than a page of blanks.
+- **No hover, no cursor.** Under `(hover:none)` the description and cue are simply
+  printed, the first tap selects and the second opens the record, and tapping
+  another card switches to that person. Under 760px the two primary figures stack
+  at 5:4 and the strip becomes a swipeable row (`scroll-snap-type:x proximity`,
+  cards at `flex:0 0 66%`) with no width animation — the one place horizontal
+  scrolling is the point rather than an accident.
+- **A plate, never a pretend face.** A record with no portrait is drawn: a bust in
+  light on ink under the same wash, with an engraving hatch fine enough that the
+  blur-to-clear transition still reads on it. No photograph of a person is ever
+  invented, and no initials in a circle stand in for a face.
+- **Nothing is hard-coded in the frontend.** `LEADERSHIP` starts empty;
+  `cms-integration.js` fetches `/api/leadership/public` with the rest of the page
+  and hands the rows to `window.applyLeadership()`. With no record published the
+  block says so in one line and shows no cards — an honest empty state, not ten
+  empty ones.
+
+**The dashboard writes all of it.** *Admin → Leadership* is a tree of seats —
+Primary leaders 01–02, The Directorate 01D–08D — with one record pane per person
+(name, position, shelf, printed number, portrait, short description, quotation,
+biography, three line lists, Facebook, Instagram, email, published/hidden), and
+the order is dragged, arrowed with ↑/↓, or keyed with the arrow keys on the grip,
+because a reorder only a mouse can do is a reorder most of the office cannot do.
+The printed number follows the order unless a record overrides it, and only
+published records are counted, so withdrawing one closes the sequence up instead
+of leaving the page reading 01D, 02D, 03D, 05D. Under the form is a live preview
+of the public strip at dashboard scale — same structure, same ease, same
+blur-to-clear — reading the form rather than the server, so a name, a portrait, a
+position or a description is on the card the moment it is typed, saved or not.
+
+**The sample profiles exist to be removed.** "Load sample profiles" fills whatever
+seats are free with records that say "Sample" in every field, carry no portrait,
+and are stamped `is_sample` — a flag that never leaves the API's admin route, so
+the public page cannot print it. "Remove samples" deletes exactly those rows and
+nothing the office wrote. It is how the layout and the motion get checked before
+anybody has been appointed, and it is why the archive can ship empty.
+
+## The masthead's card is a person
+The card beside the hero is the Student Regent — name, term, one line in their
+own words, and **Ask the Regent** into the concern form. It is the same card the
+pointer tilts, so nothing about the motion changed; only its contents did.
+`STUDENT_REGENT` at the top of the site script and the Student Regent fields in
+*Admin → About OSR* both feed it. **A confirmed name is the gate**: with one, the
+card is a person; without one, it is hidden and `.hero--solo` gives the masthead
+the full width. The quotation and the term are each shown only when the office
+has supplied one, so the card never carries an empty line, and the initials
+circle is the only picture of the person it holds.
+
+**The portrait is not here any more.** The masthead used to file a duotone
+photograph into the top of this card. It was the only face on the homepage, it
+competed with the title for the first look, and it asked the office for a
+portrait before it had anybody to photograph — so it moved to where a portrait
+belongs on this site: the leadership archive on About, as one of ten records the
+office can write, order, publish and withdraw. The treatment it was given there
+is the archive's own (greyscale under a red-to-ink wash in `mix-blend-mode:color`,
+`isolation:isolate` so the wash blends with the photograph and not with the page
+behind it), and the card kept what a card is for: who holds the seat, and how to
+reach them.
+
+## Office details have one home
+`OFFICIAL_LINKS`, `FOOTER_OFFICE`, `PRIVACY_RETENTION` and `STUDENT_REGENT` sit
+together at the top of the site script. The footer, the Contact OSR card on Get
+Help and the homepage card all read from them, and *Admin → Contact & details* /
+*Admin → About OSR* override them at runtime through `js/cms-integration.js`. One
+value, one place, every page — which is also why the footer is rendered once
+outside every page section rather than repeated per page. Each object holds only
+what is printed: when the footer's address block and hours line went, the fields
+behind them went with it, in the page, in the admin, in the settings allowlists
+and in the seed.
+
+## Forms: consent is a gate, not fine print
+Every form on Get Help carries a privacy notice under its title — what is
+collected, why, who can see it, how long it is kept — and an "I agree to the
+privacy notice." checkbox immediately above its send button. The notice is set
+as fine print and not as a panel: three of them sit inside three bordered cards
+on one page, and three tinted, rounded boxes inside three boxes is what made Get
+Help read as clutter. A hairline above, the label in the stone mono the page's
+other labels wear at the smallest size the site uses, four points that read
+across in a 138px label column wherever the card is wide enough for one and
+stack below that — the accent red is left for what a student has to act on,
+which on this page is the consent gate itself. The row turns red
+when a submission is refused for want of it, the page's own submit handler stops
+the request, and the API refuses it again, because a control that only looks
+required is not required. The retention sentence is `PRIVACY_RETENTION`: empty,
+because the office has not published a period, so the notice describes what the
+system does instead of inventing a number of months.
 
 Dial: ENERGY 2 / RHYTHM 3 / MOTION 2

@@ -72,15 +72,29 @@ const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 // BulSU student numbers look like 2021-123456 / 2021123456; accept digits with an optional dash.
 export const STUDENT_NO = /^\d{4}-?\d{4,7}$/;
 
-// Unambiguous characters only (no 0/O, 1/I/L) so a code read aloud or copied by hand still works.
-const CODE_ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+// The code a student is given and the only thing they need to track a concern:
+// "BulSU - OSR - 4827". Four digits is short enough to read over the phone or
+// copy by hand, which is the point — and short enough that two submissions can
+// collide, so the code column carries a UNIQUE constraint and `freshCode` below
+// simply draws again when the database says the number is taken. There are 9,000
+// of them; the office's volume sits far below that, and if it ever did not, the
+// student gets a clear "try again" rather than a duplicated code.
 function trackingCode() {
-  const bytes = crypto.randomBytes(8);
-  let out = '';
-  for (const byte of bytes) out += CODE_ALPHABET[byte % CODE_ALPHABET.length];
-  return `OSR-${out.slice(0, 4)}-${out.slice(4)}`;
+  return `BulSU - OSR - ${crypto.randomInt(1000, 10000)}`;
 }
-const normalizeCode = value => text(value, 40).toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^OSR/, '');
+
+// Accepts the code in any shape a student types or pastes it — with the spaces,
+// without them, lower case, or the four digits on their own — and also the
+// legacy "OSR-ABCD-2345" codes already stored, so nothing issued before this
+// format stops working. Returns the exact string the row is stored under, or ''.
+export function canonicalCode(value) {
+  const raw = text(value, 60).toUpperCase().replace(/[^A-Z0-9]/g, '');
+  const modern = raw.match(/^(?:BULSU)?OSR(\d{4})$/) || raw.match(/^(\d{4})$/);
+  if (modern) return `BulSU - OSR - ${modern[1]}`;
+  const legacy = raw.replace(/^BULSU/, '').replace(/^OSR/, '');
+  if (/^[A-Z0-9]{8}$/.test(legacy)) return `OSR-${legacy.slice(0, 4)}-${legacy.slice(4)}`;
+  return '';
+}
 
 // Netlify Functions may not populate req.ip; fall back to the edge's client headers.
 const clientKey = req => String(req.get('x-nf-client-connection-ip') || (req.get('x-forwarded-for') || '').split(',')[0].trim() || req.ip || 'anon');
@@ -117,10 +131,13 @@ concernsRouter.post('/', publicLimiter, async (req, res) => {
   if (entry.email && !EMAIL.test(entry.email)) return res.status(400).json({ error: 'Enter a valid email address.' });
   if (entry.student_number && !STUDENT_NO.test(entry.student_number)) return res.status(400).json({ error: 'Student number should look like 2021-123456.' });
   if (!CAMPUSES.includes(entry.campus)) entry.campus = 'Other';
+  // The form gates on this checkbox; the server does not trust that it was ticked.
+  const privacy = body.privacy === true || body.privacy === '1' || body.privacy === 1 || body.privacyConsent === 'on';
+  if (!privacy) return res.status(400).json({ error: 'Please agree to the privacy notice before submitting.' });
 
   const id = `concern-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
   let code = trackingCode();
-  for (let attempt = 0; attempt < 3; attempt += 1) {
+  for (let attempt = 0; attempt < 12; attempt += 1) {
     try {
       await db.prepare(`INSERT INTO student_concerns (id, code, anonymous, name, student_number, email, campus, category, concern, outcome, status)
         VALUES (?,?,?,?,?,?,?,?,?,?,?)`).run(id, code, anonymous ? 1 : 0, entry.name, entry.student_number, entry.email, entry.campus, entry.category, entry.concern, entry.outcome, 'Received');
@@ -130,16 +147,15 @@ concernsRouter.post('/', publicLimiter, async (req, res) => {
       code = trackingCode();
     }
   }
-  res.status(500).json({ error: 'Could not create a tracking code. Please try again.' });
+  res.status(500).json({ error: 'Could not create a tracking code. Please try again in a moment.' });
 });
 
 // Public: look up one concern by tracking code. Never returns personal details.
 concernsRouter.get('/track/:code', trackLimiter, async (req, res) => {
   const db = req.app.locals.db;
   await ensureTables(db);
-  const wanted = normalizeCode(req.params.code);
-  if (wanted.length !== 8) return res.status(400).json({ error: 'Tracking codes look like OSR-ABCD-2345.' });
-  const code = `OSR-${wanted.slice(0, 4)}-${wanted.slice(4)}`;
+  const code = canonicalCode(req.params.code);
+  if (!code) return res.status(400).json({ error: 'Tracking codes look like BulSU - OSR - 4827.' });
   const row = await db.prepare('SELECT code, campus, category, status, response, responded_at, created_at, updated_at FROM student_concerns WHERE code=?').get(code);
   if (!row) return res.status(404).json({ error: 'No concern matches that tracking code. Check the code and try again.' });
   res.set('Cache-Control', 'no-store');
@@ -212,6 +228,8 @@ ratingsRouter.post('/', publicLimiter, async (req, res) => {
   if (!Number.isInteger(entry.rating) || entry.rating < 1 || entry.rating > 5) return res.status(400).json({ error: 'Choose a rating from 1 to 5.' });
   if (entry.email && !EMAIL.test(entry.email)) return res.status(400).json({ error: 'Enter a valid email address or leave it blank.' });
   if (!CAMPUSES.includes(entry.campus)) entry.campus = 'Other';
+  const privacy = body.privacy === true || body.privacy === '1' || body.privacy === 1 || body.privacyConsent === 'on';
+  if (!privacy) return res.status(400).json({ error: 'Please agree to the privacy notice before sending your rating.' });
   const id = `rating-${Date.now()}-${crypto.randomBytes(3).toString('hex')}`;
   await db.prepare('INSERT INTO service_ratings (id, name, student_number, campus, service, rating, feedback, email) VALUES (?,?,?,?,?,?,?,?)')
     .run(id, entry.name, entry.student_number, entry.campus, entry.service, entry.rating, entry.feedback, entry.email);

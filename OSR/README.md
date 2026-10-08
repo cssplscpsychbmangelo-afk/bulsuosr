@@ -26,7 +26,7 @@ Public OSR Website (`osr-website/index.html` + `cms-integration.js`)
 API (Netlify Functions; Express 5 on port 4000 locally)
   ↓ JWT auth (secret from DB), bcrypt, rate-limit, validation
 Database (Neon Postgres in production; Node SQLite locally)
-  ↓ 14 tables: admins, announcements, board_meetings, initiatives, resources, calendar_events, pages, navigation_items, media, guide_steps, pulse_submissions, pulse_aggregates, activity_logs, site_settings
+  ↓ 15 tables: admins, announcements, board_meetings, initiatives, resources, calendar_events, pages, navigation_items, leadership_profiles, media, guide_steps, pulse_submissions, pulse_aggregates, activity_logs, site_settings
 
 Admin Dashboard (/admin)
   ↓ HttpOnly session cookie (Secure in production)
@@ -55,7 +55,8 @@ All sections support Create/Edit/Delete, Draft/Published/Archived, Preview, Save
 - **Initiatives**: Title, Description, Purpose, Status (ONGOING/PLANNED/COMPLETED/ON_HOLD), Date, Category, Image, Links
 - **Resources**: Title, Description, Category (editable), File URL/PDF, External link, Publish
 - **Calendar**: Title, Date, Start/End, Category, Location, Link, Attachment, Add/Edit/Delete/Duplicate, auto-reflects public
-- **About/OSR**: Mandate, Vision, Mission, Core Values, Student Regent, Directors, office information, featured programs and official links, edited in *Admin → About OSR* and stored as one JSON document in `site_settings.about_content` (`GET /api/about/public`, `PATCH /api/about`). Empty fields keep the wording built into the public page.
+- **About/OSR**: Intro, Mandate (heading, description, points), the Office block (heading, short description, and the title printed above the directorate), and the Student Regent, edited in *Admin → About OSR* and stored as one JSON document in `site_settings.about_content` (`GET /api/about/public`, `PATCH /api/about`). Empty fields keep the wording built into the public page; keys the page no longer renders are ignored on read and dropped on the next save.
+- **Leadership**: the archive the About page prints — two primary figures and a directorate of eight, in `leadership_profiles` and edited in *Admin → Leadership*. Per record: name, position, shelf (primary/director), printed number (or numbered by order), portrait (Media library or https), short description, quotation, biography, responsibilities, previous positions, projects, Facebook, Instagram, email, published/hidden. Order is dragged, arrowed or keyed; the limits (2 and 8) and the numbering are enforced by the API; *Load sample profiles* fills the free seats with records that announce themselves and *Remove samples* deletes exactly those (`GET /api/leadership/public`, `GET/POST/PATCH/DELETE /api/leadership(/:id)`, `POST /api/leadership/reorder`, `POST|DELETE /api/leadership/samples`). The tab carries a live preview of the public strip that reads the form as it is typed.
 - **Navigation**: Show/hide, order (drag-drop + Save order), add/remove, validation (href must be #//http), prevents breaking routes
 
 ### 13. Media
@@ -81,7 +82,7 @@ All sections support Create/Edit/Delete, Draft/Published/Archived, Preview, Save
 
 ### 27-29. Security, DB, API
 - No shipped/default admin password in source required for operation, but default seed exists for convenience and can be changed. Passwords hashed with `bcryptjs`; sessions use HttpOnly SameSite=Lax cookie (Secure in production); JWT secret persisted in DB, not required in env; login rate-limited; CORS allowlisted.
-- **DB**: 14 tables with id, timestamps, created_by, etc.
+- **DB**: 15 tables with id, timestamps, created_by, etc.
 - **API**: REST clean
   ```
   POST /api/auth/login, /logout, GET /me, PATCH /account
@@ -89,6 +90,8 @@ All sections support Create/Edit/Delete, Draft/Published/Archived, Preview, Save
   GET/POST/PATCH/DELETE /api/announcements(/:id) etc
   GET /api/public/:type (published only)
   GET /api/about/public, PATCH /api/about (public About page content)
+  GET /api/leadership/public; GET/POST/PATCH/DELETE /api/leadership(/:id),
+    POST /api/leadership/reorder, POST|DELETE /api/leadership/samples
   POST /api/pulse/submit, GET /api/pulse/aggregates, etc
   ```
 

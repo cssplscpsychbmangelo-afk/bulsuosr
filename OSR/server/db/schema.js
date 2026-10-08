@@ -133,6 +133,40 @@ export async function initializeDatabase(db) {
     );
   `));
 
+  // The leadership archive on the public About page: two primary figures and up
+  // to eight directors, each one a record the office can publish or withdraw,
+  // reorder, and fill in as far as it has been confirmed. Multi-line fields
+  // (responsibilities, previous positions, projects) are stored one per line and
+  // leave the API as arrays. `number` is an editorial override — when it is
+  // empty the sequence is derived from the order, so dragging a card never
+  // leaves the archive reading 03D, 01D, 02D. `is_sample` marks the ten records
+  // the dashboard can insert so the layout can be checked before real people are
+  // entered, and marks exactly which rows "Remove samples" deletes.
+  (await db.exec(`
+    CREATE TABLE IF NOT EXISTS leadership_profiles (
+      id TEXT PRIMARY KEY,
+      category TEXT NOT NULL DEFAULT 'director' CHECK(category IN ('primary','director')),
+      name TEXT NOT NULL,
+      position TEXT,
+      number TEXT,
+      photo TEXT,
+      short_bio TEXT,
+      quote TEXT,
+      biography TEXT,
+      responsibilities TEXT,
+      previous_positions TEXT,
+      projects TEXT,
+      facebook TEXT,
+      instagram TEXT,
+      email TEXT,
+      order_index INTEGER NOT NULL DEFAULT 0,
+      is_published INTEGER NOT NULL DEFAULT 1,
+      is_sample INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    );
+  `));
+
   (await db.exec(`
     CREATE TABLE IF NOT EXISTS media (
       id TEXT PRIMARY KEY,
@@ -236,14 +270,14 @@ export async function initializeDatabase(db) {
   const guideCount = (await db.prepare('SELECT COUNT(*) as c FROM guide_steps').get()).c;
   if (guideCount === 0) {
     const guides = [
-      {id:'g-home-1', page:'home', target_selector:'a[href="#announcements"].btn--red', title:'View announcements', description:'Tap to see verified posts — 6 types.', step_number:1, is_enabled:1},
+      {id:'g-home-1', page:'home', target_selector:'.hero__actions .btn--red', title:'Raise a concern', description:'The main action — opens the concern form.', step_number:1, is_enabled:1},
       {id:'g-home-2', page:'home', target_selector:'.quick a[href="#board-meetings"]', title:'Board Meetings', description:'BOR archive — numbers, minutes, docs.', step_number:2, is_enabled:1},
       {id:'g-home-3', page:'home', target_selector:'.quick a[href="#initiatives"]', title:'Initiatives', description:'Projects — ongoing & completed.', step_number:3, is_enabled:1},
       {id:'g-home-4', page:'home', target_selector:'.quick a[href="#resources"]', title:'Resources', description:'Handbook, policies, support docs.', step_number:4, is_enabled:1},
       {id:'g-home-5', page:'home', target_selector:'.quick a[href="#help"]', title:'Student Help', description:'Raise a concern or contact.', step_number:5, is_enabled:1},
-      {id:'g-home-6', page:'home', target_selector:'.dash-stats a[href="#announcements"]', title:'Announcements count', description:'Live total — tap to open archive.', step_number:6, is_enabled:1},
+      {id:'g-home-6', page:'home', target_selector:'.hero__actions .btn--ghost', title:'View announcements', description:'Verified posts — tap to open the archive.', step_number:6, is_enabled:1},
       {id:'g-home-7', page:'home', target_selector:'#dashCalendar', title:'Upcoming calendar', description:'Next events — tap Calendar for full AY 2026-2027.', step_number:7, is_enabled:1},
-      {id:'g-about-1', page:'about', target_selector:'#page-about .about-card:first-child', title:'OSR mandate', description:'The mandate — who the Regent represents and what the Office does.', step_number:1, is_enabled:1},
+      {id:'g-about-1', page:'about', target_selector:'#page-about .ab-mandate', title:'The mandate', description:'What the Office is, and what it does in the Board of Regents.', step_number:1, is_enabled:1},
       {id:'g-ann-1', page:'announcements', target_selector:'#annSearch', title:'Search', description:'Type to filter — updates instantly.', step_number:1, is_enabled:1},
       {id:'g-board-1', page:'board-meetings', target_selector:'#boardSearch', title:'Search meetings', description:'Find by title or number.', step_number:1, is_enabled:1},
     ];
