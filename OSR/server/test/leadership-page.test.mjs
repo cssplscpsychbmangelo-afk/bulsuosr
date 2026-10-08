@@ -318,3 +318,17 @@ test('the archive survives a phone without becoming a horizontal scroll trap', (
   assert.match(mobile, /\.ld-card\.is-active\{flex-grow:0\}/, 'and opening one no longer squeezes the others off the screen');
   assert.match(mobile, /\.ld-rec__media\{height:200px\}/, 'the record portrait is shorter where the panel is the whole width');
 });
+
+test('a Google Drive share link is rewritten to the address an image can read', async t => {
+  const page = archivePage();
+  t.after(page.close);
+  page.apply([{ id: 'ld-g', category: 'director', name: 'Gia Drive', position: 'Director, Testing', display_number: '04D',
+    photo: 'https://drive.google.com/file/d/1AbC_dEf-123/view?usp=sharing', is_published: 1 }]);
+  assert.equal(page.cards()[0].querySelector('img').getAttribute('src'), 'https://lh3.googleusercontent.com/d/1AbC_dEf-123=w1200');
+  page.apply([{ id: 'ld-h', category: 'director', name: 'Open Link', position: 'Director, Testing', display_number: '04D',
+    photo: 'https://drive.google.com/open?id=xyz789', is_published: 1 }]);
+  assert.equal(page.cards()[0].querySelector('img').getAttribute('src'), 'https://lh3.googleusercontent.com/d/xyz789=w1200', 'the other share shape lands on the same direct address');
+  page.apply([{ id: 'ld-f', category: 'director', name: 'Folder Only', position: 'Director, Testing', display_number: '04D',
+    photo: 'https://drive.google.com/drive/folders/abc', is_published: 1 }]);
+  assert.equal(page.cards()[0].querySelectorAll('img').length, 1, 'a folder link has no file id, so it is passed through unchanged');
+});

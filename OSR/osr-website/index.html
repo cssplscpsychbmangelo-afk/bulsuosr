@@ -204,8 +204,10 @@ img{max-width:100%}
 .reveal{opacity:0; transform:translateY(10px); transition:opacity .5s var(--ease), transform .5s var(--ease)}
 .reveal.is-visible{opacity:1; transform:none}
 
-/* hero — premium editorial */
-.hero{display:grid; grid-template-columns:1.18fr 0.82fr; gap:32px; padding:28px 0 12px}
+/* hero — premium editorial. The right column carries the Regent's record sheet,
+   so it takes nearly half the row; at 960px the hero stacks and the card takes
+   the full width. */
+.hero{display:grid; grid-template-columns:1.05fr 0.95fr; gap:32px; padding:28px 0 12px}
 @media(max-width:960px){.hero{grid-template-columns:1fr; gap:20px}}
 .hero__kicker{font:700 11px "IBM Plex Mono",monospace; letter-spacing:0.14em; text-transform:uppercase; color:var(--red); border:1px solid #FFD0D6; background:var(--red-3); padding:6px 10px; border-radius:999px; display:inline-flex; align-items:center; gap:6px}
 .hero__kicker:before{content:"•"; font-size:10px}
@@ -1889,9 +1891,9 @@ img,svg{max-width:100%; height:auto}
    width, so no empty column is left behind; the quotation appears only when
    there is one to show.
 
-   The portrait that used to be filed into the top of this card now lives in the
-   leadership archive on About, where it is one of ten records instead of the
-   only photograph on the homepage — and where the office edits it. */
+   The portrait is the one the leadership archive on About holds for the seat —
+   filed once in Admin → Leadership, shown in both places — and the initials
+   stand in while the seat has no photograph. */
 .hero--solo{grid-template-columns:minmax(0,1fr)}
 .hero--solo .hero__stage{display:none}
 .regent-card__head{flex-direction:row; align-items:center; justify-content:space-between; gap:10px}
@@ -1907,6 +1909,18 @@ img,svg{max-width:100%; height:auto}
   .regent-card__person{grid-template-columns:52px minmax(0,1fr); gap:12px}
   .regent-card__photo{width:52px; height:52px; font-size:17px}
   .regent-card__who h3{font-size:17px}
+}
+.regent-card__photo img{width:100%; height:100%; object-fit:cover; display:block}
+/* Wide screens: the card is the masthead's companion, not a footnote beside it,
+   so it takes the larger share of the row (the grid ratio above) and a larger
+   type register. The phone keeps the compact card, which already fills the
+   width there. */
+@media(min-width:961px){
+  .hero__card--regent{padding:30px; gap:18px}
+  .regent-card__person{grid-template-columns:88px minmax(0,1fr); gap:18px}
+  .regent-card__photo{width:88px; height:88px; font-size:26px}
+  .regent-card__who h3{font-size:22px}
+  .regent-card__message{font-size:15px}
 }
 
 /* feed date - vertical stacked, better aligned */
@@ -4691,11 +4705,18 @@ const confirmedText = value => {
 };
 /* A photo is either a file this site serves or an https:// image. Anything
    else — a javascript: URL, a protocol-relative host, a stray word — is
-   dropped, and the row simply shows no photo. */
+   dropped, and the row simply shows no photo. A Google Drive share link opens
+   the Drive page rather than an image, so it is rewritten to the file's direct
+   CDN address: the one form of the link an <img> can actually read. */
+const drivePhotoId = link => /^https:\/\/(?:drive|docs)\.google\.com\//i.test(link)
+  ? (link.match(/\/file\/d\/([-\w]+)/i) || link.match(/[?&]id=([-\w]+)/i) || link.match(/\/d\/([-\w]+)/i) || [])[1]
+  : "";
 const safePhoto = src => {
   const link = String(src || "").trim();
   if(link.startsWith("/") && !link.startsWith("//")) return link;
-  return /^https:\/\/\S+$/i.test(link) ? link : "";
+  if(!/^https:\/\/\S+$/i.test(link)) return "";
+  const id = drivePhotoId(link);
+  return id ? `https://lh3.googleusercontent.com/d/${id}=w1200` : link;
 };
 
 /* About page · the leadership archive. Two primary figures and a directorate of
@@ -4890,21 +4911,38 @@ window.applyLeadership = function(rows){
   LEADERSHIP = Array.isArray(rows) ? rows : [];
   window.LEADERSHIP = LEADERSHIP;
   renderLeadership();
+  renderStudentRegent(); // the archive may hold the Regent's portrait for the masthead card
 };
 
 function regentInitials(name){
   return String(name).trim().split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join("") || "SR";
 }
+/* The portrait the leadership archive holds for this seat. The masthead card
+   and the About archive are the same person, so the card reads the primary
+   record that matches the confirmed name — the seat titled Student Regent when
+   the names differ — instead of asking the office to file the photograph
+   twice. */
+function regentArchivePhoto(name){
+  const primaries=(Array.isArray(LEADERSHIP)?LEADERSHIP:[]).filter(row=>row && row.category==="primary" && confirmedText(row.name));
+  if(!primaries.length) return "";
+  const wanted=String(name||"").trim().toLowerCase();
+  const seat=primaries.find(row=>String(row.name).trim().toLowerCase()===wanted)
+    || primaries.find(row=>/regent/i.test(String(row.position||"")))
+    || primaries[0];
+  return safePhoto(seat.photo);
+}
+/* The CMS hands over the About fields and the archive arrives separately, so
+   the last overrides are kept and every re-render replays them. */
+let regentOverrides={};
 /* Shows the homepage Student Regent card only when there is a real person to
    show. `overrides` lets the CMS hand over the name, term and message it saved
-   in Admin → About OSR without a redeploy. The card carries initials rather than
-   a portrait: the Regent's photograph belongs to the leadership archive on
-   About, where it is one of ten records instead of the only face on the
-   homepage. */
+   in Admin → About OSR without a redeploy. The portrait is the one filed in
+   the leadership archive; the initials stand in while the seat has none. */
 function renderStudentRegent(overrides){
   const card=document.getElementById("regentCard");
   if(!card) return;
-  const data=Object.assign({}, STUDENT_REGENT, overrides||{});
+  if(overrides) regentOverrides=Object.assign({}, regentOverrides, overrides);
+  const data=Object.assign({}, STUDENT_REGENT, regentOverrides);
   const name=confirmedText(data.name), message=confirmedText(data.message);
   /* A confirmed name is what makes this a person rather than a placeholder. The
      line in the Regent's own words is shown only when the office has supplied
@@ -4920,7 +4958,11 @@ function renderStudentRegent(overrides){
   const term=document.getElementById("regentTerm");
   if(term){ term.textContent=data.term||""; term.hidden=!data.term; }
   const avatar=document.getElementById("regentPhoto");
-  if(avatar) avatar.textContent=regentInitials(name);
+  if(avatar){
+    const photo=safePhoto(data.photo)||regentArchivePhoto(name);
+    if(photo) avatar.innerHTML=`<img src="${escapeHtml(photo)}" alt="">`;
+    else avatar.textContent=regentInitials(name);
+  }
   const ask=card.querySelector('a[href="#help"]');
   if(ask && data.askHref) ask.setAttribute("href", data.askHref);
   card.hidden=false;

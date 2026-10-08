@@ -132,16 +132,14 @@ test('PostgreSQL-backed Netlify CMS', async t => {
     await ok('/api/pulse/reset', 'DELETE');
     assert.equal((await ok('/api/pulse/aggregates')).totalResponses, 0);
   });
-  await t.test('upload metadata persists in Postgres; files live in Netlify storage', async () => {
+  await t.test('the media library holds links only — the upload endpoint is gone', async () => {
     const boundary = 'osr-test-boundary';
     const body = `--${boundary}\r\nContent-Disposition: form-data; name="file"; filename="test.txt"\r\nContent-Type: text/plain\r\n\r\nHello OSR\r\n--${boundary}--\r\n`;
     const response = await handler({ path: '/api/media/upload', httpMethod: 'POST', headers: { host: 'osr.netlify.app', cookie, 'content-type': `multipart/form-data; boundary=${boundary}` }, body, isBase64Encoded: false }, {});
-    assert.equal(response.statusCode, 200, response.body);
-    const file = JSON.parse(response.body);
-    assert.equal(media.get(file.filename).data.toString(), 'Hello OSR');
-    assert.ok((await ok('/api/media')).some(row => row.id === file.id));
-    await ok('/api/media/'+file.id, 'DELETE');
-    assert.equal(media.has(file.filename), true); // archived media is retained for existing references
+    assert.equal(response.statusCode, 404, 'file upload was removed from the library');
+    const linked = await ok('/api/media/link', 'POST', { url: 'https://example.com/regent.jpg', title: 'Regent portrait', caption: '', category: '', status: 'Published' });
+    assert.ok((await ok('/api/media')).some(row => row.id === linked.id), 'an image link is still filed');
+    await ok('/api/media/'+linked.id, 'DELETE');
   });
   await t.test('CSRF, persistent throttling, and missing environment config', async () => {
     assert.equal((await request('/api/announcements', 'POST', { title: 'CSRF' }, cookie, { origin: 'https://evil.example' })).statusCode, 403);

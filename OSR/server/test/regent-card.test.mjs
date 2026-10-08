@@ -8,12 +8,11 @@ const html = fs.readFileSync(sitePath, 'utf8');
 const integration = fs.readFileSync(new URL('../../osr-website/js/cms-integration.js', import.meta.url).pathname, 'utf8');
 
 // The masthead's one card is a person, not a poster: a confirmed name, the term,
-// one line in the Regent's own words, and the way to reach them. The portrait
-// that used to be filed into the top of this card now belongs to the leadership
-// archive on About, where it is one of ten records instead of the only face on
-// the homepage — so what has to hold here is that the card still works in every
-// combination the office can produce, and that nothing in it asks for a
-// photograph any more.
+// one line in the Regent's own words, the way to reach them, and the portrait
+// the leadership archive holds for the seat. What has to hold here is that the
+// card works in every combination the office can produce — a photograph filed
+// in the archive appears, a seat with none falls back to initials, and an
+// unsafe address never becomes an <img>.
 
 function heroPage() {
   const dom = new JSDOM(html, {
@@ -72,13 +71,43 @@ test('a message and a term appear only when the office has supplied them', async
   assert.equal(page.avatar().textContent, 'JD', 'the initials carry the card whatever else is filled in');
 });
 
-test('the card never carries a portrait, however one is offered', async t => {
+test('the portrait the archive holds for the Regent is filed into the card', async t => {
   const page = heroPage();
   t.after(page.close);
-  page.render({ name: 'Juan D. Dela Cruz', photo: '/uploads/regent.jpg', message: 'x' });
-  assert.equal(page.card().querySelectorAll('img').length, 0, 'no photograph is filed into the masthead card');
-  assert.equal(page.avatar().textContent, 'JD', 'the initials are the card\'s only picture of the person');
-  assert.ok(!page.card().className.includes('photo'), 'and no portrait state is left on the card');
+  page.render({ name: 'Juan D. Dela Cruz', message: 'x' });
+  assert.equal(page.card().querySelectorAll('img').length, 0, 'no archive yet: the initials carry the card');
+  assert.equal(page.avatar().textContent, 'JD');
+  page.window.applyLeadership([
+    { id: 'ld-1', category: 'primary', name: 'Juan D. Dela Cruz', position: 'Student Regent', photo: 'https://drive.google.com/file/d/abc123/view?usp=sharing', is_published: 1 },
+    { id: 'ld-2', category: 'primary', name: 'Ana R. Reyes', position: 'Executive Director', photo: '/uploads/ana.jpg', is_published: 1 }
+  ]);
+  const img = page.card().querySelector('img');
+  assert.ok(img, 'the archive portrait arrives without a reload');
+  assert.equal(img.getAttribute('src'), 'https://lh3.googleusercontent.com/d/abc123=w1200', 'a Drive share link is rewritten to the address an <img> can read');
+  assert.equal(img.getAttribute('alt'), '', 'decorative: the name is printed beside it');
+  assert.equal(page.document.getElementById('regentName').textContent, 'Juan D. Dela Cruz', 'and the re-render keeps the confirmed name');
+});
+
+test('the card reads the Student Regent seat when the names differ', async t => {
+  const page = heroPage();
+  t.after(page.close);
+  page.render({ name: 'No Match Name', message: 'x' });
+  page.window.applyLeadership([
+    { id: 'ld-1', category: 'primary', name: 'Ana R. Reyes', position: 'Executive Director', photo: '/uploads/ana.jpg', is_published: 1 },
+    { id: 'ld-2', category: 'primary', name: 'Juan D. Dela Cruz', position: 'Student Regent', photo: '/uploads/juan.jpg', is_published: 1 }
+  ]);
+  assert.equal(page.card().querySelector('img').getAttribute('src'), '/uploads/juan.jpg', 'the Regent seat is the one whose portrait is shown');
+});
+
+test('an offered portrait wins, and an unsafe one never becomes an image', async t => {
+  const page = heroPage();
+  t.after(page.close);
+  page.render({ name: 'Juan D. Dela Cruz', photo: 'https://example.com/regent.jpg', message: 'x' });
+  assert.equal(page.card().querySelector('img').getAttribute('src'), 'https://example.com/regent.jpg');
+  page.render({ name: 'Juan D. Dela Cruz', photo: 'javascript:alert(1)', message: 'x' });
+  assert.equal(page.card().querySelectorAll('img').length, 0, 'an unsafe address is dropped');
+  assert.equal(page.avatar().textContent, 'JD', 'and the initials stand in');
+  assert.ok(!page.card().className.includes('photo'), 'no portrait state is left on the card');
 });
 
 test('the portrait and everything that hung off it are gone from the masthead', () => {
@@ -87,6 +116,7 @@ test('the portrait and everything that hung off it are gone from the masthead', 
   }
   assert.match(html, /\.hero--solo\{grid-template-columns:minmax\(0,1fr\)\}/, 'the masthead still takes the full width when the card is hidden');
   assert.match(html, /\.hero--solo \.hero__stage\{display:none\}/, 'and the empty column is not left behind it');
-  assert.doesNotMatch(html, /photo:\s*""\s*,\s*\/\/\s*\/uploads/, 'the built-in record has no photograph field to fill in');
-  assert.doesNotMatch(integration, /sr_photo/, 'the CMS no longer hands a portrait to the masthead');
+  assert.match(html, /function regentArchivePhoto\(name\)/, 'the card reads its portrait from the leadership archive');
+  assert.match(html, /\.regent-card__photo img\{[^}]*object-fit:cover/, 'a filed portrait fills the circle');
+  assert.doesNotMatch(integration, /sr_photo/, 'the CMS hands over no portrait; the archive supplies it');
 });
