@@ -354,6 +354,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
 .preview-card .kv span{overflow-wrap:anywhere}
 .field-group{display:grid;gap:12px;padding-top:4px}
 .field-group>h4{margin:0;font:600 12px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--red-dark)}
+.field-group>p{margin:0;font-size:11.5px;line-height:1.55;color:var(--stone)}
 .danger-zone{display:grid;gap:12px;margin-top:18px;padding:18px;border:1px solid #D78E9A;border-left:4px solid var(--red);border-radius:10px;background:var(--red-soft)}
 .danger-zone h3{margin:0}
 .danger-zone p{margin:0;color:var(--red-dark);font-size:12.5px}
@@ -1097,7 +1098,7 @@ const pageMeta = {
   submissions: ['Students', 'Organization submissions', 'Positions, resolutions, requests and statements filed by student councils and organizations, with the signed document each one carries.', '', ''],
   media: ['Administration 08', 'Media library', 'Manage uploaded files and externally hosted images.', 'Add media', 'media'],
   contact: ['Administration 09', 'Contact & details', 'Control the email, phone, office and social details shown on the public site.', '', ''],
-  about: ['Administration 10', 'About OSR', 'Update the public About page: mandate, Student Regent, directors, vision and mission, office information, featured programs and official links.', '', ''],
+  about: ['Administration 10', 'About OSR', 'Update the public About page: the mandate, the Office and the people designated to it, and the Student Regent shown on the homepage.', '', ''],
   pulse: ['Administration 11', 'Pulse data', 'Examine every BulSU Pulse period by date, then wipe what should be removed.', '', ''],
   settings: ['Administration 12', 'Settings', 'Manage your account, site information, and administrator access.', '', '']
 };
@@ -1747,8 +1748,8 @@ async function renderSettings() {
       </form>
       ${superAdmin ? `<form class="form" id="siteForm">
         <h3>Public site information</h3>
-        <p class="form-intro">These details appear on the public OSR website.</p>
-        ${[['site_title','OSR name'],['site_description','Description'],['contact_email','Contact email'],['contact_phone','Contact phone'],['office_address','Office address'],['official_page','Official page'],['social_facebook','Facebook'],['social_instagram','Instagram'],['homepage_intro','Homepage introduction'],['footer_credit','Footer information']].map(([key,label]) => `<label>${label}<input name="${key}" value="${esc(settings[key] || '')}"></label>`).join('')}
+        <p class="form-intro">Site-wide wording, super administrators only. The office, contact and footer details are kept in Contact &amp; details, where any OSR administrator can reach them — they are not repeated here.</p>
+        ${[['site_title','OSR name'],['site_description','Description'],['homepage_intro','Homepage introduction']].map(([key,label]) => `<label>${label}<input name="${key}" value="${esc(settings[key] || '')}"></label>`).join('')}
         <button class="btn btn--red" type="submit">Save site information</button>
       </form>
       <section class="card settings-admin"><div class="section-head"><div><h3>Administrator access</h3><span class="mono">Create accounts and manage access levels</span></div></div><div id="adminUsers"><div class="empty loading-state">Loading administrators</div></div></section>` : ''}
@@ -2062,29 +2063,35 @@ const CONTACT_GROUPS = [
   ]],
   ['Office hours', [
     ['office_hours', 'Hours shown on contact cards'],
-    ['office_hours_short', 'Short hours (footer)'],
     ['office_hours_note', 'Note (holidays, special schedules)']
   ]],
   ['Presence', [
     ['official_page', 'Official page', 'url'],
     ['social_facebook', 'Facebook page', 'url'],
     ['social_messenger', 'Messenger link', 'url'],
-    ['social_instagram', 'Instagram profile', 'url'],
-    ['footer_credit', 'Footer credit']
-  ]]
+    ['social_instagram', 'Instagram profile', 'url']
+  ]],
+  // Everything the public footer prints, in one group. Its navigation column is
+  // not here on purpose: those six destinations are the main navigation, edited
+  // once, and the footer follows whatever is visible there.
+  ['Footer', [
+    ['footer_name', 'Office name'],
+    ['footer_description', 'One-line description'],
+    ['footer_credit', 'Credit line under the footer']
+  ], 'The footer also shows the primary email and the official social links above, and the six main navigation links. Nothing else is printed down there.']
 ];
 
 const PUBLIC_TEXT_FIELDS = [
   ['site_title', 'Site title'],
   ['site_description', 'Site description'],
-  ['homepage_intro', 'Homepage introduction'],
-  ['footer_text', 'Footer note']
+  ['homepage_intro', 'Homepage introduction']
 ];
 
 function contactInputs(groups, values, disabled = false) {
-  return groups.map(([title, fields]) => `
+  return groups.map(([title, fields, note]) => `
     <div class="field-group">
       <h4>${esc(title)}</h4>
+      ${note ? `<p>${esc(note)}</p>` : ''}
       ${fields.map(([key, label, type]) => `<label>${esc(label)}<input name="${key}" type="${type || 'text'}" value="${esc(values[key] || '')}" ${disabled ? 'disabled' : ''}></label>`).join('')}
     </div>`).join('');
 }
@@ -2142,9 +2149,12 @@ async function renderContact() {
         ['Person', [value('contact_person'), value('contact_role')].filter(Boolean).join(' · ') || '—'],
         ['Email', [value('contact_email'), value('contact_email_secondary')].filter(Boolean).join(' · ') || '—'],
         ['Phone', [value('contact_phone'), value('contact_phone_secondary')].filter(Boolean).join(' · ') || '—'],
-        ['Hours', value('office_hours') || value('office_hours_short') || '—'],
+        ['Hours', value('office_hours') || '—'],
         ['Link', value('official_page') || '—'],
-        ['Footer', value('footer_credit') || '—']
+        ['Footer name', value('footer_name') || 'Office of the Student Regent'],
+        ['Footer line', value('footer_description') || 'Student representation in the Bulacan State University Board of Regents.'],
+        ['Footer links', 'Home · Announcements · Board Meetings · Initiatives · Resources · About'],
+        ['Footer credit', value('footer_credit') || '—']
       ];
       $('#contactPreview').innerHTML = `<h3>How the public site will read</h3>${lines.map(([label, text]) => `<div class="kv"><b>${esc(label)}</b><span>${esc(text)}</span></div>`).join('')}`;
     };
@@ -2211,86 +2221,41 @@ async function renderContact() {
 }
 
 /* ── About OSR page ──────────────────────────────────────────────────────────
-   Every card on the public "About the Office of the Student Regent" page is
-   edited here. A field left empty keeps the wording built into the website, so
-   nothing has to be retyped just to change one name or one line. */
-// The About editor is split into sections: one is open at a time, picked from
-// the list on the left, so an administrator never scrolls through 60 fields.
-// Each section owns its text fields and (optionally) one repeatable list.
+   The public About page is an office profile in three parts — the mandate, the
+   Office and the people designated to it, and a compact reference to Bulacan
+   State University. This editor holds one pane per part and nothing else: a
+   field left empty keeps the wording built into the website, and no field here
+   asks for something the page does not print. The Student Regent pane stays
+   because the same person is shown on the card beside the homepage masthead. */
 const ABOUT_SECTIONS = [
-  { id: 'header', title: 'Page header', hint: 'Title band at the top of the page', fields: [
+  { id: 'header', title: 'About / intro', hint: 'Title band at the top of the page', fields: [
     ['eyebrow', 'Small label above the title'],
     ['title', 'Page title'],
-    ['intro', 'Introduction sentence', 'textarea'],
-    ['badge', 'Badge text']
+    ['intro', 'Short description of the Office', 'textarea']
   ] },
-  { id: 'office', title: 'Office & mandate', hint: 'What the office is and does', fields: [
-    ['office_heading', 'Heading'],
-    ['office_p1', 'Lead paragraph (shown larger)', 'textarea'],
-    ['office_p2', 'Second paragraph', 'textarea'],
+  { id: 'mandate', title: 'Mandate', hint: 'What the Office is and does', fields: [
     ['mandate_heading', 'Mandate heading'],
-    ['mandate_items', 'Mandate points — one per line', 'textarea'],
-    ['mandate_note', 'Note under the mandate', 'textarea']
+    ['mandate_lede', 'Mandate description', 'textarea'],
+    ['mandate_items', 'What the Office does — one per line', 'textarea']
   ] },
-  { id: 'regent', title: 'Student Regent', hint: 'The featured person card', fields: [
-    ['sr_heading', 'Card heading'],
-    ['sr_label', 'Label above the name'],
-    ['sr_name', 'Student Regent name'],
-    ['sr_meta', 'Term and campus line'],
-    ['sr_photo', 'Photo link (optional)', 'photo'],
-    ['sr_note', 'Note under the name', 'textarea']
-  ] },
-  { id: 'staff', title: 'Office staff', hint: 'Add, reorder and remove staff', isNew: true, fields: [
-    ['staff_heading', 'Heading above the staff cards'],
-    ['staff_intro', 'Short introduction (optional)', 'textarea']
+  { id: 'office', title: 'The Office', hint: 'The Office, and who is designated to it', fields: [
+    ['office_heading', 'Heading'],
+    ['office_lede', 'Short description', 'textarea'],
+    ['staff_heading', 'Heading above the list of people']
   ], list: 'staff' },
-  { id: 'directors', title: 'Directors & reps', hint: 'Executive director, directors, colleges', fields: [
-    ['dir_heading', 'Heading'],
-    ['dir_intro', 'Introduction', 'textarea'],
-    ['dir_exec_name', 'Executive Director name'],
-    ['dir_exec_tag', 'Executive Director tag'],
-    ['dir_names', 'Directors (names)'],
-    ['dir_tag', 'Directors tag'],
-    ['college_title', 'College representatives title'],
-    ['college_desc', 'College representatives description', 'textarea'],
-    ['college_rows', 'College representatives — one per line', 'textarea']
-  ] },
-  { id: 'vm', title: 'Vision & mission', hint: 'Dark band with values', fields: [
-    ['vm_heading', 'Heading'],
-    ['vision', 'Vision statement', 'textarea'],
-    ['mission', 'Mission statement', 'textarea'],
-    ['values', 'Core values — one per line', 'textarea'],
-    ['values_note', 'Note under the values', 'textarea']
-  ] },
-  { id: 'programs', title: 'Featured programs', hint: 'Program cards', fields: [
-    ['featured_heading', 'Heading'],
-    ['featured_intro', 'Introduction', 'textarea'],
-    ['featured_note', 'Note under the cards', 'textarea']
-  ], list: 'featured' },
-  { id: 'info', title: 'Office information', hint: 'Label / value facts', fields: [
-    ['info_heading', 'Heading'],
-    ['info_note', 'Note', 'textarea']
-  ], list: 'info' },
-  { id: 'contact', title: 'Contact card', hint: 'Email & phone live in Contact & details', fields: [
-    ['contact_heading', 'Heading'],
-    ['response_time', 'Response time line']
-  ] },
-  { id: 'links', title: 'Official links', hint: 'Verified external links', fields: [
-    ['links_heading', 'Heading'],
-    ['links_note', 'Note', 'textarea']
-  ], list: 'links' }
+  { id: 'regent', title: 'Student Regent', hint: 'Also shown on the homepage card', fields: [
+    ['sr_name', 'Full name'],
+    ['sr_meta', 'Term line'],
+    ['sr_photo', 'Photo (optional)', 'photo'],
+    ['sr_note', 'One-line message from the Regent (homepage card)', 'textarea']
+  ] }
 ];
 
 const ABOUT_ROW_EDITORS = [
-  { key: 'info', label: 'Facts', item: 'fact', columns: [['label', 'Label'], ['value', 'Value']] },
-  // The fourth column entry marks a link field: those accept an https:// URL or
-  // a #section of this site, so they stay plain text inputs.
-  { key: 'featured', label: 'Program cards', item: 'program', columns: [['title', 'Title'], ['tag', 'Tag'], ['description', 'Description', 'textarea'], ['link_label', 'Link label'], ['link_href', 'Link URL or #section', 'text', true]] },
-  { key: 'staff', label: 'Staff members', item: 'staff member', reorder: true, columns: [['name', 'Full name *'], ['role', 'Position / role'], ['unit', 'Unit or campus'], ['email', 'Email', 'email'], ['photo', 'Photo link', 'photo']] },
-  { key: 'links', label: 'Links', item: 'link', reorder: true, columns: [['label', 'Label'], ['href', 'URL or #section', 'text', true]] }
+  { key: 'staff', label: 'The Office', item: 'person', reorder: true, columns: [['name', 'Full name *'], ['role', 'Position'], ['note', 'Short description (optional)', 'textarea'], ['photo', 'Photo (optional)', 'photo']] }
 ];
 
-const ABOUT_LINE_FIELDS = ['mandate_items', 'values', 'college_rows'];
+const ABOUT_LINE_FIELDS = ['mandate_items'];
 let aboutMediaImages = [];
 
 function aboutPhotoPicker(name, attr) {
@@ -2328,7 +2293,7 @@ function aboutRowHTML(editor, index, row) {
 }
 
 function aboutEmptyRow(editor) {
-  return `<p class="list-editor__empty">No ${esc(editor.item)}s yet.${editor.key === 'staff' ? ' The staff block stays hidden on the public page until you add someone.' : ' The public page keeps its built-in list until you add one.'}</p>`;
+  return `<p class="list-editor__empty">No ${esc(editor.item)} yet. Until someone is added, the public page says plainly that no officers are published — it never invents a name.</p>`;
 }
 
 function aboutEditorHTML(editor, rows) {
@@ -2350,13 +2315,11 @@ function collectAboutRows(section, key) {
 function validateAboutData(data) {
   for (const editor of ABOUT_ROW_EDITORS) {
     for (const row of data[editor.key] || []) {
-      for (const [field, label, type, isLink] of editor.columns) {
+      for (const [field, label, type] of editor.columns) {
         const value = row[field];
-        if (editor.key === 'staff' && field === 'name' && !value) return 'Every staff member needs a full name.';
-        if (!value) continue;
-        if (isLink && !/^https?:\/\/\S+$/i.test(value) && !value.startsWith('#')) return `"${value}" must start with https:// or be a #section of this site.`;
-        if (type === 'photo' && !/^https:\/\/\S+$/i.test(value) && !(value.startsWith('/') && !value.startsWith('//'))) return `Photo "${value}" must be an https:// link or a Media library file.`;
-        if (type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return `"${value}" is not a valid email address.`;
+        if (field === 'name' && !value) return 'Every person listed in the Office needs a full name.';
+        if (!value || type !== 'photo') continue;
+        if (!/^https:\/\/\S+$/i.test(value) && !(value.startsWith('/') && !value.startsWith('//'))) return `Photo "${value}" must be an https:// link or a Media library file.`;
       }
     }
   }
@@ -2392,7 +2355,7 @@ async function renderAbout() {
       <nav class="about-editor__nav" aria-label="About page sections">
         <p class="about-editor__navlabel">Page sections</p>
         ${ABOUT_SECTIONS.map(item => `<button type="button" class="about-nav-item${item.id === aboutActiveSection ? ' is-active' : ''}" data-about-section="${item.id}" ${item.id === aboutActiveSection ? 'aria-current="true"' : ''}>
-          <span class="about-nav-item__title">${esc(item.title)}${item.isNew ? ' <span class="badge badge--green">New</span>' : ''}</span>
+          <span class="about-nav-item__title">${esc(item.title)}</span>
           <span class="about-nav-item__hint">${esc(item.hint)}</span>
           <span class="about-nav-item__count" data-count-for="${item.id}">${filledCount(item) ? `${filledCount(item)} set` : 'Built-in'}</span>
         </button>`).join('')}
@@ -2400,9 +2363,8 @@ async function renderAbout() {
       <div class="about-editor__body">
         ${ABOUT_SECTIONS.map(item => `<section class="about-pane" data-pane="${item.id}" ${item.id === aboutActiveSection ? '' : 'hidden'}>
           <header class="about-pane__head"><h3>${esc(item.title)}</h3><p>${esc(item.hint)}. Leave a field empty to keep the site's built-in wording.</p></header>
-          ${item.list === 'staff' ? aboutEditorHTML(editorFor('staff'), rows.staff) : ''}
           <div class="about-pane__fields">${item.fields.map(field => aboutFieldHTML(field, values)).join('')}</div>
-          ${item.list && item.list !== 'staff' ? aboutEditorHTML(editorFor(item.list), rows[item.list]) : ''}
+          ${item.list ? aboutEditorHTML(editorFor(item.list), rows[item.list]) : ''}
         </section>`).join('')}
         <div class="err" role="alert"></div>
         <div class="about-savebar">

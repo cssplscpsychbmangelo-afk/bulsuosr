@@ -55,7 +55,7 @@ All sections support Create/Edit/Delete, Draft/Published/Archived, Preview, Save
 - **Initiatives**: Title, Description, Purpose, Status (ONGOING/PLANNED/COMPLETED/ON_HOLD), Date, Category, Image, Links
 - **Resources**: Title, Description, Category (editable), File URL/PDF, External link, Publish
 - **Calendar**: Title, Date, Start/End, Category, Location, Link, Attachment, Add/Edit/Delete/Duplicate, auto-reflects public
-- **About/OSR**: Mandate, Vision, Mission, Core Values, Student Regent, Directors, office information, featured programs and official links, edited in *Admin → About OSR* and stored as one JSON document in `site_settings.about_content` (`GET /api/about/public`, `PATCH /api/about`). Empty fields keep the wording built into the public page.
+- **About/OSR**: Intro, Mandate (heading, description, points), the Office and the people designated to it (name, position, optional photo, one optional line), and the Student Regent, edited in *Admin → About OSR* and stored as one JSON document in `site_settings.about_content` (`GET /api/about/public`, `PATCH /api/about`). Empty fields keep the wording built into the public page; keys the page no longer renders are ignored on read and dropped on the next save.
 - **Navigation**: Show/hide, order (drag-drop + Save order), add/remove, validation (href must be #//http), prevents breaking routes
 
 ### 13. Media

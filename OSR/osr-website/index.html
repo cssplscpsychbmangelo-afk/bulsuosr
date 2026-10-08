@@ -390,14 +390,6 @@ img{max-width:100%}
 .prose h4{margin:16px 0 8px; font-size:15px; color:var(--ink)}
 .prose a{color:var(--red); text-decoration:none; }
 
-/* footer */
-.footer{border-top:1px solid var(--ink); margin-top:40px; padding:18px 16px; max-width:var(--max); margin-left:auto; margin-right:auto; display:grid; gap:16px}
-@media(min-width:860px){.footer{grid-template-columns:1.2fr 0.8fr}}
-.footer h4{margin:0 0 8px; font-size:13px; letter-spacing:0.02em}
-.footer p, .footer li{font-size:13px; color:var(--stone); line-height:1.5}
-.footer ul{list-style:none; padding:0; margin:0; display:grid; gap:4px}
-.footer a:hover{border-bottom-color:var(--ink)} .footer a{color:var(--ink); font-weight:600; text-decoration:none; }
-.footer__bar{border-top:1px solid var(--line); padding-top:12px; display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between; font-size:12px; color:var(--stone)}
 
 .fab{position:fixed; right:16px; bottom:calc(76px + env(safe-area-inset-bottom, 0px)); z-index:49; width:44px; height:44px; border-radius:999px; border:1px solid var(--line-2); background:white; color:var(--ink); display:grid; place-items:center; box-shadow:var(--shadow); cursor:pointer; opacity:0; visibility:hidden; pointer-events:none; transform:translateY(6px); transition:opacity .2s var(--ease), transform .2s var(--ease), visibility .2s}
 .fab:hover{border-color:var(--stone-3); color:var(--red)}
@@ -415,8 +407,6 @@ a{text-decoration:none !important}
 a:hover{text-decoration:none}
 .prose a{border-bottom:1px solid #FFD0D6}
 .prose a:hover{border-bottom-color:var(--red)}
-.footer a{border-bottom:1px solid rgba(255,255,255,0.18)}
-.footer a:hover{border-bottom-color:rgba(255,255,255,0.45)}
 
 /* hero — more organized, generous spacing, clean card */
 .hero{padding:44px 0 20px; gap:48px; align-items:start}
@@ -468,30 +458,56 @@ a:hover{text-decoration:none}
 .section--first{padding-top:32px}
 .section__head{margin-bottom:22px}
 
-/* footer — premium, clean, professional */
-.footer{background:var(--ink); color:#E8E0D6; border-top:0; margin-top:56px; padding:0; max-width:none; display:block}
-.footer__inner{max-width:var(--max); margin:0 auto; padding:36px 16px 0; display:grid; grid-template-columns:1.4fr 0.9fr 1fr; gap:32px}
-@media(max-width:860px){.footer__inner{grid-template-columns:1fr; gap:24px; padding:28px 16px 0}}
-.footer__brand{display:flex; gap:12px; align-items:flex-start}
-.footer__mark{width:44px; height:44px; background:white; color:var(--red); display:grid; place-items:center; font-family:"IBM Plex Mono",monospace; font-weight:700; font-size:11px; line-height:1; border-radius:6px; flex:0 0 auto}
-.footer h4{color:white; font-size:12px; letter-spacing:0.06em; text-transform:uppercase; font-family:"IBM Plex Mono",monospace; margin:0 0 12px; font-weight:700}
-.footer p{color:#D5CEC7; font-size:13.5px; line-height:1.6}
-.footer ul{list-style:none; padding:0; margin:0; display:grid; gap:7px}
-.footer li a, .footer li{font-size:13.5px; color:#E8E0D6}
-.footer li a:hover{color:white}
-.footer__col ul li a{border:0}
-.footer__bar{max-width:var(--max); margin:20px auto 0; padding:14px 16px 18px; border-top:1px solid rgba(255,255,255,0.08); display:flex; gap:12px; flex-wrap:wrap; justify-content:space-between; font-size:12px; color:#9A9590}
+/* ── Footer: identity, six destinations, one way in ──────────────────────────
+   Three columns on a wide screen, and each one says a single thing: who the
+   Office is, where to go next, how to reach it. Ink background, the mark in
+   institutional red, hairline-separated links — the same materials as the rest
+   of the site, at the quietest volume on the page. Nothing here is a second
+   sitemap: the six destinations follow the header navigation (see
+   patchNavigation), and the address, phone, hours and every page the site
+   already has stay on their own pages. */
+.footer{background:var(--ink); color:#E8E0D6; margin-top:56px}
+.footer__inner{max-width:var(--max); margin:0 auto; padding:34px 16px 0; display:grid; grid-template-columns:minmax(0,1.5fr) minmax(0,0.9fr) minmax(0,1.1fr); gap:32px}
+.footer__id{display:grid; gap:14px; align-content:start}
+.footer__brand{display:flex; gap:12px; align-items:center}
+.footer__brand h4{margin:0; color:#fff; font:600 15px/1.25 var(--font-display); letter-spacing:0}
+.footer__university{margin:3px 0 0; font:500 11px "IBM Plex Mono",monospace; letter-spacing:0.06em; text-transform:uppercase; color:#9A9590}
+.footer__desc{margin:0; max-width:38ch; color:#D5CEC7; font-size:13.5px; line-height:1.6}
+.footer h4{margin:0 0 12px; color:#fff; font:700 12px "IBM Plex Mono",monospace; letter-spacing:0.06em; text-transform:uppercase}
+.footer ul{list-style:none; margin:0; padding:0; display:grid; gap:8px}
+.footer li a{color:#E8E0D6; font-size:13.5px; line-height:1.5; border-bottom:1px solid rgba(255,255,255,0.18)}
+.footer li a:hover{color:#fff; border-bottom-color:rgba(255,255,255,0.45)}
+.footer__contact p{margin:0 0 9px; color:#D5CEC7; font-size:13.5px; line-height:1.6; overflow-wrap:break-word}
+.footer__contact a{color:#E8E0D6; border-bottom:1px solid rgba(255,255,255,0.18)}
+.footer__contact a:hover{color:#fff; border-bottom-color:rgba(255,255,255,0.45)}
+/* The institutional red focus ring measures 2.5:1 against this ink band, under
+   the 3:1 a focus indicator has to reach, so on the footer it is white — the
+   colour the footer's own headings and hover states already use. Same ring, same
+   width; this is the one surface where the accent cannot carry it. */
+.footer a:focus-visible{outline-color:#fff}
+.footer__social{display:flex; gap:16px; flex-wrap:wrap}
+.footer__bar{max-width:var(--max); margin:26px auto 0; padding:14px 16px 18px; border-top:1px solid rgba(255,255,255,0.08); display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between; font-size:12px; color:#9A9590}
 .footer__bar .mono{color:#9A9590}
-/* footer polish — credit line, contact rhythm, phone links, bar alignment */
-.footer__inner p{margin:0 0 12px}
-.footer__inner p:last-child{margin-bottom:0}
-.footer__contact{overflow-wrap:break-word}
-.footer__contact a{color:#E8E0D6}
-.footer__contact a:hover{color:#fff}
-.phone-link{white-space:nowrap}
 #footerCredit{white-space:nowrap}
-.footer__bar{align-items:center}
-@media(max-width:640px){.footer__bar{flex-direction:column;justify-content:center;text-align:center;gap:6px}#footerCredit{white-space:normal}}
+.phone-link{white-space:nowrap}
+/* Two columns once the identity line would be squeezed, one on a phone. */
+@media(max-width:860px){
+  .footer__inner{grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:26px; padding:28px 16px 0}
+  .footer__id{grid-column:1/-1}
+}
+@media(max-width:520px){
+  .footer__inner{grid-template-columns:minmax(0,1fr)}
+  .footer__bar{flex-direction:column; justify-content:center; text-align:center; gap:6px}
+  #footerCredit{white-space:normal}
+}
+/* A thumb needs 44px, whatever the type size says: on touch the links grow
+   their hit box instead of growing the gaps between them. */
+@media (pointer:coarse){
+  .footer ul{gap:0}
+  .footer li a{display:inline-flex; align-items:center; min-height:44px}
+  .footer__social{gap:8px}
+  .footer__social a{display:inline-flex; align-items:center; min-height:44px}
+}
 
 
 /* ===== ENTIRETY — institutional direction, clean premium ===== */
@@ -1194,95 +1210,54 @@ img,svg{max-width:100%; height:auto}
 @media (prefers-reduced-motion:reduce){ .guide-highlight, #guideTooltip{transition:none; animation:none} }
 
 
-/* ── About page (rebrand): numbered blocks, regent feature, staff grid, ink vision band ── */
-#page-about .ab-hero{position:relative; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:24px; align-items:end; padding:32px 32px 28px; border-radius:var(--radius); background:var(--red-ink); color:var(--paper); overflow:hidden}
-#page-about .ab-hero:after{content:""; position:absolute; right:-60px; top:-60px; width:240px; height:240px; border-radius:50%; border:36px solid rgba(255,255,255,0.06); pointer-events:none}
+/* ── About page: three blocks, no directory ──────────────────────────────────
+   Type, the numbered index and hairline dividers carry the hierarchy; nothing
+   here is a card except the mandate, which is marked with the 4px red filing
+   rule the Office uses on its key sections (DESIGN.md · Motif). The old page's
+   ink vision band, program cards, people cards and link directory are gone
+   with the sections they belonged to. */
+#page-about .ab-hero{padding:34px 32px 30px; border-radius:var(--radius); background:var(--red-ink); color:var(--paper)}
 #page-about .ab-hero__eyebrow{font:600 11px "IBM Plex Mono",monospace; letter-spacing:0.12em; text-transform:uppercase; color:#FFC9D1}
-#page-about .ab-hero h2{margin:8px 0 10px; font:600 clamp(28px,4.2vw,44px)/1.04 var(--font-display); letter-spacing:-0.02em; color:var(--paper); max-width:18ch; overflow-wrap:anywhere; min-width:0}
-#page-about .ab-hero p{margin:0; max-width:58ch; color:rgba(255,255,255,0.82); font-size:14.5px; line-height:1.6}
-#page-about .ab-hero__side{display:grid; gap:12px; justify-items:end; position:relative; z-index:1}
-#page-about .ab-hero__badge{font:600 11px "IBM Plex Mono",monospace; padding:6px 10px; border-radius:var(--radius-pill); background:var(--paper); color:var(--red-ink); white-space:nowrap}
-#page-about .ab-hero__facts{margin:0; display:grid; gap:8px; text-align:right}
-#page-about .ab-hero__facts dt{font:500 10px "IBM Plex Mono",monospace; letter-spacing:0.08em; text-transform:uppercase; color:#FFC9D1}
-#page-about .ab-hero__facts dd{margin:0; font:600 14px var(--font-display)}
-#page-about .ab-jump{position:sticky; top:64px; z-index:15; display:flex; gap:6px; overflow-x:auto; scrollbar-width:none; margin:14px 0 6px; padding:6px; background:rgba(255,255,255,0.94); backdrop-filter:blur(8px); border:1px solid var(--line); border-radius:var(--radius-pill)}
-#page-about .ab-jump::-webkit-scrollbar{display:none}
-#page-about .ab-jump button{flex:0 0 auto; border:0; background:transparent; padding:7px 14px; border-radius:var(--radius-pill); font:600 12.5px "IBM Plex Sans",sans-serif; color:var(--ink-2); cursor:pointer; white-space:nowrap}
-#page-about .ab-jump button:hover, #page-about .ab-jump button.is-active{background:var(--red-3); color:var(--red)}
+#page-about .ab-hero h2{margin:10px 0 12px; font:600 clamp(28px,4.2vw,42px)/1.06 var(--font-display); letter-spacing:-0.02em; color:var(--paper); max-width:20ch; overflow-wrap:anywhere}
+#page-about .ab-hero p{margin:0; max-width:62ch; color:#F0DDE0; font-size:15px; line-height:1.62}
 #page-about .ab-blocks{counter-reset:absec}
-#page-about .ab-block{position:relative; counter-increment:absec; padding:34px 0 30px; border-top:1px solid var(--line); scroll-margin-top:120px}
+#page-about .ab-block{position:relative; counter-increment:absec; padding:36px 0 32px; border-top:1px solid var(--line); scroll-margin-top:96px}
 #page-about .ab-block:first-of-type{border-top:0}
-/* Counted, not typed: a block that is hidden because its details are not
-   confirmed yet cannot leave a gap in the numbering (01 · 03 · 04). */
-#page-about .ab-block__num{font:500 12px "IBM Plex Mono",monospace; color:var(--red); letter-spacing:0.08em; margin-bottom:10px}
+/* Counted, not typed: the index follows the blocks that are actually rendered. */
+#page-about .ab-block__num{font:500 12px "IBM Plex Mono",monospace; color:var(--red); letter-spacing:0.08em; margin-bottom:12px}
 #page-about .ab-block__num:before{content:counter(absec, decimal-leading-zero)}
-#page-about .ab-block__title, #page-about .ab-block h3{margin:0 0 12px; font:600 24px/1.15 var(--font-display); letter-spacing:-0.015em; font-style:normal}
-#page-about .ab-note{margin:12px 0 0; font-size:13px; color:var(--stone); line-height:1.55}
-#page-about .ab-mono{display:block; margin-top:6px; font:500 11.5px "IBM Plex Mono",monospace; color:var(--stone); white-space:pre-line}
-#page-about .ab-office{display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,0.9fr); gap:36px}
-#page-about .ab-lede{font:400 19px/1.5 var(--font-display); color:var(--ink); margin:0 0 14px}
-#page-about .ab-office__lead p:not(.ab-lede){margin:0; font-size:14px; line-height:1.65; color:var(--ink-2)}
-#page-about .ab-mandate{padding:20px 22px; border-radius:var(--radius); background:var(--paper-2); border:1px solid var(--line)}
-#page-about .ab-mandate h3{font-size:18px}
-#page-about .ab-mandate__list{margin:0; padding:0; list-style:none; counter-reset:m; display:grid; gap:10px}
-#page-about .ab-mandate__list li{counter-increment:m; display:grid; grid-template-columns:28px minmax(0,1fr); gap:8px; font-size:13.5px; line-height:1.5}
+#page-about .ab-block__title{margin:0 0 10px; font:600 24px/1.15 var(--font-display); letter-spacing:-0.015em}
+#page-about .ab-lede{margin:0 0 16px; font:400 clamp(17px,2.1vw,19px)/1.5 var(--font-display); color:var(--ink); max-width:60ch}
+#page-about .ab-mandate{padding:2px 0 2px 22px; border-left:4px solid var(--red)}
+#page-about .ab-mandate h3{margin:0 0 12px; font:600 24px/1.15 var(--font-display); letter-spacing:-0.015em}
+#page-about .ab-mandate .ab-lede{max-width:56ch}
+#page-about .ab-mandate__list{margin:0; padding:0; list-style:none; counter-reset:m; display:grid; gap:10px; max-width:64ch}
+#page-about .ab-mandate__list li{counter-increment:m; display:grid; grid-template-columns:28px minmax(0,1fr); gap:8px; font-size:14.5px; line-height:1.55; color:var(--ink-2)}
 #page-about .ab-mandate__list li:before{content:counter(m, decimal-leading-zero); font:600 11px/1.9 "IBM Plex Mono",monospace; color:var(--red)}
-#page-about .ab-people{display:grid; grid-template-columns:minmax(0,0.8fr) minmax(0,1.2fr); gap:18px}
-#page-about .ab-regent{padding:24px; border-radius:var(--radius); background:var(--paper-2); border:1px solid var(--line); border-top:4px solid var(--red); text-align:center; display:grid; justify-items:center; align-content:start; gap:4px}
-#page-about .ab-regent__kicker{margin:0 0 12px; font:600 11px "IBM Plex Mono",monospace; letter-spacing:0.1em; text-transform:uppercase; color:var(--red)}
-#page-about .ab-regent__mark{width:84px; height:84px; border-radius:50%; display:grid; place-items:center; background:var(--red); color:var(--paper); font:600 28px var(--font-display); margin-bottom:10px; overflow:hidden}
-#page-about .ab-regent__mark img{width:100%; height:100%; object-fit:cover}
-#page-about .ab-regent__label{font:500 11px "IBM Plex Mono",monospace; color:var(--stone)}
-#page-about .ab-regent__name{font:600 22px/1.2 var(--font-display); overflow-wrap:anywhere}
-#page-about .ab-regent__meta{font-size:12.5px; color:var(--stone)}
-#page-about .ab-regent__note{margin:10px 0 0; font-size:12px; color:var(--stone); max-width:34ch}
-#page-about .ab-team h4, #page-about .ab-staff h4{margin:0; font:600 17px var(--font-display)}
-#page-about .ab-role{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-top:10px; padding:12px 14px; border:1px solid var(--line); border-radius:10px; background:var(--paper)}
-#page-about .ab-role > div{min-width:0}
-#page-about .ab-role b{display:block; font-size:13px}
-#page-about .ab-role span:not(.ab-tag):not(.ab-mono){display:block; font-size:12.5px; color:var(--stone); margin-top:2px}
-#page-about .ab-role--dashed{border-style:dashed; background:var(--paper-2)}
-#page-about .ab-tag{flex:0 0 auto; font:600 10px "IBM Plex Mono",monospace; padding:3px 8px; border-radius:var(--radius-pill); background:var(--paper-2); border:1px solid var(--line); color:var(--ink-2); white-space:nowrap}
-#page-about .ab-tag--red{background:var(--red-3); border-color:#FFD0D6; color:var(--red)}
-#page-about .ab-staff{margin-top:26px}
-#page-about .ab-staff__grid{list-style:none; margin:14px 0 0; padding:0; display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 210px), 1fr)); gap:12px}
-#page-about .ab-person{display:grid; grid-template-columns:52px minmax(0,1fr); gap:12px; align-items:center; padding:14px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper)}
-#page-about .ab-person__mark{width:52px; height:52px; border-radius:50%; display:grid; place-items:center; background:var(--red-3); color:var(--red); font:600 17px var(--font-display); overflow:hidden}
-#page-about .ab-person__mark img{width:100%; height:100%; object-fit:cover}
-#page-about .ab-person b{display:block; font-size:14px; overflow-wrap:anywhere}
-#page-about .ab-person span{display:block; font-size:12px; color:var(--stone); overflow-wrap:anywhere}
-#page-about .ab-person a{font-size:12px; overflow-wrap:anywhere}
-#page-about .ab-block--ink{margin:8px 0; padding:34px 32px; border:0; border-radius:var(--radius); background:var(--ink); color:var(--paper)}
-#page-about .ab-block--ink .ab-block__num{color:#FF8FA0}
-#page-about .ab-block--ink .ab-note{color:rgba(255,255,255,0.6)}
-#page-about .ab-vm{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:28px}
-#page-about .ab-vm p{margin:6px 0 0; font:400 17px/1.55 var(--font-display); color:rgba(255,255,255,0.92)}
-#page-about .ab-vm__label{font:600 11px "IBM Plex Mono",monospace; letter-spacing:0.12em; text-transform:uppercase; color:#FF8FA0}
-#page-about .ab-values{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
-#page-about .ab-value{font:600 12px "IBM Plex Sans",sans-serif; padding:7px 12px; border-radius:var(--radius-pill); border:1px solid rgba(255,255,255,0.22); color:var(--paper)}
-#page-about .ab-programs{display:grid; grid-template-columns:repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap:12px; margin-top:14px}
-#page-about .ab-program{display:flex; flex-direction:column; padding:16px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper); transition:border-color .15s, transform .15s}
-#page-about .ab-program:hover{border-color:var(--red); transform:translateY(-2px)}
-#page-about .ab-program__head{display:flex; justify-content:space-between; align-items:flex-start; gap:8px}
-#page-about .ab-program__head b{font-size:14px; min-width:0}
-#page-about .ab-program p{margin:8px 0 0; font-size:13px; line-height:1.55; color:var(--stone); flex:1}
-#page-about .ab-program__link{margin-top:12px; font:600 12px "IBM Plex Mono",monospace; color:var(--red)}
-#page-about .ab-contact{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr)); gap:14px; align-items:start}
-#page-about .ab-card{padding:20px; border:1px solid var(--line); border-radius:var(--radius); background:var(--paper); min-width:0}
-#page-about .ab-card h3{font-size:18px}
-#page-about .ab-card--accent{border-top:4px solid var(--red)}
-#page-about .ab-links{margin:0; padding-left:16px; font-size:13.5px; line-height:1.7}
-@media(max-width:900px){
-  #page-about .ab-office, #page-about .ab-people, #page-about .ab-vm{grid-template-columns:minmax(0,1fr); gap:18px}
-  #page-about .ab-contact{grid-template-columns:minmax(0,1fr)}
-}
+/* The Office: a list of names on hairline dividers, not a grid of profile
+   cards. A photo is shown when the office supplied one and simply absent when
+   it did not — no initials, no silhouette standing in for a person. */
+#page-about .ab-staff{margin-top:30px}
+#page-about .ab-staff__title{margin:0; font:600 11px "IBM Plex Mono",monospace; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone)}
+/* Every row is ruled, including the first: the hairline under the label is what
+   separates the list of people from the heading above it. */
+#page-about .ab-staff__list{list-style:none; margin:10px 0 0; padding:0; max-width:64ch}
+#page-about .ab-person{display:grid; grid-template-columns:minmax(0,1fr); gap:1px; padding:14px 0; border-top:1px solid var(--line)}
+#page-about .ab-person--photo{grid-template-columns:44px minmax(0,1fr); gap:14px; align-items:start}
+#page-about .ab-person__photo{width:44px; height:44px; border-radius:50%; object-fit:cover; background:var(--paper-3)}
+#page-about .ab-person b{display:block; font:600 15px/1.35 "IBM Plex Sans",sans-serif; color:var(--ink); overflow-wrap:anywhere}
+#page-about .ab-person__role{display:block; font-size:13.5px; color:var(--stone); overflow-wrap:anywhere}
+#page-about .ab-person__note{display:block; margin-top:5px; font-size:13px; line-height:1.5; color:var(--stone)}
+#page-about .ab-staff__empty{margin:10px 0 0; font-size:13.5px; line-height:1.55; color:var(--stone); max-width:56ch}
+#page-about .ab-university{margin:0; font-size:14.5px; line-height:1.6; color:var(--ink-2); max-width:64ch}
+#page-about .ab-extern{display:inline-block; margin-top:12px; padding-bottom:2px; font:600 12.5px "IBM Plex Mono",monospace; color:var(--red); border-bottom:1px solid #FFD0D6}
+#page-about .ab-extern:hover{border-bottom-color:var(--red)}
 @media(max-width:640px){
-  #page-about .ab-hero{grid-template-columns:minmax(0,1fr); padding:24px 20px}
-  #page-about .ab-hero__side{justify-items:start}
-  #page-about .ab-hero__facts{text-align:left; grid-template-columns:repeat(2,minmax(0,1fr))}
-  #page-about .ab-jump{top:56px}
-  #page-about .ab-block--ink{padding:26px 20px}
-  #page-about .ab-lede{font-size:17px}
+  #page-about .ab-hero{padding:26px 20px 24px}
+  #page-about .ab-block{padding:28px 0 24px}
+  #page-about .ab-mandate{padding-left:16px}
+  #page-about .ab-block__title, #page-about .ab-mandate h3{font-size:21px}
+  #page-about .ab-staff{margin-top:24px}
 }
 
 /* ── Track my concern ── */
@@ -2623,191 +2598,60 @@ html.cursor-on,html.cursor-on *{cursor:none !important}
     <div class="section section--first">
       <a href="#home" class="btn btn--ghost btn--sm" style="margin-bottom:12px; display:inline-flex; align-items:center; gap:6px; font-size:12px; border-color:var(--line)"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg> Back to home</a>
 
+      <!-- ABOUT · three answers and nothing else: what the mandate is, what the
+           Office is, and whose university it serves. Programs, Board records,
+           resources, the handbook and the contact directory all have their own
+           page, so this one does not repeat them — an office profile, not a
+           second sitemap. Hierarchy is carried by type, the numbered index and
+           hairline dividers; the only marked block on the page is the mandate,
+           which carries the red filing rule the Office uses elsewhere. -->
       <header class="ab-hero">
-        <div class="ab-hero__copy">
-          <div class="ab-hero__eyebrow" id="aboutEyebrow">The Office</div>
-          <h2 id="about-title">About the Office of the Student Regent</h2>
-          <p id="aboutIntro">The Office of the Student Regent is the student voice in the Bulacan State University Board of Regents — receiving student concerns, consulting student councils and organizations, and publishing verified updates from the University's highest governing body.</p>
-        </div>
-        <div class="ab-hero__side">
-          <!-- This badge carried editor-facing wording about how the page is
-               maintained, which is not something a student came here to read.
-               The element and its id stay so Admin → About OSR keeps writing to
-               it; it is simply not shown. -->
-          <span class="ab-hero__badge" id="aboutBadge" hidden>Student representation</span>
-          <dl class="ab-hero__facts">
-            <div><dt>Seat</dt><dd>Board of Regents</dd></div>
-            <div><dt>Serves</dt><dd>All BulSU campuses</dd></div>
-          </dl>
-        </div>
+        <div class="ab-hero__eyebrow" id="aboutEyebrow">The Office</div>
+        <h2 id="about-title">About the Office of the Student Regent</h2>
+        <p id="aboutIntro">The Office of the Student Regent is the student voice in the Bulacan State University Board of Regents — receiving student concerns, consulting student councils and organizations, and publishing verified updates from the University's highest governing body.</p>
       </header>
 
-      <nav class="ab-jump" aria-label="About page sections">
-        <button type="button" data-about-jump="aboutSecOffice">The office</button>
-        <button type="button" data-about-jump="aboutSecPeople" hidden>People</button>
-        <button type="button" data-about-jump="aboutSecVm">Vision &amp; mission</button>
-        <button type="button" data-about-jump="aboutSecPrograms">Programs</button>
-        <button type="button" data-about-jump="aboutSecContact">Official links</button>
-      </nav>
-
       <div class="ab-blocks">
-      <!-- 01 · The office -->
-      <section class="ab-block" id="aboutSecOffice" aria-labelledby="aboutOfficeHeading">
-        <div class="ab-block__num" aria-hidden="true"></div>
-        <div class="ab-office">
-          <div class="ab-office__lead">
-            <h3 id="aboutOfficeHeading">Office of the Student Regent</h3>
-            <p class="ab-lede" id="aboutOfficeP1">The Office of the Student Regent is the student representation arm within the Bulacan State University Board of Regents. It serves as the formal channel through which BulSU students participate in university governance.</p>
-            <p id="aboutOfficeP2">The Office receives student concerns, consults student councils and organizations, and prepares student positions for Board deliberations. Official announcements and meeting records are published on this site when verified.</p>
-          </div>
+        <!-- 01 · The mandate -->
+        <section class="ab-block" id="aboutSecMandate" aria-labelledby="aboutMandateHeading">
+          <div class="ab-block__num" aria-hidden="true"></div>
           <div class="ab-mandate">
-            <h3 id="aboutMandateHeading">Role and mandate</h3>
-            <ol id="aboutMandateList" class="ab-mandate__list">
-              <li>Represent the studentry in the Board of Regents, the highest governing body of the University</li>
-              <li>Consult students and student councils on matters affecting student welfare and academic life</li>
-              <li>Bring student positions, concerns, and proposals to the Board</li>
-              <li>Disseminate Board decisions and advisories that affect students</li>
-              <li>Maintain an accessible record of student-related Board actions where authorized</li>
+            <h3 id="aboutMandateHeading">About the Office</h3>
+            <p class="ab-lede" id="aboutMandateLede">The Office of the Student Regent serves as the formal student representation of Bulacan State University in the Board of Regents.</p>
+            <ol class="ab-mandate__list" id="aboutMandateList">
+              <li>Represents the studentry in the Board of Regents, the highest governing body of the University</li>
+              <li>Brings student concerns, positions and proposals into university governance</li>
+              <li>Communicates Board matters and developments back to students</li>
             </ol>
-            <p class="ab-note" id="aboutMandateNote">The mandate follows the BulSU Charter and the resolutions of the Board of Regents.</p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- 02 · People
-           Nothing here is confirmed yet, so nothing here is shown. The cards
-           and every id the CMS writes to are kept exactly as they are —
-           applyAboutVisibility() un-hides a card the moment a real name, term
-           or photo reaches it, from Admin → About OSR or from the config below.
-           A student never meets "To be announced", "TBD" or an empty card. -->
-      <section class="ab-block" id="aboutSecPeople" aria-labelledby="aboutPeopleTitle" hidden>
-        <div class="ab-block__num" aria-hidden="true"></div>
-        <h3 class="ab-block__title" id="aboutPeopleTitle">The people behind the office</h3>
-        <div class="ab-people">
-          <article class="ab-regent" id="aboutRegentCard" aria-labelledby="aboutSrHeading" hidden>
-            <h4 class="ab-regent__kicker" id="aboutSrHeading">Student Regent</h4>
-            <div class="ab-regent__mark" aria-hidden="true" id="aboutSrMark">SR</div>
-            <div class="ab-regent__label" id="aboutSrLabel">Current Student Regent</div>
-            <div class="ab-regent__name" id="aboutSrName">To be announced</div>
-            <div class="ab-regent__meta" id="aboutSrMeta">Term and campus are published once the appointment is confirmed</div>
-            <p class="ab-regent__note" id="aboutSrNote">The Student Regent carries the student position to the Board of Regents.</p>
-          </article>
-          <div class="ab-team" id="aboutTeamCard" hidden>
-            <h4 id="aboutDirHeading">Directors &amp; Secretariat</h4>
-            <p class="ab-note" id="aboutDirIntro">Supporting the Student Regent in consultations, records, and student concerns.</p>
-            <div class="ab-role">
-              <div><b>Executive Director</b><span id="aboutDirExecName">To be announced</span></div>
-              <span class="ab-tag ab-tag--red" id="aboutDirExecTag">OSR</span>
-            </div>
-            <div class="ab-role">
-              <div><b>Directors</b><span id="aboutDirNames">To be announced</span></div>
-              <span class="ab-tag" id="aboutDirTag">TBD</span>
-            </div>
-            <div class="ab-role ab-role--dashed">
-              <div><b id="aboutCollegeTitle">College Representatives</b><span id="aboutCollegeDesc">Per-college coordination for consultation caravan and concerns intake. List updated per term.</span><span class="ab-mono" id="aboutCollegeRows">Published per term as representatives are confirmed</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="ab-staff" id="aboutStaffWrap" hidden>
-          <h4 id="aboutStaffHeading">Office staff</h4>
-          <p class="ab-note" id="aboutStaffIntro" hidden></p>
-          <ul class="ab-staff__grid" id="aboutStaffGrid"></ul>
-        </div>
-      </section>
+        <!-- 02 · The Office, and the people designated to it -->
+        <section class="ab-block" id="aboutSecOffice" aria-labelledby="aboutOfficeHeading">
+          <div class="ab-block__num" aria-hidden="true"></div>
+          <h3 class="ab-block__title" id="aboutOfficeHeading">Office of the Student Regent</h3>
+          <p class="ab-lede" id="aboutOfficeLede">The Office of the Student Regent is the student representation arm within the Bulacan State University Board of Regents.</p>
 
-      <!-- Vision & mission -->
-      <section class="ab-block ab-block--ink" id="aboutSecVm" aria-labelledby="aboutVmHeading">
-        <div class="ab-block__num" aria-hidden="true"></div>
-        <h3 class="ab-block__title" id="aboutVmHeading">BulSU Vision &amp; Mission</h3>
-        <div class="ab-vm">
-          <div>
-            <div class="ab-vm__label">Vision</div>
-            <p id="aboutVision">Bulacan State University is a progressive <em>knowledge-generating institution</em>, globally recognized for excellent instruction, pioneering research, and responsive community engagements.</p>
+          <!-- One list, two honest sources: the Student Regent the office has
+               confirmed (STUDENT_REGENT below, or Admin → About OSR) and the
+               staff rows saved in the admin. renderAboutStaff() lists a person
+               only when a real name reaches it — with nobody confirmed the list
+               stays empty and says so, because an invented officer would be
+               worse than no officer at all. -->
+          <div class="ab-staff" id="aboutStaffWrap">
+            <h4 class="ab-staff__title" id="aboutStaffHeading">The Office</h4>
+            <ul class="ab-staff__list" id="aboutStaffGrid" hidden></ul>
+            <p class="ab-staff__empty" id="aboutStaffEmpty">No officers are published yet. The Student Regent and the designated staff of the Office are listed here once their appointments are confirmed.</p>
           </div>
-          <div>
-            <div class="ab-vm__label">Mission</div>
-            <p id="aboutMission">Bulacan State University exists to produce highly competent, ethical and service-oriented professionals that contribute to the sustainable socio-economic growth and development of the nation.</p>
-          </div>
-        </div>
-        <div class="ab-vm__label" style="margin-top:22px">Core values</div>
-        <div id="aboutValuesList" class="ab-values">
-          <span class="ab-value">Service to God &amp; Community</span>
-          <span class="ab-value">Order &amp; Peace</span>
-          <span class="ab-value">Assurance of Quality &amp; Accountability</span>
-          <span class="ab-value">Respect &amp; Responsibility</span>
-        </div>
-        <p class="ab-note" id="aboutValuesNote">Values per BulSU Student Handbook &amp; institutional statements. See Resources for the official handbook PDF.</p>
-      </section>
+        </section>
 
-      <!-- Programs -->
-      <section class="ab-block" id="aboutSecPrograms" aria-labelledby="aboutFeaturedHeading">
-        <div class="ab-block__num" aria-hidden="true"></div>
-        <h3 class="ab-block__title" id="aboutFeaturedHeading">Featured programs &amp; initiatives</h3>
-        <p class="ab-note" id="aboutFeaturedIntro">The services the office runs for students, and what each one is for. See Initiatives for the full list.</p>
-        <div id="aboutFeaturedList" class="ab-programs">
-          <div class="ab-program">
-            <div class="ab-program__head"><b>Free Printing Services</b><span class="ab-tag">Ongoing</span></div>
-            <p>Document printing support for students — intake, schedule, and outcomes tracked per activity.</p>
-            <a href="#initiatives" data-nav class="ab-program__link">View in Initiatives →</a>
-          </div>
-          <div class="ab-program">
-            <div class="ab-program__head"><b>Scholarships</b><span class="ab-tag">GWA-Based • LHS</span></div>
-            <p>Endorsements and advisories — e.g., BatSU GWA-Based Scholarship, LHS Tuition Fee Increase letters.</p>
-            <a href="#announcements" data-nav class="ab-program__link">See Letters →</a>
-          </div>
-          <div class="ab-program">
-            <div class="ab-program__head"><b>Medical Mission</b><span class="ab-tag">Dialogues &amp; Minutes</span></div>
-            <p>Consultations, dialogues, and minutes — one of the Meetings/Dialogues/Speakerships tracked under Reports.</p>
-            <a href="#board-meetings" data-nav class="ab-program__link">Board records →</a>
-          </div>
-        </div>
-      </section>
-
-      <!-- Official links -->
-      <section class="ab-block" id="aboutSecContact" aria-labelledby="aboutLinksHeading">
-        <div class="ab-block__num" aria-hidden="true"></div>
-        <div class="ab-contact">
-          <!-- Both of these cards repeated details the footer and Get Help
-               already carry, and the second one listed a "Designation" that is
-               not confirmed yet. The markup and every id the CMS writes to
-               stay in place, hidden, so the office can bring either card back
-               from Admin → About OSR without a rebuild. -->
-          <div class="ab-card ab-card--accent" id="aboutContactCard" hidden>
-            <h3 id="aboutContactHeading">Contact information</h3>
-            <div class="kv"><b>Email</b> <span><a id="acEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a></span></div>
-            <div class="kv"><b>Telephone</b> <span><a id="acPhone" class="phone-link" href="tel:+63447963817">+63 44 796 3817</a></span></div>
-            <div class="kv"><b>Office address</b> <span id="acAddress">Student Government (SG) Office, BulSU Main Campus, Guinhawa, City of Malolos, Bulacan</span></div>
-            <div class="kv"><b>Office hours</b> <span id="acHours">Monday to Friday, within office hours</span></div>
-            <div class="kv"><b>Response time</b> <span id="aboutResponseTime">Within office hours</span></div>
-            <div class="row" style="margin-top:12px">
-              <a class="btn btn--sm btn--red" href="#help" data-nav>Contact form</a>
-              <a class="btn btn--sm btn--ghost" id="acMailto" href="mailto:bulsusg1983@gmail.com">Send email</a>
-            </div>
-          </div>
-          <div class="ab-card" id="aboutInfoCard" hidden>
-            <h3 id="aboutInfoHeading">Office information</h3>
-            <div id="aboutInfoRows">
-              <div class="kv"><b>Office name</b> <span>Office of the Student Regent</span></div>
-              <div class="kv"><b>University</b> <span>Bulacan State University</span></div>
-              <div class="kv"><b>Governing body</b> <span>Board of Regents</span></div>
-              <div class="kv"><b>Campuses served</b> <span>All BulSU campuses</span></div>
-              <div class="kv"><b>Designation</b> <span>Published once officially confirmed</span></div>
-            </div>
-            <p class="ab-note" id="aboutInfoNote">Fields are updated as official records are released.</p>
-          </div>
-          <div class="ab-card">
-            <h3 id="aboutLinksHeading">Official links</h3>
-            <ul id="aboutLinksList" class="ab-links">
-              <li><a href="https://bulsu.edu.ph" target="_blank" rel="noopener">Bulacan State University - bulsu.edu.ph</a></li>
-              <li><a href="https://www.bulsu.edu.ph/assets/downloads/files/student_handbook.pdf" target="_blank" rel="noopener">BulSU Student Handbook (PDF)</a></li>
-              <li><a href="#board-meetings" data-nav>Board Meeting Archive (this site)</a></li>
-              <li><a href="#resources" data-nav>Student Resources Repository</a></li>
-              <li><a id="acFacebook" href="https://www.facebook.com/BulSUSG1983/" data-official="facebook" target="_blank" rel="noopener">BulSU Student Government on Facebook</a></li>
-              <li><a id="acMessenger" href="https://m.me/BulSUSG1983" target="_blank" rel="noopener">Message the OSR on Messenger</a></li>
-            </ul>
-          </div>
-        </div>
-      </section>
+        <!-- 03 · The university -->
+        <section class="ab-block" id="aboutSecUniversity" aria-labelledby="aboutUniversityHeading">
+          <div class="ab-block__num" aria-hidden="true"></div>
+          <h3 class="ab-block__title" id="aboutUniversityHeading">Bulacan State University</h3>
+          <p class="ab-university">The Office serves every BulSU campus. University-wide records, policies and the Student Handbook are published by the University.</p>
+          <a class="ab-extern" href="https://bulsu.edu.ph" target="_blank" rel="noopener">bulsu.edu.ph</a>
+        </section>
       </div>
     </div>
   </section>
@@ -3170,54 +3014,47 @@ html.cursor-on,html.cursor-on *{cursor:none !important}
   </section>
 </main>
 
+<!-- FOOTER · identity, six destinations, one way in
+     The footer is not a second sitemap. It carries the Office's name and its
+     one-line description, the six primary destinations, and the two verified
+     ways to reach the Office — nothing that already has its own page.
+     FOOTER_OFFICE and OFFICIAL_LINKS at the top of the site script are the only
+     copy of these details; renderFooterOffice() and applyOfficialLinks() write
+     them here once for the whole site, and Admin → Contact & details overrides
+     them at runtime. The six links mirror the header navigation and follow it:
+     patchNavigation() in js/cms-integration.js hides any of them an
+     administrator makes invisible there, so there is never a second list to
+     maintain. -->
 <footer class="footer" role="contentinfo">
   <div class="footer__inner">
-    <div>
+    <div class="footer__id">
       <div class="footer__brand">
-        <img class="osr-mark osr-mark--footer" src="/osr-mark.svg" alt="Office of the Student Regent — Bulacan State University" width="48" height="32">
+        <img class="osr-mark osr-mark--footer" src="/osr-mark.svg" alt="" width="48" height="32">
         <div>
-          <h4 style="margin:0; color:white; font-size:13px">OFFICE OF THE STUDENT REGENT</h4>
-          <div class="mono" style="font-size:11px; color:#9A9590; letter-spacing:0.04em; text-transform:uppercase">Bulacan State University • Board of Regents</div>
+          <h4 id="foName">Office of the Student Regent</h4>
+          <p class="footer__university">Bulacan State University</p>
         </div>
       </div>
-      <p style="margin-top:12px">The student representation in the Board of Regents. Verified announcements, Board Meeting records, initiatives, and student resources.</p>
-      <p class="small" style="color:#9A9590; margin-top:10px; font-size:12px">Official record — verified content only.</p>
+      <p class="footer__desc" id="foDescription">Student representation in the Bulacan State University Board of Regents.</p>
     </div>
-    <div class="footer__col">
-      <h4>Explore</h4>
+    <nav class="footer__nav" aria-label="Footer">
       <ul>
-        <li><a href="#announcements" data-nav>Announcements archive</a></li>
-        <li><a href="#board-meetings" data-nav>Board Meeting archive</a></li>
-        <li><a href="#initiatives" data-nav>Initiatives</a></li>
-        <li><a href="#resources" data-nav>Resources</a></li>
-        <li><a href="#academic-calendar" data-nav>Academic Calendar</a></li>
-        <li><a href="#ideal-bulsu" data-nav>Build Your Ideal BulSU</a></li>
-        <li><a href="#help" data-nav>Student Help</a></li>
-        <li><a href="#track" data-nav>Track My Concern</a></li>
-        <li><a href="#about" data-nav>About OSR</a></li>
+        <li><a href="#home" data-nav data-footer-nav>Home</a></li>
+        <li><a href="#announcements" data-nav data-footer-nav>Announcements</a></li>
+        <li><a href="#board-meetings" data-nav data-footer-nav>Board Meetings</a></li>
+        <li><a href="#initiatives" data-nav data-footer-nav>Initiatives</a></li>
+        <li><a href="#resources" data-nav data-footer-nav>Resources</a></li>
+        <li><a href="#about" data-nav data-footer-nav>About</a></li>
       </ul>
-    </div>
-    <!-- FOOTER · OFFICE COLUMN
-         This column is written from FOOTER_OFFICE and OFFICIAL_LINKS at the top
-         of the site script, and renderFooterOffice() fills the ids below. The
-         footer is rendered once for the whole site — it sits outside every
-         page section — so no page carries a second copy of these details, and
-         editing that one object (or Admin → Contact & details) changes it
-         everywhere. The design here is unchanged. -->
-    <div class="footer__col">
-      <h4>Office</h4>
-      <p class="footer__contact"><span id="foLine1">Student Government (SG) Office</span><br><span id="foLine2">BulSU Main Campus, Guinhawa</span><br><span id="foCity">City of Malolos, Bulacan</span></p>
-      <p class="footer__contact"><a id="foEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a><br><a id="foPhone" class="phone-link" href="tel:+63447963817">+63 44 796 3817</a></p>
-      <p class="footer__contact" style="margin-top:0"><a id="foFacebook" href="https://www.facebook.com/BulSUSG1983/" target="_blank" rel="noopener">Facebook</a> · <a id="foMessenger" href="https://m.me/BulSUSG1983" target="_blank" rel="noopener">Messenger</a></p>
-      <div class="mono" id="foHours" style="font-size:11px; color:#9A9590; margin-top:0; letter-spacing:0.04em; text-transform:uppercase">Office hours • Within office hours</div>
-      <div class="row" style="margin-top:14px">
-        <a class="btn btn--sm" href="#help" data-nav data-help="concern" data-footer-action="concern" style="background:white; color:var(--ink); border-color:white">Raise a concern</a>
-        <a class="btn btn--sm btn--ghost" href="#about" data-nav style="border-color:rgba(255,255,255,0.18); color:white">Contact</a>
-      </div>
+    </nav>
+    <div class="footer__contact">
+      <h4>Contact the OSR</h4>
+      <p><a id="foEmail" href="mailto:bulsusg1983@gmail.com">bulsusg1983@gmail.com</a></p>
+      <p class="footer__social"><a id="foFacebook" href="https://www.facebook.com/BulSUSG1983/" target="_blank" rel="noopener">Facebook</a><a id="foMessenger" href="https://m.me/BulSUSG1983" target="_blank" rel="noopener">Messenger</a></p>
     </div>
   </div>
   <div class="footer__bar">
-    <span>© <span id="year"></span> Office of the Student Regent, Bulacan State University. Verified content only.</span>
+    <span>© <span id="year"></span> Office of the Student Regent · Bulacan State University</span>
     <span class="mono small" id="footerCredit">OSR™ 2026–2027 • Made by Angelo Alvarado</span>
   </div>
 </footer>
@@ -3358,17 +3195,16 @@ const OFFICIAL_LINKS = {
   messengerLabel: "Message the OSR on Messenger"
 };
 
-/* The footer's Office column: the address block, the two contact links and the
-   hours line. The footer is rendered once for the whole site, so this is the
-   only copy of it — no page carries its own version. */
+/* The footer's identity column: the office name, its one-line description and
+   the official email. The footer is rendered once for the whole site, so this
+   is the only copy of it — no page carries its own version, and Admin →
+   Contact & details overrides all three at runtime. The address, the phone
+   number and the office hours are not here: the footer does not repeat them,
+   and Get Help → Contact OSR is where a student finds them. */
 const FOOTER_OFFICE = {
-  line1: "Student Government (SG) Office",
-  line2: "BulSU Main Campus, Guinhawa",
-  city: "City of Malolos, Bulacan",
-  email: "bulsusg1983@gmail.com",
-  phone: "+63 44 796 3817",
-  phoneHref: "tel:+63447963817",
-  hours: "Office hours • Within office hours"
+  name: "Office of the Student Regent",
+  description: "Student representation in the Bulacan State University Board of Regents.",
+  email: "bulsusg1983@gmail.com"
 };
 
 /* Retention wording for the privacy notice on every Get Help form. The office
@@ -3726,7 +3562,9 @@ function setRoute(hash){
   const key=(hash||location.hash||"#home").replace("#","").split("?")[0].split("/")[0] || "home";
   const pageId=pages[key]||pages.home;
   $$(".page").forEach(p=> p.setAttribute("aria-current", p.id===pageId ? "true":"false"));
-  $$(".nav a, .drawer__nav a").forEach(a=>{
+  // The footer carries the same six destinations, so it marks the current page
+  // the same way the header and the menu do.
+  $$(".nav a, .drawer__nav a, .footer__nav a").forEach(a=>{
     const href=a.getAttribute("href")?.replace("#","");
     a.setAttribute("aria-current", href===key ? "page":"false");
   });
@@ -4619,6 +4457,7 @@ function applyOfficialLinks(){
   set("hcPage", OFFICIAL_LINKS.facebook, OFFICIAL_LINKS.facebookLabel);
   set("hcMessenger", OFFICIAL_LINKS.messenger, OFFICIAL_LINKS.messengerLabel);
   set("hcMessengerBtn", OFFICIAL_LINKS.messenger, null);
+  // The footer's contact column carries the same two official links.
   set("foFacebook", OFFICIAL_LINKS.facebook, "Facebook");
   set("foMessenger", OFFICIAL_LINKS.messenger, "Messenger");
   // The Student Support list links the same official page by its own wording.
@@ -4627,16 +4466,10 @@ function applyOfficialLinks(){
 
 function renderFooterOffice(){
   const text=(id, value)=>{ const el=document.getElementById(id); if(el && value) el.textContent=value; };
-  text("foLine1", FOOTER_OFFICE.line1);
-  text("foLine2", FOOTER_OFFICE.line2);
-  text("foCity", FOOTER_OFFICE.city);
-  text("foHours", FOOTER_OFFICE.hours);
+  text("foName", FOOTER_OFFICE.name);
+  text("foDescription", FOOTER_OFFICE.description);
   const email=document.getElementById("foEmail");
   if(email && FOOTER_OFFICE.email){ email.textContent=FOOTER_OFFICE.email; email.href="mailto:"+FOOTER_OFFICE.email; }
-  const phone=document.getElementById("foPhone");
-  if(phone && FOOTER_OFFICE.phone){ phone.textContent=FOOTER_OFFICE.phone; phone.href=FOOTER_OFFICE.phoneHref||("tel:"+FOOTER_OFFICE.phone.replace(/[^0-9+]/g,"")); }
-  // The two footer actions point at the concern form and the office details.
-  $$('[data-footer-action="concern"]').forEach(a=> a.setAttribute("href","#help"));
 }
 
 function applyPrivacyRetention(){
@@ -4644,43 +4477,85 @@ function applyPrivacyRetention(){
   $$("[data-retention]").forEach(el=>{ el.textContent=PRIVACY_RETENTION; });
 }
 
-/* Wording that means "nobody has confirmed this yet". A card holding only one
+/* Wording that means "nobody has confirmed this yet". A value that is only one
    of these is not shown — a student should never read a placeholder as fact. */
-const ABOUT_UNCONFIRMED = [
-  "", "to be announced", "tbd", "to be supplied", "to be confirmed", "n/a",
-  "term and campus are published once the appointment is confirmed",
-  "published per term as representatives are confirmed",
-  "published once officially confirmed",
-  "fields are updated as official records are released"
-];
-const aboutValue = id => (document.getElementById(id)?.textContent || "").trim();
-const aboutConfirmed = (...ids) => ids.some(id => {
-  const value = aboutValue(id).toLowerCase();
-  return value && !ABOUT_UNCONFIRMED.includes(value);
-});
-function aboutShow(id, on){ const el=document.getElementById(id); if(el) el.hidden=!on; }
+const ABOUT_UNCONFIRMED = ["", "to be announced", "tbd", "to be supplied", "to be confirmed", "n/a"];
+const confirmedText = value => {
+  const text = String(value || "").trim();
+  return text && !ABOUT_UNCONFIRMED.includes(text.toLowerCase()) ? text : "";
+};
+/* A photo is either a file this site serves or an https:// image. Anything
+   else — a javascript: URL, a protocol-relative host, a stray word — is
+   dropped, and the row simply shows no photo. */
+const safePhoto = src => {
+  const link = String(src || "").trim();
+  if(link.startsWith("/") && !link.startsWith("//")) return link;
+  return /^https:\/\/\S+$/i.test(link) ? link : "";
+};
 
-/* About page · show a card only when it has something confirmed to say.
-   It reads the page rather than a second copy of the data, so it judges the
-   built-in wording and whatever Admin → About OSR just wrote the same way.
-   Nothing is removed: the cards and every id the CMS writes to stay in the
-   document, hidden, and come back the moment a real name reaches them. */
-function applyAboutVisibility(){
-  const regent = aboutConfirmed("aboutSrName");
-  aboutShow("aboutRegentCard", regent);
-  const staff = Boolean(document.querySelector("#aboutStaffGrid .ab-person"));
-  const team = staff || aboutConfirmed("aboutDirExecName", "aboutDirNames", "aboutCollegeRows");
-  aboutShow("aboutTeamCard", team);
-  const people = regent || team;
-  aboutShow("aboutSecPeople", people);
-  const jump = document.querySelector('[data-about-jump="aboutSecPeople"]');
-  if(jump) jump.hidden = !people;
-  // The two directory cards stay off the About page: the footer's Office column
-  // and Get Help → Contact OSR carry those details, once, for the whole site.
-  aboutShow("aboutContactCard", false);
-  aboutShow("aboutInfoCard", false);
+/* About page · "The Office" — one list of the people actually designated to it.
+   Two sources, one list: the Student Regent the office has confirmed (from
+   STUDENT_REGENT below or from Admin → About OSR) and the staff rows saved in
+   the admin, in the order the admin left them. A person is listed only when a
+   real name reaches this function, so nothing invented can appear; with nobody
+   confirmed the list stays empty and the empty state says so in plain words.
+   The Regent is not listed twice when the office has also typed them into the
+   staff list. */
+function renderAboutStaff(overrides){
+  const list=document.getElementById("aboutStaffGrid");
+  const empty=document.getElementById("aboutStaffEmpty");
+  if(!list) return;
+  const data=overrides||{};
+  const heading=document.getElementById("aboutStaffHeading");
+  if(heading){ const text=confirmedText(data.heading); if(text) heading.textContent=text; }
+
+  const regent=Object.assign({}, STUDENT_REGENT, data.regent||{});
+  const rows=(Array.isArray(data.rows)?data.rows:[]).map(row=>({
+    name: confirmedText(row && row.name),
+    role: confirmedText(row && row.role),
+    note: confirmedText(row && row.note),
+    photo: safePhoto(row && row.photo)
+  })).filter(person=>person.name);
+
+  const people=[];
+  const regentName=confirmedText(regent.name);
+  const regentListed=rows.some(person=>/student regent/i.test(person.role));
+  if(regentName && !regentListed){
+    people.push({ name:regentName, role:"Student Regent", note:confirmedText(regent.term), photo:safePhoto(regent.photo) });
+  }
+  people.push(...rows);
+
+  list.textContent="";
+  people.forEach(person=>{
+    const item=document.createElement("li");
+    item.className="ab-person";
+    if(person.photo){
+      item.classList.add("ab-person--photo");
+      const img=document.createElement("img");
+      img.className="ab-person__photo"; img.src=person.photo; img.alt=""; img.loading="lazy";
+      item.appendChild(img);
+    }
+    const body=document.createElement("div");
+    const name=document.createElement("b");
+    name.textContent=person.name;
+    body.appendChild(name);
+    if(person.role){
+      const role=document.createElement("span");
+      role.className="ab-person__role"; role.textContent=person.role;
+      body.appendChild(role);
+    }
+    if(person.note){
+      const note=document.createElement("span");
+      note.className="ab-person__note"; note.textContent=person.note;
+      body.appendChild(note);
+    }
+    item.appendChild(body);
+    list.appendChild(item);
+  });
+  list.hidden=!people.length;
+  if(empty) empty.hidden=Boolean(people.length);
 }
-window.applyAboutVisibility = applyAboutVisibility;
+window.renderAboutStaff = renderAboutStaff;
 
 function regentInitials(name){
   return String(name).trim().split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join("") || "SR";
@@ -4692,11 +4567,7 @@ function renderStudentRegent(overrides){
   const card=document.getElementById("regentCard");
   if(!card) return;
   const data=Object.assign({}, STUDENT_REGENT, overrides||{});
-  const confirmed = value => {
-    const text=String(value||"").trim();
-    return text && !ABOUT_UNCONFIRMED.includes(text.toLowerCase()) ? text : "";
-  };
-  const name=confirmed(data.name), message=confirmed(data.message);
+  const name=confirmedText(data.name), message=confirmedText(data.message);
   const ready=Boolean(name && message);
   if(!ready){
     card.hidden=true;
@@ -4709,9 +4580,8 @@ function renderStudentRegent(overrides){
   if(term){ term.textContent=data.term||""; term.hidden=!data.term; }
   const photo=document.getElementById("regentPhoto");
   if(photo){
-    const src=String(data.photo||"").trim();
-    const safe=src && (src.startsWith("/") && !src.startsWith("//") ? src : (/^https:\/\/\S+$/i.test(src) ? src : ""));
-    photo.innerHTML = safe ? `<img src="${escapeHtml(safe)}" alt="">` : escapeHtml(regentInitials(name));
+    const src=safePhoto(data.photo);
+    photo.innerHTML = src ? `<img src="${escapeHtml(src)}" alt="">` : escapeHtml(regentInitials(name));
   }
   const ask=card.querySelector('a[href="#help"]');
   if(ask && data.askHref) ask.setAttribute("href", data.askHref);
@@ -4728,7 +4598,7 @@ window.applyOfficialLinks = applyOfficialLinks;
 window.renderFooterOffice = renderFooterOffice;
 window.applyPrivacyRetention = applyPrivacyRetention;
 
-renderHomeAnnouncements(); renderAnnouncements(); renderBoard(); renderInitiatives(); renderResources(); renderSearch(); setRoute(location.hash||"#home"); updateSavedCounts(); updateUpNext(); bindHomeAnnFilters(); onScroll(); applyOfficialLinks(); renderFooterOffice(); applyPrivacyRetention(); renderStudentRegent(); applyAboutVisibility();
+renderHomeAnnouncements(); renderAnnouncements(); renderBoard(); renderInitiatives(); renderResources(); renderSearch(); setRoute(location.hash||"#home"); updateSavedCounts(); updateUpNext(); bindHomeAnnFilters(); onScroll(); applyOfficialLinks(); renderFooterOffice(); applyPrivacyRetention(); renderStudentRegent(); renderAboutStaff();
 
 window.ANNOUNCEMENTS = ANNOUNCEMENTS;
 window.BOARD_MEETINGS = BOARD_MEETINGS;
@@ -6367,9 +6237,9 @@ window.updateUpNext = typeof updateUpNext === 'function' ? updateUpNext : undefi
       <h1 id="welcomeTitle" class="welcome-title">Welcome to the Office of<br>the Student Regent</h1>
       <p id="welcomeLead" class="welcome-lead">The Student Regent is the BulSU students’ voice in the Board of Regents — the highest governing body. This site is the official, verified record: announcements, Board documents, initiatives, resources, and student help. No hype, no filler.</p>
       <ul class="welcome-features" aria-label="Quick look — click to jump">
-        <li role="button" tabindex="0" data-jump="#about" aria-label="Go to Student Regent and Directors"><span class="dot"></span><span><b>Current SR &amp; Directors</b> — who represents you, updated only when officially designated.</span> <span style="margin-left:auto; font:700 10px 'IBM Plex Mono',monospace; color:var(--red); background:var(--red-3); border:1px solid #FFD0D6; padding:3px 7px; border-radius:999px; white-space:nowrap">About →</span></li>
+        <li role="button" tabindex="0" data-jump="#about" aria-label="Go to the mandate of the Office"><span class="dot"></span><span><b>The Office &amp; its mandate</b> — what the Student Regent does in the Board of Regents, and who is designated to the Office.</span> <span style="margin-left:auto; font:700 10px 'IBM Plex Mono',monospace; color:var(--red); background:var(--red-3); border:1px solid #FFD0D6; padding:3px 7px; border-radius:999px; white-space:nowrap">About →</span></li>
         <li role="button" tabindex="0" data-jump="#initiatives" aria-label="Go to Featured programs"><span class="dot"></span><span><b>Featured programs</b> — Free Printing, Scholarships (GWA-Based, LHS), Medical Mission — with date, purpose, outcomes.</span> <span style="margin-left:auto; font:700 10px 'IBM Plex Mono',monospace; color:var(--red); background:var(--red-3); border:1px solid #FFD0D6; padding:3px 7px; border-radius:999px; white-space:nowrap">Initiatives →</span></li>
-        <li role="button" tabindex="0" data-jump="#about" data-jump-vision aria-label="Go to Vision and Mission"><span class="dot"></span><span><b>BulSU Vision, Mission &amp; Core Values</b> + Student Handbook — the “why” behind OSR work.</span> <span style="margin-left:auto; font:700 10px 'IBM Plex Mono',monospace; color:var(--red); background:white; border:1px solid var(--line); padding:3px 7px; border-radius:999px; white-space:nowrap">Vision →</span></li>
+        <li role="button" tabindex="0" data-jump="#resources" aria-label="Go to the Student Handbook and official policies"><span class="dot"></span><span><b>Student Handbook &amp; official policies</b> — the BulSU documents behind OSR work, verified and downloadable.</span> <span style="margin-left:auto; font:700 10px 'IBM Plex Mono',monospace; color:var(--red); background:white; border:1px solid var(--line); padding:3px 7px; border-radius:999px; white-space:nowrap">Resources →</span></li>
       </ul>
       <div class="welcome-actions">
         <button type="button" class="btn btn--red" id="welcomeStartTour">Start quick tour <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></button>
@@ -6805,27 +6675,6 @@ window.updateUpNext = typeof updateUpNext === 'function' ? updateUpNext : undefi
   window.dismissGuide = dismissGuide;
 
 
-})();
-</script>
-
-<script>
-/* About page: section jump bar scrolls within the page and tracks the section in view. */
-(function(){
-  const nav=document.querySelector('#page-about .ab-jump');
-  if(!nav) return;
-  const buttons=[...nav.querySelectorAll('[data-about-jump]')];
-  buttons.forEach(button=>button.addEventListener('click',()=>{
-    const target=document.getElementById(button.dataset.aboutJump);
-    if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
-  }));
-  if(!('IntersectionObserver' in window)) return;
-  const observer=new IntersectionObserver(entries=>{
-    entries.forEach(entry=>{
-      if(!entry.isIntersecting) return;
-      buttons.forEach(button=>button.classList.toggle('is-active', button.dataset.aboutJump===entry.target.id));
-    });
-  },{rootMargin:'-35% 0px -55% 0px'});
-  buttons.forEach(button=>{ const el=document.getElementById(button.dataset.aboutJump); if(el) observer.observe(el); });
 })();
 </script>
 

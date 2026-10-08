@@ -82,12 +82,14 @@ test('the admin service ratings screen is built for a phone', () => {
 });
 
 // The public About page used to read like a work-in-progress ("Easy to update",
-// "[Name — to be supplied]", "Replace with verified dates…"). It now carries
-// pre-written wording in the site's own voice, and anything the office has not
-// confirmed yet is kept off screen rather than shown as a placeholder: the
-// badge, the people cards and the two directory cards stay in the document —
-// ids intact, so Admin → About OSR can still write to them — but hidden until
-// there is something real to say.
+// "[Name — to be supplied]", "Replace with verified dates…"), and the fix was to
+// keep the unconfirmed cards in the document but hidden. The page has since been
+// rebuilt as an office profile in three sections — the mandate, the Office and
+// the people designated to it, and the university — so there are no cards left
+// to hide: what the office has not confirmed is simply absent, and the list of
+// people says plainly that no officers are published yet. Which sections the
+// page has, which ids the CMS patches and which editor fields survive is
+// asserted in about-content.test.mjs.
 // Judged on what a student actually reads: comments and script source are
 // stripped first, because a detection list inside the page's own JavaScript is
 // how the page keeps placeholders off screen, not a placeholder itself.
@@ -99,24 +101,11 @@ test('the About page shows finished wording, not template notes', () => {
   assert.doesNotMatch(visibleHtml, /Easy to update/i);
   assert.doesNotMatch(visibleHtml, /\[Name[^\]]*to be supplied\]/i);
   assert.doesNotMatch(visibleHtml, /to be supplied/i);
+  assert.doesNotMatch(visibleHtml, /To be announced/i);
+  assert.doesNotMatch(visibleHtml, /\bTBD\b/);
   assert.doesNotMatch(visibleHtml, /Add only verified official links/i);
   assert.doesNotMatch(visibleHtml, /Intentionally empty/i);
   assert.doesNotMatch(visibleHtml, /Replace with verified/i);
   assert.doesNotMatch(visibleHtml, /Replaces the original/i);
   assert.match(siteHtml, /id="aboutIntro">The Office of the Student Regent is the student voice/);
-});
-
-test('unconfirmed About cards stay in the document but off screen', () => {
-  // The CMS still patches every one of these ids, so the markup has to survive;
-  // it is `hidden` that keeps "To be announced" away from students.
-  for (const id of ['aboutBadge', 'aboutRegentCard', 'aboutTeamCard', 'aboutContactCard', 'aboutInfoCard']) {
-    const tag = siteHtml.match(new RegExp(`<[^>]*id="${id}"[^>]*>`));
-    assert.ok(tag, `#${id} must still exist for the CMS to write to`);
-    assert.match(tag[0], /\bhidden\b/, `#${id} must start hidden until it has something confirmed to show`);
-  }
-  assert.match(siteHtml, /id="aboutSecPeople"[^>]*\bhidden\b/, 'the whole People block waits for a confirmed name');
-  assert.match(siteHtml, /data-about-jump="aboutSecPeople" hidden/, 'and so does its jump link');
-  assert.match(siteHtml, /function applyAboutVisibility\(\)/, 'one function decides what is confirmed enough to show');
-  assert.match(siteHtml, /window\.applyAboutVisibility = applyAboutVisibility;/, 'the CMS re-runs it after it writes new values');
-  assert.match(siteHtml, /ABOUT_UNCONFIRMED/, 'the wording that counts as "not yet" is written down, not guessed at');
 });

@@ -103,26 +103,64 @@ Reasons per R-31, dial per MOTION 2.
 - History is a real table (period, builds, top priority, share, runner-up) that shows the latest six periods and discloses the rest on request.
 
 ## Human / Mobile (R-03, R-25, R-27, R-32)
-- Mobile-first, no horizontal overflow at 320. Tap targets minimum 44px. Keyboard order follows visual order, visible focus ring (red).
-- Contrast verified: Ink #111214 on white 13.8:1 PASS, Stone #5C5651 on white 7.2:1 PASS, Stone on Light Gray #F7F5F2 6.8:1 PASS, White on Red #A6192E 7.5:1 PASS, footer #E8E0D6 on Ink 14.3:1 PASS, Red on light gray fails so never set red text on gray.
+- Mobile-first, no horizontal overflow at 320. Tap targets minimum 44px — on the footer the links grow their hit box under `pointer:coarse` rather than growing the gaps between them, so the type stays at reading size. Keyboard order follows visual order, visible focus ring (red), except on the ink footer, where red measures 2.5:1 against the band and the ring goes white at 18.7:1 instead: a focus indicator below 3:1 is not an indicator.
+- Contrast verified: Ink #111214 on white 13.8:1 PASS, Ink-2 #2B2D31 on white 13.8:1 PASS, Stone #5C5651 on white 7.2:1 PASS, Stone on Light Gray #F7F5F2 6.6:1 PASS, White on Red #A6192E 7.5:1 PASS, footer #E8E0D6 on Ink 14.3:1 PASS, footer #D5CEC7 on Ink 12.0:1 PASS, footer #9A9590 on Ink 6.3:1 PASS, About band #F0DDE0 on Red-Ink #6E0F1F 9.2:1 PASS and its eyebrow #FFC9D1 8.3:1 PASS, Red on light gray fails so never set red text on gray.
 - Every data view has empty, loading, and error states. Reduced-motion support. Scalable text to 200%.
 
 ## Finished page — nothing a student reads is a note to whoever edits it
 A page for students carries only finished, student-facing content. Three rules
 came out of that, and they are the reason the About page and the homepage look
 the way they do now:
-- **Unconfirmed means hidden, not placeholder.** "To be announced", "TBD",
-  "[to be supplied]" and an empty card are all the same failure: the page is
-  asking the reader to wait. The cards stay in the document with their ids
-  intact so the CMS keeps writing to them, they carry `hidden`, and
-  `applyAboutVisibility()` reveals each one the moment a confirmed value reaches
-  it. Structure is kept; the student never sees the scaffolding.
+- **Unconfirmed means absent, not placeholder.** "To be announced", "TBD" and
+  "[to be supplied]" are all the same failure: the page is asking the reader to
+  wait. `ABOUT_UNCONFIRMED` lists that wording, `confirmedText()` refuses it, and
+  what is left over is shown — a person without a confirmed name is simply not
+  listed, and the list says plainly that no officers are published yet. An honest
+  empty state is the design; an empty card is not.
 - **Instructions to the editor do not ship.** "Add only verified official
   links.", "Fields are updated as official records are released.", "Easy to
   update" — these belong in the README and the admin, not on the page.
 - **A number is either counted or absent.** The homepage's four number boxes are
   gone rather than zero-filled, and the calendar heading states no event total:
   the badge prints the length of the record it is actually showing.
+
+## About is an office profile, not a brochure
+The About page answers three questions and stops: what the mandate is, what the
+Office is and who is designated to it, and which university it serves. That is
+what an official university office profile carries. Everything else the page used
+to hold — the vision, mission and core values band, the featured-program cards,
+the office-information table, the contact card, the link directory, the directors
+and the college representatives — is either on the page that owns it or nowhere,
+and a student looking for the handbook should land on Resources, not scroll past
+a copy of it.
+- **Three numbered blocks, no jump bar.** The count is a CSS counter over the
+  blocks that render, hairline dividers separate them, and a page this short does
+  not need a sticky pill navigation of its own sections.
+- **One marked block.** The mandate carries the 4px red filing rule and nothing
+  else on the page is boxed. Hierarchy comes from Fraunces against IBM Plex Sans,
+  from the lede against the list, and from the index numbers — not from cards,
+  borders or icons.
+- **People are a list, not a grid of profiles.** Name, position, one optional
+  line, and a photograph only when the office supplied one. No initials in a
+  circle standing in for a face, no biography, no per-person contact block: the
+  Office answers as one office.
+
+## The footer says three things
+Identity, six destinations, one way in — on an ink band, with the mark, at the
+quietest volume on the site. It is not a second sitemap: the address, the phone
+number, the opening hours, the calendar, the builder, the concern form and every
+archive have a page or a button that already owns them, and repeating nine links
+at the foot of every page taught nobody where to go.
+- **Six destinations, one list.** The footer's links are the primary navigation's
+  own destinations, and `patchNavigation()` hides any of them an administrator
+  hides there. There is no footer-link editor, because there is no second list.
+- **Three values, one object.** `FOOTER_OFFICE` holds the office name, the
+  one-line description and the email; `OFFICIAL_LINKS` holds the page and its
+  Messenger shortcut. Admin → Contact & details overrides them and the footer is
+  drawn again from the same objects.
+- **A thumb gets 44px.** Under `pointer:coarse` the links grow their hit box
+  rather than the gaps between them, so the type stays at reading size and the
+  targets stay at touching size.
 
 ## The masthead's card is a person
 The card beside the hero is the Student Regent — photo, name, term, one line in
@@ -131,16 +169,20 @@ card the pointer tilts, so nothing about the motion changed; only its contents
 did. `STUDENT_REGENT` at the top of the site script and the Student Regent
 fields in *Admin → About OSR* both feed it, and until a name and a message exist
 the card is hidden and `.hero--solo` gives the masthead the full width, so no
-empty column is left beside it.
+empty column is left beside it. The same saved person is the first name in
+"The Office" list on About — one record, two pages, and the About list does not
+repeat anyone the office has already typed into it.
 
 ## Office details have one home
 `OFFICIAL_LINKS`, `FOOTER_OFFICE`, `PRIVACY_RETENTION` and `STUDENT_REGENT` sit
-together at the top of the site script. The footer's Office column, the Contact
-OSR card on Get Help, the Official links list on About and the homepage card all
-read from them, and *Admin → Contact & details* / *Admin → About OSR* override
-them at runtime through `js/cms-integration.js`. One value, one place, every
-page — which is also why the footer is rendered once outside every page section
-rather than repeated per page.
+together at the top of the site script. The footer, the Contact OSR card on Get
+Help and the homepage card all read from them, and *Admin → Contact & details* /
+*Admin → About OSR* override them at runtime through `js/cms-integration.js`. One
+value, one place, every page — which is also why the footer is rendered once
+outside every page section rather than repeated per page. Each object holds only
+what is printed: when the footer's address block and hours line went, the fields
+behind them went with it, in the page, in the admin, in the settings allowlists
+and in the seed.
 
 ## Forms: consent is a gate, not fine print
 Every form on Get Help carries a privacy notice under its title — what is

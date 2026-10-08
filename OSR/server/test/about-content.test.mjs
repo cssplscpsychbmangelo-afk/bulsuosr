@@ -9,8 +9,10 @@ import { createApp } from '../app.js';
 import { sanitizeAboutContent } from '../routes/about.js';
 
 // The public About page used to be hard-coded HTML, so the office could not
-// update the Student Regent, the mandate or the official links without a
-// deploy. Admin → About OSR now writes one JSON document that the website reads.
+// update the Student Regent or the mandate without a deploy. Admin → About OSR
+// writes one JSON document that the website reads — and the document holds
+// exactly what the page prints, because an administrator should never be asked
+// to fill in a field nobody renders.
 test('About OSR page content is editable by any administrator and readable by the public', async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'osr-about-test-'));
   let db;
@@ -48,28 +50,33 @@ test('About OSR page content is editable by any administrator and readable by th
       const content = {
         eyebrow: 'The Office',
         title: 'About the Office of the Student Regent',
-        intro: 'Structured information, easy to update.',
-        badge: 'Easy to update',
-        office_heading: 'Office of the Student Regent',
-        office_p1: 'The Office is the student representation arm within the Board of Regents.',
-        mandate_heading: 'Role and mandate',
-        mandate_items: ['Represent the studentry in the Board of Regents', 'Consult students and councils'],
-        mandate_note: 'Aligned with the BulSU Charter.',
-        sr_name: 'Juan D. Dela Cruz',
-        sr_meta: 'Term: AY 2026-2027 · Campus: Main',
-        dir_exec_name: 'Maria S. Santos',
-        dir_exec_tag: 'OSR',
-        college_rows: ['College of Engineering — representative pending'],
-        vision: 'Bulacan State University is a progressive knowledge-generating institution.',
-        mission: 'Bulacan State University exists to produce competent, ethical professionals.',
-        values: ['Service to God & Community', 'Order & Peace'],
-        response_time: 'Within office hours',
-        info: [{ label: 'Governing body', value: 'Board of Regents' }, { label: '', value: '' }],
-        featured: [{ title: 'Free Printing Services', tag: 'Ongoing', description: 'Printing support for students.', link_label: 'View in Initiatives', link_href: '#initiatives' }],
-        links: [
-          { label: 'Bulacan State University', href: 'https://bulsu.edu.ph' },
-          { label: 'Board Meeting Archive (this site)', href: '#board-meetings' }
+        intro: 'The student voice in the Bulacan State University Board of Regents.',
+        mandate_heading: 'About the Office',
+        mandate_lede: 'The Office of the Student Regent serves as the formal student representation of Bulacan State University in the Board of Regents.',
+        mandate_items: [
+          'Represents the studentry in the Board of Regents',
+          'Brings student concerns, positions and proposals into university governance',
+          'Communicates Board matters and developments back to students'
         ],
+        office_heading: 'Office of the Student Regent',
+        office_lede: 'The student representation arm within the Board of Regents.',
+        staff_heading: 'The Office',
+        staff: [
+          { name: 'Maria S. Santos', role: 'Executive Director', note: 'Records, consultations and concern intake.', photo: '/uploads/maria.jpg' },
+          { name: '' },
+          { role: 'A row with no name is not a person' }
+        ],
+        sr_name: 'Juan D. Dela Cruz',
+        sr_meta: 'AY 2026-2027',
+        sr_note: 'Every student concern reaches the Board through this Office.',
+        // Sections the page no longer has. They are ignored rather than stored,
+        // so an old document shrinks to the new page on its next save.
+        badge: 'Easy to update',
+        vision: 'Bulacan State University is a progressive knowledge-generating institution.',
+        values: ['Service to God & Community'],
+        featured: [{ title: 'Free Printing Services' }],
+        info: [{ label: 'Governing body', value: 'Board of Regents' }],
+        links: [{ label: 'BulSU', href: 'https://bulsu.edu.ph' }],
         unknown_key: 'ignored by the server'
       };
 
@@ -78,13 +85,15 @@ test('About OSR page content is editable by any administrator and readable by th
 
       const stored = (await call('/api/about/public')).body;
       assert.equal(stored.title, 'About the Office of the Student Regent');
+      assert.equal(stored.mandate_lede, 'The Office of the Student Regent serves as the formal student representation of Bulacan State University in the Board of Regents.');
+      assert.equal(stored.mandate_items.length, 3, 'the mandate stays a short list');
+      assert.equal(stored.staff.length, 1, 'a row with nothing typed, or with no name, is dropped');
+      assert.equal(stored.staff[0].note, 'Records, consultations and concern intake.');
       assert.equal(stored.sr_name, 'Juan D. Dela Cruz');
-      assert.deepEqual(stored.mandate_items, ['Represent the studentry in the Board of Regents', 'Consult students and councils']);
-      assert.deepEqual(stored.values, ['Service to God & Community', 'Order & Peace']);
-      assert.equal(stored.info.length, 1, 'empty rows are dropped');
-      assert.equal(stored.featured[0].link_href, '#initiatives');
-      assert.equal(stored.links[1].href, '#board-meetings');
-      assert.equal(stored.unknown_key, undefined, 'unknown keys are never stored');
+      assert.equal(stored.sr_note, 'Every student concern reaches the Board through this Office.');
+      for (const gone of ['badge', 'vision', 'values', 'featured', 'info', 'links', 'unknown_key']) {
+        assert.equal(stored[gone], undefined, `"${gone}" belongs to a section the page no longer has, so it is never stored`);
+      }
 
       // The admin screen reads the same document back.
       assert.equal((await call('/api/about', 'GET', null, cookie)).body.sr_name, 'Juan D. Dela Cruz');
@@ -100,12 +109,12 @@ test('About OSR page content is editable by any administrator and readable by th
       // Rejected payloads never reach the database.
       const rejections = [
         { sr_name: 'x'.repeat(4000) },
+        { mandate_lede: 42 },
         { mandate_items: 42 },
-        { values: { not: 'a list' } },
-        { info: { label: 'Nope' } },
-        { links: [{ label: 'Bad link', href: 'javascript:alert(1)' }] },
-        { featured: [{ title: 'Bad link', link_href: 'ftp://example.org' }] },
-        { vision: 42 }
+        { mandate_items: Array.from({ length: 12 }, (_, index) => `Point ${index}`) },
+        { staff: { name: 'Not a list' } },
+        { staff: [{ name: 'X', photo: 'javascript:alert(1)' }] },
+        { sr_photo: '//evil.example/x.png' }
       ];
       for (const payload of rejections) {
         const rejected = await call('/api/about', 'PATCH', payload, cookie);
@@ -127,9 +136,9 @@ test('About OSR page content is editable by any administrator and readable by th
 test('public About page exposes the hooks the CMS patches', async () => {
   const sitePath = new URL('../../osr-website/index.html', import.meta.url).pathname;
   const html = await fs.readFile(sitePath, 'utf8');
-  for (const id of ['about-title', 'aboutEyebrow', 'aboutIntro', 'aboutBadge', 'aboutOfficeP1', 'aboutMandateList',
-    'aboutSrName', 'aboutDirExecName', 'aboutVision', 'aboutMission', 'aboutValuesList', 'aboutInfoRows',
-    'aboutResponseTime', 'aboutFeaturedList', 'aboutLinksList']) {
+  for (const id of ['about-title', 'aboutEyebrow', 'aboutIntro', 'aboutMandateHeading', 'aboutMandateLede',
+    'aboutMandateList', 'aboutOfficeHeading', 'aboutOfficeLede', 'aboutStaffHeading', 'aboutStaffGrid',
+    'aboutStaffEmpty']) {
     assert.ok(html.includes(`id="${id}"`), `the public About page must keep #${id} for CMS updates`);
   }
   assert.match(html, /About the Office of the Student Regent/, 'the built-in wording stays as the fallback');
@@ -137,36 +146,86 @@ test('public About page exposes the hooks the CMS patches', async () => {
   const integration = await fs.readFile(new URL('../../osr-website/js/cms-integration.js', import.meta.url).pathname, 'utf8');
   assert.match(integration, /function applyAboutContent/, 'the integration must apply the saved About content');
   assert.match(integration, /api\/about\/public/, 'the integration must read the public About endpoint');
+  assert.match(integration, /window\.renderAboutStaff/, 'the integration hands the saved people to the page\'s own list');
+});
+
+// The page answers three questions. Everything the old page carried on top of
+// that — the vision band, the programme cards, the office-information table,
+// the contact card, the link directory, the directors and the college
+// representatives — is gone from the document, not hidden inside it.
+test('the About page is the mandate, the Office and the university, and nothing else', async () => {
+  const html = await fs.readFile(new URL('../../osr-website/index.html', import.meta.url).pathname, 'utf8');
+  for (const id of ['aboutSecMandate', 'aboutSecOffice', 'aboutSecUniversity']) {
+    assert.ok(html.includes(`id="${id}"`), `#${id} is one of the three sections`);
+  }
+  for (const gone of ['aboutSecVm', 'aboutSecPrograms', 'aboutSecContact', 'aboutSecPeople', 'aboutRegentCard',
+    'aboutTeamCard', 'aboutContactCard', 'aboutInfoCard', 'aboutLinksList', 'aboutFeaturedList', 'aboutInfoRows',
+    'aboutValuesList', 'aboutVision', 'aboutMission', 'aboutBadge', 'aboutDirExecName', 'aboutCollegeRows']) {
+    assert.ok(!html.includes(`id="${gone}"`), `#${gone} belonged to a section the page no longer has`);
+  }
+  assert.ok(!html.includes('data-about-jump'), 'a three-section page needs no jump bar');
+
+  // No officer is invented: with nothing confirmed the list says so plainly.
+  assert.match(html, /id="aboutStaffGrid" hidden/, 'the list starts empty');
+  assert.match(html, /id="aboutStaffEmpty">No officers are published yet/, 'and the empty state names the cause');
+  assert.match(html, /function renderAboutStaff\(/, 'one function decides who is confirmed enough to list');
+  assert.match(html, /window\.renderAboutStaff = renderAboutStaff;/, 'so the CMS can hand it the saved rows');
+  assert.match(html, /ABOUT_UNCONFIRMED/, 'the wording that counts as "not yet" is written down, not guessed at');
+});
+
+// The administrator sees the page the students see: one pane per section, and
+// no field for anything the page stopped printing.
+test('the admin About editor offers only what the page renders', async () => {
+  const admin = await fs.readFile(new URL('../../admin/index.html', import.meta.url).pathname, 'utf8');
+  const panes = admin.slice(admin.indexOf('const ABOUT_SECTIONS'), admin.indexOf('const ABOUT_ROW_EDITORS'));
+  for (const key of ['eyebrow', 'title', 'intro', 'mandate_heading', 'mandate_lede', 'mandate_items',
+    'office_heading', 'office_lede', 'staff_heading', 'sr_name', 'sr_meta', 'sr_photo', 'sr_note']) {
+    assert.match(panes, new RegExp(`'${key}'`), `the editor must still offer ${key}`);
+  }
+  for (const gone of ['badge', 'office_p1', 'office_p2', 'mandate_note', 'sr_heading', 'sr_label', 'staff_intro',
+    'dir_heading', 'dir_exec_name', 'dir_names', 'college_rows', 'vision', 'mission', 'values', 'featured_heading',
+    'info_heading', 'contact_heading', 'response_time', 'links_heading']) {
+    assert.doesNotMatch(panes, new RegExp(`'${gone}'`), `${gone} is not rendered, so it must not be editable`);
+  }
+  const rows = admin.slice(admin.indexOf('const ABOUT_ROW_EDITORS'), admin.indexOf('const ABOUT_LINE_FIELDS'));
+  assert.match(rows, /\['name', 'Full name \*'\]/, 'a person is listed by name');
+  assert.match(rows, /\['note', 'Short description \(optional\)', 'textarea'\]/);
+  assert.doesNotMatch(rows, /'unit'|'email'/, 'the Office list is a name, a position, a photo and one line');
+  assert.match(admin, /const ABOUT_LINE_FIELDS = \['mandate_items'\];/, 'the mandate is the only line list left');
 });
 
 test('About content sanitizer trims, caps and normalizes what the office types', () => {
   const result = sanitizeAboutContent({
     title: '  About the Office of the Student Regent  ',
     mandate_items: '- First bullet\n• Second bullet\n\n   ',
-    values: ['Service to God & Community'],
-    featured: [{ title: 'Free Printing', tag: '', description: '   ' }],
-    links: []
+    staff: [{ name: ' Ana Reyes ', role: 'Executive Director', note: '   ', photo: '' }, { name: '' }]
   });
   assert.equal(result.error, undefined);
   assert.equal(result.content.title, 'About the Office of the Student Regent', 'surrounding spaces are trimmed');
   assert.deepEqual(result.content.mandate_items, ['First bullet', 'Second bullet'], 'bullet markers are stripped');
-  assert.deepEqual(result.content.featured, [{ title: 'Free Printing', tag: '', description: '', link_label: '', link_href: '' }]);
-  assert.deepEqual(result.content.links, []);
+  assert.deepEqual(result.content.staff, [{ name: 'Ana Reyes', role: 'Executive Director', note: '', photo: '' }],
+    'a row with nothing typed is dropped');
 
   assert.match(sanitizeAboutContent('nope').error, /object/);
-  assert.match(sanitizeAboutContent({ links: [{ label: 'x', href: 'javascript:alert(1)' }] }).error, /https/);
   assert.match(sanitizeAboutContent({ sr_name: 'x'.repeat(400) }).error, /too long/);
-  assert.match(sanitizeAboutContent({ mandate_items: Array.from({ length: 20 }, (_, i) => `Bullet ${i}`) }).error, /at most 12 lines/);
+  assert.match(sanitizeAboutContent({ mandate_items: Array.from({ length: 20 }, (_, i) => `Bullet ${i}`) }).error, /at most 8 lines/);
+  assert.match(sanitizeAboutContent({ staff: Array.from({ length: 30 }, (_, i) => ({ name: `Person ${i}` })) }).error, /at most 24 rows/);
 });
 
-test('About staff list accepts real staff rows and rejects unsafe photos or bad emails', async () => {
-  const { sanitizeAboutContent } = await import('../routes/about.js');
-  const ok = sanitizeAboutContent({ staff: [{ name: 'Ana Reyes', role: 'Secretary', email: 'ana@bulsu.edu.ph', photo: '/uploads/a.jpg' }, { name: '' }] });
+test('About staff list accepts real people and rejects unsafe photos', () => {
+  const ok = sanitizeAboutContent({
+    staff: [
+      { name: 'Ana Reyes', role: 'Executive Director', note: 'Records and consultations.', photo: '/uploads/a.jpg' },
+      { name: 'Ben Santos', photo: 'https://example.org/ben.png' },
+      { role: 'No name at all' }
+    ]
+  });
   assert.equal(ok.error, undefined);
-  assert.equal(ok.content.staff.length, 1, 'empty staff rows are dropped');
+  assert.equal(ok.content.staff.length, 2, 'a row with no name is not a person, so it is dropped');
   assert.match(sanitizeAboutContent({ staff: [{ name: 'X', photo: 'javascript:alert(1)' }] }).error, /https/);
-  assert.match(sanitizeAboutContent({ staff: [{ name: 'X', email: 'nope' }] }).error, /email/);
+  assert.match(sanitizeAboutContent({ staff: [{ name: 'X', photo: '//evil.example/x.png' }] }).error, /https/);
   assert.match(sanitizeAboutContent({ sr_photo: '//evil.example/x.png' }).error, /https/);
+  assert.match(sanitizeAboutContent({ mandate_lede: 'x'.repeat(500) }).error, /too long/);
 });
 
 test('service ratings require name and a valid student number; concerns issue a tracking code', async () => {

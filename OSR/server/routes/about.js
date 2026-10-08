@@ -2,12 +2,19 @@ import express from 'express';
 import { authRequired } from '../middleware/auth.js';
 const router = express.Router();
 
-// The public About page ("About the Office of the Student Regent") is structured
-// office information: mandate, Student Regent, directors, vision and mission,
-// office information, featured programs and official links. It used to be
-// hard-coded in the website, so an administrator had no way to keep it current.
-// Everything the page can show is stored here as one JSON document in
-// site_settings and edited from Admin → About OSR.
+// The public About page ("About the Office of the Student Regent") is an office
+// profile in three parts: the mandate, the Office and the people designated to
+// it, and a compact reference to the university. Everything the page can show is
+// stored here as one JSON document in site_settings and edited from Admin →
+// About OSR, so this schema is exactly the page — a field nobody renders is not
+// a field an administrator is asked to fill in. The Student Regent fields also
+// feed the card beside the homepage masthead, which is why they stay.
+//
+// The earlier page carried a vision and mission band, core values, featured
+// programme cards, an office-information table, a contact card, a link
+// directory, directors and college representatives. Those keys are no longer
+// read: they are dropped on the next save (unknown keys are never stored), and
+// an existing document that still holds them simply does not render them.
 const ABOUT_KEY = 'about_content';
 
 // Single-line / paragraph fields: key → maximum characters.
@@ -15,91 +22,37 @@ const ABOUT_TEXT_FIELDS = {
   eyebrow: 80,
   title: 160,
   intro: 400,
-  badge: 80,
-  office_heading: 160,
-  office_p1: 1200,
-  office_p2: 1200,
   mandate_heading: 160,
-  mandate_note: 400,
-  sr_heading: 160,
-  sr_label: 160,
+  mandate_lede: 400,
+  office_heading: 160,
+  office_lede: 400,
+  staff_heading: 160,
   sr_name: 200,
   sr_meta: 200,
   sr_note: 400,
-  sr_photo: 400,
-  staff_heading: 160,
-  staff_intro: 400,
-  dir_heading: 160,
-  dir_intro: 400,
-  dir_exec_name: 200,
-  dir_exec_tag: 80,
-  dir_names: 300,
-  dir_tag: 80,
-  college_title: 160,
-  college_desc: 400,
-  vm_heading: 160,
-  vision: 1200,
-  mission: 1200,
-  values_note: 400,
-  info_heading: 160,
-  info_note: 400,
-  contact_heading: 160,
-  response_time: 200,
-  featured_heading: 160,
-  featured_intro: 400,
-  featured_note: 400,
-  links_heading: 160,
-  links_note: 400
+  sr_photo: 400
 };
 
 // One-item-per-line fields: key → { max items, max characters per item }.
 const ABOUT_LINE_FIELDS = {
-  mandate_items: { max: 12, length: 300 },
-  values: { max: 8, length: 160 },
-  college_rows: { max: 12, length: 300 }
+  mandate_items: { max: 8, length: 300 }
 };
 
-// Repeatable rows: key → { max rows, columns }.
+// Repeatable rows: key → { max rows, columns }. The Office is a list of names,
+// so a row carries a name, a position, an optional photo and one optional line
+// about the person — and nothing else to fill in.
 const ABOUT_LIST_FIELDS = {
-  info: {
-    max: 10,
-    fields: { label: { max: 80 }, value: { max: 300 } }
-  },
-  featured: {
-    max: 8,
-    fields: {
-      title: { max: 160 },
-      tag: { max: 80 },
-      description: { max: 500 },
-      link_label: { max: 80 },
-      link_href: { max: 400, link: true }
-    }
-  },
-  // Office staff shown as cards under "The people behind the office".
   staff: {
-    max: 40,
+    max: 24,
+    required: 'name',
     fields: {
       name: { max: 160 },
       role: { max: 160 },
-      unit: { max: 160 },
-      email: { max: 200, email: true },
+      note: { max: 300 },
       photo: { max: 400, photo: true }
     }
-  },
-  links: {
-    max: 12,
-    fields: { label: { max: 160 }, href: { max: 400, link: true } }
   }
 };
-
-// Internal anchors (#board-meetings) and absolute https URLs only.
-function isSafeLink(value) {
-  if (typeof value !== 'string') return false;
-  const link = value.trim();
-  if (!link) return true; // empty means "keep the built-in link"
-  if (link.startsWith('#')) return true;
-  return /^https?:\/\/\S+$/i.test(link);
-}
 
 // Photos: an uploaded file on this site (/uploads/...) or an https:// image URL.
 function isSafePhoto(value) {
@@ -160,11 +113,13 @@ export function sanitizeAboutContent(body) {
         if (text.length > column.max) return { error: `"${field}" is too long — ${text.length} characters, the limit is ${column.max}.` };
         entry[field] = text;
         if (text) filled = true;
-        if (column.link && !isSafeLink(text)) return { error: `"${field}" must start with https:// or be a #section of this site.` };
         if (column.photo && !isSafePhoto(text)) return { error: `"${field}" must be an https:// image link or a file from the media library.` };
         if (column.email && text && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text)) return { error: `"${text}" is not a valid email address.` };
       }
-      if (filled) cleaned.push(entry); // drop rows where nothing was typed
+      // A row where nothing was typed is not a row, and a row without the one
+      // field the list is built from is not a person: both are dropped, so the
+      // public page can never print a nameless officer.
+      if (filled && (!rule.required || entry[rule.required])) cleaned.push(entry);
     }
     content[key] = cleaned;
   }

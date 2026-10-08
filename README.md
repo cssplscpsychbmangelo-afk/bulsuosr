@@ -85,19 +85,24 @@ Default login on a fresh DB: `admin@osr.bulsu.edu.ph / Admin123456!`. The setup 
   requires typing `WIPE`.
 - **Contact & details.** Any OSR administrator (not only a super administrator)
   can edit the email, phone, office address, office hours, official page, social
-  links and footer credit shown on the public site through
-  `PATCH /api/settings/contact`. Super administrators still own the public text
-  blocks (title, description, homepage intro, footer note).
-- **About OSR page.** *Admin → About OSR* edits the whole public
-  "About the Office of the Student Regent" page — the page header, the office
-  overview, the mandate bullets, the Student Regent (name, term, campus), the
-  Executive Director and Directors, the college representative rows, the BulSU
-  vision, mission and core values, the office information rows, the featured
-  programs and the official links. Any signed-in administrator can save it
-  through `PATCH /api/about`; the public site reads it from `GET /api/about/public`.
-  Leaving a field empty keeps the wording built into the site, so nothing has to
-  be retyped to change one name, and *Reset to built-in wording* clears every
-  override in one action.
+  links and the footer's identity through `PATCH /api/settings/contact`. Its
+  *Footer* group holds exactly what the public footer prints — the office name,
+  the one-line description and the credit line — and the preview card shows the
+  footer as it will read. Super administrators still own the site-wide wording
+  (title, description, homepage intro); the office, contact and footer details
+  are not repeated in that form.
+- **About OSR page.** *Admin → About OSR* edits the public
+  "About the Office of the Student Regent" page, and it holds one pane per part
+  of that page: the intro, the mandate (heading, description and the points, one
+  per line), the Office (heading, short description and the list of people
+  designated to it), and the Student Regent — whose name, term, photo and message
+  also feed the card beside the homepage masthead. A person in the list is a
+  name, a position, an optional photo and one optional line; a row with no name
+  is refused by the editor and dropped by the API. Any signed-in administrator
+  can save it through `PATCH /api/about`; the public site reads it from
+  `GET /api/about/public`. Leaving a field empty keeps the wording built into the
+  site, so nothing has to be retyped to change one name, and *Reset to built-in
+  wording* clears every override in one action.
 - **Activity log.** A dedicated screen lists every recorded change (administrator,
   action, content type, time) with search, type filter and CSV export.
 - **BulSU Pulse, once it has data.** The public Pulse panel is a single tablist
@@ -149,6 +154,44 @@ drag-and-drop bundle fails the suite.
 
 ## Recent fixes
 
+- **The About page is an office profile in three parts.** It answers what the
+  mandate is, what the Office is and who is designated to it, and which
+  university it serves — and stops there. The BulSU vision, mission and core
+  values band, the featured-program cards, the office-information table, the
+  contact card, the official-links directory, the Directors & Secretariat block,
+  the college-representative rows, the sticky section jump bar and the header
+  badge are gone from the document rather than hidden inside it, along with the
+  links that duplicated Resources, Board Meetings and Student Help. What is left
+  is the numbered block structure the page already had: the mandate carries the
+  4px red filing rule, "The Office" is a list of names on hairline dividers
+  (not a grid of profile cards), and the university is one compact reference with
+  a single link to `bulsu.edu.ph`. `applyAboutVisibility()` went with the cards
+  it was hiding; `renderAboutStaff()` now draws the list from the Student Regent
+  and the saved staff rows, listing a person only when a confirmed name reaches
+  it and saying plainly that no officers are published when none does.
+- **The footer stopped being a second sitemap.** Nine "Explore" links, an
+  address block, a phone number, opening hours and two action buttons became
+  three columns: the Office's name and one-line description over the mark, the
+  six primary destinations, and the two verified ways to reach it (the official
+  email, and the Facebook page with its Messenger shortcut) under *Contact the
+  OSR*. The bottom line is the institutional one — `© <year> Office of the
+  Student Regent · Bulacan State University` — beside the credit the admin
+  writes. `FOOTER_OFFICE` shrank to the three values the footer prints, and the
+  six destinations are not a second list to maintain: `patchNavigation()` hides
+  any of them an administrator hides in the main navigation. On touch the links
+  grow a 44px hit box instead of growing the gaps between them.
+- **The admin no longer offers fields the page does not print.** *About OSR*
+  went from nine panes and four row editors to four panes and one list; the
+  About schema in `OSR/server/routes/about.js` shrank with it, so the obsolete
+  keys are ignored on read and dropped on the next save (an existing document
+  loses nothing it still uses and quietly sheds the rest). Contact & details
+  gained the *Footer* group and lost `office_hours_short`, which fed a footer
+  line that no longer exists, and the super-administrator's *Public site
+  information* form no longer duplicates the contact and footer keys — it keeps
+  the three site-wide wording fields. `footer_text` was editable in two places
+  and rendered in none, so it is gone from the admin, the settings allowlists and
+  the seed.
+
 - **The public site now shows only finished, student-facing work.** The top bar
   lost the inline search box that clipped its own placeholder ("…nceme") and the
   duplicate magnifier beside it; one black search button opens the site search,
@@ -167,17 +210,17 @@ drag-and-drop bundle fails the suite.
   Regent fields in *Admin → About OSR*, and it stays hidden — with the masthead
   taking the full width — until a confirmed name and a message from the Regent
   exist. No name, photograph or quotation was invented to fill it.
-- **The About page hides everything the office has not confirmed.** The header
-  badge, the Student Regent card, the Directors / Executive Director / College
-  Representatives cards, the "Contact information" card and the "Office
-  information" card are all still in the document with their ids intact, so the
-  CMS keeps writing to them, but they carry `hidden` and `applyAboutVisibility()`
-  reveals each one the moment a real value reaches it. The two "[to be supplied]"
-  link rows became the office's actual Facebook and Messenger links, and the
-  "Add only verified official links." note — an instruction to whoever edits the
-  page, not to a student — is gone, along with the two gray notes about how the
-  page gets filled in later. Section numbers are a CSS counter over the blocks
-  that are on screen, so hiding one cannot leave 01 · 03 · 04.
+- **The About page shows nothing the office has not confirmed.** What began as
+  hiding the unconfirmed cards — the badge, the Student Regent, the Directors and
+  College Representatives, the contact and office-information cards — ended with
+  those sections leaving the page altogether, since a profile of the Office does
+  not need a directory beside it. The rule they were built for still holds: a
+  value in `ABOUT_UNCONFIRMED` ("To be announced", "TBD", "[to be supplied]") is
+  not a person and not a fact, so `renderAboutStaff()` drops it and the list says
+  plainly that no officers are published yet. The office's real Facebook and
+  Messenger links replaced the two "[to be supplied]" rows, and they live in the
+  footer and on Get Help. Section numbers are a CSS counter over the blocks that
+  are rendered, so the count can never skip.
 - **Tracking codes read `BulSU - OSR - 4827`.** `routes/feedback.js` issues four
   random digits behind the office name instead of `OSR-ABCD-2345`. The `code`
   column keeps its UNIQUE constraint and the insert simply draws again on a
@@ -223,12 +266,13 @@ drag-and-drop bundle fails the suite.
   ahead once the record has run past today — and *Reset* returns there rather
   than to the whole academic year. The heading no longer hard-codes an event
   total that disagreed with the 276 records actually in the file.
-- **The footer's Office column has one source.** It is written from
-  `FOOTER_OFFICE` and `OFFICIAL_LINKS` at the top of the site script, filled in
-  by `renderFooterOffice()` and `applyOfficialLinks()`, and overridable from
-  *Admin → Contact & details* — which now also carries a Messenger link
+- **The office details have one source.** `FOOTER_OFFICE` and `OFFICIAL_LINKS`
+  at the top of the site script are written into the page by
+  `renderFooterOffice()` and `applyOfficialLinks()`, and overridable from
+  *Admin → Contact & details* — which carries a Messenger link
   (`social_messenger`) beside the Facebook one. The footer sits outside every
-  page section, so no page holds a second copy of these details.
+  page section, so no page holds a second copy of these details, and the address,
+  phone and hours are printed once, on the Get Help contact card.
 - **Small text is darker and a half-step larger.** `--stone` moved from `#6B6560`
   (5.7:1) to `#5C5651` (7.2:1 on white) and `--muted` — which inline form hints
   asked for by name and which was never defined, so they silently inherited
@@ -412,12 +456,10 @@ drag-and-drop bundle fails the suite.
 - **The About page reads as finished copy.** The header badge said “Easy to
   update” and the page carried template notes (“Structured information that is
   easy to update…”, “[Name — to be supplied]”, “Replace with verified dates…”).
-  Those are replaced with pre-written wording in the site's own voice, and the
-  badge and the unconfirmed role cards — which read “Student representation” and
-  “To be announced” — are now hidden rather than shown, because a placeholder a
-  student can read is still a placeholder. Administrators can still override
-  every line from *Admin → About OSR*; an empty field keeps the wording built
-  into the site, and a filled one brings its card back on screen.
+  Those are replaced with pre-written wording in the site's own voice, because a
+  placeholder a student can read is still a placeholder. Administrators can still
+  override every line from *Admin → About OSR*; an empty field keeps the wording
+  built into the site.
 - **A stray leftover script fragment was removed from `/admin`.** A duplicated
   `</script></body></html>` tail followed by a bare `AndSetup();` call sat after
   the admin page's closing `</html>`. Nothing executed it, but it was removed so

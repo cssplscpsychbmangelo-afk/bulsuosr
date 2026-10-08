@@ -243,7 +243,7 @@ export async function initializeDatabase(db) {
       {id:'g-home-5', page:'home', target_selector:'.quick a[href="#help"]', title:'Student Help', description:'Raise a concern or contact.', step_number:5, is_enabled:1},
       {id:'g-home-6', page:'home', target_selector:'.hero__actions .btn--ghost', title:'View announcements', description:'Verified posts — tap to open the archive.', step_number:6, is_enabled:1},
       {id:'g-home-7', page:'home', target_selector:'#dashCalendar', title:'Upcoming calendar', description:'Next events — tap Calendar for full AY 2026-2027.', step_number:7, is_enabled:1},
-      {id:'g-about-1', page:'about', target_selector:'#page-about .ab-mandate', title:'Role and mandate', description:'What the Student Regent is empowered to do.', step_number:1, is_enabled:1},
+      {id:'g-about-1', page:'about', target_selector:'#page-about .ab-mandate', title:'The mandate', description:'What the Office is, and what it does in the Board of Regents.', step_number:1, is_enabled:1},
       {id:'g-ann-1', page:'announcements', target_selector:'#annSearch', title:'Search', description:'Type to filter — updates instantly.', step_number:1, is_enabled:1},
       {id:'g-board-1', page:'board-meetings', target_selector:'#boardSearch', title:'Search meetings', description:'Find by title or number.', step_number:1, is_enabled:1},
     ];

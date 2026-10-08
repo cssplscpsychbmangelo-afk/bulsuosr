@@ -252,34 +252,22 @@
       if(intro) intro.textContent = s.homepage_intro;
     }
 
-    if(s.office_address) {
-      text('hcOffice', s.office_address);
-      text('acAddress', s.office_address);
-      const foLine1 = document.getElementById('foLine1');
-      if(foLine1) foLine1.textContent = s.office_address;
-      const foLine2 = document.getElementById('foLine2');
-      if(foLine2) foLine2.style.display = s.office_line2 ? '' : 'none';
-      const foCity = document.getElementById('foCity');
-      if(foCity) foCity.style.display = s.office_city ? '' : 'none';
-    }
-    if(s.office_line1) text('foLine1', s.office_line1);
-    if(s.office_line2) { const fo2=document.getElementById('foLine2'); if(fo2){ fo2.textContent=s.office_line2; fo2.style.display=''; } }
-    if(s.office_city) { const foc=document.getElementById('foCity'); if(foc){ foc.textContent=s.office_city; foc.style.display=''; } }
-
-    text('foHours', s.office_hours_short);
-    text('footerCredit', s.footer_credit);
+    // The address, the phone number and the opening hours are printed on one
+    // card — Get Help → Contact OSR. The footer carries the office name, its
+    // one-line description and the email, and nothing else.
+    text('hcOffice', s.office_address);
     text('hcHours', s.office_hours);
-    text('acHours', s.office_hours);
-
-    mail('foEmail', s.contact_email);
     mail('hcEmail', s.contact_email);
-    mail('acEmail', s.contact_email);
     href('hcMailto', s.contact_email ? 'mailto:' + s.contact_email : null);
-    href('acMailto', s.contact_email ? 'mailto:' + s.contact_email : null);
-
-    tel('foPhone', s.contact_phone);
     tel('hcPhone', s.contact_phone);
-    tel('acPhone', s.contact_phone);
+    text('footerCredit', s.footer_credit);
+
+    if(window.FOOTER_OFFICE){
+      if(s.footer_name) window.FOOTER_OFFICE.name = s.footer_name;
+      if(s.footer_description) window.FOOTER_OFFICE.description = s.footer_description;
+      if(s.contact_email) window.FOOTER_OFFICE.email = s.contact_email;
+    }
+    if(typeof window.renderFooterOffice === 'function') { try{ window.renderFooterOffice(); }catch(e){} }
 
     href('hcPage', safeLink(s.official_page));
     // The official Facebook page and its Messenger link live in one place on the
@@ -336,196 +324,31 @@
     const items = values.filter(value => typeof value === 'string' && value.trim()).map(value => value.trim());
     if(items.length) el.innerHTML = items.map(value => `<li>${aboutEsc(value)}</li>`).join('');
   }
-  function aboutValues(id, values){
-    const el = document.getElementById(id);
-    if(!el || !Array.isArray(values) || !values.length) return;
-    const items = values.filter(value => typeof value === 'string' && value.trim()).map(value => value.trim());
-    if(!items.length) return;
-    el.innerHTML = items.map(value => `<span class="ab-value">${aboutEsc(value)}</span>`).join('');
-  }
-  function aboutKV(id, rows){
-    const el = document.getElementById(id);
-    if(!el || !Array.isArray(rows) || !rows.length) return;
-    const items = rows.filter(row => row && (row.label || row.value));
-    if(items.length) el.innerHTML = items.map(row => `<div class="kv"><b>${aboutEsc(row.label || '')}</b> <span>${aboutEsc(row.value || '')}</span></div>`).join('');
-  }
-  function aboutAnchor(href, label, style){
-    const link = document.createElement('a');
-    link.textContent = label;
-    if(/^https?:\/\//i.test(href)){
-      link.href = href;
-      link.target = '_blank';
-      link.rel = 'noopener';
-    } else {
-      link.href = href || '#';
-      link.setAttribute('data-nav', '');
-      link.addEventListener('click', () => { if(typeof window.setRoute === 'function') window.setRoute(link.getAttribute('href')); });
-    }
-    if(style) link.setAttribute('style', style);
-    return link;
-  }
-  function aboutFeatured(id, rows){
-    const el = document.getElementById(id);
-    if(!el || !Array.isArray(rows) || !rows.length) return;
-    const items = rows.filter(row => row && (row.title || row.description));
-    if(!items.length) return;
-    el.innerHTML = '';
-    items.forEach(row => {
-      const card = document.createElement('div');
-      card.className = 'ab-program';
-      const head = document.createElement('div');
-      head.className = 'ab-program__head';
-      const title = document.createElement('b');
-      title.textContent = row.title || '';
-      head.appendChild(title);
-      if(row.tag){
-        const tag = document.createElement('span');
-        tag.className = 'ab-tag';
-        tag.textContent = row.tag;
-        head.appendChild(tag);
-      }
-      card.appendChild(head);
-      if(row.description){
-        const text = document.createElement('p');
-        text.textContent = row.description;
-        card.appendChild(text);
-      }
-      if(row.link_href){
-        const link = aboutAnchor(row.link_href, row.link_label || 'Open');
-        link.className = 'ab-program__link';
-        card.appendChild(link);
-      }
-      el.appendChild(card);
-    });
-  }
-  function aboutInitials(name){
-    const words = String(name || '').replace(/\[.*?\]/g, '').split(/\s+/).filter(word => /^[A-Za-zÀ-ÿ]/.test(word));
-    if(!words.length) return '';
-    return (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase();
-  }
-  function aboutPhoto(url){
-    return typeof url === 'string' && (/^https:\/\//i.test(url) || url.startsWith('/')) ? url : '';
-  }
-  function aboutStaff(rows, heading, intro){
-    const wrap = document.getElementById('aboutStaffWrap');
-    const grid = document.getElementById('aboutStaffGrid');
-    if(!wrap || !grid) return;
-    const items = Array.isArray(rows) ? rows.filter(row => row && row.name) : [];
-    wrap.hidden = !items.length;
-    if(!items.length) return;
-    aboutText('aboutStaffHeading', heading);
-    const introEl = document.getElementById('aboutStaffIntro');
-    if(introEl){ introEl.hidden = !(intro && intro.trim()); if(intro) introEl.textContent = intro.trim(); }
-    grid.innerHTML = '';
-    items.forEach(row => {
-      const item = document.createElement('li');
-      item.className = 'ab-person';
-      const mark = document.createElement('span');
-      mark.className = 'ab-person__mark';
-      mark.setAttribute('aria-hidden', 'true');
-      const photo = aboutPhoto(row.photo);
-      if(photo){
-        const img = document.createElement('img');
-        img.src = photo; img.alt = ''; img.loading = 'lazy';
-        mark.appendChild(img);
-      } else {
-        mark.textContent = aboutInitials(row.name) || '•';
-      }
-      const body = document.createElement('div');
-      const name = document.createElement('b');
-      name.textContent = row.name;
-      body.appendChild(name);
-      [row.role, row.unit].filter(Boolean).forEach(text => {
-        const line = document.createElement('span');
-        line.textContent = text;
-        body.appendChild(line);
-      });
-      if(row.email){
-        const mail = document.createElement('a');
-        mail.href = `mailto:${row.email}`;
-        mail.textContent = row.email;
-        body.appendChild(mail);
-      }
-      item.append(mark, body);
-      grid.appendChild(item);
-    });
-  }
-  function aboutRegentMark(name, photoUrl){
-    const mark = document.getElementById('aboutSrMark');
-    if(!mark) return;
-    const photo = aboutPhoto(photoUrl);
-    if(photo){
-      mark.innerHTML = '';
-      const img = document.createElement('img');
-      img.src = photo; img.alt = '';
-      mark.appendChild(img);
-    } else {
-      const initials = aboutInitials(name);
-      if(initials) mark.textContent = initials;
-    }
-  }
-  function aboutLinks(id, rows){
-    const el = document.getElementById(id);
-    if(!el || !Array.isArray(rows) || !rows.length) return;
-    const items = rows.filter(row => row && (row.label || row.href));
-    if(!items.length) return;
-    el.innerHTML = '';
-    items.forEach(row => {
-      const item = document.createElement('li');
-      item.appendChild(aboutAnchor(row.href, row.label || row.href));
-      el.appendChild(item);
-    });
-  }
-
+  // The About page answers three questions — the mandate, the Office and the
+  // people designated to it, and the university — so those are the only fields
+  // this applies. Empty values keep the wording built into the page.
   function applyAboutContent(a){
     if(!a || typeof a !== 'object') return;
     aboutText('aboutEyebrow', a.eyebrow);
     aboutText('about-title', a.title);
     aboutText('aboutIntro', a.intro);
-    aboutText('aboutBadge', a.badge);
-    aboutText('aboutOfficeHeading', a.office_heading);
-    aboutText('aboutOfficeP1', a.office_p1);
-    aboutText('aboutOfficeP2', a.office_p2);
     aboutText('aboutMandateHeading', a.mandate_heading);
+    aboutText('aboutMandateLede', a.mandate_lede);
     aboutLines('aboutMandateList', a.mandate_items);
-    aboutText('aboutMandateNote', a.mandate_note);
-    aboutText('aboutSrHeading', a.sr_heading);
-    aboutText('aboutSrLabel', a.sr_label);
-    aboutText('aboutSrName', a.sr_name);
-    aboutText('aboutSrMeta', a.sr_meta);
-    aboutText('aboutSrNote', a.sr_note);
-    aboutRegentMark(a.sr_name, a.sr_photo);
-    aboutStaff(a.staff, a.staff_heading, a.staff_intro);
-    aboutText('aboutDirHeading', a.dir_heading);
-    aboutText('aboutDirIntro', a.dir_intro);
-    aboutText('aboutDirExecName', a.dir_exec_name);
-    aboutText('aboutDirExecTag', a.dir_exec_tag);
-    aboutText('aboutDirNames', a.dir_names);
-    aboutText('aboutDirTag', a.dir_tag);
-    aboutText('aboutCollegeTitle', a.college_title);
-    aboutText('aboutCollegeDesc', a.college_desc);
-    aboutText('aboutCollegeRows', a.college_rows);
-    aboutText('aboutVmHeading', a.vm_heading);
-    aboutText('aboutVision', a.vision);
-    aboutText('aboutMission', a.mission);
-    aboutValues('aboutValuesList', a.values);
-    aboutText('aboutValuesNote', a.values_note);
-    aboutText('aboutInfoHeading', a.info_heading);
-    aboutKV('aboutInfoRows', a.info);
-    aboutText('aboutInfoNote', a.info_note);
-    aboutText('aboutContactHeading', a.contact_heading);
-    aboutText('aboutResponseTime', a.response_time);
-    aboutText('aboutFeaturedHeading', a.featured_heading);
-    aboutText('aboutFeaturedIntro', a.featured_intro);
-    aboutFeatured('aboutFeaturedList', a.featured);
-    aboutText('aboutFeaturedNote', a.featured_note);
-    aboutText('aboutLinksHeading', a.links_heading);
-    aboutLinks('aboutLinksList', a.links);
-    aboutText('aboutLinksNote', a.links_note);
-    // A card that has just been given a real name comes back on screen; one
-    // still holding "To be announced" stays hidden. Judged after every field is
-    // written, so the page never shows a half-filled card.
-    if(typeof window.applyAboutVisibility === 'function') { try{ window.applyAboutVisibility(); }catch(e){} }
+    aboutText('aboutOfficeHeading', a.office_heading);
+    aboutText('aboutOfficeLede', a.office_lede);
+    // One list on the page, drawn by the site itself so the built-in
+    // STUDENT_REGENT and the saved staff rows are judged by the same rule:
+    // a person is listed only when a confirmed name reaches it.
+    if(typeof window.renderAboutStaff === 'function'){
+      try{
+        window.renderAboutStaff({
+          heading: a.staff_heading,
+          rows: a.staff,
+          regent: { name: a.sr_name, photo: a.sr_photo, term: a.sr_meta }
+        });
+      }catch(e){}
+    }
     // The homepage Student Regent card reads the same saved person.
     if(typeof window.renderStudentRegent === 'function') {
       try{ window.renderStudentRegent({ name: a.sr_name, photo: a.sr_photo, term: a.sr_meta, message: a.sr_note }); }catch(e){}
@@ -566,6 +389,16 @@
       });
       if(actions) nav.insertBefore(a, actions);
       else nav.appendChild(a);
+    });
+
+    // The footer's six destinations are the same destinations this navigation
+    // manages, so they follow it rather than being edited a second time: one an
+    // administrator hides or removes above leaves the footer too, and the
+    // footer never links somewhere the site does not.
+    const visible = new Set(visibleNavs.map(item => item.href));
+    document.querySelectorAll('a[data-footer-nav]').forEach(link => {
+      const row = link.closest('li');
+      if(row) row.hidden = !visible.has(link.getAttribute('href'));
     });
   }
 
