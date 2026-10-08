@@ -211,6 +211,21 @@ export async function initializeDatabase(db) {
   `));
 
   (await db.exec(`
+    CREATE TABLE IF NOT EXISTS staff (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      role TEXT,
+      photo TEXT,
+      email TEXT,
+      bio TEXT,
+      is_published INTEGER NOT NULL DEFAULT 1,
+      order_index INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT DEFAULT (datetime('now')),
+      updated_at TEXT DEFAULT (datetime('now'))
+    );
+  `));
+
+  (await db.exec(`
     CREATE TABLE IF NOT EXISTS pulse_submissions (
       id TEXT PRIMARY KEY,
       allocation TEXT NOT NULL, -- JSON {category: points}
