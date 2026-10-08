@@ -80,7 +80,7 @@ export function sanitizeProfile(body) {
     profile[key] = text;
   }
   if ('name' in body && !profile.name) return { error: 'A profile needs a name. An unnamed seat is not a record.' };
-  if (profile.photo && !isSafePhoto(profile.photo)) return { error: '"photo" must be an https:// image link or a file from the media library.' };
+  if (profile.photo && !isSafePhoto(profile.photo)) return { error: '"photo" must be an https:// image link, a Google Drive link, or a file from the media library.' };
   for (const key of ['facebook', 'instagram']) {
     if (profile[key] && !isSafeLink(profile[key])) return { error: `"${key}" must be an https:// link.` };
   }

@@ -8,12 +8,11 @@ const html = fs.readFileSync(sitePath, 'utf8');
 const integration = fs.readFileSync(new URL('../../osr-website/js/cms-integration.js', import.meta.url).pathname, 'utf8');
 
 // The masthead's one card is a person, not a poster: a confirmed name, the term,
-// one line in the Regent's own words, and the way to reach them. The portrait
-// that used to be filed into the top of this card now belongs to the leadership
-// archive on About, where it is one of ten records instead of the only face on
-// the homepage — so what has to hold here is that the card still works in every
-// combination the office can produce, and that nothing in it asks for a
-// photograph any more.
+// one line in the Regent's own words, their portrait and the way to reach them.
+// The portrait is filed once in the leadership archive and the card shows it
+// from there — a Google Drive share link pasted in the dashboard is rewritten
+// to a direct image — and with none filed the initials carry the card. On a
+// wide screen the card grows with the masthead so the hero stays balanced.
 
 function heroPage() {
   const dom = new JSDOM(html, {
@@ -72,21 +71,32 @@ test('a message and a term appear only when the office has supplied them', async
   assert.equal(page.avatar().textContent, 'JD', 'the initials carry the card whatever else is filled in');
 });
 
-test('the card never carries a portrait, however one is offered', async t => {
+test('a filed portrait shows on the card, and without one the initials carry it', async t => {
   const page = heroPage();
   t.after(page.close);
   page.render({ name: 'Juan D. Dela Cruz', photo: '/uploads/regent.jpg', message: 'x' });
-  assert.equal(page.card().querySelectorAll('img').length, 0, 'no photograph is filed into the masthead card');
-  assert.equal(page.avatar().textContent, 'JD', 'the initials are the card\'s only picture of the person');
-  assert.ok(!page.card().className.includes('photo'), 'and no portrait state is left on the card');
+  const img = page.avatar().querySelector('img');
+  assert.ok(img, 'the portrait is filed into the masthead card');
+  assert.equal(img.getAttribute('src'), '/uploads/regent.jpg', 'a file this site serves is drawn as-is');
+  page.render({ name: 'Juan D. Dela Cruz', photo: '' });
+  assert.equal(page.avatar().querySelectorAll('img').length, 0, 'with no portrait the image is cleared');
+  assert.equal(page.avatar().textContent, 'JD', 'and the initials carry the card again');
 });
 
-test('the portrait and everything that hung off it are gone from the masthead', () => {
-  for (const gone of ['regentPortrait', 'regentPortraitImg', 'regent-card__portrait', 'hero__card--photo', '--pad:26px']) {
-    assert.ok(!html.includes(gone), `${gone} is no longer part of the page`);
-  }
+test('a Google Drive share link pasted as the portrait is drawn as a direct image', async t => {
+  const page = heroPage();
+  t.after(page.close);
+  page.render({ name: 'Juan D. Dela Cruz', photo: 'https://drive.google.com/file/d/ABC123def45G/view?usp=sharing' });
+  const img = page.avatar().querySelector('img');
+  assert.ok(img, 'the Drive link becomes a picture on the card');
+  assert.equal(img.getAttribute('src'), 'https://lh3.googleusercontent.com/d/ABC123def45G', 'the share page is swapped for the direct image endpoint');
+});
+
+test('the card grows with the masthead on a wide screen', () => {
+  assert.match(html, /\.hero\{display:grid; grid-template-columns:1\.05fr 0\.95fr/, 'the hero columns are balanced on desktop');
+  assert.match(html, /@media\(min-width:961px\)\{[\s\S]*?\.regent-card__photo\{width:96px; height:96px/, 'the portrait grows past its phone size on desktop');
+  assert.match(html, /\.regent-card__photo img\{width:100%; height:100%; object-fit:cover/, 'and a filed portrait fills the round frame');
   assert.match(html, /\.hero--solo\{grid-template-columns:minmax\(0,1fr\)\}/, 'the masthead still takes the full width when the card is hidden');
   assert.match(html, /\.hero--solo \.hero__stage\{display:none\}/, 'and the empty column is not left behind it');
-  assert.doesNotMatch(html, /photo:\s*""\s*,\s*\/\/\s*\/uploads/, 'the built-in record has no photograph field to fill in');
-  assert.doesNotMatch(integration, /sr_photo/, 'the CMS no longer hands a portrait to the masthead');
+  assert.doesNotMatch(integration, /sr_photo/, 'the portrait reaches the card through the leadership archive, not the About document');
 });
