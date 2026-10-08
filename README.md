@@ -91,18 +91,34 @@ Default login on a fresh DB: `admin@osr.bulsu.edu.ph / Admin123456!`. The setup 
   footer as it will read. Super administrators still own the site-wide wording
   (title, description, homepage intro); the office, contact and footer details
   are not repeated in that form.
-- **About OSR page.** *Admin → About OSR* edits the public
-  "About the Office of the Student Regent" page, and it holds one pane per part
-  of that page: the intro, the mandate (heading, description and the points, one
-  per line), the Office (heading, short description and the list of people
-  designated to it), and the Student Regent — whose name, term, photo and message
-  also feed the card beside the homepage masthead. A person in the list is a
-  name, a position, an optional photo and one optional line; a row with no name
-  is refused by the editor and dropped by the API. Any signed-in administrator
-  can save it through `PATCH /api/about`; the public site reads it from
+- **About OSR page.** *Admin → About OSR* edits the wording of the public
+  "About the Office of the Student Regent" page, one pane per part of it: the
+  intro, the mandate (heading, description and the points, one per line), the
+  Office block (heading, short description and the title printed above the
+  directorate), and the Student Regent — whose name, term and message also feed
+  the card beside the homepage masthead. Any signed-in administrator can save it
+  through `PATCH /api/about`; the public site reads it from
   `GET /api/about/public`. Leaving a field empty keeps the wording built into the
-  site, so nothing has to be retyped to change one name, and *Reset to built-in
-  wording* clears every override in one action.
+  site, and *Reset to built-in wording* clears every override in one action. The
+  people themselves are not in this document: they are records, below.
+- **Leadership archive.** *Admin → Leadership* writes the two primary figures and
+  the directorate of eight that the About page prints, one record per person:
+  name, position, shelf, printed number, portrait, short description, quotation,
+  biography, responsibilities, previous positions, projects, Facebook, Instagram,
+  email and a published/hidden switch. The tree on the left is the archive in the
+  order the page reads it and the order is dragged, arrowed or keyed; the numbers
+  follow the order (01, 02 · 01D…08D) unless a record overrides one, and only
+  published records are counted, so withdrawing one closes the sequence up.
+  Under the form is a live preview of the public strip that reads the form rather
+  than the server, so the card opens, the portrait clears and the description
+  arrives while the office is still typing. *Load sample profiles* fills whatever
+  seats are free with records that say "Sample" in every field and carry no
+  portrait, so the layout and the motion can be checked before anybody has been
+  appointed; *Remove samples* deletes exactly those rows and nothing the office
+  wrote. The API enforces the limits, the numbering, the link and photo rules and
+  the per-field caps, and the editor refuses the same things before asking.
+  `OSR/server/test/leadership.test.mjs`, `leadership-page.test.mjs` and
+  `leadership-admin.test.mjs` cover the three layers on every `npm test`.
 - **Activity log.** A dedicated screen lists every recorded change (administrator,
   action, content type, time) with search, type filter and CSV export.
 - **BulSU Pulse, once it has data.** The public Pulse panel is a single tablist

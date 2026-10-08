@@ -3,18 +3,25 @@ import { authRequired } from '../middleware/auth.js';
 const router = express.Router();
 
 // The public About page ("About the Office of the Student Regent") is an office
-// profile in three parts: the mandate, the Office and the people designated to
-// it, and a compact reference to the university. Everything the page can show is
-// stored here as one JSON document in site_settings and edited from Admin →
-// About OSR, so this schema is exactly the page — a field nobody renders is not
-// a field an administrator is asked to fill in. The Student Regent fields also
-// feed the card beside the homepage masthead, which is why they stay.
+// profile in three parts: the mandate, the Office, and a compact reference to
+// the university. Everything the page can show is stored here as one JSON
+// document in site_settings and edited from Admin → About OSR, so this schema is
+// exactly the page — a field nobody renders is not a field an administrator is
+// asked to fill in. The Student Regent fields also feed the card beside the
+// homepage masthead, which is why they stay.
+//
+// The people are not in this document. The second block of the page is the
+// leadership archive — two primary figures and a directorate of eight — and its
+// records live in `leadership_profiles`, edited from Admin → Leadership and read
+// through /api/leadership/public. What stays here is only the wording around
+// them: the block headings, the lede, and the title above the directorate.
 //
 // The earlier page carried a vision and mission band, core values, featured
 // programme cards, an office-information table, a contact card, a link
-// directory, directors and college representatives. Those keys are no longer
-// read: they are dropped on the next save (unknown keys are never stored), and
-// an existing document that still holds them simply does not render them.
+// directory, and a staff list with a photograph per row. Those keys are no
+// longer read: they are dropped on the next save (unknown keys are never
+// stored), and an existing document that still holds them simply does not render
+// them.
 const ABOUT_KEY = 'about_content';
 
 // Single-line / paragraph fields: key → maximum characters.
@@ -26,41 +33,16 @@ const ABOUT_TEXT_FIELDS = {
   mandate_lede: 400,
   office_heading: 160,
   office_lede: 400,
-  staff_heading: 160,
+  directorate_heading: 160,
   sr_name: 200,
   sr_meta: 200,
-  sr_note: 400,
-  sr_photo: 400
+  sr_note: 400
 };
 
 // One-item-per-line fields: key → { max items, max characters per item }.
 const ABOUT_LINE_FIELDS = {
   mandate_items: { max: 8, length: 300 }
 };
-
-// Repeatable rows: key → { max rows, columns }. The Office is a list of names,
-// so a row carries a name, a position, an optional photo and one optional line
-// about the person — and nothing else to fill in.
-const ABOUT_LIST_FIELDS = {
-  staff: {
-    max: 24,
-    required: 'name',
-    fields: {
-      name: { max: 160 },
-      role: { max: 160 },
-      note: { max: 300 },
-      photo: { max: 400, photo: true }
-    }
-  }
-};
-
-// Photos: an uploaded file on this site (/uploads/...) or an https:// image URL.
-function isSafePhoto(value) {
-  const link = String(value || '').trim();
-  if (!link) return true;
-  if (link.startsWith('/') && !link.startsWith('//')) return true;
-  return /^https:\/\/\S+$/i.test(link);
-}
 
 // Returns { error } for a rejected payload, or { content } with a clean copy.
 export function sanitizeAboutContent(body) {
@@ -78,8 +60,6 @@ export function sanitizeAboutContent(body) {
     if (text.length > max) return { error: `"${key}" is too long — ${text.length} characters, the limit is ${max}.` };
     content[key] = text;
   }
-  if (content.sr_photo && !isSafePhoto(content.sr_photo)) return { error: '"sr_photo" must be an https:// image link or a file from the media library.' };
-
   for (const [key, rule] of Object.entries(ABOUT_LINE_FIELDS)) {
     if (!(key in body)) continue;
     const raw = body[key];
@@ -93,35 +73,6 @@ export function sanitizeAboutContent(body) {
     const tooLong = items.find(item => item.length > rule.length);
     if (tooLong) return { error: `A line in "${key}" is too long — ${tooLong.length} characters, the limit is ${rule.length}.` };
     content[key] = items;
-  }
-
-  for (const [key, rule] of Object.entries(ABOUT_LIST_FIELDS)) {
-    if (!(key in body)) continue;
-    const rows = body[key];
-    if (!Array.isArray(rows)) return { error: `"${key}" must be a list of rows.` };
-    if (rows.length > rule.max) return { error: `"${key}" accepts at most ${rule.max} rows.` };
-    const cleaned = [];
-    for (const row of rows) {
-      if (!row || typeof row !== 'object' || Array.isArray(row)) return { error: `Every "${key}" row must be an object.` };
-      const entry = {};
-      let filled = false;
-      for (const [field, column] of Object.entries(rule.fields)) {
-        const value = row[field];
-        if (value === null || value === undefined || value === '') { entry[field] = ''; continue; }
-        if (typeof value !== 'string') return { error: `"${field}" must be text.` };
-        const text = value.trim();
-        if (text.length > column.max) return { error: `"${field}" is too long — ${text.length} characters, the limit is ${column.max}.` };
-        entry[field] = text;
-        if (text) filled = true;
-        if (column.photo && !isSafePhoto(text)) return { error: `"${field}" must be an https:// image link or a file from the media library.` };
-        if (column.email && text && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text)) return { error: `"${text}" is not a valid email address.` };
-      }
-      // A row where nothing was typed is not a row, and a row without the one
-      // field the list is built from is not a person: both are dropped, so the
-      // public page can never print a nameless officer.
-      if (filled && (!rule.required || entry[rule.required])) cleaned.push(entry);
-    }
-    content[key] = cleaned;
   }
 
   // Unknown keys are ignored rather than stored: the schema above is the contract.

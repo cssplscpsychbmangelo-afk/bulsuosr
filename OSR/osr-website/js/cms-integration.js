@@ -337,21 +337,14 @@
     aboutLines('aboutMandateList', a.mandate_items);
     aboutText('aboutOfficeHeading', a.office_heading);
     aboutText('aboutOfficeLede', a.office_lede);
-    // One list on the page, drawn by the site itself so the built-in
-    // STUDENT_REGENT and the saved staff rows are judged by the same rule:
-    // a person is listed only when a confirmed name reaches it.
-    if(typeof window.renderAboutStaff === 'function'){
-      try{
-        window.renderAboutStaff({
-          heading: a.staff_heading,
-          rows: a.staff,
-          regent: { name: a.sr_name, photo: a.sr_photo, term: a.sr_meta }
-        });
-      }catch(e){}
-    }
-    // The homepage Student Regent card reads the same saved person.
+    // The heading above the directorate is editable copy, but the people under
+    // it are not: they are leadership records, fetched on their own below.
+    aboutText('ldBoardTitle', a.directorate_heading);
+    // The homepage Student Regent card reads the same saved person. The card
+    // carries name, term and one line in their own words; the portrait belongs
+    // to the archive on this page, not to the masthead.
     if(typeof window.renderStudentRegent === 'function') {
-      try{ window.renderStudentRegent({ name: a.sr_name, photo: a.sr_photo, term: a.sr_meta, message: a.sr_note }); }catch(e){}
+      try{ window.renderStudentRegent({ name: a.sr_name, term: a.sr_meta, message: a.sr_note }); }catch(e){}
     }
     console.log('[CMS] About page content applied');
   }
@@ -463,11 +456,12 @@
         fetchPublic('calendar', forceRefresh),
         fetchPublic('guides', forceRefresh),
         fetchPublic('navigation', forceRefresh),
+        fetchPublic('leadership', forceRefresh),
         fetchSettings(forceRefresh),
         fetchAbout(forceRefresh)
       ]);
 
-      const [boards, inits, ress, cals, guides, navs, settings, about] = results.map(r => r.status==='fulfilled' ? r.value : null);
+      const [boards, inits, ress, cals, guides, navs, leadership, settings, about] = results.map(r => r.status==='fulfilled' ? r.value : null);
 
       window.__CMS_DATA = {
         announcements: anns,
@@ -477,6 +471,7 @@
         calendar: cals,
         guides: guides,
         navigation: navs,
+        leadership: Array.isArray(leadership) ? leadership : null,
         settings: settings,
         about: about
       };
@@ -484,6 +479,11 @@
       if(guides) patchGuides(guides);
       if(settings) applySiteSettings(settings);
       if(about && Object.keys(about).length) applyAboutContent(about);
+      // The archive is drawn by the page itself, from records only — nothing here
+      // decides who leads the Office.
+      if(Array.isArray(leadership) && typeof window.applyLeadership === 'function') {
+        try{ window.applyLeadership(leadership); }catch(e){}
+      }
       if(anns) patchAnnouncements(anns);
       if(ress) patchResources(ress);
       if(boards) patchBoard(boards);

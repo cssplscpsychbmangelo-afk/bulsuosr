@@ -1260,21 +1260,147 @@ img,svg{max-width:100%; height:auto}
 #page-about .ab-mandate__list{margin:0; padding:0; list-style:none; counter-reset:m; display:grid; gap:10px; max-width:64ch}
 #page-about .ab-mandate__list li{counter-increment:m; display:grid; grid-template-columns:28px minmax(0,1fr); gap:8px; font-size:14.5px; line-height:1.55; color:var(--ink-2)}
 #page-about .ab-mandate__list li:before{content:counter(m, decimal-leading-zero); font:600 11px/1.9 "IBM Plex Mono",monospace; color:var(--red)}
-/* The Office: a list of names on hairline dividers, not a grid of profile
-   cards. A photo is shown when the office supplied one and simply absent when
-   it did not — no initials, no silhouette standing in for a person. */
-#page-about .ab-staff{margin-top:30px}
-#page-about .ab-staff__title{margin:0; font:600 11px "IBM Plex Mono",monospace; letter-spacing:0.1em; text-transform:uppercase; color:var(--stone)}
-/* Every row is ruled, including the first: the hairline under the label is what
-   separates the list of people from the heading above it. */
-#page-about .ab-staff__list{list-style:none; margin:10px 0 0; padding:0; max-width:64ch}
-#page-about .ab-person{display:grid; grid-template-columns:minmax(0,1fr); gap:1px; padding:14px 0; border-top:1px solid var(--line)}
-#page-about .ab-person--photo{grid-template-columns:44px minmax(0,1fr); gap:14px; align-items:start}
-#page-about .ab-person__photo{width:44px; height:44px; border-radius:50%; object-fit:cover; background:var(--paper-3)}
-#page-about .ab-person b{display:block; font:600 15px/1.35 "IBM Plex Sans",sans-serif; color:var(--ink); overflow-wrap:anywhere}
-#page-about .ab-person__role{display:block; font-size:13.5px; color:var(--stone); overflow-wrap:anywhere}
-#page-about .ab-person__note{display:block; margin-top:5px; font-size:13px; line-height:1.5; color:var(--stone)}
-#page-about .ab-staff__empty{margin:10px 0 0; font-size:13.5px; line-height:1.55; color:var(--stone); max-width:56ch}
+/* ── The leadership archive ──────────────────────────────────────────────────
+   Two primary figures, then the directorate as a strip of narrow cards that
+   open around whichever one the visitor points at. The interaction is the
+   point: a row of faces, held out of focus like a box of prints, and then one
+   of them coming clear — because a person becomes legible when you look at
+   them, not when you look at a grid.
+
+   The treatment is the same one the site already uses for a portrait in ink:
+   the photograph is drained to monochrome, a red wash is blended into it, and a
+   scrim underneath carries the type. Opening the card lifts the wash, clears
+   the blur and lets the image scale in, so the motion reads as focus rather
+   than as growth. Nothing is rounded further than 6px, no card floats on a
+   shadow of its own, and the number does the work a label would otherwise do. */
+.ld{margin-top:30px}
+
+/* Shared image plate: the bust, the number and the archive's own hatch, drawn
+   rather than photographed, so a record with no portrait still has something to
+   come clear. It is a plate about a person, never a pretend face. */
+.ld-plate{position:absolute; inset:0; background:
+  repeating-linear-gradient(135deg, rgba(255,255,255,.035) 0 1px, rgba(255,255,255,0) 1px 5px),
+  radial-gradient(44% 27% at 50% 30%, rgba(255,255,255,.19) 0 99%, rgba(255,255,255,0) 100%),
+  radial-gradient(88% 52% at 50% 118%, rgba(255,255,255,.15) 0 99%, rgba(255,255,255,0) 100%),
+  linear-gradient(168deg, #24272C 0%, #15171B 58%, #111214 100%)}
+/* The shared wrapper every photograph or plate sits in, so the blur-to-clear
+   transition is one rule however the image was supplied. Scaled up slightly to
+   keep the blurred edge off the card's own border. */
+.ld-media{position:absolute; inset:0; overflow:hidden; transform:scale(1.08);
+  filter:grayscale(1) contrast(1.05) brightness(.58) blur(3px);
+  transition:filter .5s var(--ease), transform .8s var(--ease)}
+.ld-media img{width:100%; height:100%; object-fit:cover; object-position:50% 24%; display:block}
+/* The institutional wash over the top of it. */
+.ld-media:after{content:""; position:absolute; inset:0; opacity:.46; pointer-events:none;
+  background:linear-gradient(155deg, var(--red) 0%, var(--red-ink) 58%, var(--ink) 100%); mix-blend-mode:color;
+  transition:opacity .6s var(--ease)}
+
+/* One control per card, stretched across the whole of it. A card full of
+   headings and copy cannot itself be a <button>, so the button is laid over the
+   card: the keyboard gets exactly the target the mouse gets, and the visible
+   contents stay honest markup. */
+.ld-hit{position:absolute; inset:0; z-index:4; width:100%; height:100%; margin:0; padding:0;
+  border:0; background:none; color:transparent; font:inherit; cursor:pointer}
+.ld-hit:focus-visible{outline:2px solid #FFC9D1; outline-offset:-3px}
+
+/* ── The two primary figures ── */
+.ld-leaders{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px}
+.ld-leader{position:relative; isolation:isolate; overflow:hidden; aspect-ratio:4/5; background:var(--ink);
+  border:1px solid var(--line); border-radius:6px;
+  transition:border-color .35s var(--ease), box-shadow .35s var(--ease)}
+.ld-leader .ld-media{transform:scale(1.04); filter:grayscale(1) contrast(1.06) brightness(.7) blur(2px)}
+.ld-leader__body{position:absolute; z-index:3; left:0; right:0; bottom:0; padding:18px 18px 16px; color:#fff;
+  background:linear-gradient(180deg, rgba(17,18,20,0) 0%, rgba(17,18,20,.5) 52%, rgba(17,18,20,.94) 100%)}
+.ld-leader__num{display:block; font:600 10px "IBM Plex Mono",monospace; letter-spacing:.16em; color:#FFC9D1}
+.ld-leader__name{margin:7px 0 0; font:700 clamp(21px,2.3vw,28px)/1.04 var(--font-display); letter-spacing:-0.02em; color:#fff; overflow-wrap:anywhere}
+.ld-leader__role{margin:7px 0 0; font:600 10.5px "IBM Plex Mono",monospace; letter-spacing:.1em; text-transform:uppercase; color:#D5CEC7}
+.ld-leader__bio{margin:9px 0 0; font-size:13px; line-height:1.55; color:#D5CEC7; max-width:34ch;
+  opacity:0; transform:translateY(6px);
+  transition:opacity .35s var(--ease) .08s, transform .35s var(--ease) .08s}
+.ld-leader__cue{display:block; margin-top:11px; font:600 10px "IBM Plex Mono",monospace; letter-spacing:.13em; text-transform:uppercase; color:#FFC9D1;
+  opacity:0; transform:translateY(6px);
+  transition:opacity .35s var(--ease) .14s, transform .35s var(--ease) .14s}
+.ld-leader:hover, .ld-leader:focus-within{border-color:rgba(166,25,46,.55); box-shadow:0 18px 40px rgba(17,18,20,.16)}
+.ld-leader:hover .ld-media, .ld-leader:focus-within .ld-media{transform:scale(1.06); filter:grayscale(.2) contrast(1.03) brightness(.92) blur(0)}
+.ld-leader:hover .ld-media:after, .ld-leader:focus-within .ld-media:after{opacity:.2}
+.ld-leader:hover .ld-leader__bio, .ld-leader:focus-within .ld-leader__bio,
+.ld-leader:hover .ld-leader__cue, .ld-leader:focus-within .ld-leader__cue{opacity:1; transform:none}
+
+/* ── The directorate: the strip ── */
+.ld-board{margin-top:26px}
+.ld-board__head{display:flex; align-items:baseline; justify-content:space-between; gap:8px 14px; flex-wrap:wrap;
+  padding-bottom:8px; border-bottom:1px solid var(--line)}
+.ld-board__title{margin:0; font:600 11px "IBM Plex Mono",monospace; letter-spacing:.14em; text-transform:uppercase; color:var(--stone)}
+.ld-board__note{margin:0; font:500 10.5px "IBM Plex Mono",monospace; letter-spacing:.04em; color:var(--stone)}
+
+/* A fixed height, because the cards grow sideways and nothing here is allowed to
+   push the page up and down under the visitor's cursor. */
+.ld-strip{display:flex; gap:6px; height:320px; margin-top:12px}
+.ld-card{position:relative; isolation:isolate; flex:1 1 0; min-width:0; overflow:hidden; background:var(--ink);
+  border:1px solid var(--line); border-radius:4px;
+  transition:flex-grow .5s var(--ease), border-color .35s var(--ease), box-shadow .35s var(--ease)}
+.ld-card__body{position:absolute; z-index:3; left:0; right:0; bottom:0; padding:12px;
+  background:linear-gradient(180deg, rgba(17,18,20,0) 0%, rgba(17,18,20,.34) 44%, rgba(17,18,20,.92) 100%)}
+.ld-card__num{position:absolute; z-index:3; top:10px; left:11px; font:600 10px "IBM Plex Mono",monospace; letter-spacing:.12em; color:#D5CEC7}
+/* One element for the name in both states: it stays on one line, clips while the
+   card is narrow, and grows with the card instead of being swapped out — a font
+   size is animatable, a change of typeface is not. */
+.ld-card__name{margin:0; font-family:var(--font-display); font-weight:700; font-size:13px; line-height:1.14; letter-spacing:-0.01em; color:#fff;
+  white-space:nowrap; overflow:hidden; transition:font-size .45s var(--ease)}
+.ld-card__role{margin:5px 0 0; font:600 9.5px "IBM Plex Mono",monospace; letter-spacing:.1em; text-transform:uppercase; color:#FFC9D1;
+  white-space:nowrap; overflow:hidden; opacity:0; transition:opacity .3s var(--ease)}
+.ld-card__bio{margin:7px 0 0; font-size:12.5px; line-height:1.5; color:#D5CEC7; max-width:38ch;
+  opacity:0; transform:translateY(6px);
+  transition:opacity .35s var(--ease) .1s, transform .35s var(--ease) .1s}
+.ld-card__cue{display:block; margin-top:9px; font:600 9.5px "IBM Plex Mono",monospace; letter-spacing:.13em; text-transform:uppercase; color:#fff;
+  opacity:0; transition:opacity .3s var(--ease) .18s}
+/* The card that is open, and the rest of the row receding behind it. */
+.ld-card.is-active{flex-grow:4.4; border-color:rgba(166,25,46,.5);
+  box-shadow:inset 0 0 0 1px rgba(166,25,46,.4), 0 16px 36px rgba(17,18,20,.18)}
+.ld-card.is-active .ld-media{transform:scale(1.02); filter:grayscale(.2) contrast(1.04) brightness(.92) blur(0)}
+.ld-card.is-active .ld-media:after{opacity:.16}
+.ld-card.is-active .ld-card__name{font-size:22px}
+.ld-card.is-active .ld-card__role,
+.ld-card.is-active .ld-card__bio,
+.ld-card.is-active .ld-card__cue{opacity:1; transform:none}
+.ld-strip.is-open .ld-card:not(.is-active) .ld-media{filter:grayscale(1) contrast(1) brightness(.42) blur(4.5px)}
+.ld-strip.is-open .ld-card:not(.is-active) .ld-card__name{opacity:.6}
+.ld-empty{margin:16px 0 0; font-size:13.5px; line-height:1.55; color:var(--stone); max-width:56ch}
+
+/* ── The record: what a card opens into ──
+   The site's own modal, so the archive does not ship a second dialog. */
+.ld-rec{display:grid; gap:18px}
+.ld-rec__media{position:relative; isolation:isolate; overflow:hidden; height:250px; margin:-16px -16px 4px; background:var(--ink)}
+.ld-rec__media .ld-media{transform:none; filter:grayscale(1) contrast(1.05) brightness(.78) blur(0)}
+.ld-rec__media .ld-media:after{opacity:.42}
+.ld-rec__num{position:absolute; z-index:3; left:16px; bottom:12px; font:600 10px "IBM Plex Mono",monospace; letter-spacing:.16em; color:#FFC9D1}
+.ld-rec__quote{margin:0; padding-left:16px; border-left:3px solid var(--red);
+  font:600 clamp(17px,2vw,20px)/1.42 var(--font-display); letter-spacing:-0.01em; color:var(--ink)}
+.ld-rec__bio{margin:0; max-width:68ch}
+.ld-rec__sec{display:grid; gap:7px}
+.ld-rec__label{font:600 10px "IBM Plex Mono",monospace; letter-spacing:.13em; text-transform:uppercase; color:var(--stone)}
+.ld-rec__list{margin:0; padding:0; list-style:none; display:grid; gap:5px}
+.ld-rec__list li{position:relative; padding-left:16px; font-size:13.5px; line-height:1.5; color:var(--ink-2)}
+.ld-rec__list li:before{content:""; position:absolute; left:0; top:.62em; width:7px; height:1px; background:var(--red)}
+.ld-rec__links{display:flex; gap:14px; flex-wrap:wrap; padding-top:13px; border-top:1px solid var(--line)}
+.ld-rec__links a{font:600 11px "IBM Plex Mono",monospace; letter-spacing:.07em; text-transform:uppercase; padding-bottom:2px}
+
+/* ── No hover, no cursor: the strip becomes a swipeable row ── */
+@media(max-width:760px){
+  .ld-leaders{grid-template-columns:minmax(0,1fr)}
+  .ld-leader{aspect-ratio:5/4}
+  .ld-strip{height:auto; gap:10px; overflow-x:auto; scroll-snap-type:x proximity; padding-bottom:6px;
+    -webkit-overflow-scrolling:touch; scrollbar-width:thin}
+  .ld-card{flex:0 0 66%; height:290px; scroll-snap-align:center}
+  .ld-card.is-active{flex-grow:0}
+  .ld-rec__media{height:200px}
+}
+/* On a touch device there is no preview state to hide behind, so the description
+   and the cue are simply printed: the first tap selects, the second opens. */
+@media(hover:none){
+  .ld-leader__bio, .ld-leader__cue{opacity:1; transform:none}
+  .ld-card__role{opacity:1}
+}
 #page-about .ab-university{margin:0; font-size:14.5px; line-height:1.6; color:var(--ink-2); max-width:64ch}
 #page-about .ab-extern{display:inline-block; margin-top:12px; padding-bottom:2px; font:600 12.5px "IBM Plex Mono",monospace; color:var(--red); border-bottom:1px solid #FFD0D6}
 #page-about .ab-extern:hover{border-bottom-color:var(--red)}
@@ -1283,7 +1409,7 @@ img,svg{max-width:100%; height:auto}
   #page-about .ab-block{padding:28px 0 24px}
   #page-about .ab-mandate{padding-left:16px}
   #page-about .ab-block__title, #page-about .ab-mandate h3{font-size:21px}
-  #page-about .ab-staff{margin-top:24px}
+  .ld{margin-top:24px}
 }
 
 /* ── Track my concern ── */
@@ -1472,13 +1598,6 @@ img,svg{max-width:100%; height:auto}
              "What the Office does" already lives on the About page, so it is
              not repeated here. -->
         <div class="hero__card hero__card--regent" id="regentCard" aria-label="Student Regent" hidden>
-          <!-- The Regent's photograph, when the office has supplied one. It is
-               the card's own top edge rather than a picture inside a box: the
-               print runs to the card's edges, is treated into the office's red
-               and ink, and fades into the paper at the bottom, so a portrait
-               taken anywhere lands in this palette. With no photograph the
-               block stays hidden and the initials below carry the card. -->
-          <div class="regent-card__portrait" id="regentPortrait" hidden><img id="regentPortraitImg" alt="" decoding="async"></div>
           <div class="hero__card-head regent-card__head">
             <span class="regent-card__eyebrow">Student Regent</span>
             <span class="regent-card__term" id="regentTerm">AY 2026–2027</span>
@@ -1764,59 +1883,22 @@ img,svg{max-width:100%; height:auto}
 .hero__card p{font-size:13.5px; line-height:1.65}
 
 /* ── Student Regent card ──────────────────────────────────────────────────
-   The masthead's one card. It is a person, not a panel of copy: photograph,
-   name, term, one line in the Regent's own words, and the way to reach them.
-   Until the office confirms a name the card is hidden and .hero--solo gives the
-   masthead the full width, so no empty column is left behind; the photograph
-   and the quotation each appear only when there is one to show.
+   The masthead's one card. It is a person, not a panel of copy: name, term, one
+   line in the Regent's own words, and the way to reach them. Until the office
+   confirms a name the card is hidden and .hero--solo gives the masthead the full
+   width, so no empty column is left behind; the quotation appears only when
+   there is one to show.
 
-   --pad is the card's own padding, declared once so the portrait can run to the
-   card's edges without a second number to keep in step with it. */
+   The portrait that used to be filed into the top of this card now lives in the
+   leadership archive on About, where it is one of ten records instead of the
+   only photograph on the homepage — and where the office edits it. */
 .hero--solo{grid-template-columns:minmax(0,1fr)}
 .hero--solo .hero__stage{display:none}
-.hero__card--regent{--pad:26px; padding:var(--pad)}
-@media(max-width:640px){.hero__card--regent{--pad:20px}}
-.regent-card__portrait{position:relative; isolation:isolate; height:240px; overflow:hidden; background:var(--paper-2);
-  margin:calc(var(--pad) * -1) calc(var(--pad) * -1) 0}
-@media(max-width:640px){.regent-card__portrait{height:200px}}
-/* Sized to the card, not to the source: at the masthead's right-hand column the
-   print is about 430px wide, so 240px tall keeps it near 3:2 — a head and
-   shoulders, where a shorter band would crop across somebody's eyes and a
-   taller one would outweigh the masthead beside it. Head and shoulders sit in
-   the upper third of almost every portrait, so the crop favours that rather
-   than centring on a lapel. */
-.regent-card__portrait img{display:block; width:100%; height:100%; object-fit:cover; object-position:50% 22%;
-  filter:grayscale(1) contrast(1.06); transition:filter .45s var(--ease)}
-/* The wash is what makes it belong: the office's red into its deep red into the
-   ink, laid over the greyscale in `color`, so the photograph keeps its own
-   light and takes the palette's hue. Half strength — a full duotone would turn
-   a person into a poster. */
-.regent-card__portrait:before{content:""; position:absolute; inset:0; z-index:1; pointer-events:none; opacity:.5;
-  background:linear-gradient(155deg, var(--red) 0%, #6E0F1F 58%, var(--ink) 100%); mix-blend-mode:color;
-  transition:opacity .45s var(--ease)}
-/* And the print is filed into the card rather than pasted on it: the bottom
-   fades to the paper the name is printed on, which is where the eye is meant to
-   go next. */
-.regent-card__portrait:after{content:""; position:absolute; inset:0; z-index:2; pointer-events:none;
-  background:linear-gradient(180deg, rgba(255,255,255,0) 44%, rgba(255,255,255,0.66) 82%, #fff 100%)}
-/* The one piece of motion the portrait has, and the visitor starts it: hold the
-   card and the real colours come back through the wash. */
-.hero__card--regent:hover .regent-card__portrait img,
-.hero__card--regent:focus-within .regent-card__portrait img{filter:grayscale(.16) contrast(1.02)}
-.hero__card--regent:hover .regent-card__portrait:before,
-.hero__card--regent:focus-within .regent-card__portrait:before{opacity:.22}
-/* With a portrait at the top the red file tab has nothing left to mark, and the
-   initials would be a second, smaller picture of the same person. The card's own
-   flex gap is all the space the eyebrow row needs below the print. */
-.hero__card--photo:after{display:none}
-.hero__card--photo .regent-card__person{grid-template-columns:minmax(0,1fr); gap:0}
-.regent-card__photo[hidden]{display:none}
 .regent-card__head{flex-direction:row; align-items:center; justify-content:space-between; gap:10px}
 .regent-card__eyebrow{font:700 10px "IBM Plex Mono",monospace; letter-spacing:0.1em; text-transform:uppercase; color:var(--red)}
 .regent-card__term{font:600 10.5px "IBM Plex Mono",monospace; letter-spacing:0.03em; color:var(--ink-2); background:var(--paper-2); border:1px solid var(--line); padding:3px 8px; border-radius:999px; white-space:nowrap}
 .regent-card__person{display:grid; grid-template-columns:64px minmax(0,1fr); gap:14px; align-items:center}
 .regent-card__photo{width:64px; height:64px; border-radius:50%; overflow:hidden; background:var(--red); color:white; display:grid; place-items:center; font:600 21px var(--font-display); line-height:1}
-.regent-card__photo img{width:100%; height:100%; object-fit:cover; display:block}
 .regent-card__who{min-width:0}
 .regent-card__who h3{margin:0; font:600 19px/1.2 var(--font-display); letter-spacing:-0.01em; overflow-wrap:anywhere}
 .regent-card__message{margin:6px 0 0; font-size:13.5px; line-height:1.55; color:var(--stone)}
@@ -2728,16 +2810,25 @@ html.cursor-on,html.cursor-on *{cursor:none !important}
           <h3 class="ab-block__title" id="aboutOfficeHeading">Office of the Student Regent</h3>
           <p class="ab-lede" id="aboutOfficeLede">The Office of the Student Regent is the student representation arm within the Bulacan State University Board of Regents.</p>
 
-          <!-- One list, two honest sources: the Student Regent the office has
-               confirmed (STUDENT_REGENT below, or Admin → About OSR) and the
-               staff rows saved in the admin. renderAboutStaff() lists a person
-               only when a real name reaches it — with nobody confirmed the list
-               stays empty and says so, because an invented officer would be
-               worse than no officer at all. -->
-          <div class="ab-staff" id="aboutStaffWrap">
-            <h4 class="ab-staff__title" id="aboutStaffHeading">The Office</h4>
-            <ul class="ab-staff__list" id="aboutStaffGrid" hidden></ul>
-            <p class="ab-staff__empty" id="aboutStaffEmpty">No officers are published yet. The Student Regent and the designated staff of the Office are listed here once their appointments are confirmed.</p>
+          <!-- The archive: the two primary figures of the Office, then the
+               directorate as a strip of narrow cards that open around whichever
+               one the visitor points at. Every record is published from Admin →
+               Leadership; nothing here is written into the page. With no record
+               published the block says so in one line and shows no cards,
+               because an invented officer would be worse than no officer at
+               all. -->
+          <div class="ld" id="leadership">
+            <div class="ld-leaders" id="ldLeaders" hidden></div>
+
+            <div class="ld-board" id="ldBoard" hidden>
+              <div class="ld-board__head">
+                <h4 class="ld-board__title" id="ldBoardTitle">The Directorate</h4>
+                <p class="ld-board__note" id="ldBoardNote">Point at a card to open it · click for the full record</p>
+              </div>
+              <div class="ld-strip" id="ldStrip"></div>
+            </div>
+
+            <p class="ld-empty" id="ldEmpty" hidden>No leadership records are published yet. The Student Regent, the Executive Director and the directorate appear here once the Office has confirmed them.</p>
           </div>
         </section>
 
@@ -3316,7 +3407,6 @@ const PRIVACY_RETENTION = "";
    supplies the name and photo automatically once they are saved there. */
 const STUDENT_REGENT = {
   name: "",                  // full name, e.g. "Juan D. Dela Cruz"
-  photo: "",                 // /uploads/… or an https:// image; falls back to initials
   term: "AY 2026–2027",
   message: "",               // one line, in the Regent's own words
   askHref: "#help"           // "Ask the Regent" opens the concern form on Get Help
@@ -4594,87 +4684,217 @@ const safePhoto = src => {
   return /^https:\/\/\S+$/i.test(link) ? link : "";
 };
 
-/* About page · "The Office" — one list of the people actually designated to it.
-   Two sources, one list: the Student Regent the office has confirmed (from
-   STUDENT_REGENT below or from Admin → About OSR) and the staff rows saved in
-   the admin, in the order the admin left them. A person is listed only when a
-   real name reaches this function, so nothing invented can appear; with nobody
-   confirmed the list stays empty and the empty state says so in plain words.
-   The Regent is not listed twice when the office has also typed them into the
-   staff list. */
-function renderAboutStaff(overrides){
-  const list=document.getElementById("aboutStaffGrid");
-  const empty=document.getElementById("aboutStaffEmpty");
-  if(!list) return;
-  const data=overrides||{};
-  const heading=document.getElementById("aboutStaffHeading");
-  if(heading){ const text=confirmedText(data.heading); if(text) heading.textContent=text; }
+/* About page · the leadership archive. Two primary figures and a directorate of
+   up to eight, every one of them a record published from Admin → Leadership:
+   this file holds no names, no faces and no ordering of its own, so the page
+   cannot disagree with the dashboard that edits it.
 
-  const regent=Object.assign({}, STUDENT_REGENT, data.regent||{});
-  const rows=(Array.isArray(data.rows)?data.rows:[]).map(row=>({
-    name: confirmedText(row && row.name),
-    role: confirmedText(row && row.role),
-    note: confirmedText(row && row.note),
-    photo: safePhoto(row && row.photo)
-  })).filter(person=>person.name);
+   A record is drawn only when a real name reaches it, and with nothing
+   published the block says so in one line rather than showing empty cards.
 
-  const people=[];
-  const regentName=confirmedText(regent.name);
-  const regentListed=rows.some(person=>/student regent/i.test(person.role));
-  if(regentName && !regentListed){
-    people.push({ name:regentName, role:"Student Regent", note:confirmedText(regent.term), photo:safePhoto(regent.photo) });
-  }
-  people.push(...rows);
+   Two states, not three. A card is compact or it is open, and one is always
+   open, so the row is never a wall of blur. What a card opens *into* is the
+   site's own modal — the record — which means reading a person never navigates
+   away from the archive. */
+let LEADERSHIP = [];
+let ldOpenId = "";
 
-  list.textContent="";
-  people.forEach(person=>{
-    const item=document.createElement("li");
-    item.className="ab-person";
-    if(person.photo){
-      item.classList.add("ab-person--photo");
-      const img=document.createElement("img");
-      img.className="ab-person__photo"; img.src=person.photo; img.alt=""; img.loading="lazy";
-      item.appendChild(img);
-    }
-    const body=document.createElement("div");
-    const name=document.createElement("b");
-    name.textContent=person.name;
-    body.appendChild(name);
-    if(person.role){
-      const role=document.createElement("span");
-      role.className="ab-person__role"; role.textContent=person.role;
-      body.appendChild(role);
-    }
-    if(person.note){
-      const note=document.createElement("span");
-      note.className="ab-person__note"; note.textContent=person.note;
-      body.appendChild(note);
-    }
-    item.appendChild(body);
-    list.appendChild(item);
+const ldEsc = value => escapeHtml(String(value == null ? "" : value));
+/* A list field arrives as an array over the API and as newline-separated text
+   from a static host; either way a saved bullet or a typed number is the
+   office's shorthand, not something to print twice. */
+const ldLines = value => (Array.isArray(value) ? value : String(value || "").split("\n"))
+  .map(line => String(line).replace(/^\s*(?:[-•*]|\d+[.)])\s*/, "").trim())
+  .filter(Boolean);
+const ldFirstCardId = () => {
+  const strip=document.getElementById("ldStrip");
+  const first=strip && strip.querySelector(".ld-card");
+  return first ? String(first.dataset.id) : "";
+};
+/* A portrait when the office has filed one; otherwise the archive's own plate —
+   a bust in light on ink under the same wash, with the number over it. It is a
+   plate about a person, never a pretend face, and it clears on hover exactly
+   like a photograph does so the interaction survives an empty photo field. */
+const ldMedia = profile => {
+  const src=safePhoto(profile.photo);
+  return `<span class="ld-media" aria-hidden="true">${
+    src ? `<img src="${ldEsc(src)}" alt="" loading="lazy" decoding="async">`
+        : `<span class="ld-plate"></span>`
+  }</span>`;
+};
+/* The one control a card has, laid over the whole of it: the keyboard's target
+   and the mouse's target are the same rectangle. */
+const ldHit = row => `<button class="ld-hit" type="button" data-record="${ldEsc(row.id)}" aria-label="${ldEsc(
+  `Open the record of ${row.name}${row.position ? ", " + row.position : ""}`)}">Open the record</button>`;
+
+const ldLeaderCard = row => `<article class="ld-leader" data-id="${ldEsc(row.id)}">
+  ${ldMedia(row)}
+  <div class="ld-leader__body">
+    ${row.display_number ? `<span class="ld-leader__num">${ldEsc(row.display_number)}</span>` : ""}
+    <h4 class="ld-leader__name">${ldEsc(row.name)}</h4>
+    ${row.position ? `<p class="ld-leader__role">${ldEsc(row.position)}</p>` : ""}
+    ${row.short_bio ? `<p class="ld-leader__bio">${ldEsc(row.short_bio)}</p>` : ""}
+    <span class="ld-leader__cue" aria-hidden="true">Open the record &rarr;</span>
+  </div>
+  ${ldHit(row)}
+</article>`;
+
+const ldStripCard = row => `<article class="ld-card" data-id="${ldEsc(row.id)}">
+  ${ldMedia(row)}
+  ${row.display_number ? `<span class="ld-card__num" aria-hidden="true">${ldEsc(row.display_number)}</span>` : ""}
+  <div class="ld-card__body">
+    <h5 class="ld-card__name">${ldEsc(row.name)}</h5>
+    ${row.position ? `<p class="ld-card__role">${ldEsc(row.position)}</p>` : ""}
+    ${row.short_bio ? `<p class="ld-card__bio">${ldEsc(row.short_bio)}</p>` : ""}
+    <span class="ld-card__cue" aria-hidden="true">Open the record &rarr;</span>
+  </div>
+  ${ldHit(row)}
+</article>`;
+
+function ldSetActive(id){
+  ldOpenId=String(id||"");
+  const strip=document.getElementById("ldStrip");
+  if(!strip) return;
+  strip.classList.toggle("is-open", Boolean(ldOpenId));
+  strip.querySelectorAll(".ld-card").forEach(card=>{
+    card.classList.toggle("is-active", String(card.dataset.id)===ldOpenId);
   });
-  list.hidden=!people.length;
-  if(empty) empty.hidden=Boolean(people.length);
 }
-window.renderAboutStaff = renderAboutStaff;
+
+function renderLeadership(){
+  const wrap=document.getElementById("leadership");
+  if(!wrap) return;
+  const leadersBox=document.getElementById("ldLeaders");
+  const board=document.getElementById("ldBoard");
+  const strip=document.getElementById("ldStrip");
+  const empty=document.getElementById("ldEmpty");
+
+  const rows=(Array.isArray(LEADERSHIP)?LEADERSHIP:[]).filter(row=>row && confirmedText(row.name)).map(row=>Object.assign({}, row, {
+    name: confirmedText(row.name),
+    position: confirmedText(row.position),
+    short_bio: confirmedText(row.short_bio),
+    display_number: confirmedText(row.display_number)
+  }));
+  const leaders=rows.filter(row=>row.category==="primary");
+  const directors=rows.filter(row=>row.category!=="primary");
+
+  if(leadersBox){
+    leadersBox.innerHTML=leaders.map(ldLeaderCard).join("");
+    leadersBox.hidden=!leaders.length;
+  }
+  if(board && strip){
+    board.hidden=!directors.length;
+    strip.innerHTML=directors.map(ldStripCard).join("");
+    // Whoever was open stays open across a re-render; otherwise the first
+    // record is, because a strip with nothing selected is only blur.
+    ldSetActive(directors.some(row=>String(row.id)===ldOpenId) ? ldOpenId : ldFirstCardId());
+  }
+  if(empty) empty.hidden=Boolean(leaders.length || directors.length);
+}
+
+/* The full record: portrait, quotation, the biography, and the three lists the
+   office keeps about the person. Empty fields are simply not drawn, so a record
+   with only a name and a photograph is a short record rather than a page of
+   blanks. */
+function openLeadershipRecord(id){
+  const row=(Array.isArray(LEADERSHIP)?LEADERSHIP:[]).find(item=>item && String(item.id)===String(id));
+  if(!row) return;
+  const name=confirmedText(row.name);
+  if(!name) return;
+  const primary=row.category==="primary";
+  const number=confirmedText(row.display_number);
+  const position=confirmedText(row.position);
+  const quote=confirmedText(row.quote);
+  const bio=confirmedText(row.biography);
+  const officeTitle=confirmedText((document.getElementById("aboutOfficeHeading")||{}).textContent) || "The Office";
+  const boardTitle=confirmedText((document.getElementById("ldBoardTitle")||{}).textContent) || "The Directorate";
+
+  const section=(label, items)=> items.length
+    ? `<div class="ld-rec__sec"><span class="ld-rec__label">${ldEsc(label)}</span><ul class="ld-rec__list">${
+        items.map(item=>`<li>${ldEsc(item)}</li>`).join("")}</ul></div>`
+    : "";
+  const links=[["Facebook", row.facebook], ["Instagram", row.instagram], ["Email", row.email ? "mailto:"+String(row.email).trim() : ""]]
+    .map(pair=>({ label:pair[0], href:String(pair[1]||"").trim() }))
+    .filter(link=>link.href && isRealHref(link.href));
+
+  openModal({
+    eyebrow: [number, primary ? officeTitle : boardTitle].filter(Boolean).join(" · "),
+    title: name,
+    meta: position,
+    body: `<div class="ld-rec">
+      <div class="ld-rec__media">${ldMedia(row)}${number ? `<span class="ld-rec__num">${ldEsc(number)}</span>` : ""}</div>
+      ${quote ? `<blockquote class="ld-rec__quote">${ldEsc(quote)}</blockquote>` : ""}
+      ${bio ? `<p class="ld-rec__bio">${ldEsc(bio)}</p>` : ""}
+      ${section("Responsibilities", ldLines(row.responsibilities))}
+      ${section("Previous positions", ldLines(row.previous_positions))}
+      ${section("Projects & initiatives", ldLines(row.projects))}
+      ${links.length ? `<p class="ld-rec__links">${links.map(link=>`<a href="${ldEsc(link.href)}"${
+        /^https?:/i.test(link.href) ? ' target="_blank" rel="noopener noreferrer"' : ""}>${ldEsc(link.label)}</a>`).join("")}</p>` : ""}
+    </div>`
+  });
+}
+
+function bindLeadership(){
+  const wrap=document.getElementById("leadership");
+  if(!wrap || wrap.dataset.bound) return;
+  wrap.dataset.bound="1";
+  const strip=document.getElementById("ldStrip");
+  // A device with no hover has no preview state, so the first tap does the
+  // previewing and the second opens the record.
+  const coarse=()=>Boolean(window.matchMedia && window.matchMedia("(hover:none)").matches);
+  const cardOf=event=>{
+    const node=event.target;
+    return node && node.closest ? node.closest(".ld-card") : null;
+  };
+
+  wrap.addEventListener("pointerover", event=>{
+    if(coarse()) return;
+    const card=cardOf(event);
+    if(card) ldSetActive(card.dataset.id);
+  });
+  wrap.addEventListener("focusin", event=>{
+    const card=cardOf(event);
+    if(card) ldSetActive(card.dataset.id);
+  });
+  if(strip) strip.addEventListener("pointerleave", ()=>{
+    if(!coarse()) ldSetActive(ldFirstCardId());
+  });
+  wrap.addEventListener("click", event=>{
+    const hit=event.target && event.target.closest ? event.target.closest("[data-record]") : null;
+    if(!hit) return;
+    const id=String(hit.dataset.record||"");
+    if(hit.closest(".ld-card") && coarse() && id!==ldOpenId){ ldSetActive(id); return; }
+    openLeadershipRecord(id);
+  });
+}
+window.LEADERSHIP = LEADERSHIP;
+window.renderLeadership = renderLeadership;
+window.openLeadershipRecord = openLeadershipRecord;
+/* The dashboard hands over the published records; the page decides how to draw
+   them, so the static build and the API-backed one behave identically. */
+window.applyLeadership = function(rows){
+  LEADERSHIP = Array.isArray(rows) ? rows : [];
+  window.LEADERSHIP = LEADERSHIP;
+  renderLeadership();
+};
 
 function regentInitials(name){
   return String(name).trim().split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join("") || "SR";
 }
 /* Shows the homepage Student Regent card only when there is a real person to
-   show. `overrides` lets the CMS hand over the name and photo it saved in
-   Admin → About OSR without a redeploy. */
+   show. `overrides` lets the CMS hand over the name, term and message it saved
+   in Admin → About OSR without a redeploy. The card carries initials rather than
+   a portrait: the Regent's photograph belongs to the leadership archive on
+   About, where it is one of ten records instead of the only face on the
+   homepage. */
 function renderStudentRegent(overrides){
   const card=document.getElementById("regentCard");
   if(!card) return;
   const data=Object.assign({}, STUDENT_REGENT, overrides||{});
   const name=confirmedText(data.name), message=confirmedText(data.message);
-  const src=safePhoto(data.photo);
   /* A confirmed name is what makes this a person rather than a placeholder. The
-     photograph and the line in the Regent's own words are each shown only when
-     the office has supplied one, so the card can carry a portrait with no
-     quotation, or a quotation with no portrait — but never an empty frame, and
-     never both pictures of the same face at once. */
+     line in the Regent's own words is shown only when the office has supplied
+     one, so the card never carries an empty quotation. */
   if(!name){
     card.hidden=true;
     document.querySelector(".hero")?.classList.add("hero--solo");
@@ -4685,19 +4905,8 @@ function renderStudentRegent(overrides){
   if(line){ line.textContent=message||""; line.hidden=!message; }
   const term=document.getElementById("regentTerm");
   if(term){ term.textContent=data.term||""; term.hidden=!data.term; }
-  const portrait=document.getElementById("regentPortrait");
-  if(portrait){
-    portrait.hidden=!src;
-    const img=document.getElementById("regentPortraitImg");
-    // Decorative: the name it belongs to is printed directly underneath it.
-    if(img && src) img.src=src;
-  }
   const avatar=document.getElementById("regentPhoto");
-  if(avatar){
-    avatar.hidden=Boolean(src);
-    avatar.textContent=src ? "" : regentInitials(name);
-  }
-  card.classList.toggle("hero__card--photo", Boolean(src));
+  if(avatar) avatar.textContent=regentInitials(name);
   const ask=card.querySelector('a[href="#help"]');
   if(ask && data.askHref) ask.setAttribute("href", data.askHref);
   card.hidden=false;
@@ -4713,7 +4922,7 @@ window.applyOfficialLinks = applyOfficialLinks;
 window.renderFooterOffice = renderFooterOffice;
 window.applyPrivacyRetention = applyPrivacyRetention;
 
-renderHomeAnnouncements(); renderAnnouncements(); renderBoard(); renderInitiatives(); renderResources(); renderSearch(); setRoute(location.hash||"#home"); updateSavedCounts(); updateUpNext(); bindHomeAnnFilters(); onScroll(); applyOfficialLinks(); renderFooterOffice(); applyPrivacyRetention(); renderStudentRegent(); renderAboutStaff();
+renderHomeAnnouncements(); renderAnnouncements(); renderBoard(); renderInitiatives(); renderResources(); renderSearch(); setRoute(location.hash||"#home"); updateSavedCounts(); updateUpNext(); bindHomeAnnFilters(); onScroll(); applyOfficialLinks(); renderFooterOffice(); applyPrivacyRetention(); renderStudentRegent(); bindLeadership(); renderLeadership();
 
 window.ANNOUNCEMENTS = ANNOUNCEMENTS;
 window.BOARD_MEETINGS = BOARD_MEETINGS;

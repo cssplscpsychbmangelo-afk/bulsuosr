@@ -60,17 +60,17 @@ test('About OSR page content is editable by any administrator and readable by th
         ],
         office_heading: 'Office of the Student Regent',
         office_lede: 'The student representation arm within the Board of Regents.',
-        staff_heading: 'The Office',
-        staff: [
-          { name: 'Maria S. Santos', role: 'Executive Director', note: 'Records, consultations and concern intake.', photo: '/uploads/maria.jpg' },
-          { name: '' },
-          { role: 'A row with no name is not a person' }
-        ],
+        directorate_heading: 'The Directorate',
         sr_name: 'Juan D. Dela Cruz',
         sr_meta: 'AY 2026-2027',
         sr_note: 'Every student concern reaches the Board through this Office.',
         // Sections the page no longer has. They are ignored rather than stored,
-        // so an old document shrinks to the new page on its next save.
+        // so an old document shrinks to the new page on its next save. The staff
+        // list and the Regent's photograph joined them when the people moved into
+        // the leadership archive, which is its own table rather than a key here.
+        staff: [{ name: 'Maria S. Santos', role: 'Executive Director', photo: '/uploads/maria.jpg' }],
+        staff_heading: 'The Office',
+        sr_photo: '/uploads/regent.jpg',
         badge: 'Easy to update',
         vision: 'Bulacan State University is a progressive knowledge-generating institution.',
         values: ['Service to God & Community'],
@@ -87,11 +87,10 @@ test('About OSR page content is editable by any administrator and readable by th
       assert.equal(stored.title, 'About the Office of the Student Regent');
       assert.equal(stored.mandate_lede, 'The Office of the Student Regent serves as the formal student representation of Bulacan State University in the Board of Regents.');
       assert.equal(stored.mandate_items.length, 3, 'the mandate stays a short list');
-      assert.equal(stored.staff.length, 1, 'a row with nothing typed, or with no name, is dropped');
-      assert.equal(stored.staff[0].note, 'Records, consultations and concern intake.');
+      assert.equal(stored.directorate_heading, 'The Directorate', 'the title above the archive is editable copy');
       assert.equal(stored.sr_name, 'Juan D. Dela Cruz');
       assert.equal(stored.sr_note, 'Every student concern reaches the Board through this Office.');
-      for (const gone of ['badge', 'vision', 'values', 'featured', 'info', 'links', 'unknown_key']) {
+      for (const gone of ['staff', 'staff_heading', 'sr_photo', 'badge', 'vision', 'values', 'featured', 'info', 'links', 'unknown_key']) {
         assert.equal(stored[gone], undefined, `"${gone}" belongs to a section the page no longer has, so it is never stored`);
       }
 
@@ -112,9 +111,8 @@ test('About OSR page content is editable by any administrator and readable by th
         { mandate_lede: 42 },
         { mandate_items: 42 },
         { mandate_items: Array.from({ length: 12 }, (_, index) => `Point ${index}`) },
-        { staff: { name: 'Not a list' } },
-        { staff: [{ name: 'X', photo: 'javascript:alert(1)' }] },
-        { sr_photo: '//evil.example/x.png' }
+        { directorate_heading: 'x'.repeat(400) },
+        { office_lede: 42 }
       ];
       for (const payload of rejections) {
         const rejected = await call('/api/about', 'PATCH', payload, cookie);
@@ -137,8 +135,7 @@ test('public About page exposes the hooks the CMS patches', async () => {
   const sitePath = new URL('../../osr-website/index.html', import.meta.url).pathname;
   const html = await fs.readFile(sitePath, 'utf8');
   for (const id of ['about-title', 'aboutEyebrow', 'aboutIntro', 'aboutMandateHeading', 'aboutMandateLede',
-    'aboutMandateList', 'aboutOfficeHeading', 'aboutOfficeLede', 'aboutStaffHeading', 'aboutStaffGrid',
-    'aboutStaffEmpty']) {
+    'aboutMandateList', 'aboutOfficeHeading', 'aboutOfficeLede', 'ldBoardTitle']) {
     assert.ok(html.includes(`id="${id}"`), `the public About page must keep #${id} for CMS updates`);
   }
   assert.match(html, /About the Office of the Student Regent/, 'the built-in wording stays as the fallback');
@@ -146,7 +143,9 @@ test('public About page exposes the hooks the CMS patches', async () => {
   const integration = await fs.readFile(new URL('../../osr-website/js/cms-integration.js', import.meta.url).pathname, 'utf8');
   assert.match(integration, /function applyAboutContent/, 'the integration must apply the saved About content');
   assert.match(integration, /api\/about\/public/, 'the integration must read the public About endpoint');
-  assert.match(integration, /window\.renderAboutStaff/, 'the integration hands the saved people to the page\'s own list');
+  assert.match(integration, /aboutText\('ldBoardTitle', a\.directorate_heading\)/, 'the title above the archive is applied from the saved document');
+  assert.match(integration, /window\.applyLeadership/, 'the people themselves arrive as records, from their own endpoint');
+  assert.match(integration, /fetchPublic\('leadership'/, 'which the integration fetches with the rest of the page');
 });
 
 // The page answers three questions. Everything the old page carried on top of
@@ -165,11 +164,11 @@ test('the About page is the mandate, the Office and the university, and nothing 
   }
   assert.ok(!html.includes('data-about-jump'), 'a three-section page needs no jump bar');
 
-  // No officer is invented: with nothing confirmed the list says so plainly.
-  assert.match(html, /id="aboutStaffGrid" hidden/, 'the list starts empty');
-  assert.match(html, /id="aboutStaffEmpty">No officers are published yet/, 'and the empty state names the cause');
-  assert.match(html, /function renderAboutStaff\(/, 'one function decides who is confirmed enough to list');
-  assert.match(html, /window\.renderAboutStaff = renderAboutStaff;/, 'so the CMS can hand it the saved rows');
+  // The second block is the leadership archive, and no officer is invented: with
+  // no record published the block says so plainly instead of showing empty cards.
+  assert.match(html, /id="leadership"/, 'the archive is one block of the Office section');
+  assert.match(html, /id="ldEmpty" hidden>No leadership records are published yet/, 'and its empty state names the cause');
+  assert.ok(!html.includes('renderAboutStaff'), 'the staff list the archive replaced is gone, not hidden');
   assert.match(html, /ABOUT_UNCONFIRMED/, 'the wording that counts as "not yet" is written down, not guessed at');
 });
 
@@ -177,54 +176,45 @@ test('the About page is the mandate, the Office and the university, and nothing 
 // no field for anything the page stopped printing.
 test('the admin About editor offers only what the page renders', async () => {
   const admin = await fs.readFile(new URL('../../admin/index.html', import.meta.url).pathname, 'utf8');
-  const panes = admin.slice(admin.indexOf('const ABOUT_SECTIONS'), admin.indexOf('const ABOUT_ROW_EDITORS'));
+  const panes = admin.slice(admin.indexOf('const ABOUT_SECTIONS'), admin.indexOf('const ABOUT_LINE_FIELDS'));
   for (const key of ['eyebrow', 'title', 'intro', 'mandate_heading', 'mandate_lede', 'mandate_items',
-    'office_heading', 'office_lede', 'staff_heading', 'sr_name', 'sr_meta', 'sr_photo', 'sr_note']) {
+    'office_heading', 'office_lede', 'directorate_heading', 'sr_name', 'sr_meta', 'sr_note']) {
     assert.match(panes, new RegExp(`'${key}'`), `the editor must still offer ${key}`);
   }
-  for (const gone of ['badge', 'office_p1', 'office_p2', 'mandate_note', 'sr_heading', 'sr_label', 'staff_intro',
-    'dir_heading', 'dir_exec_name', 'dir_names', 'college_rows', 'vision', 'mission', 'values', 'featured_heading',
-    'info_heading', 'contact_heading', 'response_time', 'links_heading']) {
+  for (const gone of ['staff_heading', 'sr_photo', 'badge', 'office_p1', 'office_p2', 'mandate_note', 'sr_heading',
+    'sr_label', 'staff_intro', 'dir_heading', 'dir_exec_name', 'dir_names', 'college_rows', 'vision', 'mission',
+    'values', 'featured_heading', 'info_heading', 'contact_heading', 'response_time', 'links_heading']) {
     assert.doesNotMatch(panes, new RegExp(`'${gone}'`), `${gone} is not rendered, so it must not be editable`);
   }
-  const rows = admin.slice(admin.indexOf('const ABOUT_ROW_EDITORS'), admin.indexOf('const ABOUT_LINE_FIELDS'));
-  assert.match(rows, /\['name', 'Full name \*'\]/, 'a person is listed by name');
-  assert.match(rows, /\['note', 'Short description \(optional\)', 'textarea'\]/);
-  assert.doesNotMatch(rows, /'unit'|'email'/, 'the Office list is a name, a position, a photo and one line');
   assert.match(admin, /const ABOUT_LINE_FIELDS = \['mandate_items'\];/, 'the mandate is the only line list left');
+  // The people are edited in their own tab, so this one holds no row machinery at
+  // all — an editor for a list the page no longer prints would only invite data
+  // that can never be shown.
+  for (const gone of ['ABOUT_ROW_EDITORS', 'aboutRowHTML', 'collectAboutRows', 'validateAboutData']) {
+    assert.ok(!admin.includes(gone), `${gone} belonged to the staff list`);
+  }
+  assert.match(admin, /data-tab="leadership"/, 'and the records have a tab of their own');
 });
 
 test('About content sanitizer trims, caps and normalizes what the office types', () => {
   const result = sanitizeAboutContent({
     title: '  About the Office of the Student Regent  ',
     mandate_items: '- First bullet\n• Second bullet\n\n   ',
-    staff: [{ name: ' Ana Reyes ', role: 'Executive Director', note: '   ', photo: '' }, { name: '' }]
+    directorate_heading: '  The Directorate  '
   });
   assert.equal(result.error, undefined);
   assert.equal(result.content.title, 'About the Office of the Student Regent', 'surrounding spaces are trimmed');
   assert.deepEqual(result.content.mandate_items, ['First bullet', 'Second bullet'], 'bullet markers are stripped');
-  assert.deepEqual(result.content.staff, [{ name: 'Ana Reyes', role: 'Executive Director', note: '', photo: '' }],
-    'a row with nothing typed is dropped');
+  assert.equal(result.content.directorate_heading, 'The Directorate');
 
   assert.match(sanitizeAboutContent('nope').error, /object/);
   assert.match(sanitizeAboutContent({ sr_name: 'x'.repeat(400) }).error, /too long/);
   assert.match(sanitizeAboutContent({ mandate_items: Array.from({ length: 20 }, (_, i) => `Bullet ${i}`) }).error, /at most 8 lines/);
-  assert.match(sanitizeAboutContent({ staff: Array.from({ length: 30 }, (_, i) => ({ name: `Person ${i}` })) }).error, /at most 24 rows/);
-});
-
-test('About staff list accepts real people and rejects unsafe photos', () => {
-  const ok = sanitizeAboutContent({
-    staff: [
-      { name: 'Ana Reyes', role: 'Executive Director', note: 'Records and consultations.', photo: '/uploads/a.jpg' },
-      { name: 'Ben Santos', photo: 'https://example.org/ben.png' },
-      { role: 'No name at all' }
-    ]
-  });
-  assert.equal(ok.error, undefined);
-  assert.equal(ok.content.staff.length, 2, 'a row with no name is not a person, so it is dropped');
-  assert.match(sanitizeAboutContent({ staff: [{ name: 'X', photo: 'javascript:alert(1)' }] }).error, /https/);
-  assert.match(sanitizeAboutContent({ staff: [{ name: 'X', photo: '//evil.example/x.png' }] }).error, /https/);
-  assert.match(sanitizeAboutContent({ sr_photo: '//evil.example/x.png' }).error, /https/);
+  // Keys the page no longer prints are ignored rather than stored, so an old
+  // document shrinks to the current page on its next save.
+  const shrunk = sanitizeAboutContent({ sr_name: 'Ana Reyes', staff: [{ name: 'X' }], sr_photo: '/uploads/x.jpg' });
+  assert.equal(shrunk.error, undefined);
+  assert.deepEqual(Object.keys(shrunk.content), ['sr_name'], 'the staff list and the portrait are not part of the document any more');
   assert.match(sanitizeAboutContent({ mandate_lede: 'x'.repeat(500) }).error, /too long/);
 });
 

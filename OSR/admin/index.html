@@ -308,29 +308,93 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
 .about-pane__head h3{margin:0;font:600 20px/1.2 'Fraunces',Georgia,serif}
 .about-pane__head p{margin:4px 0 0;color:var(--stone);font-size:12.5px}
 .about-pane__fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.about-pane label,.list-editor__row label{display:grid;gap:6px;color:var(--ink-soft);font-weight:600;font-size:12px;min-width:0}
+.about-pane label{display:grid;gap:6px;color:var(--ink-soft);font-weight:600;font-size:12px;min-width:0}
 .about-pane__fields label:has(textarea),.about-pane__fields label:has(small){grid-column:1/-1}
 .about-pane input,.about-pane textarea,.about-pane select{width:100%;min-height:42px;border:1px solid var(--control);border-radius:8px;background:var(--white);color:var(--ink);padding:9px 12px}
 .about-pane textarea{min-height:92px;resize:vertical}
 .about-pane input:focus,.about-pane textarea:focus,.about-pane select:focus{border-color:var(--red);outline:0;box-shadow:0 0 0 3px rgba(166,25,46,.14)}
 .about-pane small{color:var(--stone);font-size:11px;font-weight:400}
-.about-photo-pick{min-height:36px!important;font-size:12px;color:var(--stone)!important}
-.list-editor{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--paper)}
-.list-editor__head h4{margin:0;display:flex;align-items:center;gap:8px;font:600 12px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.05em;color:var(--red-dark)}
-.list-editor__head .count{font-weight:500;color:var(--stone);background:var(--white);border:1px solid var(--line);border-radius:999px;padding:1px 8px}
-.list-editor__rows{display:grid;gap:10px}
-.list-editor__row{display:grid;gap:10px;padding:12px;border:1px solid var(--line);border-radius:9px;background:var(--white)}
+.photo-pick{min-height:36px!important;font-size:12px;color:var(--stone)!important}
 .row-head{display:flex;align-items:center;gap:10px;min-width:0}
 .row-title{flex:1;min-width:0;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .row-tools{display:flex;gap:2px;flex:none}
 .row-remove{color:var(--red-dark)}
 .row-avatar{width:36px;height:36px;flex:none;border-radius:50%;display:grid;place-items:center;overflow:hidden;background:var(--red-soft);color:var(--red-dark);font:600 13px 'Fraunces',Georgia,serif}
 .row-avatar img{width:100%;height:100%;object-fit:cover}
-.row-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.row-fields .wide{grid-column:1/-1}
-.list-editor__row textarea{min-height:62px}
-.list-editor__add{justify-self:start;border-style:dashed}
-.list-editor__empty{margin:0;padding:14px;border:1px dashed var(--line);border-radius:8px;color:var(--stone);font-size:12.5px;text-align:center;background:var(--white)}
+/* ── Leadership archive ─────────────────────────────────────────────────────
+   The tree of seats, one record pane, and the live preview underneath. The
+   preview is the public archive's own interaction drawn at dashboard scale: a
+   narrow card that opens, a portrait that comes clear, information that arrives
+   a beat after the card has finished moving. */
+.ld-toolbar{display:flex;gap:6px;flex-wrap:wrap}
+.ld-start{display:flex;gap:8px;flex-wrap:wrap}
+.ld-nav-count{float:right;font-weight:500;color:var(--stone)}
+.ld-nav-none{margin:2px 8px 6px;font-size:11.5px;color:var(--stone)}
+.ld-nav-add{width:100%;margin:2px 0 8px;padding:8px 10px;border:1px dashed var(--line);border-radius:8px;background:transparent;color:var(--stone);font:600 11.5px 'IBM Plex Sans',system-ui,sans-serif;text-align:left;cursor:pointer}
+.ld-nav-add:hover{border-color:var(--red);color:var(--red-dark);background:var(--red-soft)}
+.ld-nav-item{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:9px;margin-bottom:3px;padding:6px 8px;border:1px solid transparent;border-radius:8px;background:transparent}
+.ld-nav-item:hover{background:var(--paper)}
+.ld-nav-item.is-active{background:var(--red-soft);border-color:#E7B3BC}
+.ld-nav-item.is-active .row-title,.ld-nav-item.is-active .ld-nav-item__num{color:var(--red-dark)}
+.ld-nav-item__text{min-width:0;display:grid;gap:1px}
+.ld-nav-item__num{font:600 9.5px 'IBM Plex Mono',monospace;letter-spacing:.08em;color:var(--stone);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ld-nav-item .row-title{font-size:12.5px;font-weight:650}
+.ld-nav-item .row-tools{position:relative;z-index:2}
+.ld-nav-item .row-tools .btn{min-width:32px;min-height:32px;padding:0 7px;font-size:12px;line-height:1}
+.ld-nav-item__grip{cursor:grab}
+/* One control stretched over the row: the name is not a button, so the button is
+   laid over it, exactly as the public card does. */
+.ld-nav-item__open{position:absolute;inset:0;z-index:1;margin:0;padding:0;border:0;border-radius:8px;background:none;color:transparent;font:inherit;cursor:pointer}
+.ld-nav-item__open:focus-visible{outline:2px solid var(--red);outline-offset:2px}
+.ld-nav-item.is-dragging{opacity:.4}
+.ld-nav-item.is-drop-before{box-shadow:inset 0 2px 0 var(--red)}
+.ld-nav-item.is-drop-after{box-shadow:inset 0 -2px 0 var(--red)}
+.about-pane textarea[data-ld-lines]{min-height:118px;font:400 12px/1.65 'IBM Plex Mono',monospace}
+
+/* The preview. Same structure and same motion as the public strip, so what the
+   office checks here is what a student gets. */
+.ldp{display:grid;gap:12px;padding:16px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
+.ldp-none{margin:0;padding:18px 0;font-size:12.5px;color:var(--stone);text-align:center}
+.ldp-leaders{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ldp-strip{display:flex;gap:5px;height:210px}
+.ldp-leader,.ldp-card{position:relative;isolation:isolate;overflow:hidden;background:#111214;border:1px solid var(--line)}
+.ldp-leader{aspect-ratio:16/9;border-radius:6px}
+.ldp-card{flex:1 1 0;min-width:0;border-radius:4px;transition:flex-grow .5s cubic-bezier(.16,1,.3,1)}
+.ldp-media{position:absolute;inset:0;overflow:hidden;transform:scale(1.08);filter:grayscale(1) contrast(1.05) brightness(.58) blur(3px);transition:filter .5s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.ldp-media img{width:100%;height:100%;object-fit:cover;object-position:50% 24%;display:block}
+.ldp-media:after{content:"";position:absolute;inset:0;opacity:.46;background:linear-gradient(155deg,#A6192E 0%,#6E0F1F 58%,#111214 100%);mix-blend-mode:color;transition:opacity .6s cubic-bezier(.16,1,.3,1)}
+.ldp-plate{position:absolute;inset:0;background:
+  repeating-linear-gradient(135deg,rgba(255,255,255,.035) 0 1px,rgba(255,255,255,0) 1px 5px),
+  radial-gradient(44% 27% at 50% 30%,rgba(255,255,255,.19) 0 99%,rgba(255,255,255,0) 100%),
+  radial-gradient(88% 52% at 50% 118%,rgba(255,255,255,.15) 0 99%,rgba(255,255,255,0) 100%),
+  linear-gradient(168deg,#24272C 0%,#15171B 58%,#111214 100%)}
+.ldp-body{position:absolute;z-index:3;left:0;right:0;bottom:0;padding:11px;color:#fff;background:linear-gradient(180deg,rgba(17,18,20,0) 0%,rgba(17,18,20,.45) 50%,rgba(17,18,20,.94) 100%)}
+.ldp-num{display:block;font:600 9.5px 'IBM Plex Mono',monospace;letter-spacing:.14em;color:#FFC9D1}
+.ldp-name{display:block;margin:4px 0 0;font:700 15px/1.12 'Fraunces',Georgia,serif;color:#fff;white-space:nowrap;overflow:hidden;transition:font-size .45s cubic-bezier(.16,1,.3,1)}
+.ldp-leader .ldp-name{font-size:19px;white-space:normal;overflow-wrap:anywhere}
+.ldp-role{display:block;margin:4px 0 0;font:600 9px 'IBM Plex Mono',monospace;letter-spacing:.09em;text-transform:uppercase;color:#D5CEC7;white-space:nowrap;overflow:hidden;opacity:0;transition:opacity .3s cubic-bezier(.16,1,.3,1)}
+.ldp-bio{display:block;margin:5px 0 0;font-size:11.5px;line-height:1.45;color:#D5CEC7;opacity:0;transform:translateY(5px);transition:opacity .35s cubic-bezier(.16,1,.3,1) .08s,transform .35s cubic-bezier(.16,1,.3,1) .08s}
+.ldp-cue{display:block;margin-top:7px;font:600 9px 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#FFC9D1;opacity:0;transition:opacity .3s cubic-bezier(.16,1,.3,1) .14s}
+.ldp-hit{position:absolute;inset:0;z-index:4;margin:0;padding:0;border:0;background:none;color:transparent;font:inherit;cursor:pointer}
+.ldp-hit:focus-visible{outline:2px solid #FFC9D1;outline-offset:-3px}
+.ldp-card.is-active{flex-grow:4.4;border-color:rgba(166,25,46,.5);box-shadow:inset 0 0 0 1px rgba(166,25,46,.4)}
+.ldp-card.is-active .ldp-name{font-size:17px}
+.ldp-card.is-active .ldp-media,.ldp-leader:hover .ldp-media{transform:scale(1.02);filter:grayscale(.2) contrast(1.04) brightness(.92) blur(0)}
+.ldp-card.is-active .ldp-media:after,.ldp-leader:hover .ldp-media:after{opacity:.16}
+.ldp-card.is-active .ldp-role,.ldp-card.is-active .ldp-bio,.ldp-card.is-active .ldp-cue,
+.ldp-leader:hover .ldp-role,.ldp-leader:hover .ldp-bio,.ldp-leader:hover .ldp-cue{opacity:1;transform:none}
+.ldp-strip.is-open .ldp-card:not(.is-active) .ldp-media{filter:grayscale(1) contrast(1) brightness(.42) blur(4.5px)}
+.ldp-strip.is-open .ldp-card:not(.is-active) .ldp-name{opacity:.6}
+.ldp-leader.is-draft:after,.ldp-card.is-draft:after{content:"HIDDEN";position:absolute;z-index:5;top:7px;right:7px;padding:2px 6px;border:1px solid rgba(255,255,255,.4);border-radius:999px;background:rgba(17,18,20,.7);color:#fff;font:600 8.5px 'IBM Plex Mono',monospace;letter-spacing:.1em}
+@media(max-width:900px){
+  .ldp-leaders{grid-template-columns:minmax(0,1fr)}
+  .ldp-strip{height:auto;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:6px}
+  .ldp-card{flex:0 0 62%;height:200px;scroll-snap-align:center}
+  .ldp-card.is-active{flex-grow:0}
+}
+@media(prefers-reduced-motion:reduce){
+  .ldp-media,.ldp-card,.ldp-name,.ldp-role,.ldp-bio,.ldp-cue,.ldp-media:after{transition-duration:.01ms!important}
+}
 .about-savebar{position:sticky;bottom:12px;z-index:5;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.96);box-shadow:var(--shadow-soft)}
 .about-savebar__state{margin-right:auto;font:500 11px 'IBM Plex Mono',monospace;color:var(--stone)}
 .about-savebar__state.is-dirty{color:var(--amber)}
@@ -342,10 +406,9 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
 }
 @media(max-width:640px){
   .about-pane{padding:16px}
-  .about-pane__fields,.row-fields{grid-template-columns:minmax(0,1fr)}
+  .about-pane__fields{grid-template-columns:minmax(0,1fr)}
   .about-savebar .btn--quiet{display:none}
 }
-.list-editor__empty{color:var(--stone);font-size:11.5px}
 .preview-card{display:grid;gap:9px;border:1px solid var(--line);border-left:4px solid var(--ink);border-radius:10px;background:var(--white);padding:18px}
 .preview-card h3{margin:0 0 4px}
 .preview-card .kv{display:flex;gap:10px;font-size:12.5px;color:var(--ink-soft);border-bottom:1px dashed var(--line);padding-bottom:8px}
@@ -369,7 +432,6 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
   .bulk-bar{top:64px}
   .source-grid{grid-template-columns:1fr}
   .bulk-bar b{width:100%}
-  .list-editor__row{grid-template-columns:1fr}
 }
 
 @media(max-width:1180px){
@@ -697,9 +759,10 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
       <nav class="tabs" id="adminTabs" aria-label="Administration sections">
         <button class="tab" type="button" data-tab="media"><span class="tab-index">08</span><span>Media library</span></button>
         <button class="tab" type="button" data-tab="contact"><span class="tab-index">09</span><span>Contact &amp; details</span></button>
-        <button class="tab" type="button" data-tab="about"><span class="tab-index">10</span><span>About OSR</span></button>
-        <button class="tab" type="button" data-tab="pulse"><span class="tab-index">11</span><span>Pulse data</span></button>
-        <button class="tab" type="button" data-tab="settings"><span class="tab-index">12</span><span>Settings</span></button>
+        <button class="tab" type="button" data-tab="leadership"><span class="tab-index">10</span><span>Leadership</span></button>
+        <button class="tab" type="button" data-tab="about"><span class="tab-index">11</span><span>About OSR</span></button>
+        <button class="tab" type="button" data-tab="pulse"><span class="tab-index">12</span><span>Pulse data</span></button>
+        <button class="tab" type="button" data-tab="settings"><span class="tab-index">13</span><span>Settings</span></button>
       </nav>
 
       <div class="sidebar-note"><b>Publishing note</b>Drafts stay private. Published records appear on the public OSR website.</div>
@@ -720,6 +783,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
         <button class="topbar-nav-link" type="button" data-tab="submissions">Submissions</button>
         <button class="topbar-nav-link" type="button" data-tab="media">Media</button>
         <button class="topbar-nav-link" type="button" data-tab="contact">Contact</button>
+        <button class="topbar-nav-link" type="button" data-tab="leadership">Leadership</button>
         <button class="topbar-nav-link" type="button" data-tab="about">About</button>
         <button class="topbar-nav-link" type="button" data-tab="pulse">Pulse</button>
         <button class="topbar-nav-link" type="button" data-tab="settings">Settings</button>
@@ -767,6 +831,7 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
       <section id="tab-submissions" class="section" aria-label="Organization submissions"></section>
       <section id="tab-media" class="section" aria-label="Media library"></section>
       <section id="tab-contact" class="section" aria-label="Contact details"></section>
+      <section id="tab-leadership" class="section" aria-label="Leadership archive"></section>
       <section id="tab-about" class="section" aria-label="About OSR page"></section>
       <section id="tab-pulse" class="section" aria-label="BulSU Pulse data"></section>
       <section id="tab-settings" class="section" aria-label="Settings"></section>
@@ -1098,9 +1163,10 @@ const pageMeta = {
   submissions: ['Students', 'Organization submissions', 'Positions, resolutions, requests and statements filed by student councils and organizations, with the signed document each one carries.', '', ''],
   media: ['Administration 08', 'Media library', 'Manage uploaded files and externally hosted images.', 'Add media', 'media'],
   contact: ['Administration 09', 'Contact & details', 'Control the email, phone, office and social details shown on the public site.', '', ''],
-  about: ['Administration 10', 'About OSR', 'Update the public About page: the mandate, the Office and the people designated to it, and the Student Regent shown on the homepage.', '', ''],
-  pulse: ['Administration 11', 'Pulse data', 'Examine every BulSU Pulse period by date, then wipe what should be removed.', '', ''],
-  settings: ['Administration 12', 'Settings', 'Manage your account, site information, and administrator access.', '', '']
+  leadership: ['Administration 10', 'Leadership', 'The archive on the public About page: two primary figures and a directorate of eight, each one written, ordered and published here.', 'Add a record', 'leadership'],
+  about: ['Administration 11', 'About OSR', 'Update the wording of the public About page: the mandate, the Office block, and the Student Regent shown on the homepage.', '', ''],
+  pulse: ['Administration 12', 'Pulse data', 'Examine every BulSU Pulse period by date, then wipe what should be removed.', '', ''],
+  settings: ['Administration 13', 'Settings', 'Manage your account, site information, and administrator access.', '', '']
 };
 
 let currentTab = 'overview';
@@ -1465,6 +1531,7 @@ async function renderTab(tab) {
   if (tab === 'media') return renderMedia();
   if (tab === 'activity') return renderActivity();
   if (tab === 'contact') return renderContact();
+  if (tab === 'leadership') return renderLeadershipAdmin();
   if (tab === 'about') return renderAbout();
   if (tab === 'pulse') return renderPulseData();
   if (tab === 'concerns') return renderConcerns();
@@ -2222,11 +2289,16 @@ async function renderContact() {
 
 /* ── About OSR page ──────────────────────────────────────────────────────────
    The public About page is an office profile in three parts — the mandate, the
-   Office and the people designated to it, and a compact reference to Bulacan
-   State University. This editor holds one pane per part and nothing else: a
-   field left empty keeps the wording built into the website, and no field here
-   asks for something the page does not print. The Student Regent pane stays
-   because the same person is shown on the card beside the homepage masthead. */
+   Office, and a compact reference to Bulacan State University. This editor holds
+   the wording of those parts and nothing else: a field left empty keeps the
+   wording built into the website, and no field here asks for something the page
+   does not print. The Student Regent pane stays because the same person is shown
+   on the card beside the homepage masthead.
+
+   The people themselves are not edited here. The second block of the page is the
+   leadership archive, and its records — names, portraits, biographies, order,
+   publication — are written in Admin → Leadership. What this tab holds is the
+   title printed above that archive. */
 const ABOUT_SECTIONS = [
   { id: 'header', title: 'About / intro', hint: 'Title band at the top of the page', fields: [
     ['eyebrow', 'Small label above the title'],
@@ -2238,93 +2310,43 @@ const ABOUT_SECTIONS = [
     ['mandate_lede', 'Mandate description', 'textarea'],
     ['mandate_items', 'What the Office does — one per line', 'textarea']
   ] },
-  { id: 'office', title: 'The Office', hint: 'The Office, and who is designated to it', fields: [
+  { id: 'office', title: 'The Office', hint: 'The block the leadership archive sits in', fields: [
     ['office_heading', 'Heading'],
     ['office_lede', 'Short description', 'textarea'],
-    ['staff_heading', 'Heading above the list of people']
-  ], list: 'staff' },
+    ['directorate_heading', 'Heading above the directorate']
+  ] },
   { id: 'regent', title: 'Student Regent', hint: 'Also shown on the homepage card', fields: [
     ['sr_name', 'Full name'],
     ['sr_meta', 'Term line'],
-    ['sr_photo', 'Photo (optional)', 'photo'],
     ['sr_note', 'One-line message from the Regent (homepage card)', 'textarea']
   ] }
 ];
 
-const ABOUT_ROW_EDITORS = [
-  { key: 'staff', label: 'The Office', item: 'person', reorder: true, columns: [['name', 'Full name *'], ['role', 'Position'], ['note', 'Short description (optional)', 'textarea'], ['photo', 'Photo (optional)', 'photo']] }
-];
-
+// One-item-per-line fields, stored as an array and edited as a paragraph.
 const ABOUT_LINE_FIELDS = ['mandate_items'];
-let aboutMediaImages = [];
 
-function aboutPhotoPicker(name, attr) {
-  if (!aboutMediaImages.length) return '';
-  return `<select class="about-photo-pick" ${attr}="${name}" aria-label="Pick an uploaded photo"><option value="">Pick from media library…</option>${aboutMediaImages.map(item => `<option value="${esc(item.url)}">${esc(item.title || item.original_name || item.url)}</option>`).join('')}</select>`;
+/* The Media library's images, offered as a picker wherever a photograph can be
+   filed. The Leadership tab loads it too: a portrait is uploaded there, not
+   pasted in by hand. */
+let photoLibrary = [];
+
+async function loadPhotoLibrary() {
+  try {
+    const media = await api('/api/media');
+    photoLibrary = (Array.isArray(media) ? media : []).filter(item => item.url && (item.file_type || '').startsWith('image/'));
+  } catch { photoLibrary = []; } // a picker that will not load is no reason to lose the editor
+  return photoLibrary;
+}
+
+function photoPickerHTML(name, attr) {
+  if (!photoLibrary.length) return '';
+  return `<select class="photo-pick" ${attr}="${name}" aria-label="Pick an uploaded photo"><option value="">Pick from media library…</option>${photoLibrary.map(item => `<option value="${esc(item.url)}">${esc(item.title || item.original_name || item.url)}</option>`).join('')}</select>`;
 }
 
 function aboutFieldHTML([key, label, type], values) {
   const value = esc(values[key] || '');
   if (type === 'textarea') return `<label>${esc(label)}<textarea name="${key}" rows="3">${value}</textarea></label>`;
-  if (type === 'photo') return `<label>${esc(label)}<input name="${key}" value="${value}" placeholder="https://… or /uploads/…"><small>Paste an https:// image link, or pick a file you uploaded in the Media library.</small>${aboutPhotoPicker(key, 'data-pick-name')}</label>`;
   return `<label>${esc(label)}<input name="${key}" type="text" value="${value}"></label>`;
-}
-
-function aboutInitialsAdmin(name) {
-  const words = String(name || '').split(/\s+/).filter(word => /^[A-Za-zÀ-ÿ]/.test(word));
-  return words.length ? (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase() : '?';
-}
-
-function aboutRowHTML(editor, index, row) {
-  const inputs = editor.columns.map(([field, label, type]) => {
-    const value = esc(row[field] || '');
-    if (type === 'textarea') return `<label class="wide">${esc(label)}<textarea data-field="${field}" rows="2">${value}</textarea></label>`;
-    if (type === 'photo') return `<label class="wide">${esc(label)}<input type="text" data-field="${field}" value="${value}" placeholder="https://… or /uploads/…">${aboutPhotoPicker(field, 'data-pick-field')}</label>`;
-    return `<label>${esc(label)}<input type="${type === 'email' ? 'email' : 'text'}" data-field="${field}" value="${value}"></label>`;
-  }).join('');
-  const title = row[editor.columns[0][0]] || '';
-  const avatar = editor.key === 'staff'
-    ? `<span class="row-avatar" aria-hidden="true">${row.photo ? `<img src="${esc(row.photo)}" alt="">` : esc(aboutInitialsAdmin(row.name))}</span>` : '';
-  const move = editor.reorder ? `<button class="btn btn--quiet btn--sm" type="button" data-move-row="-1" aria-label="Move up">↑</button><button class="btn btn--quiet btn--sm" type="button" data-move-row="1" aria-label="Move down">↓</button>` : '';
-  return `<div class="list-editor__row" data-row="${editor.key}">
-    <div class="row-head">${avatar}<b class="row-title">${esc(title) || `New ${esc(editor.item)}`}</b><span class="row-tools">${move}<button class="btn btn--quiet btn--sm row-remove" type="button" data-remove-row>Remove</button></span></div>
-    <div class="row-fields">${inputs}</div>
-  </div>`;
-}
-
-function aboutEmptyRow(editor) {
-  return `<p class="list-editor__empty">No ${esc(editor.item)} yet. Until someone is added, the public page says plainly that no officers are published — it never invents a name.</p>`;
-}
-
-function aboutEditorHTML(editor, rows) {
-  return `<div class="list-editor" data-list="${editor.key}">
-    <div class="list-editor__head"><h4>${esc(editor.label)} <span class="count">${rows.length}</span></h4></div>
-    <div class="list-editor__rows">${rows.length ? rows.map((row, index) => aboutRowHTML(editor, index, row)).join('') : aboutEmptyRow(editor)}</div>
-    <button class="btn btn--ghost list-editor__add" type="button" data-add-row="${editor.key}">+ Add ${esc(editor.item)}</button>
-  </div>`;
-}
-
-function collectAboutRows(section, key) {
-  return [...section.querySelectorAll(`[data-row="${key}"]`)].map(row => {
-    const entry = {};
-    row.querySelectorAll('[data-field]').forEach(input => { entry[input.dataset.field] = input.value.trim(); });
-    return entry;
-  }).filter(entry => Object.values(entry).some(Boolean));
-}
-
-function validateAboutData(data) {
-  for (const editor of ABOUT_ROW_EDITORS) {
-    for (const row of data[editor.key] || []) {
-      for (const [field, label, type] of editor.columns) {
-        const value = row[field];
-        if (field === 'name' && !value) return 'Every person listed in the Office needs a full name.';
-        if (!value || type !== 'photo') continue;
-        if (!/^https:\/\/\S+$/i.test(value) && !(value.startsWith('/') && !value.startsWith('//'))) return `Photo "${value}" must be an https:// link or a Media library file.`;
-      }
-    }
-  }
-  if (data.sr_photo && !/^https:\/\/\S+$/i.test(data.sr_photo) && !(data.sr_photo.startsWith('/') && !data.sr_photo.startsWith('//'))) return 'The Student Regent photo must be an https:// link or a Media library file.';
-  return '';
 }
 
 let aboutActiveSection = 'header';
@@ -2334,9 +2356,7 @@ async function renderAbout() {
   section.innerHTML = '<div class="empty loading-state">Loading the About page</div>';
   let stored = {};
   try {
-    const [about, media] = await Promise.all([api('/api/about'), api('/api/media').catch(() => [])]);
-    stored = about || {};
-    aboutMediaImages = (Array.isArray(media) ? media : []).filter(item => item.url && (item.file_type || '').startsWith('image/'));
+    stored = (await api('/api/about')) || {};
   } catch (error) {
     section.innerHTML = `<div class="err show">The About page could not be loaded: ${esc(error.message)} <button class="btn btn--ghost btn--sm" type="button" data-retry>Retry</button></div>`;
     section.querySelector('[data-retry]').addEventListener('click', renderAbout);
@@ -2344,11 +2364,9 @@ async function renderAbout() {
   }
   const values = { ...stored };
   ABOUT_LINE_FIELDS.forEach(key => { if (Array.isArray(values[key])) values[key] = values[key].join('\n'); });
-  const rows = Object.fromEntries(ABOUT_ROW_EDITORS.map(editor => [editor.key, Array.isArray(stored[editor.key]) ? stored[editor.key] : []]));
-  const editorFor = key => ABOUT_ROW_EDITORS.find(editor => editor.key === key);
   if (!ABOUT_SECTIONS.some(item => item.id === aboutActiveSection)) aboutActiveSection = 'header';
 
-  const filledCount = item => item.fields.filter(([key]) => String(values[key] || '').trim()).length + (item.list ? rows[item.list].length : 0);
+  const filledCount = item => item.fields.filter(([key]) => String(values[key] || '').trim()).length;
 
   section.innerHTML = `
     <form class="about-editor" id="aboutForm" novalidate>
@@ -2364,7 +2382,6 @@ async function renderAbout() {
         ${ABOUT_SECTIONS.map(item => `<section class="about-pane" data-pane="${item.id}" ${item.id === aboutActiveSection ? '' : 'hidden'}>
           <header class="about-pane__head"><h3>${esc(item.title)}</h3><p>${esc(item.hint)}. Leave a field empty to keep the site's built-in wording.</p></header>
           <div class="about-pane__fields">${item.fields.map(field => aboutFieldHTML(field, values)).join('')}</div>
-          ${item.list ? aboutEditorHTML(editorFor(item.list), rows[item.list]) : ''}
         </section>`).join('')}
         <div class="err" role="alert"></div>
         <div class="about-savebar">
@@ -2379,40 +2396,15 @@ async function renderAbout() {
   const form = $('#aboutForm');
   const dirty = $('#aboutDirty');
   const markDirty = () => { dirty.textContent = 'Unsaved changes'; dirty.classList.add('is-dirty'); };
-  const refreshRow = row => {
-    const editor = editorFor(row.dataset.row);
-    const first = row.querySelector(`[data-field="${editor.columns[0][0]}"]`).value.trim();
-    row.querySelector('.row-title').textContent = first || `New ${editor.item}`;
-    const avatar = row.querySelector('.row-avatar');
-    if (avatar) {
-      const photo = row.querySelector('[data-field="photo"]').value.trim();
-      avatar.innerHTML = photo ? `<img src="${esc(photo)}" alt="">` : esc(aboutInitialsAdmin(first));
-    }
-  };
   const refreshCounts = () => {
     ABOUT_SECTIONS.forEach(item => {
-      let count = item.fields.filter(([key]) => (form.querySelector(`[name="${key}"]`)?.value || '').trim()).length;
-      if (item.list) count += form.querySelectorAll(`[data-row="${item.list}"]`).length;
+      const count = item.fields.filter(([key]) => (form.querySelector(`[name="${key}"]`)?.value || '').trim()).length;
       const el = form.querySelector(`[data-count-for="${item.id}"]`);
       if (el) el.textContent = count ? `${count} set` : 'Built-in';
     });
-    form.querySelectorAll('.list-editor').forEach(list => { list.querySelector('.count').textContent = list.querySelectorAll('[data-row]').length; });
   };
 
-  form.addEventListener('input', event => {
-    markDirty();
-    const row = event.target.closest('[data-row]');
-    if (row) refreshRow(row);
-    refreshCounts();
-  });
-  form.addEventListener('change', event => {
-    const pick = event.target.closest('.about-photo-pick');
-    if (!pick || !pick.value) return;
-    const target = pick.dataset.pickName ? form.querySelector(`[name="${pick.dataset.pickName}"]`) : pick.closest('[data-row]').querySelector(`[data-field="${pick.dataset.pickField}"]`);
-    target.value = pick.value;
-    pick.value = '';
-    target.dispatchEvent(new Event('input', { bubbles: true }));
-  });
+  form.addEventListener('input', () => { markDirty(); refreshCounts(); });
 
   form.addEventListener('click', event => {
     const nav = event.target.closest('[data-about-section]');
@@ -2427,43 +2419,12 @@ async function renderAbout() {
       form.querySelector(`[data-pane="${aboutActiveSection}"]`).scrollIntoView({ block: 'nearest', behavior: 'smooth' });
       return;
     }
-    const add = event.target.closest('[data-add-row]');
-    if (add) {
-      const editor = editorFor(add.dataset.addRow);
-      const host = form.querySelector(`[data-list="${editor.key}"] .list-editor__rows`);
-      host.querySelector('.list-editor__empty')?.remove();
-      host.insertAdjacentHTML('beforeend', aboutRowHTML(editor, host.querySelectorAll('[data-row]').length, {}));
-      host.lastElementChild.querySelector('input, textarea')?.focus();
-      markDirty(); refreshCounts();
-      return;
-    }
-    const move = event.target.closest('[data-move-row]');
-    if (move) {
-      const row = move.closest('[data-row]');
-      const sibling = move.dataset.moveRow === '-1' ? row.previousElementSibling : row.nextElementSibling;
-      if (sibling?.matches('[data-row]')) {
-        if (move.dataset.moveRow === '-1') sibling.before(row); else sibling.after(row);
-        markDirty();
-      }
-      return;
-    }
-    const remove = event.target.closest('[data-remove-row]');
-    if (remove) {
-      const host = remove.closest('.list-editor__rows');
-      const editor = editorFor(remove.closest('[data-row]').dataset.row);
-      remove.closest('[data-row]').remove();
-      if (!host.querySelector('[data-row]')) host.insertAdjacentHTML('beforeend', aboutEmptyRow(editor));
-      markDirty(); refreshCounts();
-    }
   });
 
   form.addEventListener('submit', async event => {
     event.preventDefault();
     const error = form.querySelector('.err');
     const data = Object.fromEntries(new FormData(form));
-    ABOUT_ROW_EDITORS.forEach(editor => { data[editor.key] = collectAboutRows(form, editor.key); });
-    const problem = validateAboutData(data);
-    if (problem) { error.textContent = problem; error.classList.add('show'); return; }
     error.classList.remove('show');
     const button = form.querySelector('[type="submit"]');
     button.disabled = true;
@@ -2482,7 +2443,7 @@ async function renderAbout() {
   });
 
   $('#aboutReset').addEventListener('click', async () => {
-    const confirmed = await askConfirm('Reset the About page?', 'Every override, including the staff list, is cleared and the public page returns to the wording built into the site.', 'Reset About page');
+    const confirmed = await askConfirm('Reset the About page?', 'Every override is cleared and the public page returns to the wording built into the site. The leadership records printed on that page are not touched.', 'Reset About page');
     if (!confirmed) return;
     try {
       await api('/api/about', { method: 'PATCH', body: JSON.stringify({}) });
@@ -2493,6 +2454,609 @@ async function renderAbout() {
       toast(`Could not reset: ${error.message}`);
     }
   });
+}
+
+
+/* ── Leadership archive ──────────────────────────────────────────────────────
+   The public About page prints two primary figures and a directorate of eight
+   from records stored in `leadership_profiles`, and this tab is the only place
+   they are written. The tree on the left is the archive in the order the page
+   reads it; the pane on the right is one record; the preview underneath is the
+   public interaction itself — point at a card and it opens, the portrait comes
+   clear, the description arrives after it — drawn from whatever is typed,
+   whether or not it has been saved yet.
+
+   Order is dragged, or moved with the ↑/↓ buttons and the arrow keys, because a
+   reorder that only a mouse can do is a reorder most of the office cannot do.
+   The printed number follows the order (01, 02 · 01D … 08D) unless a record
+   overrides it by hand.
+
+   Nothing here invents a person. An empty seat stays empty until somebody is
+   entered, and "Load sample profiles" exists so the layout and the motion can be
+   checked before the office has any real records: every sample says what it is,
+   carries no portrait, and one click removes all of them and nothing else. */
+const LD_LIMITS = { primary: 2, director: 8 };
+const LD_LABELS = { primary: 'primary leader', director: 'director' };
+const LD_SHELVES = [['primary', 'Primary leaders'], ['director', 'The Directorate']];
+/* One entry per field the public page can print, in the order the record reads.
+   A field nobody renders is not a field anybody is asked to fill in. */
+const LD_FIELDS = [
+  ['name', 'Full name *', 'text', ''],
+  ['position', 'Position', 'text', 'The role printed under the name — Student Regent, Director of Academic Affairs.'],
+  ['category', 'Shelf', 'category', 'Primary leaders are the two large cards at the top; the directorate is the strip below them.'],
+  ['number', 'Printed number', 'number', 'Leave empty to number by order: 01 and 02 for the primary figures, 01D to 08D for the directorate.'],
+  ['photo', 'Portrait', 'photo', 'Paste an https:// image link, or pick a file uploaded in the Media library. With no portrait the record is drawn as the archive’s own numbered plate.'],
+  ['short_bio', 'Short description', 'textarea', 'One or two lines. This is what appears when a card opens.'],
+  ['quote', 'Quotation', 'textarea', 'In the person’s own words, shown in the full record rather than on the card.'],
+  ['biography', 'Biography', 'textarea', 'The paragraph the full record opens with.'],
+  ['responsibilities', 'Responsibilities', 'lines', 'One per line, printed as a list in the full record.'],
+  ['previous_positions', 'Previous positions', 'lines', 'One per line.'],
+  ['projects', 'Projects and initiatives', 'lines', 'One per line.'],
+  ['facebook', 'Facebook', 'text', 'https:// only, and only if the office has one to publish.'],
+  ['instagram', 'Instagram', 'text', 'https:// only.'],
+  ['email', 'Email', 'email', 'Published as a mailto: link in the full record.'],
+  ['is_published', 'On the public page', 'published', 'A hidden record is kept here and withdrawn from the site, and the numbering closes up behind it.']
+];
+const LD_FIELD_LABELS = Object.fromEntries(LD_FIELDS.map(([key, label]) => [key, label]));
+const LD_TEXT_LIMITS = { name: 120, position: 140, number: 12, photo: 400, short_bio: 240, quote: 340, biography: 3000, facebook: 300, instagram: 300, email: 160 };
+const LD_LINE_LIMITS = { responsibilities: 14, previous_positions: 14, projects: 14 };
+const LD_LINE_LENGTH = 180;
+
+let ldRecords = [];
+let ldSelected = '';   // a record id, or "new:primary" / "new:director"
+let ldUnsaved = false;
+let ldDragId = '';
+
+const ldIsNew = key => String(key).startsWith('new:');
+const ldInitials = name => {
+  const words = String(name || '').split(/\s+/).filter(word => /^[A-Za-zÀ-ÿ]/.test(word));
+  return words.length ? (words[0][0] + (words.length > 1 ? words[words.length - 1][0] : '')).toUpperCase() : '—';
+};
+const ldIsSafePhoto = value => {
+  const link = String(value || '').trim();
+  return Boolean(link) && ((link.startsWith('/') && !link.startsWith('//')) || /^https:\/\/\S+$/i.test(link));
+};
+const ldSeatNumber = (category, position) => {
+  const sequence = String(position).padStart(2, '0');
+  return category === 'primary' ? sequence : `${sequence}D`;
+};
+
+/* ── the record form ── */
+function ldFieldHTML([key, label, type, hint], record) {
+  const small = hint ? `<small>${esc(hint)}</small>` : '';
+  if (type === 'category') {
+    const current = record ? record.category : 'director';
+    return `<label>${esc(label)}<select name="category" data-ld-shelf>${LD_SHELVES.map(([id, title]) => `<option value="${id}"${current === id ? ' selected' : ''}>${esc(title)} — ${id === 'primary' ? '01, 02' : '01D … 08D'}</option>`).join('')}</select>${small}</label>`;
+  }
+  if (type === 'published') {
+    const published = record ? Number(record.is_published) !== 0 : true;
+    return `<label>${esc(label)}<select name="is_published" data-ld-published><option value="1"${published ? ' selected' : ''}>Published — printed on the site</option><option value="0"${published ? '' : ' selected'}>Hidden — kept in the dashboard</option></select>${small}</label>`;
+  }
+  const raw = record ? record[key] : '';
+  const text = Array.isArray(raw) ? raw.join('\n') : String(raw == null ? '' : raw);
+  if (type === 'textarea' || type === 'lines') {
+    return `<label>${esc(label)}<textarea name="${key}" rows="${type === 'lines' ? 4 : 3}"${type === 'lines' ? ' data-ld-lines="1"' : ''}>${esc(text)}</textarea>${small}</label>`;
+  }
+  if (type === 'photo') {
+    return `<label>${esc(label)}<input name="${key}" type="text" value="${esc(text)}" placeholder="https://… or /uploads/…" data-ld-photo>${small}${photoPickerHTML(key, 'data-pick-name')}</label>`;
+  }
+  return `<label>${esc(label)}<input name="${key}" type="${type === 'email' ? 'email' : 'text'}" value="${esc(text)}"${type === 'number' ? ' maxlength="12" placeholder="01D"' : ''}>${small}</label>`;
+}
+
+function ldFormValues(form) {
+  const values = {};
+  LD_FIELDS.forEach(([key, , type]) => {
+    const input = form.querySelector(`[name="${key}"]`);
+    if (!input) return;
+    if (type === 'published') { values.is_published = input.value === '1' ? 1 : 0; return; }
+    values[key] = type === 'lines'
+      ? input.value.split('\n').map(line => line.replace(/^\s*(?:[-•*]|\d+[.)])\s+/, '').trim()).filter(Boolean)
+      : input.value.trim();
+  });
+  return values;
+}
+
+/* The same rules the API enforces, run before the request so the office gets the
+   answer while the cursor is still in the field. The server checks them again:
+   this is a courtesy, not the gate. */
+function ldValidate(values) {
+  if (!values.name) return 'A record needs a name. An unnamed seat is not a record.';
+  const shelf = ldRecords.filter(row => row.category === values.category && String(row.id) !== String(ldSelected));
+  if (shelf.length >= LD_LIMITS[values.category]) {
+    return `The archive holds ${LD_LIMITS[values.category]} ${values.category === 'primary' ? 'primary leaders' : 'directors'}. Publish or remove one before adding another.`;
+  }
+  for (const [key, max] of Object.entries(LD_TEXT_LIMITS)) {
+    const text = String(values[key] || '');
+    if (text.length > max) return `${LD_FIELD_LABELS[key]} is too long — ${text.length} characters, the limit is ${max}.`;
+  }
+  if (values.photo && !ldIsSafePhoto(values.photo)) return 'The portrait must be an https:// image link or a file from the Media library.';
+  for (const key of ['facebook', 'instagram']) {
+    if (values[key] && !/^https:\/\/\S+$/i.test(values[key])) return `${LD_FIELD_LABELS[key]} must be an https:// link, or empty.`;
+  }
+  if (values.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) return `“${values.email}” is not a valid email address.`;
+  for (const [key, max] of Object.entries(LD_LINE_LIMITS)) {
+    const lines = values[key] || [];
+    if (lines.length > max) return `${LD_FIELD_LABELS[key]} accepts at most ${max} lines.`;
+    const tooLong = lines.find(line => line.length > LD_LINE_LENGTH);
+    if (tooLong) return `A line in ${LD_FIELD_LABELS[key].toLowerCase()} is too long — ${tooLong.length} characters, the limit is ${LD_LINE_LENGTH}.`;
+  }
+  return '';
+}
+
+/* ── the tree ── */
+function ldNavItemHTML(record) {
+  const active = String(record.id) === String(ldSelected);
+  const sample = Number(record.is_sample) === 1;
+  const hidden = Number(record.is_published) !== 1;
+  const marks = [hidden ? 'hidden' : '', sample ? 'sample' : ''].filter(Boolean).join(' · ');
+  return `<div class="ld-nav-item${active ? ' is-active' : ''}" data-ld-id="${esc(record.id)}" draggable="true">
+    <span class="row-avatar" aria-hidden="true">${ldIsSafePhoto(record.photo) ? `<img src="${esc(record.photo)}" alt="">` : esc(ldInitials(record.name))}</span>
+    <span class="ld-nav-item__text">
+      <span class="ld-nav-item__num">${esc(record.display_number || '—')}${marks ? ` · ${esc(marks)}` : ''}</span>
+      <span class="row-title">${esc(record.name)}</span>
+    </span>
+    <span class="row-tools">
+      <button class="btn btn--quiet btn--sm" type="button" data-ld-move="-1" aria-label="Move ${esc(record.name)} up">↑</button>
+      <button class="btn btn--quiet btn--sm" type="button" data-ld-move="1" aria-label="Move ${esc(record.name)} down">↓</button>
+      <button class="btn btn--quiet btn--sm ld-nav-item__grip" type="button" data-ld-grip aria-label="Reorder ${esc(record.name)}: drag, or press the arrow keys">⠿</button>
+    </span>
+    <button class="ld-nav-item__open" type="button" data-ld-select="${esc(record.id)}"${active ? ' aria-current="true"' : ''}>Edit ${esc(record.name)}</button>
+  </div>`;
+}
+
+function ldNavGroupHTML(category, title) {
+  const rows = ldRecords.filter(record => record.category === category);
+  const free = LD_LIMITS[category] - rows.length;
+  return `<p class="about-editor__navlabel">${esc(title)}<span class="ld-nav-count">${rows.length} / ${LD_LIMITS[category]}</span></p>
+    ${rows.length ? rows.map(ldNavItemHTML).join('') : `<p class="ld-nav-none">No ${esc(LD_LABELS[category])} yet.</p>`}
+    ${free > 0 ? `<button class="ld-nav-add" type="button" data-ld-new="${category}" data-new>+ Add ${esc(LD_LABELS[category])} · seat ${esc(ldSeatNumber(category, rows.length + 1))}</button>` : `<p class="ld-nav-none">All ${LD_LIMITS[category]} seats are taken.</p>`}`;
+}
+
+/* ── the pane ── */
+function ldPaneHTML() {
+  if (!ldSelected) {
+    return `<section class="about-pane" data-ld-pane>
+      <header class="about-pane__head"><h3>The archive is empty</h3><p>Ten seats: two primary figures and eight directorates. Enter the first record, or load the sample profiles to see how the public page lays out and moves before the office has anybody to publish.</p></header>
+      <div class="ld-start">
+        <button class="btn btn--red" type="button" data-ld-new="primary">Add a primary leader</button>
+        <button class="btn btn--ghost" type="button" data-ld-new="director">Add a director</button>
+        <button class="btn btn--quiet" type="button" data-ld-samples>Load sample profiles</button>
+      </div>
+    </section>`;
+  }
+  const isNew = ldIsNew(ldSelected);
+  const category = isNew ? ldSelected.slice(4) : (ldRecords.find(row => String(row.id) === String(ldSelected)) || {}).category || 'director';
+  const record = isNew ? { category, is_published: 1 } : ldRecords.find(row => String(row.id) === String(ldSelected));
+  if (!record) return '';
+  const group = ldRecords.filter(row => row.category === category);
+  const position = isNew ? group.length + 1 : group.findIndex(row => String(row.id) === String(ldSelected)) + 1;
+  const seat = ldSeatNumber(category, position);
+  return `<section class="about-pane" data-ld-pane>
+    <header class="about-pane__head">
+      <h3>${isNew ? `New ${esc(LD_LABELS[category])}` : esc(record.name)}</h3>
+      <p>${isNew
+        ? `Seat ${esc(seat)} of the ${category === 'primary' ? 'primary figures' : 'directorate'}. Nothing is published until it is saved.`
+        : `Seat ${esc(record.display_number || seat)} · ${esc((LD_SHELVES.find(([id]) => id === category) || [, 'the archive'])[1])}. Every field here is printed on the public About page; a field left empty is simply not drawn.`}</p>
+    </header>
+    <div class="about-pane__fields" data-ld-pane-form="${esc(ldSelected)}">${LD_FIELDS.map(field => ldFieldHTML(field, record)).join('')}</div>
+    <div class="err" role="alert"></div>
+    <div class="about-savebar">
+      <span class="about-savebar__state" data-ld-state>All changes saved</span>
+      ${isNew ? '' : `<button class="btn btn--quiet btn--sm row-remove" type="button" data-ld-delete>Remove from the archive</button>`}
+      <a class="btn btn--ghost btn--sm" href="/#about" target="_blank" rel="noopener">View public page</a>
+      <button class="btn btn--red" type="submit">${isNew ? 'Add to the archive' : 'Save record'}</button>
+    </div>
+  </section>`;
+}
+
+/* ── the live preview ──
+   The public strip at dashboard scale: same structure, same motion, same
+   blur-to-clear. It reads the form rather than the server, so a name, a
+   portrait, a position, a quotation or a description is on the card the moment
+   it is typed. */
+function ldPreviewRows() {
+  const form = $('#ldForm');
+  const holder = form && form.querySelector('[data-ld-pane-form]');
+  const draft = holder ? { ...ldFormValues(form), id: holder.dataset.ldPaneForm } : null;
+  let rows = ldRecords.map(record => (draft && !ldIsNew(draft.id) && String(record.id) === String(draft.id)
+    ? { ...record, ...draft, display_number: String(draft.number || '').trim() || record.display_number }
+    : record));
+  if (draft && ldIsNew(draft.id)) {
+    const group = rows.filter(row => row.category === draft.category);
+    rows = [...rows, { ...draft, id: 'ld-draft', name: draft.name || `New ${LD_LABELS[draft.category]}`, display_number: String(draft.number || '').trim() || ldSeatNumber(draft.category, group.length + 1) }];
+  }
+  return rows;
+}
+
+function ldpCardHTML(row, kind) {
+  const cls = kind === 'leader' ? 'ldp-leader' : 'ldp-card';
+  const photo = ldIsSafePhoto(row.photo) ? row.photo : '';
+  const active = kind === 'card' && String(row.id) === String(ldSelected);
+  return `<div class="${cls}${active ? ' is-active' : ''}${Number(row.is_published) === 0 ? ' is-draft' : ''}" data-ldp-id="${esc(row.id)}">
+    <span class="ldp-media" aria-hidden="true">${photo ? `<img src="${esc(photo)}" alt="" loading="lazy">` : '<span class="ldp-plate"></span>'}</span>
+    <span class="ldp-body">
+      ${row.display_number ? `<span class="ldp-num">${esc(row.display_number)}</span>` : ''}
+      <b class="ldp-name">${esc(row.name || 'Unnamed record')}</b>
+      <span class="ldp-role">${esc(row.position || '')}</span>
+      <span class="ldp-bio">${esc(row.short_bio || '')}</span>
+      <span class="ldp-cue">Open the record &rarr;</span>
+    </span>
+    <button class="ldp-hit" type="button" data-ldp-select="${esc(row.id)}" aria-label="Edit ${esc(row.name || 'this record')}">Edit</button>
+  </div>`;
+}
+
+function ldPreviewHTML() {
+  const rows = ldPreviewRows();
+  const leaders = rows.filter(row => row.category === 'primary');
+  const directors = rows.filter(row => row.category !== 'primary');
+  if (!rows.length) return '<p class="ldp-none">Nothing to preview yet. Add a record, or load the sample profiles.</p>';
+  return `${leaders.length ? `<div class="ldp-leaders">${leaders.map(row => ldpCardHTML(row, 'leader')).join('')}</div>` : ''}
+    ${directors.length ? `<div class="ldp-strip" data-ldp-strip>${directors.map(row => ldpCardHTML(row, 'card')).join('')}</div>` : ''}`;
+}
+
+/* Only the card being edited is rewritten while typing, so the row keeps the
+   card the cursor is holding open instead of rebuilding under it. */
+function ldPreviewSync() {
+  const preview = $('#ldPreview');
+  if (!preview) return;
+  const form = $('#ldForm');
+  const holder = form && form.querySelector('[data-ld-pane-form]');
+  if (!holder) return;
+  const values = ldFormValues(form);
+  const id = ldIsNew(holder.dataset.ldPaneForm) ? 'ld-draft' : holder.dataset.ldPaneForm;
+  const card = preview.querySelector(`[data-ldp-id="${id}"]`);
+  if (!card) { ldPreviewRepaint(); return; }
+  const set = (selector, text) => { const node = card.querySelector(selector); if (node) node.textContent = text; };
+  set('.ldp-name', values.name || 'Unnamed record');
+  set('.ldp-role', values.position || '');
+  set('.ldp-bio', values.short_bio || '');
+  if (values.number) set('.ldp-num', values.number);
+  card.classList.toggle('is-draft', values.is_published === 0);
+  const media = card.querySelector('.ldp-media');
+  const wanted = ldIsSafePhoto(values.photo) ? values.photo : '';
+  const shown = media.querySelector('img') ? media.querySelector('img').getAttribute('src') : '';
+  if (wanted !== shown) media.innerHTML = wanted ? `<img src="${esc(wanted)}" alt="" loading="lazy">` : '<span class="ldp-plate"></span>';
+}
+
+function ldpSetActive(preview, id) {
+  const strip = preview.querySelector('[data-ldp-strip]');
+  if (!strip) return;
+  strip.classList.toggle('is-open', Boolean(id));
+  strip.querySelectorAll('.ldp-card').forEach(card => card.classList.toggle('is-active', String(card.dataset.ldpId) === String(id)));
+}
+function ldpFirstId(preview) {
+  const first = preview.querySelector('.ldp-card');
+  return first ? String(first.dataset.ldpId) : '';
+}
+/* The card held open in the preview: the record being edited when it is one of
+   the strip's cards, and otherwise the first of them — because a strip with
+   nothing selected is only blur, on the page and here. */
+function ldpOpenId(preview) {
+  const cards = [...preview.querySelectorAll('.ldp-card')];
+  const editing = cards.find(card => String(card.dataset.ldpId) === String(ldSelected));
+  return String((editing || cards[0] || {}).dataset?.ldpId || '');
+}
+function ldPreviewBind(preview) {
+  const coarse = () => Boolean(window.matchMedia && window.matchMedia('(hover: none)').matches);
+  preview.onpointerover = event => {
+    if (coarse()) return;
+    const card = event.target.closest && event.target.closest('.ldp-card');
+    if (card) ldpSetActive(preview, card.dataset.ldpId);
+  };
+  const strip = preview.querySelector('[data-ldp-strip]');
+  if (strip) strip.onpointerleave = () => { if (!coarse()) ldpSetActive(preview, ldpFirstId(preview)); };
+}
+
+/* ── order ── */
+/* Drag-and-drop and the ↑/↓ buttons end up in the same place: one array of ids
+   in the new order. The two shelves stay independent, so a director dropped on
+   the primary shelf is refused rather than quietly re-shelved. */
+function ldOrderAfterMove(id, direction) {
+  const index = ldRecords.findIndex(row => String(row.id) === String(id));
+  const record = ldRecords[index];
+  if (!record) return null;
+  const group = ldRecords.filter(row => row.category === record.category);
+  const at = group.findIndex(row => String(row.id) === String(id)) + direction;
+  if (at < 0 || at >= group.length) return null;
+  const ids = ldRecords.map(row => String(row.id));
+  const other = ids.indexOf(String(group[at].id));
+  [ids[index], ids[other]] = [ids[other], ids[index]];
+  return ids;
+}
+
+function ldOrderAfterDrop(dragId, targetId, before) {
+  const drag = ldRecords.find(row => String(row.id) === String(dragId));
+  const target = ldRecords.find(row => String(row.id) === String(targetId));
+  if (!drag || !target || String(dragId) === String(targetId)) return null;
+  if (drag.category !== target.category) {
+    return { error: `A ${LD_LABELS[drag.category]} cannot be dropped into the ${LD_LABELS[target.category]} shelf. Change the shelf in the record instead.` };
+  }
+  const group = ldRecords.filter(row => row.category === drag.category && String(row.id) !== String(dragId));
+  const at = group.findIndex(row => String(row.id) === String(targetId)) + (before ? 0 : 1);
+  group.splice(at, 0, drag);
+  const others = ldRecords.filter(row => row.category !== drag.category).map(row => String(row.id));
+  return { order: [...group.map(row => String(row.id)), ...others] };
+}
+
+/* ── painting ── */
+function ldAdminHTML() {
+  const published = ldRecords.filter(row => Number(row.is_published) === 1).length;
+  const samples = ldRecords.filter(row => Number(row.is_sample) === 1).length;
+  const primaries = ldRecords.filter(row => row.category === 'primary').length;
+  const directors = ldRecords.filter(row => row.category !== 'primary').length;
+  return `
+    <div class="card">
+      <div class="section-head">
+        <div>
+          <h3>The archive</h3>
+          <span class="mono">${ldRecords.length} ${ldRecords.length === 1 ? 'record' : 'records'} · ${published} published · the public page reads ${primaries} of ${LD_LIMITS.primary} primary and ${directors} of ${LD_LIMITS.director} directorate seats${samples ? ` · ${samples} sample` : ''}</span>
+        </div>
+        <div class="ld-toolbar">
+          <button class="btn btn--ghost btn--sm" type="button" data-ld-samples>${samples ? 'Top up sample profiles' : 'Load sample profiles'}</button>
+          ${samples ? `<button class="btn btn--quiet btn--sm" type="button" data-ld-clear-samples>Remove ${samples} sample${samples === 1 ? '' : 's'}</button>` : ''}
+        </div>
+      </div>
+      <form class="about-editor" id="ldForm" novalidate>
+        <nav class="about-editor__nav ld-nav" aria-label="Leadership archive">${LD_SHELVES.map(([category, title]) => ldNavGroupHTML(category, title)).join('')}</nav>
+        <div class="about-editor__body">${ldPaneHTML()}</div>
+      </form>
+    </div>
+    <div class="card">
+      <div class="section-head">
+        <div>
+          <h3>How the public page reads</h3>
+          <span class="mono">Point at a card: it opens, the portrait comes clear, the description arrives after it. Click a card to edit that person. Cards marked HIDDEN are kept here and not printed.</span>
+        </div>
+      </div>
+      <div class="ldp" id="ldPreview">${ldPreviewHTML()}</div>
+    </div>`;
+}
+
+function ldPaint() {
+  const section = $('#tab-leadership');
+  if (!section) return;
+  section.innerHTML = ldAdminHTML();
+  const preview = $('#ldPreview');
+  if (preview) { ldPreviewBind(preview); ldpSetActive(preview, ldpOpenId(preview)); }
+  const form = $('#ldForm');
+  const first = form && form.querySelector('[data-ld-pane-form] input, [data-ld-pane-form] textarea, [data-ld-pane-form] select');
+  if (ldIsNew(ldSelected) && first) first.focus({ preventScroll: true });
+}
+
+/* Selects change which shelf a card sits on and whether it is printed at all, so
+   the whole preview is rebuilt; typing only changes one card, so that card is
+   rewritten in place and the row keeps whichever one the cursor is holding. */
+function ldPreviewRepaint() {
+  const preview = $('#ldPreview');
+  if (!preview) return;
+  preview.innerHTML = ldPreviewHTML();
+  ldPreviewBind(preview);
+  ldpSetActive(preview, ldpOpenId(preview));
+}
+
+async function renderLeadershipAdmin() {
+  const section = $('#tab-leadership');
+  section.innerHTML = '<div class="empty loading-state">Loading the leadership archive</div>';
+  try {
+    const [records] = await Promise.all([api('/api/leadership'), loadPhotoLibrary()]);
+    ldRecords = Array.isArray(records) ? records : [];
+  } catch (error) {
+    section.innerHTML = `<div class="err show">The leadership archive could not be loaded: ${esc(error.message)} <button class="btn btn--ghost btn--sm" type="button" data-retry>Retry</button></div>`;
+    section.querySelector('[data-retry]').addEventListener('click', renderLeadershipAdmin);
+    return;
+  }
+  if (ldSelected && !ldIsNew(ldSelected) && !ldRecords.some(row => String(row.id) === String(ldSelected))) ldSelected = '';
+  if (!ldSelected && ldRecords.length) ldSelected = String(ldRecords[0].id);
+  ldUnsaved = false;
+  ldPaint();
+  if (!section.dataset.ldBound) { section.dataset.ldBound = '1'; ldBindAdmin(section); }
+}
+
+async function ldSelect(next) {
+  if (String(next) === String(ldSelected)) return;
+  if (ldUnsaved) {
+    const discard = await askConfirm('Discard unsaved changes?', 'This record has edits that have not been saved. They will be lost.', 'Discard changes');
+    if (!discard) return;
+  }
+  ldSelected = String(next);
+  ldUnsaved = false;
+  ldPaint();
+}
+
+async function ldSave(form) {
+  const holder = form.querySelector('[data-ld-pane-form]');
+  if (!holder) return;
+  const key = holder.dataset.ldPaneForm;
+  const isNew = ldIsNew(key);
+  const values = ldFormValues(form);
+  const error = form.querySelector('.err');
+  const problem = ldValidate(values);
+  if (problem) { error.textContent = problem; error.classList.add('show'); return; }
+  error.classList.remove('show');
+  const button = form.querySelector('[type="submit"]');
+  button.disabled = true;
+  button.textContent = 'Saving';
+  try {
+    if (isNew) {
+      const created = await api('/api/leadership', { method: 'POST', body: JSON.stringify(values) });
+      ldSelected = String(created.id || '');
+      toast(`${values.name} was added to the archive as seat ${created.profile && created.profile.display_number ? created.profile.display_number : ''}`.trim() + '.');
+    } else {
+      await api(`/api/leadership/${key}`, { method: 'PATCH', body: JSON.stringify(values) });
+      toast('Record saved. The public About page updates on the next visit.');
+    }
+    notifyContentChanged('leadership');
+    await renderLeadershipAdmin();
+  } catch (saveError) {
+    error.textContent = saveError.message;
+    error.classList.add('show');
+    button.disabled = false;
+    button.textContent = isNew ? 'Add to the archive' : 'Save record';
+  }
+}
+
+async function ldSubmitOrder(order, message) {
+  try {
+    await api('/api/leadership/reorder', { method: 'POST', body: JSON.stringify({ order }) });
+    toast(message);
+    notifyContentChanged('leadership');
+    await renderLeadershipAdmin();
+  } catch (error) {
+    toast(`The archive could not be reordered: ${error.message}`);
+  }
+}
+
+function ldBindAdmin(section) {
+  section.addEventListener('input', event => {
+    const form = event.target.closest('#ldForm');
+    if (!form || !event.target.closest('[data-ld-pane-form]')) return;
+    ldUnsaved = true;
+    const state = form.querySelector('[data-ld-state]');
+    if (state) { state.textContent = 'Unsaved changes'; state.classList.add('is-dirty'); }
+    ldPreviewSync();
+  });
+
+  section.addEventListener('change', event => {
+    const form = event.target.closest('#ldForm');
+    if (!form) return;
+    const pick = event.target.closest('.photo-pick');
+    if (pick) {
+      if (!pick.value) return;
+      const target = form.querySelector(`[name="${pick.dataset.pickName}"]`);
+      if (target) { target.value = pick.value; pick.value = ''; target.dispatchEvent(new Event('input', { bubbles: true })); }
+      return;
+    }
+    ldPreviewRepaint();
+  });
+
+  section.addEventListener('submit', event => {
+    if (event.target.id !== 'ldForm') return;
+    event.preventDefault();
+    ldSave(event.target);
+  });
+
+  section.addEventListener('click', async event => {
+    const select = event.target.closest('[data-ld-select]');
+    if (select) { await ldSelect(select.dataset.ldSelect); return; }
+
+    const add = event.target.closest('[data-ld-new]');
+    if (add) { await ldSelect(`new:${add.dataset.ldNew}`); return; }
+
+    const move = event.target.closest('[data-ld-move]');
+    if (move) {
+      const id = move.closest('[data-ld-id]').dataset.ldId;
+      const order = ldOrderAfterMove(id, Number(move.dataset.ldMove));
+      if (!order) { toast('That record is already at the end of its shelf.'); return; }
+      await ldSubmitOrder(order, 'The archive was reordered.');
+      return;
+    }
+
+    if (event.target.closest('[data-ld-delete]')) {
+      const record = ldRecords.find(row => String(row.id) === String(ldSelected));
+      if (!record) return;
+      const confirmed = await askConfirm(`Remove ${record.name}?`, 'The record leaves the archive and the public page, and the numbering closes up behind it. This cannot be undone.', 'Remove from the archive');
+      if (!confirmed) return;
+      try {
+        await api(`/api/leadership/${record.id}`, { method: 'DELETE' });
+        toast(`${record.name} was removed from the archive.`);
+        notifyContentChanged('leadership');
+        ldSelected = '';
+        await renderLeadershipAdmin();
+      } catch (error) { toast(`Could not remove the record: ${error.message}`); }
+      return;
+    }
+
+    if (event.target.closest('[data-ld-samples]')) {
+      try {
+        const result = await api('/api/leadership/samples', { method: 'POST' });
+        toast(result.inserted
+          ? `${result.inserted} sample record${result.inserted === 1 ? '' : 's'} loaded. Each one says “Sample”, and “Remove samples” clears all of them and nothing else.`
+          : 'Every seat is taken, so no sample was added. Remove a record first.');
+        notifyContentChanged('leadership');
+        await renderLeadershipAdmin();
+      } catch (error) { toast(`Could not load the samples: ${error.message}`); }
+      return;
+    }
+
+    if (event.target.closest('[data-ld-clear-samples]')) {
+      const samples = ldRecords.filter(row => Number(row.is_sample) === 1);
+      if (!samples.length) return;
+      const confirmed = await askConfirm('Remove the sample profiles?', `${samples.length} sample record${samples.length === 1 ? '' : 's'} will be deleted. Records the office wrote are not touched.`, 'Remove samples');
+      if (!confirmed) return;
+      try {
+        const result = await api('/api/leadership/samples', { method: 'DELETE' });
+        toast(`${result.removed} sample record${result.removed === 1 ? '' : 's'} removed.`);
+        notifyContentChanged('leadership');
+        if (samples.some(row => String(row.id) === String(ldSelected))) ldSelected = '';
+        await renderLeadershipAdmin();
+      } catch (error) { toast(`Could not remove the samples: ${error.message}`); }
+      return;
+    }
+
+    const previewHit = event.target.closest('[data-ldp-select]');
+    if (previewHit) {
+      const id = previewHit.dataset.ldpSelect;
+      if (id === 'ld-draft') return; // the record being typed is already open
+      await ldSelect(id);
+    }
+  });
+
+  /* Drag to reorder, with the arrow keys doing exactly the same job on the grip
+     for anybody who cannot drag. */
+  section.addEventListener('keydown', async event => {
+    const grip = event.target.closest('[data-ld-grip]');
+    if (!grip || !['ArrowUp', 'ArrowDown'].includes(event.key)) return;
+    event.preventDefault();
+    const id = grip.closest('[data-ld-id]').dataset.ldId;
+    const order = ldOrderAfterMove(id, event.key === 'ArrowUp' ? -1 : 1);
+    if (!order) { toast('That record is already at the end of its shelf.'); return; }
+    await ldSubmitOrder(order, 'The archive was reordered.');
+    const moved = $('#tab-leadership').querySelector(`[data-ld-id="${id}"] [data-ld-grip]`);
+    if (moved) moved.focus();
+  });
+
+  section.addEventListener('dragstart', event => {
+    const item = event.target.closest('[data-ld-id]');
+    if (!item) return;
+    ldDragId = String(item.dataset.ldId);
+    item.classList.add('is-dragging');
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+      try { event.dataTransfer.setData('text/plain', ldDragId); } catch {}
+    }
+  });
+
+  section.addEventListener('dragover', event => {
+    if (!ldDragId) return;
+    const item = event.target.closest('[data-ld-id]');
+    if (!item || String(item.dataset.ldId) === ldDragId) return;
+    event.preventDefault();
+    if (event.dataTransfer) event.dataTransfer.dropEffect = 'move';
+    const box = item.getBoundingClientRect();
+    const before = (event.clientY - box.top) < box.height / 2;
+    section.querySelectorAll('.ld-nav-item').forEach(node => node.classList.remove('is-drop-before', 'is-drop-after'));
+    item.classList.add(before ? 'is-drop-before' : 'is-drop-after');
+  });
+
+  section.addEventListener('drop', async event => {
+    const item = event.target.closest('[data-ld-id]');
+    const dragged = ldDragId || (event.dataTransfer && event.dataTransfer.getData('text/plain')) || '';
+    ldDragId = '';
+    section.querySelectorAll('.ld-nav-item').forEach(node => node.classList.remove('is-dragging', 'is-drop-before', 'is-drop-after'));
+    if (!item || !dragged || String(item.dataset.ldId) === String(dragged)) return;
+    event.preventDefault();
+    const box = item.getBoundingClientRect();
+    const result = ldOrderAfterDrop(dragged, item.dataset.ldId, (event.clientY - box.top) < box.height / 2);
+    if (!result) return;
+    if (result.error) { toast(result.error); return; }
+    await ldSubmitOrder(result.order, 'The archive was reordered.');
+  });
+
+  section.addEventListener('dragend', () => {
+    ldDragId = '';
+    section.querySelectorAll('.ld-nav-item').forEach(node => node.classList.remove('is-dragging', 'is-drop-before', 'is-drop-after'));
+  });
+
 }
 
 
