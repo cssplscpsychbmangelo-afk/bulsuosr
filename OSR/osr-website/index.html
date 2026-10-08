@@ -320,11 +320,27 @@ img{max-width:100%}
 .consent.is-missing{border-color:#FECACA; background:#FFF1F2}
 /* The privacy notice sits under the form title and answers the four questions
    a student is entitled to ask before typing their name into a form. */
-.privacy{margin:10px 0 0; padding:12px 14px; border:1px solid var(--line); border-radius:10px; background:var(--paper-2)}
-.privacy__title{margin:0; font:700 10.5px "IBM Plex Mono",monospace; letter-spacing:0.09em; text-transform:uppercase; color:var(--red)}
-.privacy dl{margin:8px 0 0; display:grid; gap:6px}
-.privacy dt{font-weight:600; font-size:13px; color:var(--ink)}
-.privacy dd{margin:1px 0 0; font-size:13px; line-height:1.5; color:var(--stone)}
+/* Fine print, not a panel. Three of these sit inside three bordered cards on
+   one page, so each one being its own tinted, rounded box is what made Get Help
+   read as clutter: a box inside a box, four points deep, in the accent red.
+   The notice is now a quiet block under the same hairline the rest of the page
+   divides with, its title wears the stone mono the other labels wear, and the
+   four points read across instead of down wherever the card is wide enough for
+   a label column. The accent is left for what a student has to act on. */
+.privacy{margin:14px 0 0; padding:11px 0 0; border-top:1px solid var(--line)}
+.privacy__title{margin:0; font:600 10px "IBM Plex Mono",monospace; letter-spacing:0.11em; text-transform:uppercase; color:var(--stone)}
+/* Capped at a reading measure: the cards on this page are wide, and four
+   answers stretched across 900px would be harder to read than the panel they
+   replaced. The hairline above still spans the card, so the block reads as one
+   piece of fine print rather than as a stray column. */
+.privacy dl{margin:9px 0 0; display:grid; gap:8px; max-width:min(600px, 100%)}
+.privacy dl > div{display:grid; grid-template-columns:minmax(0,1fr); gap:1px}
+.privacy dt{font-weight:600; font-size:12.5px; line-height:1.5; color:var(--ink-2)}
+.privacy dd{margin:0; font-size:12.5px; line-height:1.55; color:var(--stone)}
+@media(min-width:620px){
+  .privacy dl{gap:7px}
+  .privacy dl > div{grid-template-columns:138px minmax(0,1fr); gap:0 18px; align-items:baseline}
+}
 
 /* about */
 .about-grid{display:grid; grid-template-columns:1.15fr 0.85fr; gap:16px}
@@ -827,6 +843,11 @@ img,svg{max-width:100%; height:auto}
 .cal-event:last-child{border-bottom:0}
 .cal-event:hover{background:#FFFBF5}
 @media(max-width:640px){.cal-event{grid-template-columns:88px minmax(0,1fr); gap:8px; padding:9px 12px} .cal-event .cal-days{grid-column:2; justify-self:start; margin-top:3px}}
+/* The next date on the record: the one the page opens on and the one the pill
+   keeps pointing at. A warm wash and a hairline of the accent are enough to
+   find it again after scrolling away, and quiet enough to leave the category
+   colour on the left edge as the loudest thing in the row. */
+.cal-event--next{background:#FFFBF5; box-shadow:inset 0 0 0 1px rgba(166,25,46,0.20)}
 .cal-event__date{font:700 11px "IBM Plex Mono",monospace; color:var(--ink); line-height:1.25; overflow-wrap:anywhere; word-break:break-word}
 .cal-event__date small{font:500 10px "IBM Plex Mono",monospace; color:var(--stone); display:block; margin-top:1px}
 .cal-badge{font:600 9.5px "IBM Plex Mono",monospace; letter-spacing:0.05em; text-transform:uppercase; padding:2px 6px; border-radius:999px; border:1px solid var(--line); background:var(--paper-2); color:var(--stone); display:inline-flex; align-items:center; gap:4px; white-space:nowrap; line-height:1}
@@ -860,10 +881,15 @@ img,svg{max-width:100%; height:auto}
 .dash-rotate-dot{width:5px; height:5px; border-radius:50%; background:var(--line-2); transition:all .25s var(--ease); flex:0 0 auto; border:1px solid transparent}
 .dash-rotate-dot.is-active{background:var(--red); border-color:var(--red); transform:scale(1.15)}
 /* floating jump */
-.cal-jump{position:fixed; right:16px; bottom:72px; z-index:31; background:var(--ink); color:white; border:1px solid var(--ink); padding:10px 14px; border-radius:999px; font:600 12.5px "IBM Plex Sans",sans-serif; box-shadow:0 8px 24px rgba(17,18,20,0.18); cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:transform .14s, box-shadow .14s, opacity .2s}
+/* Two controls live in the bottom-right corner, so they are stacked instead of
+   layered: the back-to-top button owns the corner at 76px and is 44px tall, and
+   the calendar's pill sits directly above it with a 12px gap. Both clear the
+   home indicator by the same inset, and the pill keeps the lower z-index, so if
+   a browser chrome ever reaches this far the button is the one that wins. */
+.cal-jump{position:fixed; right:16px; bottom:calc(132px + env(safe-area-inset-bottom, 0px)); z-index:48; background:var(--ink); color:white; border:1px solid var(--ink); padding:10px 14px; border-radius:999px; font:600 12.5px "IBM Plex Sans",sans-serif; box-shadow:0 8px 24px rgba(17,18,20,0.18); cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:transform .14s, box-shadow .14s, opacity .2s}
 .cal-jump:hover{transform:translateY(-1px); box-shadow:0 12px 28px rgba(17,18,20,0.22)}
 .cal-jump[hidden]{display:none !important}
-@media(max-width:640px){.cal-jump{right:12px; bottom:68px; padding:9px 12px; font-size:12px}}
+@media(max-width:640px){.cal-jump{right:12px; bottom:calc(128px + env(safe-area-inset-bottom, 0px)); padding:9px 12px; font-size:12px}}
 /* ===== BUILD YOUR IDEAL BULSU + BULSU PULSE — OSR red, editorial ===== */
 .pulse-tabs{display:flex; gap:6px; border:1px solid var(--line); background:var(--paper-2); padding:4px; border-radius:999px; width:fit-content; margin-top:8px}
 .pulse-tab{padding:6px 14px; border-radius:999px; border:1px solid transparent; background:white; font:600 12px "IBM Plex Sans",sans-serif; cursor:pointer; transition:all .14s; color:var(--ink-2)}
@@ -1446,6 +1472,13 @@ img,svg{max-width:100%; height:auto}
              "What the Office does" already lives on the About page, so it is
              not repeated here. -->
         <div class="hero__card hero__card--regent" id="regentCard" aria-label="Student Regent" hidden>
+          <!-- The Regent's photograph, when the office has supplied one. It is
+               the card's own top edge rather than a picture inside a box: the
+               print runs to the card's edges, is treated into the office's red
+               and ink, and fades into the paper at the bottom, so a portrait
+               taken anywhere lands in this palette. With no photograph the
+               block stays hidden and the initials below carry the card. -->
+          <div class="regent-card__portrait" id="regentPortrait" hidden><img id="regentPortraitImg" alt="" decoding="async"></div>
           <div class="hero__card-head regent-card__head">
             <span class="regent-card__eyebrow">Student Regent</span>
             <span class="regent-card__term" id="regentTerm">AY 2026–2027</span>
@@ -1731,12 +1764,53 @@ img,svg{max-width:100%; height:auto}
 .hero__card p{font-size:13.5px; line-height:1.65}
 
 /* ── Student Regent card ──────────────────────────────────────────────────
-   The masthead's one card. It is a person, not a panel of copy: photo, name,
-   term, one line in the Regent's own words, and the way to reach them. While
-   the office has not confirmed those details the card is hidden and .hero--solo
-   gives the masthead the full width, so no empty column is left behind. */
+   The masthead's one card. It is a person, not a panel of copy: photograph,
+   name, term, one line in the Regent's own words, and the way to reach them.
+   Until the office confirms a name the card is hidden and .hero--solo gives the
+   masthead the full width, so no empty column is left behind; the photograph
+   and the quotation each appear only when there is one to show.
+
+   --pad is the card's own padding, declared once so the portrait can run to the
+   card's edges without a second number to keep in step with it. */
 .hero--solo{grid-template-columns:minmax(0,1fr)}
 .hero--solo .hero__stage{display:none}
+.hero__card--regent{--pad:26px; padding:var(--pad)}
+@media(max-width:640px){.hero__card--regent{--pad:20px}}
+.regent-card__portrait{position:relative; isolation:isolate; height:240px; overflow:hidden; background:var(--paper-2);
+  margin:calc(var(--pad) * -1) calc(var(--pad) * -1) 0}
+@media(max-width:640px){.regent-card__portrait{height:200px}}
+/* Sized to the card, not to the source: at the masthead's right-hand column the
+   print is about 430px wide, so 240px tall keeps it near 3:2 — a head and
+   shoulders, where a shorter band would crop across somebody's eyes and a
+   taller one would outweigh the masthead beside it. Head and shoulders sit in
+   the upper third of almost every portrait, so the crop favours that rather
+   than centring on a lapel. */
+.regent-card__portrait img{display:block; width:100%; height:100%; object-fit:cover; object-position:50% 22%;
+  filter:grayscale(1) contrast(1.06); transition:filter .45s var(--ease)}
+/* The wash is what makes it belong: the office's red into its deep red into the
+   ink, laid over the greyscale in `color`, so the photograph keeps its own
+   light and takes the palette's hue. Half strength — a full duotone would turn
+   a person into a poster. */
+.regent-card__portrait:before{content:""; position:absolute; inset:0; z-index:1; pointer-events:none; opacity:.5;
+  background:linear-gradient(155deg, var(--red) 0%, #6E0F1F 58%, var(--ink) 100%); mix-blend-mode:color;
+  transition:opacity .45s var(--ease)}
+/* And the print is filed into the card rather than pasted on it: the bottom
+   fades to the paper the name is printed on, which is where the eye is meant to
+   go next. */
+.regent-card__portrait:after{content:""; position:absolute; inset:0; z-index:2; pointer-events:none;
+  background:linear-gradient(180deg, rgba(255,255,255,0) 44%, rgba(255,255,255,0.66) 82%, #fff 100%)}
+/* The one piece of motion the portrait has, and the visitor starts it: hold the
+   card and the real colours come back through the wash. */
+.hero__card--regent:hover .regent-card__portrait img,
+.hero__card--regent:focus-within .regent-card__portrait img{filter:grayscale(.16) contrast(1.02)}
+.hero__card--regent:hover .regent-card__portrait:before,
+.hero__card--regent:focus-within .regent-card__portrait:before{opacity:.22}
+/* With a portrait at the top the red file tab has nothing left to mark, and the
+   initials would be a second, smaller picture of the same person. The card's own
+   flex gap is all the space the eyebrow row needs below the print. */
+.hero__card--photo:after{display:none}
+.hero__card--photo .regent-card__person{grid-template-columns:minmax(0,1fr); gap:0}
+.regent-card__photo[hidden]{display:none}
 .regent-card__head{flex-direction:row; align-items:center; justify-content:space-between; gap:10px}
 .regent-card__eyebrow{font:700 10px "IBM Plex Mono",monospace; letter-spacing:0.1em; text-transform:uppercase; color:var(--red)}
 .regent-card__term{font:600 10.5px "IBM Plex Mono",monospace; letter-spacing:0.03em; color:var(--ink-2); background:var(--paper-2); border:1px solid var(--line); padding:3px 8px; border-radius:999px; white-space:nowrap}
@@ -2039,49 +2113,71 @@ img,svg{max-width:100%; height:auto}
    Every visitor on a mouse has been holding the operating system's arrow: black,
    identical over a link, over plain paper and over something disabled, and the
    one part of the page the site did not design. It is now the site's own
-   instrument in the site's own accent.
+   instrument — and it is still an arrow, because that is the shape forty years
+   of pointing has trained a hand to trust. A dot inside a ring reads as
+   decoration, and it hides the very thing it is standing on; an arrowhead says
+   where the click will land.
 
-   Two parts, because a pointer has to do two jobs at once. The dot sits exactly
+   Two parts, because a pointer has to do two jobs at once. The head sits exactly
    where the pointer is — no lag, so aiming at a 12px chip is never guesswork —
-   and the ring trails it by about five frames, which is the part that makes the
-   pointer feel like it has weight. The ring is also the state machine: it opens
-   and fills over anything clickable, closes on a press, becomes a text bar over
-   a field, and goes hollow and grey over something disabled, which is the one
-   affordance the plain arrow used to give away for free.
+   with its tip on the hotspot, cut in the ink the site writes in and edged in
+   paper so it separates from every surface it travels over, the white cards and
+   the ink footer alike. The ring trails it by about five frames and only appears
+   when there is something to say: over anything clickable, on a press, and over
+   something disabled, where it goes dashed and grey. Over plain paper it is not
+   there at all, so a page reads as paper with an arrow on it rather than as a
+   reticle following you around.
 
-   It is progressive enhancement, and it fails towards the system arrow: the
-   native cursor is only hidden once the script has mounted, so with JavaScript
-   off nothing changes at all. A touch device never gets it, because a finger is
+   Over a field the head becomes the caret it is standing in for. The whole thing
+   is progressive enhancement and it fails towards the system arrow: the native
+   cursor is only hidden once the script has mounted, so with JavaScript off
+   nothing changes at all. A touch device never gets it, because a finger is
    already its own cursor, and "reduce motion" gets the pointer without the
-   trail. The dot is 7px, above the 24px target rule only as a pointer, never as
-   a target. */
+   trail. */
 .osr-cursor{position:fixed; top:0; left:0; z-index:10000; pointer-events:none; opacity:0; contain:layout style;
+  /* The paper edge, drawn as light rather than as a second shape. It sits on the
+     parent and not on the child on purpose: a filter is applied before the
+     clip-path that cuts the arrowhead out, so on the child the edge would be cut
+     away with everything outside the polygon. */
+  filter:drop-shadow(0 0 1px rgba(255,255,255,0.92)) drop-shadow(0 1px 2px rgba(17,18,20,0.28));
   transition:opacity .18s linear}
 .osr-cursor__i{display:block; will-change:transform}
-.osr-cursor--dot .osr-cursor__i{width:7px; height:7px; margin:-3.5px 0 0 -3.5px; border-radius:999px; background:var(--red);
-  box-shadow:0 0 0 1.5px rgba(255,255,255,0.9);
-  transition:transform .18s var(--ease), width .18s var(--ease), height .18s var(--ease), margin .18s var(--ease), border-radius .18s var(--ease), background .18s var(--ease)}
-.osr-cursor--ring .osr-cursor__i{width:30px; height:30px; margin:-15px 0 0 -15px; border-radius:999px; border:1.5px solid rgba(166,25,46,0.5);
-  transition:transform .22s var(--ease), border-color .22s var(--ease), background .22s var(--ease), opacity .18s var(--ease)}
+/* The head: the seven-point arrow every hand already knows, at the 21px a system
+   arrow occupies, cut with clip-path so the fill can change colour without a
+   second image being swapped in. No negative margin — the tip is the element's
+   own top-left corner, which is precisely where the pointer is — and the
+   transform origin is that same corner, so a press shrinks the head towards its
+   tip instead of sliding it off the pixel the visitor was aiming at. */
+.osr-cursor--arrow .osr-cursor__i{width:14px; height:21px; background:var(--ink); transform-origin:0 0;
+  clip-path:polygon(0 0, 0 85.7%, 30.7% 65.2%, 49.3% 98.1%, 73.6% 90%, 55% 61.4%, 97.9% 61.4%);
+  transition:transform .18s var(--ease), width .18s var(--ease), height .18s var(--ease), margin .18s var(--ease), background .18s var(--ease)}
+/* The ring is quiet until it has something to say. */
+.osr-cursor--ring .osr-cursor__i{width:26px; height:26px; margin:-13px 0 0 -13px; border-radius:999px; border:1px solid var(--red);
+  opacity:0; transform:scale(.7);
+  transition:transform .22s var(--ease), border-color .22s var(--ease), border-style .22s, opacity .2s var(--ease)}
 html.cursor-on .osr-cursor{opacity:1}
 /* The system arrow is only taken away once the replacement is on screen. It has
    to be !important: eleven controls on this page set `cursor` in an inline style
    and three more set it on a `:disabled` rule, and any of them would otherwise
-   outrank this and leave a second, black arrow sitting under the red one. */
+   outrank this and leave a second, black arrow sitting under the site's own. */
 html.cursor-on,html.cursor-on *{cursor:none !important}
-/* Anything clickable: the ring opens and takes a wash of the accent. */
-.osr-cursor.is-link.osr-cursor--ring .osr-cursor__i{transform:scale(1.55); border-color:var(--red); background:rgba(166,25,46,0.08)}
-.osr-cursor.is-link.osr-cursor--dot .osr-cursor__i{transform:scale(.6)}
-/* A press closes the ring and fattens the dot — the same instant the ripple fires. */
-.osr-cursor.is-down.osr-cursor--ring .osr-cursor__i{transform:scale(.86)}
-.osr-cursor.is-down.osr-cursor--dot .osr-cursor__i{transform:scale(1.25)}
-.osr-cursor.is-link.is-down.osr-cursor--ring .osr-cursor__i{transform:scale(1.32)}
-/* Over a field the pointer becomes the caret it is standing in for. */
-.osr-cursor.is-text.osr-cursor--dot .osr-cursor__i{width:2px; height:19px; margin:-9.5px 0 0 -1px; border-radius:1px}
+/* Anything clickable: the head takes the accent and the ring comes up around it
+   at hairline weight — a state you can see without it covering the control. */
+.osr-cursor.is-link.osr-cursor--arrow .osr-cursor__i{background:var(--red)}
+.osr-cursor.is-link.osr-cursor--ring .osr-cursor__i{opacity:.5; transform:scale(1)}
+/* A press dips the head on its own tip and closes the ring, in the same instant
+   the ripple fires under it. */
+.osr-cursor.is-down.osr-cursor--arrow .osr-cursor__i{transform:scale(.88)}
+.osr-cursor.is-down.osr-cursor--ring .osr-cursor__i{opacity:.75; transform:scale(.82)}
+/* Over a field the head becomes the caret it is standing in for, centred on the
+   pointer the way a caret is centred between two letters. */
+.osr-cursor.is-text.osr-cursor--arrow .osr-cursor__i{clip-path:none; width:2px; height:19px; margin:-9.5px 0 0 -1px; border-radius:1px; background:var(--red); transform:none}
 .osr-cursor.is-text.osr-cursor--ring .osr-cursor__i{opacity:0}
-/* Disabled: the affordance the arrow used to carry, kept. */
-.osr-cursor.is-off.osr-cursor--ring .osr-cursor__i{border-color:var(--line-2); border-style:dashed; background:none}
-.osr-cursor.is-off.osr-cursor--dot .osr-cursor__i{transform:scale(.45); opacity:.55}
+/* Disabled: the affordance the system arrow gave away for free, kept. The head
+   goes to the stone this site uses for what cannot be used, and the ring that
+   would have been the accent is dashed and grey instead. */
+.osr-cursor.is-off.osr-cursor--arrow .osr-cursor__i{background:var(--stone-3); transform:scale(.9)}
+.osr-cursor.is-off.osr-cursor--ring .osr-cursor__i{opacity:.7; transform:scale(1); border-color:var(--stone-3); border-style:dashed}
 @media(prefers-reduced-motion:reduce){
   .osr-cursor,.osr-cursor__i{transition:none !important}
 }
@@ -2951,7 +3047,7 @@ html.cursor-on,html.cursor-on *{cursor:none !important}
         <div>
           <div class="eyebrow">Office of the University Registrar</div>
           <h2 id="calTitle">Calendar — OSR, Student Government & University Dates</h2>
-          <p>AY 2026–2027. Opens on the current month — search or filter by month and category, with the days remaining shown against each date.</p>
+          <p>AY 2026–2027. The whole record is on the page and it opens on the next date; search or filter by month and category, with the days remaining shown against each date.</p>
         </div>
         <span class="badge" id="calCount">Loading…</span>
       </div>
@@ -3473,12 +3569,13 @@ function renderHomeAnnouncements(){
   });
 })();
 
-/* SITE CURSOR — the site's own pointer, in the site's own red. Two parts with
-   two jobs: the dot sits exactly where the pointer is, so aiming at a 12px chip
-   is never guesswork, and the ring trails it by about five frames, which is the
-   part that gives the pointer weight. The ring is also the state machine — it
-   opens and fills over anything clickable, closes on a press, becomes a text
-   bar over a field, and goes hollow and grey over something disabled.
+/* SITE CURSOR — the site's own pointer: an arrowhead in the site's own ink,
+   edged in paper so it holds on any surface. Two parts with two jobs: the head
+   sits exactly where the pointer is, so aiming at a 12px chip is never
+   guesswork, and the ring trails it by about five frames — but only appears
+   where there is something to say. The ring is the state machine: it comes up
+   over anything clickable, closes on a press, and goes dashed and grey over
+   something disabled, while over a field the head itself becomes the caret.
 
    Progressive enhancement that fails towards the system arrow: the native
    cursor is only hidden once this has mounted, so with JavaScript off nothing
@@ -3499,7 +3596,7 @@ function renderHomeAnnouncements(){
     document.body.appendChild(el);
     return el;
   };
-  const dot=make("dot"), ring=make("ring");
+  const arrow=make("arrow"), ring=make("ring");
   const place=(el,x,y)=>{ el.style.transform="translate3d("+x.toFixed(2)+"px, "+y.toFixed(2)+"px, 0)"; };
 
   /* What the ring reacts to. A list rather than :hover styling, because the
@@ -3513,7 +3610,7 @@ function renderHomeAnnouncements(){
   const setState=next=>{
     if(next===state) return;
     state=next;
-    for(const el of [dot,ring]) for(const name of STATES) el.classList.toggle(name, name===next);
+    for(const el of [arrow,ring]) for(const name of STATES) el.classList.toggle(name, name===next);
   };
 
   let x=0, y=0, rx=0, ry=0, raf=0, live=false;
@@ -3534,7 +3631,7 @@ function renderHomeAnnouncements(){
       live=true; rx=x; ry=y; place(ring,rx,ry);
       document.documentElement.classList.add("cursor-on");   // this is what retires the system arrow
     }
-    place(dot,x,y);
+    place(arrow,x,y);
     if(calm.matches){ rx=x; ry=y; place(ring,rx,ry); }
     else if(!raf) raf=requestAnimationFrame(follow);
     const target=event.target instanceof Element ? event.target : null;
@@ -3545,8 +3642,8 @@ function renderHomeAnnouncements(){
       : "");
   }, {passive:true});
 
-  /* A press closes the ring at the same instant the ripple fires under it. */
-  const press=on=>()=>{ dot.classList.toggle("is-down", on); ring.classList.toggle("is-down", on); };
+  /* A press dips the head and closes the ring as the ripple fires under it. */
+  const press=on=>()=>{ arrow.classList.toggle("is-down", on); ring.classList.toggle("is-down", on); };
   document.addEventListener("pointerdown", event=>{ if(event.pointerType!=="touch") press(true)(); }, {passive:true});
   window.addEventListener("pointerup", press(false), {passive:true});
   window.addEventListener("pointercancel", press(false), {passive:true});
@@ -3568,7 +3665,11 @@ function setRoute(hash){
     const href=a.getAttribute("href")?.replace("#","");
     a.setAttribute("aria-current", href===key ? "page":"false");
   });
-  window.scrollTo({top:0, behavior:"smooth"});
+  /* One page places the student itself: the calendar keeps its whole record on
+     screen and walks to the next date on it, so its own scroll to the top has
+     to be instant or the walk starts before the page has settled. */
+  const placesItself = calEnter(key);
+  window.scrollTo({top:0, behavior: placesItself ? "auto" : "smooth"});
   closeDrawer(); closeCmd();
   // reveal reset
   requestAnimationFrame(()=> observeReveals());
@@ -4568,21 +4669,35 @@ function renderStudentRegent(overrides){
   if(!card) return;
   const data=Object.assign({}, STUDENT_REGENT, overrides||{});
   const name=confirmedText(data.name), message=confirmedText(data.message);
-  const ready=Boolean(name && message);
-  if(!ready){
+  const src=safePhoto(data.photo);
+  /* A confirmed name is what makes this a person rather than a placeholder. The
+     photograph and the line in the Regent's own words are each shown only when
+     the office has supplied one, so the card can carry a portrait with no
+     quotation, or a quotation with no portrait — but never an empty frame, and
+     never both pictures of the same face at once. */
+  if(!name){
     card.hidden=true;
     document.querySelector(".hero")?.classList.add("hero--solo");
     return;
   }
   document.getElementById("regentName").textContent=name;
-  document.getElementById("regentMessage").textContent=message;
+  const line=document.getElementById("regentMessage");
+  if(line){ line.textContent=message||""; line.hidden=!message; }
   const term=document.getElementById("regentTerm");
   if(term){ term.textContent=data.term||""; term.hidden=!data.term; }
-  const photo=document.getElementById("regentPhoto");
-  if(photo){
-    const src=safePhoto(data.photo);
-    photo.innerHTML = src ? `<img src="${escapeHtml(src)}" alt="">` : escapeHtml(regentInitials(name));
+  const portrait=document.getElementById("regentPortrait");
+  if(portrait){
+    portrait.hidden=!src;
+    const img=document.getElementById("regentPortraitImg");
+    // Decorative: the name it belongs to is printed directly underneath it.
+    if(img && src) img.src=src;
   }
+  const avatar=document.getElementById("regentPhoto");
+  if(avatar){
+    avatar.hidden=Boolean(src);
+    avatar.textContent=src ? "" : regentInitials(name);
+  }
+  card.classList.toggle("hero__card--photo", Boolean(src));
   const ask=card.querySelector('a[href="#help"]');
   if(ask && data.askHref) ask.setAttribute("href", data.askHref);
   card.hidden=false;
@@ -5903,28 +6018,12 @@ let calFilterCat="all";
 let calSearch="";
 let calView="month";
 
-/* The month the calendar opens on: the one today falls in. The record starts in
-   April 2026, so a student arriving in October used to land on a page whose
-   first entry was 179 days in the past. When the record has run past today, the
-   nearest month still ahead is used instead, and the last month of the record
-   is the final fallback — the page never opens on a date that has already gone
-   by if it can help it. */
-function calMonthLabel(date){
-  return `${date.toLocaleDateString("en-PH",{month:"long"})} ${date.getFullYear()}`;
-}
-function calCurrentMonth(){
-  const months=[...new Set(ACADEMIC_CALENDAR.map(e=>e.month))];
-  if(!months.length) return null;
-  const thisMonth=calMonthLabel(new Date());
-  if(months.includes(thisMonth)) return thisMonth;
-  const today=new Date(); today.setHours(12,0,0,0);
-  const ahead=[...ACADEMIC_CALENDAR].map(e=>({month:e.month, _d:calParseISO(e.iso)}))
-    .filter(e=>e._d && e._d>=today).sort((a,b)=>a._d-b._d);
-  return ahead.length ? ahead[0].month : months[months.length-1];
-}
-// Set once, after the month list exists: it is the page's starting state, and
-// "Reset" brings the filters back to it rather than to the whole academic year.
-let calHomeMonth=null;
+/* The calendar used to open *filtered* to the month today falls in, which put
+   the student on the right date by hiding eleven of the twelve months from
+   them. It now opens on the whole record and walks to the next date instead —
+   calFocusNext(), below, and the pill that keeps pointing at the same event.
+   Nothing is hidden to achieve the effect, so a student who wants April still
+   has April, one scroll away. */
 
 function renderDashCalendar(){
   const wrap=document.getElementById("dashCalList");
@@ -6034,6 +6133,30 @@ function populateCalMonths(){
   });
 }
 
+/* The next date on the record, and the walk to it. renderCalendar() writes the
+   event's id onto the pill, so both of these read one source and can never
+   disagree about which date is next. */
+function calNextEl(){
+  const jump=document.getElementById("calJumpNext");
+  const id=jump && jump.dataset.target;
+  return id ? document.getElementById("cal-evt-"+id) : null;
+}
+function calFocusNext(behavior){
+  const el=calNextEl();
+  if(!el) return false;
+  el.scrollIntoView({behavior:behavior||"smooth", block:"center"});
+  return true;
+}
+/* Opening the calendar page is the one moment it moves by itself. Called from
+   setRoute(), which has just put the window at the top instantly for this page
+   alone — a smooth scroll to the top would still be running when the walk
+   starts, and the two would fight each other down the page. */
+function calEnter(key){
+  if(key!=="academic-calendar") return false;
+  setTimeout(()=> calFocusNext(), 90);
+  return true;
+}
+
 function renderCalendar(){
   const grid=document.getElementById("calGrid");
   const list=document.getElementById("calList");
@@ -6050,20 +6173,25 @@ function renderCalendar(){
   }
   filtered.sort((a,b)=> new Date(a.iso)-new Date(b.iso));
   if(cnt) cnt.textContent=`${filtered.length} of ${ACADEMIC_CALENDAR.length} events`;
-  // find next upcoming id for jump
-  let nextId=null;
+  /* The next date is the nearest one today or later *in the view on screen*. A
+     filter that leaves nothing ahead of today has no next date, and the pill
+     says so by not being there: pointing at a date six months gone and calling
+     it "next" is worse than pointing at nothing. The same id feeds the mark on
+     the row and the walk the page makes on arrival, so the three cannot
+     disagree about which date is next. */
   const today=new Date(); today.setHours(12,0,0,0);
-  const sortedByDate=[...filtered].map(e=>({...e,_d:calParseISO(e.iso)})).filter(e=>e._d && e._d>=today).sort((a,b)=>a._d-b._d);
-  nextId = sortedByDate.length ? sortedByDate[0].id : (filtered[0] ? filtered[0].id : null);
+  const next=[...filtered].map(e=>({...e,_d:calParseISO(e.iso)})).filter(e=>e._d && e._d>=today).sort((a,b)=>a._d-b._d)[0]||null;
+  const nextId=next?next.id:null;
   if(jump){
-    if(nextId){
+    if(next){
       jump.hidden=false;
       jump.dataset.target=nextId;
-      const nd = sortedByDate.length ? sortedByDate[0] : filtered[0];
-      const dLbl = nd ? `${new Date(nd.iso).toLocaleDateString("en-PH",{month:"short"})} ${nd.date}` : "";
+      const dLbl=`${new Date(next.iso).toLocaleDateString("en-PH",{month:"short"})} ${next.date}`;
       jump.innerHTML=`Jump to next · ${escapeHtml2(dLbl)} <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="M5 12l7 7 7-7"/></svg>`;
     } else {
       jump.hidden=true;
+      // A stale target would leave the walk pointing at a row that is not there.
+      jump.removeAttribute("data-target");
     }
   }
   if(!filtered.length){
@@ -6082,7 +6210,7 @@ function renderCalendar(){
       const dateLabel=`${monShort} ${e.date}`;
       const cleaned=calCleanActivity(e.activity);
       const flag = cleaned.flagged ? `<sup style="color:var(--red); font-weight:700; margin-left:2px" title="Subject to adjustment">*</sup>` : "";
-      return `<div class="cal-event" id="cal-evt-${e.id}" style="border-left-color:${calCatColor(e.category)}">
+      return `<div class="cal-event${e.id===nextId ? ' cal-event--next' : ''}" id="cal-evt-${e.id}" style="border-left-color:${calCatColor(e.category)}">
         <div class="cal-event__date">${escapeHtml2(dateLabel)}</div>
         <div style="min-width:0">
           <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-bottom:3px"><span class="cal-badge ${bc}">${calBadgeIcon(e.category)} ${escapeHtml2(e.category)}</span></div>
@@ -6111,8 +6239,7 @@ function renderCalendar(){
         const cleaned=calCleanActivity(e.activity);
         const flag = cleaned.flagged ? `<sup style="color:var(--red); font-weight:700; margin-left:2px" title="Subject to adjustment">*</sup>` : "";
         const isNext = e.id===nextId;
-        const baseStyle = `border-left-color:${calCatColor(e.category)};` + (isNext ? 'background:#FFFBF5;' : '');
-        return `<div class="cal-event" id="cal-evt-${e.id}" style="${baseStyle}">
+        return `<div class="cal-event${isNext ? ' cal-event--next' : ''}" id="cal-evt-${e.id}" style="border-left-color:${calCatColor(e.category)}">
           <div class="cal-event__date">${escapeHtml2(dateLabel)}</div>
           <div style="min-width:0">
             <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center; margin-bottom:2px"><span class="cal-badge ${bc}">${calBadgeIcon(e.category)} ${escapeHtml2(e.category)}</span></div>
@@ -6127,7 +6254,7 @@ function renderCalendar(){
   if(todayEl) todayEl.textContent=`Today · ${new Date().toLocaleDateString("en-PH",{month:"long", day:"numeric", year:"numeric"})}`;
 }
 function resetCalFilters(){
-  calFilterMonth=calHomeMonth||"all"; calFilterCat="all"; calSearch="";
+  calFilterMonth="all"; calFilterCat="all"; calSearch="";
   const ms=document.getElementById("calMonth"); if(ms) ms.value=calFilterMonth;
   const cs=document.getElementById("calCategory"); if(cs) cs.value="all";
   const ss=document.getElementById("calSearch"); if(ss) ss.value="";
@@ -6146,21 +6273,10 @@ function bindCalendar(){
   if(c) c.addEventListener("change", e=>{ calFilterCat=e.target.value; renderCalendar(); });
   if(v) v.addEventListener("change", e=>{ calView=e.target.value; renderCalendar(); });
   if(r) r.addEventListener("click", resetCalFilters);
+  // The pill is only on screen while the date it names is on screen too, so the
+  // click has one job and no recovery path to get wrong.
   const jump=document.getElementById("calJumpNext");
-  if(jump) jump.addEventListener("click", ()=>{
-    const id=jump.dataset.target;
-    if(!id) return;
-    const el=document.getElementById("cal-evt-"+id);
-    if(el){ el.scrollIntoView({behavior:"smooth", block:"center"}); el.style.transition="background .4s"; const prev=el.style.background; el.style.background="#FFF7ED"; setTimeout(()=> el.style.background=prev||"", 900); }
-    else if(calView==="month"){
-      // if filtered view hides it, reset filters then retry
-      resetCalFilters();
-      setTimeout(()=>{
-        const el2=document.getElementById("cal-evt-"+id);
-        if(el2) el2.scrollIntoView({behavior:"smooth", block:"center"});
-      }, 120);
-    }
-  });
+  if(jump) jump.addEventListener("click", ()=> calFocusNext());
   // hide jump when not on calendar page
   const obsPage=()=>{
     const onCal = location.hash==="#academic-calendar";
@@ -6173,12 +6289,6 @@ function bindCalendar(){
 
 // init pulse (Build Your Ideal BulSU + BulSU Pulse)
 populateCalMonths();
-calHomeMonth=calCurrentMonth();
-if(calHomeMonth){
-  calFilterMonth=calHomeMonth;
-  const monthSelect=document.getElementById("calMonth");
-  if(monthSelect) monthSelect.value=calHomeMonth;
-}
 bindCalendar();
 renderCalendar();
 renderDashCalendar();

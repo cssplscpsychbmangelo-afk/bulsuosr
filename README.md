@@ -154,6 +154,52 @@ drag-and-drop bundle fails the suite.
 
 ## Recent fixes
 
+- **The calendar shows the whole record, then walks to today.** It used to open
+  *filtered* to the month today falls in, which answered "what is next" by
+  hiding eleven of the twelve months. Every month is now on the page, the month
+  filter is untouched on arrival, and `calEnter()` — called from `setRoute()` —
+  walks the student to the next date once, on arrival. That date carries
+  `.cal-event--next` in both views, and one id feeds the mark, the pill and the
+  walk so they cannot disagree. A filter that leaves nothing ahead of today has
+  no next date, so the pill is hidden rather than pointing at a date six months
+  gone and calling it "next"; the old fallback to the first filtered row, and
+  the click handler's reset-and-retry path that only existed to serve it, went
+  with it.
+- **The two controls in the bottom-right corner are stacked, not layered.** The
+  "Jump to next" pill sat at `bottom:72px` while the back-to-top button occupies
+  76px to 120px in the same corner, so the pill was underneath the button. It
+  now sits at `calc(132px + env(safe-area-inset-bottom))` — 12px of clear air
+  above the button, the same inset, a lower z-index — and the small-screen stack
+  keeps its gap.
+- **The Student Regent's photograph is filed into the masthead card.** A
+  confirmed name is what opens the card; the photograph and the quotation each
+  appear only when the office has supplied one, so a portrait with no quotation
+  works, a quotation with no portrait works, and an empty frame never does. When
+  there is a photograph it runs to the card's own edges, is cropped to favour a
+  face over a lapel, taken out of its own colours and washed in the office's red
+  to ink at half strength in `mix-blend-mode:color`, then faded into the white
+  the name is printed on. Holding or keyboard-focusing the card lets the real
+  colours back through. The red file tab and the initials circle step aside when
+  a portrait is there — two pictures of one face is one too many. Nothing was
+  invented to fill it: save a name and a photo in *Admin → About OSR* and the
+  card appears.
+- **The site's pointer is an arrow again.** A red dot inside a trailing ring read
+  as decoration and covered the control it was standing on. The head is now the
+  seven-point arrow, cut with `clip-path` in the site's ink, its tip on the
+  hotspot and edged in paper by a `drop-shadow` on the parent (a filter is
+  applied before the clip-path that cuts the child, so on the child the edge
+  would be cut away with it). It takes the accent over anything clickable, dips
+  on its own tip on a press, becomes the caret over a field and goes to stone
+  over something disabled. The ring stays as the state machine but is
+  `opacity:0` over plain paper, so a page reads as paper with an arrow on it
+  rather than as a reticle.
+- **The privacy notices on Get Help are fine print, not panels.** Three tinted,
+  rounded boxes inside three bordered cards is what made the page read as
+  clutter. Each notice is now a quiet block under the same hairline the rest of
+  the page divides with, its label in stone mono rather than the accent red, its
+  four points reading across a 138px label column wherever the card is wide
+  enough and stacking below that. All four answers, the consent gates and the
+  retention lines are unchanged; only the furniture moved.
 - **The About page is an office profile in three parts.** It answers what the
   mandate is, what the Office is and who is designated to it, and which
   university it serves — and stops there. The BulSU vision, mission and core

@@ -68,14 +68,23 @@ Reasons per R-31, dial per MOTION 2.
 - **Why nothing loops.** No pulse, no idle float, no sheen on a timer. Every
   movement in the hero is answered to a pointer or to an arrival, which is what
   MOTION 2 claims and what R-19 asks for.
-- **Why the pointer is red.** It is the one control every visitor on a mouse
-  already holds, and it was the only part of the page the site did not design.
-  The dot is the institutional accent at 7px — an accent, not a wash — and it
-  sits exactly on the pointer so aiming at a 12px chip is never guesswork. The
-  ring trails by about five frames, which is the part that gives the pointer
-  weight, and it carries the states the system arrow gave away: open over
-  anything clickable, closed on a press, a caret bar over a field, hollow and
-  grey over something disabled.
+- **Why the pointer is an arrow.** It is the one control every visitor on a mouse
+  already holds, and it was the only part of the page the site did not design —
+  but "designed" cannot mean "unrecognisable". A red dot inside a trailing ring
+  reads as decoration, and the ring covers the very chip it is hovering. So the
+  head is the seven-point arrow every hand already knows, at the 21px a system
+  arrow occupies, cut with `clip-path` in the ink the site writes in, its tip on
+  the hotspot and its `transform-origin` on that same corner so a press shrinks
+  it towards the pixel being aimed at. The paper edge is a `drop-shadow` on the
+  *parent*: a filter is applied before the clip-path that cuts the child, so on
+  the child the edge would be cut away with everything outside the polygon.
+- **Why the ring stayed, and went quiet.** It still trails by about five frames,
+  which is the part that gives the pointer weight, and it still carries the
+  states the system arrow gave away — but it is `opacity:0` over plain paper and
+  appears only where it has something to say: a hairline of the accent over
+  anything clickable, tighter on a press, dashed and grey over something
+  disabled. Over a field the head itself becomes the caret. The accent is for
+  the states, not for the shape.
 - **Why it fails towards the system arrow.** `cursor:none` is applied only under
   a class the script adds after it has mounted, so with JavaScript off the
   visitor keeps the OS pointer instead of losing one. Touch devices never get it
@@ -162,16 +171,56 @@ at the foot of every page taught nobody where to go.
   rather than the gaps between them, so the type stays at reading size and the
   targets stay at touching size.
 
+## The calendar shows the record, then walks to today
+The academic year is one document and a student should be able to read all of
+it, so the page opens on the whole record — every month, no filter applied —
+and then walks to the next date on it. Being put where you are and being locked
+there are different things: the old version opened *filtered* to the current
+month, which answered "what is next" by hiding eleven months. `calEnter()` runs
+from `setRoute()` and is the one page that places the student itself, so its
+scroll to the top is instant and the walk down is the only movement; a smooth
+scroll to the top would still be running when the walk starts and the two would
+fight. The date is marked with a warm wash and a hairline of the accent —
+`.cal-event--next` in both views — and the same id feeds the mark, the pill and
+the walk, so the three cannot disagree. A filter that leaves nothing ahead of
+today has no next date, and the pill says so by not being there: pointing at a
+date six months gone and calling it "next" is worse than pointing at nothing.
+
+Two controls live in the bottom-right corner, so they are stacked and not
+layered: the back-to-top button owns the corner at 76px and is 44px tall, the
+calendar's pill sits at 132px with a 12px gap, both clear the home indicator by
+the same inset, and the pill keeps the lower z-index.
+
 ## The masthead's card is a person
-The card beside the hero is the Student Regent — photo, name, term, one line in
-their own words, and **Ask the Regent** into the concern form. It is the same
-card the pointer tilts, so nothing about the motion changed; only its contents
-did. `STUDENT_REGENT` at the top of the site script and the Student Regent
-fields in *Admin → About OSR* both feed it, and until a name and a message exist
-the card is hidden and `.hero--solo` gives the masthead the full width, so no
-empty column is left beside it. The same saved person is the first name in
-"The Office" list on About — one record, two pages, and the About list does not
-repeat anyone the office has already typed into it.
+The card beside the hero is the Student Regent — photograph, name, term, one
+line in their own words, and **Ask the Regent** into the concern form. It is the
+same card the pointer tilts, so nothing about the motion changed; only its
+contents did. `STUDENT_REGENT` at the top of the site script and the Student
+Regent fields in *Admin → About OSR* both feed it. **A confirmed name is the
+gate**: with one, the card is a person; without one, it is hidden and
+`.hero--solo` gives the masthead the full width. The photograph and the
+quotation are each shown only when the office has supplied one, so the card can
+carry a portrait with no quotation, or a quotation with no portrait, and never
+an empty frame. The same saved person is the first name in "The Office" list on
+About — one record, two pages, and the About list does not repeat anyone the
+office has already typed into it.
+
+**The photograph is treated, not dropped in.** A portrait arrives from wherever
+it was taken — a phone, a scanned ID, a press shot — in colours this page did
+not choose, so it is filed rather than pasted: it runs to the card's own edges
+(`--pad`, declared once, and negative margins against it), the crop favours a
+face over a lapel (`object-position:50% 22%`), the image is taken out of its own
+colours (`grayscale(1)`) and the office's red into its deep red into the ink is
+laid over it in `mix-blend-mode:color` at half strength, which keeps the
+photograph's own light and gives it the palette's hue. A full duotone would turn
+a person into a poster; half a wash keeps them a person. The bottom of the print
+fades to the white the name is printed on, so the eye is carried from the face
+to the name instead of stopping at an edge, and `isolation:isolate` keeps the
+wash blending with the photograph and not with the page behind it. Holding the
+card — or focusing it with the keyboard — lets the real colours back through:
+the one piece of motion the portrait has, and the visitor starts it. The red
+file tab steps aside when there is a portrait, and the initials circle goes with
+it, because two pictures of one face is one too many.
 
 ## Office details have one home
 `OFFICIAL_LINKS`, `FOOTER_OFFICE`, `PRIVACY_RETENTION` and `STUDENT_REGENT` sit
@@ -187,7 +236,14 @@ and in the seed.
 ## Forms: consent is a gate, not fine print
 Every form on Get Help carries a privacy notice under its title — what is
 collected, why, who can see it, how long it is kept — and an "I agree to the
-privacy notice." checkbox immediately above its send button. The row turns red
+privacy notice." checkbox immediately above its send button. The notice is set
+as fine print and not as a panel: three of them sit inside three bordered cards
+on one page, and three tinted, rounded boxes inside three boxes is what made Get
+Help read as clutter. A hairline above, the label in the stone mono the page's
+other labels wear at the smallest size the site uses, four points that read
+across in a 138px label column wherever the card is wide enough for one and
+stack below that — the accent red is left for what a student has to act on,
+which on this page is the consent gate itself. The row turns red
 when a submission is refused for want of it, the page's own submit handler stops
 the request, and the API refuses it again, because a control that only looks
 required is not required. The retention sentence is `PRIVACY_RETENTION`: empty,
