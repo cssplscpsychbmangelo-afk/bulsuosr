@@ -785,10 +785,10 @@ dialog.confirm-dialog::backdrop{background:rgba(17,18,20,.48)}
         <button class="topbar-nav-link" type="button" data-tab="media">Media</button>
         <button class="topbar-nav-link" type="button" data-tab="contact">Contact</button>
         <button class="topbar-nav-link" type="button" data-tab="leadership">Leadership</button>
-        <button class="topbar-nav-link" type="button" data-tab="staff">Staff</button>
         <button class="topbar-nav-link" type="button" data-tab="about">About</button>
         <button class="topbar-nav-link" type="button" data-tab="pulse">Pulse</button>
         <button class="topbar-nav-link" type="button" data-tab="settings">Settings</button>
+        <button class="topbar-nav-link" type="button" data-tab="staff">Staff</button>
       </nav>
       <header class="page-header">
         <div>
@@ -1164,7 +1164,7 @@ const pageMeta = {
   concerns: ['Students', 'Concerns', 'Read student concerns, reply, and move each one through Received → In review → Responded → Closed. Students see your reply with their tracking code.', '', ''],
   ratings: ['Students', 'Service ratings', 'Every “Rate the BulSU OSR” submission, with a one-click PDF summary for transparency.', '', ''],
   submissions: ['Students', 'Organization submissions', 'Positions, resolutions, requests and statements filed by student councils and organizations, with the signed document each one carries.', '', ''],
-  media: ['Administration 08', 'Media library', 'Manage uploaded files and externally hosted images.', 'Add media', 'media'],
+  media: ['Administration 08', 'Media library', 'Manage the image links the site and the portrait pickers use.', 'Add media', 'media'],
   contact: ['Administration 09', 'Contact & details', 'Control the email, phone, office and social details shown on the public site.', '', ''],
   staff: ['Administration 10a', 'Office staff', 'Add and manage the office staff shown on the site.', 'Add staff', 'staff'],
   leadership: ['Administration 10', 'Leadership', 'The archive on the public About page: two primary figures and a directorate of eight, each one written, ordered and published here.', 'Add a record', 'leadership'],
@@ -1684,15 +1684,15 @@ async function renderMedia() {
     section.innerHTML = `
       <div class="card">
         <div class="section-head">
-          <div><h3>Media records</h3><span class="mono">${rows.length} ${rows.length === 1 ? 'item' : 'items'} · Files are limited to 3 MB</span>
+          <div><h3>Media records</h3><span class="mono">${rows.length} ${rows.length === 1 ? 'item' : 'items'}</span>
             <label class="check" style="margin-top:8px"><input type="checkbox" data-select-all aria-label="Select every media item"> Select all</label>
           </div>
-          <div class="actions"><button id="showMediaForm" class="btn btn--red" type="button">Add image link</button><button class="btn btn--ghost" type="button" data-upload-media>Upload file</button><input id="mediaFile" type="file" accept="image/jpeg,image/png,image/webp,application/pdf,.doc,.docx,.txt" hidden></div>
+          <div class="actions"><button id="showMediaForm" class="btn btn--red" type="button">Add image link</button></div>
         </div>
         <form class="form media-form" id="mediaForm" hidden>
           <h3>Add an image link</h3>
           <label>Title *<input name="title" required></label>
-          <label>HTTPS image URL *<input name="url" type="url" required placeholder="https://example.com/image.jpg"></label>
+          <label>HTTPS image URL *<input name="url" type="url" required placeholder="https://example.com/image.jpg or a Google Drive link"></label>
           <label>Caption<input name="caption"></label>
           <label>Category<input name="category"></label>
           <label>Visibility<select name="status"><option>Draft</option><option>Published</option></select></label>
@@ -1702,11 +1702,11 @@ async function renderMedia() {
       ${bulkBarHTML('media')}
       <div class="media-grid" style="margin-top:14px">${rows.map(record => `<article class="card media-card">
         <label class="check"><input type="checkbox" data-select="${esc(record.id)}" aria-label="Select ${esc(record.title || record.original_name || 'media item')}"> Select</label>
-        ${record.file_type?.startsWith('image/') ? `<img loading="lazy" src="${esc(record.url)}" alt="${esc(record.caption || record.title || record.original_name || '')}">` : ''}
+        ${record.file_type?.startsWith('image/') ? `<img loading="lazy" src="${esc(directImageUrl(record.url))}" alt="${esc(record.caption || record.title || record.original_name || '')}">` : ''}
         <b>${esc(record.title || record.original_name)}</b>
         <p>${esc(record.caption || record.file_type || 'File')} · <span class="badge ${statusClass(record.status || 'Published')}">${esc(record.status || 'Published')}</span></p>
         <div class="actions"><button class="btn btn--ghost btn--sm" type="button" data-edit="${esc(record.id)}">Edit</button>${record.status === 'Archived' ? '' : `<button class="btn btn--ghost btn--sm" type="button" data-archive="${esc(record.id)}">Archive</button>`}<a class="btn btn--ghost btn--sm" href="${esc(record.url)}" target="_blank" rel="noopener">Open file</a></div>
-      </article>`).join('') || '<div class="empty">No media has been added yet. Use Add image link or Upload file to add the first item.</div>'}</div>
+      </article>`).join('') || '<div class="empty">No media has been added yet. Use Add image link to add the first item.</div>'}</div>
       <div id="mediaEdit"></div>`;
 
     {
@@ -1723,26 +1723,9 @@ async function renderMedia() {
       linkForm.hidden = true;
       $('#showMediaForm').focus();
     });
-    section.querySelector('[data-upload-media]').addEventListener('click', () => $('#mediaFile').click());
     linkForm.addEventListener('submit', event => submitForm(event, '/api/media/link', () => renderMedia()));
     bindBulkControls('media');
     refreshBulkUI('media');
-    $('#mediaFile').addEventListener('change', async event => {
-      const file = event.target.files[0];
-      if (!file) return;
-      if (file.size > 3 * 1024 * 1024) return toast('The selected file exceeds the 3 MB limit.');
-      const data = new FormData();
-      data.append('file', file);
-      event.target.disabled = true;
-      try {
-        await api('/api/media/upload', { method: 'POST', body: data });
-        toast('The file was uploaded.');
-        await renderMedia();
-      } catch (error) {
-        toast(`Upload failed: ${error.message}`);
-        event.target.disabled = false;
-      }
-    });
 
     section.onclick = async event => {
       const button = event.target.closest('[data-edit],[data-archive]');
@@ -2330,9 +2313,9 @@ const ABOUT_SECTIONS = [
 // One-item-per-line fields, stored as an array and edited as a paragraph.
 const ABOUT_LINE_FIELDS = ['mandate_items'];
 
-/* The Media library's images, offered as a picker wherever a photograph can be
-   filed. The Leadership tab loads it too: a portrait is uploaded there, not
-   pasted in by hand. */
+/* The Media library's image links, offered as a picker wherever a photograph
+   can be filed. The Leadership tab loads it too, so a portrait can be picked
+   here instead of pasted in by hand. */
 let photoLibrary = [];
 
 async function loadPhotoLibrary() {
@@ -2345,7 +2328,7 @@ async function loadPhotoLibrary() {
 
 function photoPickerHTML(name, attr) {
   if (!photoLibrary.length) return '';
-  return `<select class="photo-pick" ${attr}="${name}" aria-label="Pick an uploaded photo"><option value="">Pick from media library…</option>${photoLibrary.map(item => `<option value="${esc(item.url)}">${esc(item.title || item.original_name || item.url)}</option>`).join('')}</select>`;
+  return `<select class="photo-pick" ${attr}="${name}" aria-label="Pick a photo from the media library"><option value="">Pick from media library…</option>${photoLibrary.map(item => `<option value="${esc(item.url)}">${esc(item.title || item.original_name || item.url)}</option>`).join('')}</select>`;
 }
 
 function aboutFieldHTML([key, label, type], values) {
@@ -2391,7 +2374,7 @@ async function renderStaff() {
         <article class="row record" data-staff-id="${esc(row.id)}">
           <div class="record-main">
             <div class="row-head" style="gap:10px;align-items:center">
-              <span class="row-avatar" aria-hidden="true">${row.photo ? `<img src="${esc(row.photo)}" alt="">` : esc(row.name ? row.name[0] : '—')}</span>
+              <span class="row-avatar" aria-hidden="true">${row.photo ? `<img src="${esc(directImageUrl(row.photo))}" alt="">` : esc(row.name ? row.name[0] : '—')}</span>
               <div style="min-width:0">
                 <b style="font-size:13.5px">${esc(row.name)}</b>
                 <span class="badge" style="margin-left:4px">${esc(row.role || '—')}</span>
@@ -2625,7 +2608,7 @@ const LD_FIELDS = [
   ['position', 'Position', 'text', 'The role printed under the name — Student Regent, Director of Academic Affairs.'],
   ['category', 'Shelf', 'category', 'Primary leaders are the two large cards at the top; the directorate is the strip below them.'],
   ['number', 'Printed number', 'number', 'Leave empty to number by order: 01 and 02 for the primary figures, 01D to 08D for the directorate.'],
-  ['photo', 'Portrait', 'photo', 'Paste an https:// image link, or pick a file uploaded in the Media library. With no portrait the record is drawn as the archive’s own numbered plate.'],
+  ['photo', 'Portrait', 'photo', 'Paste an https:// image link or a Google Drive link to the picture, or pick one from the Media library. With no portrait the record is drawn as the archive’s own numbered plate.'],
   ['short_bio', 'Short description', 'textarea', 'One or two lines. This is what appears when a card opens.'],
   ['quote', 'Quotation', 'textarea', 'In the person’s own words, shown in the full record rather than on the card.'],
   ['biography', 'Biography', 'textarea', 'The paragraph the full record opens with.'],
@@ -2656,6 +2639,24 @@ const ldIsSafePhoto = value => {
   const link = String(value || '').trim();
   return Boolean(link) && ((link.startsWith('/') && !link.startsWith('//')) || /^https:\/\/\S+$/i.test(link));
 };
+/* A Google Drive share link is a page that hosts a file, not the file itself:
+   pasted straight into an <img> it draws nothing. Recognise the common Drive
+   shapes and swap them for the direct image endpoint, so a Drive link filed as
+   a portrait previews here and renders on the site like any image link. */
+const directImageUrl = value => {
+  const link = String(value || '').trim();
+  if (!/^https:\/\//i.test(link)) return link;
+  try {
+    const url = new URL(link);
+    const host = url.hostname.replace(/^www\./i, '').toLowerCase();
+    if (host !== 'drive.google.com' && host !== 'docs.google.com') return link;
+    const id = (url.pathname.match(/\/(?:file\/)?d\/([A-Za-z0-9_-]{10,})/) || [])[1]
+      || (url.searchParams.get('id') || '').trim();
+    if (/^[A-Za-z0-9_-]{10,}$/.test(id)) return `https://lh3.googleusercontent.com/d/${id}`;
+  } catch { /* not a URL — returned unchanged */ }
+  return link;
+};
+const ldPhotoSrc = value => ldIsSafePhoto(value) ? directImageUrl(value) : '';
 const ldSeatNumber = (category, position) => {
   const sequence = String(position).padStart(2, '0');
   return category === 'primary' ? sequence : `${sequence}D`;
@@ -2678,7 +2679,7 @@ function ldFieldHTML([key, label, type, hint], record) {
     return `<label>${esc(label)}<textarea name="${key}" rows="${type === 'lines' ? 4 : 3}"${type === 'lines' ? ' data-ld-lines="1"' : ''}>${esc(text)}</textarea>${small}</label>`;
   }
   if (type === 'photo') {
-    return `<label>${esc(label)}<input name="${key}" type="text" value="${esc(text)}" placeholder="https://… or /uploads/…" data-ld-photo>${small}${photoPickerHTML(key, 'data-pick-name')}</label>`;
+    return `<label>${esc(label)}<input name="${key}" type="text" value="${esc(text)}" placeholder="https://… or a Google Drive link" data-ld-photo>${small}${photoPickerHTML(key, 'data-pick-name')}</label>`;
   }
   return `<label>${esc(label)}<input name="${key}" type="${type === 'email' ? 'email' : 'text'}" value="${esc(text)}"${type === 'number' ? ' maxlength="12" placeholder="01D"' : ''}>${small}</label>`;
 }
@@ -2709,7 +2710,7 @@ function ldValidate(values) {
     const text = String(values[key] || '');
     if (text.length > max) return `${LD_FIELD_LABELS[key]} is too long — ${text.length} characters, the limit is ${max}.`;
   }
-  if (values.photo && !ldIsSafePhoto(values.photo)) return 'The portrait must be an https:// image link or a file from the Media library.';
+  if (values.photo && !ldIsSafePhoto(values.photo)) return 'The portrait must be an https:// image link, a Google Drive link, or a pick from the Media library.';
   for (const key of ['facebook', 'instagram']) {
     if (values[key] && !/^https:\/\/\S+$/i.test(values[key])) return `${LD_FIELD_LABELS[key]} must be an https:// link, or empty.`;
   }
@@ -2730,7 +2731,7 @@ function ldNavItemHTML(record) {
   const hidden = Number(record.is_published) !== 1;
   const marks = [hidden ? 'hidden' : '', sample ? 'sample' : ''].filter(Boolean).join(' · ');
   return `<div class="ld-nav-item${active ? ' is-active' : ''}" data-ld-id="${esc(record.id)}" draggable="true">
-    <span class="row-avatar" aria-hidden="true">${ldIsSafePhoto(record.photo) ? `<img src="${esc(record.photo)}" alt="">` : esc(ldInitials(record.name))}</span>
+    <span class="row-avatar" aria-hidden="true">${ldPhotoSrc(record.photo) ? `<img src="${esc(ldPhotoSrc(record.photo))}" alt="">` : esc(ldInitials(record.name))}</span>
     <span class="ld-nav-item__text">
       <span class="ld-nav-item__num">${esc(record.display_number || '—')}${marks ? ` · ${esc(marks)}` : ''}</span>
       <span class="row-title">${esc(record.name)}</span>
@@ -2810,7 +2811,7 @@ function ldPreviewRows() {
 
 function ldpCardHTML(row, kind) {
   const cls = kind === 'leader' ? 'ldp-leader' : 'ldp-card';
-  const photo = ldIsSafePhoto(row.photo) ? row.photo : '';
+  const photo = ldPhotoSrc(row.photo);
   const active = kind === 'card' && String(row.id) === String(ldSelected);
   return `<div class="${cls}${active ? ' is-active' : ''}${Number(row.is_published) === 0 ? ' is-draft' : ''}" data-ldp-id="${esc(row.id)}">
     <span class="ldp-media" aria-hidden="true">${photo ? `<img src="${esc(photo)}" alt="" loading="lazy">` : '<span class="ldp-plate"></span>'}</span>
@@ -2853,7 +2854,7 @@ function ldPreviewSync() {
   if (values.number) set('.ldp-num', values.number);
   card.classList.toggle('is-draft', values.is_published === 0);
   const media = card.querySelector('.ldp-media');
-  const wanted = ldIsSafePhoto(values.photo) ? values.photo : '';
+  const wanted = ldPhotoSrc(values.photo);
   const shown = media.querySelector('img') ? media.querySelector('img').getAttribute('src') : '';
   if (wanted !== shown) media.innerHTML = wanted ? `<img src="${esc(wanted)}" alt="" loading="lazy">` : '<span class="ldp-plate"></span>';
 }

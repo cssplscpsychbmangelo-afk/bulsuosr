@@ -205,7 +205,7 @@ img{max-width:100%}
 .reveal.is-visible{opacity:1; transform:none}
 
 /* hero — premium editorial */
-.hero{display:grid; grid-template-columns:1.18fr 0.82fr; gap:32px; padding:28px 0 12px}
+.hero{display:grid; grid-template-columns:1.05fr 0.95fr; gap:32px; padding:28px 0 12px}
 @media(max-width:960px){.hero{grid-template-columns:1fr; gap:20px}}
 .hero__kicker{font:700 11px "IBM Plex Mono",monospace; letter-spacing:0.14em; text-transform:uppercase; color:var(--red); border:1px solid #FFD0D6; background:var(--red-3); padding:6px 10px; border-radius:999px; display:inline-flex; align-items:center; gap:6px}
 .hero__kicker:before{content:"•"; font-size:10px}
@@ -1590,13 +1590,13 @@ img,svg{max-width:100%; height:auto}
         <span class="hero__plate hero__plate--deep" aria-hidden="true"></span>
         <span class="hero__plate" aria-hidden="true"></span>
         <!-- The card beside the masthead belongs to the Student Regent: who
-             holds the seat this term, one line in their own words, and the
-             direct way to reach them. The details come from STUDENT_REGENT in
-             the site script (and from Admin → About OSR once the office saves
-             them). Until a name and a message exist the card stays hidden and
-             the masthead takes the full width — a placeholder is never shown.
-             "What the Office does" already lives on the About page, so it is
-             not repeated here. -->
+             holds the seat this term, their portrait, one line in their own
+             words, and the direct way to reach them. The name, term and message
+             come from Admin → About OSR; the portrait is filed once in the
+             leadership archive (Admin → Leadership) and the card shows it from
+             there, falling back to initials until one is filed. Until a name
+             exists the card stays hidden and the masthead takes the full width
+             — a placeholder is never shown. -->
         <div class="hero__card hero__card--regent" id="regentCard" aria-label="Student Regent" hidden>
           <div class="hero__card-head regent-card__head">
             <span class="regent-card__eyebrow">Student Regent</span>
@@ -1889,9 +1889,10 @@ img,svg{max-width:100%; height:auto}
    width, so no empty column is left behind; the quotation appears only when
    there is one to show.
 
-   The portrait that used to be filed into the top of this card now lives in the
-   leadership archive on About, where it is one of ten records instead of the
-   only photograph on the homepage — and where the office edits it. */
+   The portrait is filed once, in the leadership archive on About, and the card
+   shows it from there — a Google Drive link pasted in the dashboard is
+   rewritten to a direct image by safePhoto. With no portrait filed, initials
+   carry the card. */
 .hero--solo{grid-template-columns:minmax(0,1fr)}
 .hero--solo .hero__stage{display:none}
 .regent-card__head{flex-direction:row; align-items:center; justify-content:space-between; gap:10px}
@@ -1902,7 +1903,21 @@ img,svg{max-width:100%; height:auto}
 .regent-card__who{min-width:0}
 .regent-card__who h3{margin:0; font:600 19px/1.2 var(--font-display); letter-spacing:-0.01em; overflow-wrap:anywhere}
 .regent-card__message{margin:6px 0 0; font-size:13.5px; line-height:1.55; color:var(--stone)}
+.regent-card__photo img{width:100%; height:100%; object-fit:cover; object-position:50% 22%; display:block}
 .hero__card--regent .hero__card-actions{margin-top:2px}
+/* On a phone the compact card is right, but beside the full-size masthead on a
+   wide screen it read as a stamp: the column now takes almost half the hero and
+   the person on the card grows with it, so both halves carry the same weight. */
+@media(min-width:961px){
+  .hero__card--regent{padding:30px; gap:18px}
+  .regent-card__person{grid-template-columns:96px minmax(0,1fr); gap:18px}
+  .regent-card__photo{width:96px; height:96px; font-size:30px}
+  .regent-card__who h3{font-size:24px}
+  .regent-card__message{font-size:15px; line-height:1.6; margin-top:8px}
+  .regent-card__eyebrow{font-size:11px}
+  .regent-card__term{font-size:12px; padding:4px 10px}
+  .hero__card--regent .hero__card-actions .btn--sm{padding:9px 16px; font-size:13px}
+}
 @media(max-width:420px){
   .regent-card__person{grid-template-columns:52px minmax(0,1fr); gap:12px}
   .regent-card__photo{width:52px; height:52px; font-size:17px}
@@ -4689,13 +4704,32 @@ const confirmedText = value => {
   const text = String(value || "").trim();
   return text && !ABOUT_UNCONFIRMED.includes(text.toLowerCase()) ? text : "";
 };
-/* A photo is either a file this site serves or an https:// image. Anything
-   else — a javascript: URL, a protocol-relative host, a stray word — is
-   dropped, and the row simply shows no photo. */
+/* A Google Drive share link is a page that hosts a file, not the file itself,
+   so pasting one into a photo field used to draw a broken image. Recognise the
+   common Drive shapes — /file/d/ID/…, /open?id=ID, /uc?id=ID, /d/ID — and swap
+   them for the direct image endpoint the same file is served from, so a pasted
+   Drive link behaves exactly like an image link. Anything else passes through. */
+const directImageUrl = src => {
+  const link = String(src || "").trim();
+  if(!/^https:\/\//i.test(link)) return link;
+  try{
+    const url = new URL(link);
+    const host = url.hostname.replace(/^www\./i, "").toLowerCase();
+    if(host !== "drive.google.com" && host !== "docs.google.com") return link;
+    const id = (url.pathname.match(/\/(?:file\/)?d\/([A-Za-z0-9_-]{10,})/) || [])[1]
+      || (url.searchParams.get("id") || "").trim();
+    if(/^[A-Za-z0-9_-]{10,}$/.test(id)) return `https://lh3.googleusercontent.com/d/${id}`;
+  }catch{ /* not a URL — returned unchanged below */ }
+  return link;
+};
+/* A photo is either a file this site serves or an https:// image (a Drive
+   share link is rewritten to its direct image first). Anything else — a
+   javascript: URL, a protocol-relative host, a stray word — is dropped, and
+   the row simply shows no photo. */
 const safePhoto = src => {
   const link = String(src || "").trim();
   if(link.startsWith("/") && !link.startsWith("//")) return link;
-  return /^https:\/\/\S+$/i.test(link) ? link : "";
+  return /^https:\/\/\S+$/i.test(link) ? directImageUrl(link) : "";
 };
 
 /* About page · the leadership archive. Two primary figures and a directorate of
@@ -4885,26 +4919,33 @@ window.LEADERSHIP = LEADERSHIP;
 window.renderLeadership = renderLeadership;
 window.openLeadershipRecord = openLeadershipRecord;
 /* The dashboard hands over the published records; the page decides how to draw
-   them, so the static build and the API-backed one behave identically. */
+   them, so the static build and the API-backed one behave identically. The
+   Regent's portrait on the masthead card comes from these same records, so it
+   is re-filed whenever they arrive. */
 window.applyLeadership = function(rows){
   LEADERSHIP = Array.isArray(rows) ? rows : [];
   window.LEADERSHIP = LEADERSHIP;
+  renderStudentRegent({ photo: regentPhotoFromLeadership() });
   renderLeadership();
 };
 
 function regentInitials(name){
   return String(name).trim().split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join("") || "SR";
 }
+/* Every renderStudentRegent call merges into this, so the name the CMS hands
+   over and the portrait the leadership archive hands over survive each other. */
+let regentOverrides={};
 /* Shows the homepage Student Regent card only when there is a real person to
    show. `overrides` lets the CMS hand over the name, term and message it saved
-   in Admin → About OSR without a redeploy. The card carries initials rather than
-   a portrait: the Regent's photograph belongs to the leadership archive on
-   About, where it is one of ten records instead of the only face on the
-   homepage. */
+   in Admin → About OSR without a redeploy, and the leadership archive hand over
+   the Regent's portrait. The photograph is filed once, in the archive; when the
+   archive holds one for the Regent the card shows it, and with none filed the
+   card falls back to initials so a person is never a blank. */
 function renderStudentRegent(overrides){
   const card=document.getElementById("regentCard");
   if(!card) return;
-  const data=Object.assign({}, STUDENT_REGENT, overrides||{});
+  Object.assign(regentOverrides, overrides||{});
+  const data=Object.assign({}, STUDENT_REGENT, regentOverrides);
   const name=confirmedText(data.name), message=confirmedText(data.message);
   /* A confirmed name is what makes this a person rather than a placeholder. The
      line in the Regent's own words is shown only when the office has supplied
@@ -4920,11 +4961,31 @@ function renderStudentRegent(overrides){
   const term=document.getElementById("regentTerm");
   if(term){ term.textContent=data.term||""; term.hidden=!data.term; }
   const avatar=document.getElementById("regentPhoto");
-  if(avatar) avatar.textContent=regentInitials(name);
+  if(avatar){
+    const src=safePhoto(data.photo);
+    if(src){ avatar.innerHTML=`<img src="${escapeHtml(src)}" alt="">`; }
+    else{ avatar.innerHTML=""; avatar.textContent=regentInitials(name); }
+  }
   const ask=card.querySelector('a[href="#help"]');
   if(ask && data.askHref) ask.setAttribute("href", data.askHref);
   card.hidden=false;
   document.querySelector(".hero")?.classList.remove("hero--solo");
+}
+/* The portrait on the masthead card is the archive's portrait of the Regent:
+   the published record whose name matches the card's, or — when the names were
+   filed differently — the primary seat whose position names the Regent. A
+   Google Drive link pasted there is normalised by safePhoto like any photo. */
+function regentPhotoFromLeadership(){
+  const norm=value=>String(value||"").toLowerCase().replace(/\s+/g," ").trim();
+  const name=norm(confirmedText(Object.assign({}, STUDENT_REGENT, regentOverrides).name));
+  /* The public endpoint already hands over published records only, so the page
+     never asks who is withdrawn. */
+  const rows=(Array.isArray(LEADERSHIP)?LEADERSHIP:[])
+    .filter(row=>row && confirmedText(row.name) && safePhoto(row.photo));
+  const byName=name && rows.find(row=>norm(row.name)===name);
+  const bySeat=rows.find(row=>row.category==="primary" && /regent/i.test(String(row.position||"")));
+  const seat=byName || bySeat;
+  return seat ? safePhoto(seat.photo) : "";
 }
 window.renderStudentRegent = renderStudentRegent;
 // Exported so js/cms-integration.js can override them from Admin → Contact &

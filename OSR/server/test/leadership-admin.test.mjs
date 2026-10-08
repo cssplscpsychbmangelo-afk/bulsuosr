@@ -216,7 +216,7 @@ test('the editor refuses what the API would refuse, before asking it', async () 
   const cases = [
     ['name', '', /needs a name/],
     ['quote', 'q'.repeat(341), /too long — 341 characters, the limit is 340/],
-    ['photo', 'javascript:alert(1)', /https:\/\/ image link or a file from the Media library/],
+    ['photo', 'javascript:alert(1)', /https:\/\/ image link, a Google Drive link, or a pick from the Media library/],
     ['facebook', 'facebook.com/osr', /must be an https:\/\/ link/],
     ['email', 'not-an-email', /is not a valid email address/],
     ['responsibilities', Array.from({ length: 15 }, (_, index) => `Line ${index}`).join('\n'), /at most 14 lines/],
