@@ -1,7 +1,7 @@
 import pg from 'pg';
 import { AsyncLocalStorage } from 'node:async_hooks';
 import { frontendSource } from '../paths.js';
-import { initializeDatabase } from './schema.js';
+import { initializeDatabase, LEADERSHIP_DDL } from './schema.js';
 import { seedFromFrontend } from './seed.js';
 
 // All identifiers here are fixed application tables, never request input.
@@ -86,6 +86,16 @@ export async function migrateDatabase(db, sourcePath) {
     await db.query(`CREATE INDEX IF NOT EXISTS idx_event_status ON osr.calendar_events(status, iso)`);
         await db.query('INSERT INTO osr.schema_migrations (version) VALUES (2)');
       }
+      if (!(await db.prepare('SELECT version FROM osr.schema_migrations WHERE version=3').get())) {
+    // Additive migration for installations that predate the leadership archive:
+    // the public About page reads this table on every load, so a database
+    // without it answers every /api/leadership request with a missing relation
+    // and the dashboard can never publish a profile. The statement is the same
+    // one a fresh install runs (schema.js LEADERSHIP_DDL) and is IF NOT EXISTS,
+    // so it never touches records that are already there.
+    await db.exec(LEADERSHIP_DDL);
+        await db.query('INSERT INTO osr.schema_migrations (version) VALUES (3)');
+      }
       // Ensure jwt_secret is loaded into env for standalone mode even after migration
       try {
         const row = await db.prepare('SELECT value FROM osr.site_settings WHERE key=$1').get('jwt_secret');
@@ -103,7 +113,7 @@ export async function migrateDatabase(db, sourcePath) {
       window_start TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
       attempts INTEGER NOT NULL DEFAULT 1
     )`);
-    await db.query('INSERT INTO osr.schema_migrations (version) VALUES (1), (2)');
+    await db.query('INSERT INTO osr.schema_migrations (version) VALUES (1), (2), (3)');
   })();
   // Outside transaction: ensure JWT_SECRET env is set from DB for standalone mode
   // (schema.js already sets it, but we double-check after migration)
