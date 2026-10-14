@@ -1407,6 +1407,30 @@ img,svg{max-width:100%; height:auto}
    would have been invisible. */
 .ld-duo__card .ld-hit:focus-visible{outline:2px solid var(--red); outline-offset:-3px}
 
+/* ── The directorate, at dashboard size ──
+   A tray of small tiles rather than the archive's strip: eight people are a
+   roster here, not the signature of the page, and a row that expands on hover
+   would make the dashboard the About page. So each one is a line in a grid —
+   plate, seat, name, portfolio — four across on a desktop, and the full record
+   is still one tap away. The head is the archive's own, so the two pages share
+   the rule and the type even where they do not share the layout. */
+.ld-directorate{margin-top:24px}
+.ld-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(268px,1fr)); gap:10px; margin-top:10px}
+.ld-tile{position:relative; isolation:isolate; display:grid; grid-template-columns:52px minmax(0,1fr);
+  gap:12px; align-items:center; padding:12px; background:#fff;
+  border:1px solid var(--line); border-radius:8px;
+  transition:border-color .3s var(--ease), box-shadow .3s var(--ease), transform .3s var(--ease)}
+.ld-tile__frame{position:relative; isolation:isolate; overflow:hidden; width:52px; height:52px; border-radius:5px; background:var(--ink)}
+.ld-tile__frame .ld-media{transform:scale(1.08); filter:grayscale(1) contrast(1.05) brightness(.74) blur(1.5px)}
+.ld-tile__body{min-width:0}
+.ld-tile__num{display:block; font:600 9.5px "IBM Plex Mono",monospace; letter-spacing:.16em; color:var(--red)}
+.ld-tile__name{margin:2px 0 0; font:600 14.5px/1.25 var(--font-body); letter-spacing:-0.01em; color:var(--ink); overflow-wrap:anywhere}
+.ld-tile__role{margin:3px 0 0; font:600 9.5px "IBM Plex Mono",monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--stone)}
+.ld-tile:hover, .ld-tile:focus-within{border-color:rgba(166,25,46,.45); box-shadow:0 10px 22px rgba(17,18,20,.08); transform:translateY(-2px)}
+.ld-tile:hover .ld-media, .ld-tile:focus-within .ld-media{transform:scale(1.04); filter:grayscale(.15) contrast(1.02) brightness(.94) blur(0)}
+.ld-tile:hover .ld-media:after, .ld-tile:focus-within .ld-media:after{opacity:.16}
+.ld-tile .ld-hit:focus-visible{outline:2px solid var(--red); outline-offset:-3px}
+
 /* ── The record: what a card opens into ──
    The site's own modal, so the archive does not ship a second dialog. */
 .ld-rec{display:grid; gap:18px}
@@ -1440,6 +1464,9 @@ img,svg{max-width:100%; height:auto}
   .ld-duo{grid-template-columns:minmax(0,1fr)}
   .ld-duo__card{grid-template-columns:76px minmax(0,1fr); gap:12px; padding:13px 14px}
   .ld-duo__frame{width:76px; height:76px}
+  .ld-directorate{margin-top:20px}
+  .ld-tile{grid-template-columns:44px minmax(0,1fr); gap:10px; padding:11px}
+  .ld-tile__frame{width:44px; height:44px}
 }
 /* On a touch device there is no preview state to hide behind, so the description
    and the cue are simply printed: the first tap selects, the second opens. The
@@ -1449,6 +1476,8 @@ img,svg{max-width:100%; height:auto}
   .ld-card__role{opacity:1}
   .ld-duo__frame .ld-media{transform:scale(1.02); filter:grayscale(.15) contrast(1.03) brightness(.94) blur(0)}
   .ld-duo__frame .ld-media:after{opacity:.16}
+  .ld-tile__frame .ld-media{transform:scale(1.04); filter:grayscale(.15) contrast(1.02) brightness(.94) blur(0)}
+  .ld-tile__frame .ld-media:after{opacity:.16}
 }
 #page-about .ab-university{margin:0; font-size:14.5px; line-height:1.6; color:var(--ink-2); max-width:64ch}
 #page-about .ab-extern{display:inline-block; margin-top:12px; padding-bottom:2px; font:600 12.5px "IBM Plex Mono",monospace; color:var(--red); border-bottom:1px solid #FFD0D6}
@@ -1792,11 +1821,12 @@ img,svg{max-width:100%; height:auto}
       </div>
     </div>
 
-    <!-- THE TWO SEATS — the Office's own two, on the dashboard. The same two
-         records the archive on About leads with, held at the size a dashboard row
-         can carry: a small portrait plate, the seat, the name, one line, and the
-         way into the full record. Every field is published from Admin →
-         Leadership; with nothing published the section is not drawn at all. -->
+    <!-- THE OFFICE ON THE DASHBOARD — the two seats first, then the directorate
+         as a tray of small tiles. The same records the archive on About leads
+         with, held at the size a dashboard row can carry: a small portrait plate,
+         the seat, the name, and the way into the full record. Every field is
+         published from Admin → Leadership; with nothing published the section is
+         not drawn at all. -->
     <section class="section reveal" id="homeLeadership" aria-labelledby="homeLeadershipTitle" hidden>
       <div class="section__head">
         <div>
@@ -1807,6 +1837,13 @@ img,svg{max-width:100%; height:auto}
         <a class="btn btn--sm btn--ghost" href="#about" data-nav>The whole Office</a>
       </div>
       <div class="ld-duo" id="homeLeadershipCards"></div>
+      <div class="ld-directorate" id="homeDirectorate" hidden>
+        <div class="ld-board__head">
+          <h3 class="ld-board__title" id="homeDirectorateTitle">The Directorate</h3>
+          <p class="ld-board__note">Open a card for the full record</p>
+        </div>
+        <div class="ld-grid" id="homeDirectorateCards"></div>
+      </div>
     </section>
 
     <style>
@@ -4938,6 +4975,19 @@ const ldDuoCard = row => `<article class="ld-duo__card" data-id="${ldEsc(row.id)
   ${ldHit(row)}
 </article>`;
 
+/* A director, at the size the tray carries: the plate, the seat, the name and
+   the portfolio, and nothing that would not fit in 268px. The description lives
+   in the record, where there is room for it. */
+const ldTileCard = row => `<article class="ld-tile" data-id="${ldEsc(row.id)}">
+  <span class="ld-tile__frame">${ldMedia(row)}</span>
+  <div class="ld-tile__body">
+    ${row.display_number ? `<span class="ld-tile__num">${ldEsc(row.display_number)}</span>` : ""}
+    <h4 class="ld-tile__name">${ldEsc(row.name)}</h4>
+    ${row.position ? `<p class="ld-tile__role">${ldEsc(row.position)}</p>` : ""}
+  </div>
+  ${ldHit(row)}
+</article>`;
+
 function ldSetActive(id){
   ldOpenId=String(id||"");
   const strip=document.getElementById("ldStrip");
@@ -4957,6 +5007,8 @@ function renderLeadership(){
   const empty=document.getElementById("ldEmpty");
   const duoBox=document.getElementById("homeLeadershipCards");
   const duoSection=document.getElementById("homeLeadership");
+  const tray=document.getElementById("homeDirectorate");
+  const trayCards=document.getElementById("homeDirectorateCards");
 
   const rows=(Array.isArray(LEADERSHIP)?LEADERSHIP:[]).filter(row=>row && confirmedText(row.name)).map(row=>Object.assign({}, row, {
     name: confirmedText(row.name),
@@ -4979,13 +5031,23 @@ function renderLeadership(){
     ldSetActive(directors.some(row=>String(row.id)===ldOpenId) ? ldOpenId : ldFirstCardId());
   }
   if(empty) empty.hidden=Boolean(leaders.length || directors.length);
-  /* The homepage pair is the archive's own two seats, drawn from the same rows:
+  /* The homepage Office is the archive's own records, drawn from the same rows:
      nothing published, no section — a dashboard row of empty cards would be the
-     same lie the archive refuses to tell. */
-  if(duoBox && duoSection){
+     same lie the archive refuses to tell. Either shelf alone is enough to draw
+     it, and each shelf disappears on its own when the office has not filled it. */
+  if(duoBox){
     duoBox.innerHTML=leaders.map(ldDuoCard).join("");
-    duoSection.hidden=!leaders.length;
+    duoBox.hidden=!leaders.length;
   }
+  if(trayCards && tray){
+    trayCards.innerHTML=directors.map(ldTileCard).join("");
+    tray.hidden=!directors.length;
+    /* The heading is the office's own — the same field the archive prints — so
+       a title edited in Admin → About OSR is not written twice. */
+    const trayTitle=document.getElementById("homeDirectorateTitle");
+    if(trayTitle) trayTitle.textContent=confirmedText((document.getElementById("ldBoardTitle")||{}).textContent) || "The Directorate";
+  }
+  if(duoSection) duoSection.hidden=!(leaders.length || directors.length);
   updateRegentRecord();
 }
 
@@ -5070,8 +5132,9 @@ function bindLeadership(){
    masthead card's quiet second action is bound here too — it is the same record,
    reached from the person's name on the dashboard. */
 function bindHomeLeadership(){
-  const box=document.getElementById("homeLeadershipCards");
-  if(box && !box.dataset.bound){
+  for(const id of ["homeLeadershipCards", "homeDirectorateCards"]){
+    const box=document.getElementById(id);
+    if(!box || box.dataset.bound) continue;
     box.dataset.bound="1";
     box.addEventListener("click", event=>{
       const hit=event.target && event.target.closest ? event.target.closest("[data-record]") : null;

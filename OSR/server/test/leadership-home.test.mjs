@@ -52,6 +52,8 @@ function homePage({ coarse = false } = {}) {
     apply: rows => window.applyLeadership(rows),
     section: () => document.getElementById('homeLeadership'),
     cards: () => [...document.querySelectorAll('.ld-duo__card')],
+    tiles: () => [...document.querySelectorAll('.ld-tile')],
+    tray: () => document.getElementById('homeDirectorate'),
     regent: data => window.renderStudentRegent(data),
     regentRecord: () => document.getElementById('regentRecord'),
     modalOpen: () => document.getElementById('detailModal').hasAttribute('open'),
@@ -66,10 +68,14 @@ test('with nothing published the homepage does not grow a row of empty cards', a
   assert.ok(page.section().hidden, 'but it is not drawn until somebody is published');
   page.apply([]);
   assert.equal(page.cards().length, 0);
+  assert.equal(page.tiles().length, 0);
   assert.ok(page.section().hidden);
   page.apply([{ id: 'ld-1', category: 'director', name: 'Ben Santos', display_number: '01D', is_published: 1 }]);
-  assert.ok(page.section().hidden, 'the directorate belongs to the archive, not to the dashboard row');
-  assert.equal(page.cards().length, 0);
+  assert.ok(!page.section().hidden, 'the directorate is part of the Office on the dashboard too');
+  assert.equal(page.tiles().length, 1);
+  assert.equal(page.cards().length, 0, 'but the two seats are not invented to keep it company');
+  assert.ok(page.document.getElementById('homeLeadershipCards').hidden,
+    'and the empty shelf is put away rather than left as a gap');
 });
 
 test('the two seats are drawn from the same rows, in the order the office filed them', async t => {
@@ -111,6 +117,53 @@ test('a name is printed, never parsed', async t => {
   assert.equal(card.querySelector('.ld-duo__name').textContent, '<img src=x onerror=alert(1)>');
 });
 
+test('the directorate is drawn under the two seats, in the order it was filed', async t => {
+  const page = homePage();
+  t.after(page.close);
+  page.apply(ARCHIVE.concat([
+    { id: 'ld-dddd', category: 'director', name: 'Carla Mendoza', position: 'Director, Finance', display_number: '02D', short_bio: 'Budget and transparency.', is_published: 1 },
+    { id: 'ld-eeee', category: 'director', name: '', position: 'Director, Nothing', display_number: '03D', is_published: 1 }
+  ]));
+  assert.equal(page.cards().length, 2, 'the two seats stay above it');
+  assert.deepEqual(page.tiles().map(tile => tile.dataset.id), ['ld-cccc', 'ld-dddd']);
+  assert.deepEqual(page.tiles().map(tile => tile.querySelector('.ld-tile__num').textContent), ['01D', '02D']);
+  assert.equal(page.tiles()[0].querySelector('.ld-tile__name').textContent, 'Ben Santos');
+  assert.equal(page.tiles()[0].querySelector('.ld-tile__role').textContent, 'Director, Academic Affairs');
+  assert.equal(page.tiles()[0].querySelectorAll('.ld-tile__bio').length, 0,
+    'a tile is a line in a tray, so the description is left to the record where there is room for it');
+  assert.equal(page.tiles().length, 2, 'and a seat with nobody in it is not printed');
+  assert.ok(!page.tray().hidden);
+  assert.equal(page.document.getElementById('homeDirectorateTitle').textContent, 'The Directorate');
+});
+
+test('a tile is one control over one plate, and opens the record where the visitor is', async t => {
+  const page = homePage();
+  t.after(page.close);
+  page.apply(ARCHIVE);
+  const tile = page.tiles()[0];
+  const hit = tile.querySelector('.ld-hit');
+  assert.equal(hit.tagName, 'BUTTON');
+  assert.equal(hit.dataset.record, 'ld-cccc');
+  assert.match(hit.getAttribute('aria-label'), /Open the record of Ben Santos, Director, Academic Affairs/);
+  assert.equal(tile.querySelectorAll('.ld-plate').length, 1, 'no portrait filed: the archive’s own plate');
+  assert.equal(tile.querySelectorAll('img').length, 0);
+  hit.click();
+  assert.ok(page.modalOpen());
+  assert.equal(page.window.location.hash, '');
+  assert.equal(page.document.getElementById('modalTitle').textContent, 'Ben Santos');
+  assert.match(page.document.getElementById('modalEyebrow').textContent, /The Directorate$/);
+});
+
+test('the tray takes the heading the office wrote for the archive', async t => {
+  const page = homePage();
+  t.after(page.close);
+  page.apply(ARCHIVE);
+  page.document.getElementById('ldBoardTitle').textContent = 'Board of Directors';
+  page.apply(ARCHIVE);
+  assert.equal(page.document.getElementById('homeDirectorateTitle').textContent, 'Board of Directors',
+    'a title edited in Admin → About OSR is not written twice');
+});
+
 test('clicking a card opens the record where the visitor is', async t => {
   const page = homePage();
   t.after(page.close);
@@ -145,6 +198,12 @@ test('the pair is drawn at dashboard size, and the plate is developed on a touch
     'the focus ring is the accent on paper, where the archive’s pink would be invisible');
   const touch = html.slice(html.indexOf('@media(hover:none){'), html.indexOf('#page-about .ab-university'));
   assert.match(touch, /\.ld-duo__frame \.ld-media\{[^}]*blur\(0\)/s, 'no hover to clear it, so the plate is printed developed');
+  assert.match(touch, /\.ld-tile__frame \.ld-media\{[^}]*blur\(0\)/s, 'and the same for every plate in the tray');
   const narrow = html.slice(html.indexOf('@media(max-width:760px){\n  .ld-leaders'), html.indexOf('@media(hover:none){'));
   assert.match(narrow, /\.ld-duo\{grid-template-columns:minmax\(0,1fr\)\}/, 'and on a phone the pair stacks');
+  // Eight people are a roster on the dashboard, not the signature of the page.
+  assert.match(html, /\.ld-grid\{[^}]*repeat\(auto-fill, minmax\(268px,1fr\)\)/s,
+    'the tray fills the row it is given — four across on a desktop, two on a phone');
+  assert.ok(!/\.ld-tile\{[^}]*aspect-ratio/s.test(html), 'a tile is a line, not a portrait');
+  assert.match(html, /\.ld-tile \.ld-hit:focus-visible\{outline:2px solid var\(--red\)/, 'and it is focused in the accent, on paper');
 });

@@ -282,16 +282,18 @@ the public page cannot print it. "Remove samples" deletes exactly those rows and
 nothing the office wrote. It is how the layout and the motion get checked before
 anybody has been appointed, and it is why the archive can ship empty.
 
-## The two seats are on the dashboard too
+## The Office is on the dashboard too
 The Student Regent and the Executive Director are printed on the homepage as a
 pair of cards — a portrait plate the width of a stamp, the seat number, the name,
-the position, one line, and the way into the full record. It is **the same two
-rows** the archive on About leads with, read from `LEADERSHIP` in the order the
+the position, one line, and the way into the full record — with **the directorate
+under them as a tray of small tiles**: plate, seat, name, portfolio. It is **the
+same rows** the archive on About prints, read from `LEADERSHIP` in the order the
 office filed them, so there is no second copy of the data to keep in step: a
 record published, reordered or withdrawn in *Admin → Leadership* changes both
 pages at once. With nothing published the section is not drawn — not even a
 heading — because a dashboard row of empty cards is the same lie the archive
-refuses to tell.
+refuses to tell. Either shelf alone is enough to draw the section, and a shelf
+the office has not filled is put away rather than left as a gap.
 
 - **The archive's treatment, at dashboard distance.** The plate is the archive's
   own `.ld-media`: greyscale under the red-to-ink wash, blurred at rest, and it
@@ -307,6 +309,16 @@ refuses to tell.
   `#FFC9D1` because it was written for cards on ink; these cards are paper, where
   that pink measures next to nothing, so the ring is the institutional red
   (7.2:1 on white).
+- **The directorate is a tray, not the strip.** Eight people are a roster on the
+  dashboard, not the signature of the page: the 320px row that expands on hover
+  is the one moving thing on About, and repeating it here would turn the
+  homepage into the About page. So a director is a line in a grid
+  (`repeat(auto-fill, minmax(268px,1fr))` — four across on a desktop, two on a
+  phone, one at the narrowest), carrying only what fits in 268px: the plate, the
+  seat number, the name and the portfolio. The description is left to the record,
+  where there is room for it. The head above it is the archive's own
+  `.ld-board__head`, and its title is read from `#ldBoardTitle`, so a heading the
+  office edits in *Admin → About OSR* is never written twice.
 - **One tap opens the record where the visitor is.** There is no strip to
   reorganise and no preview state, so a click goes straight to
   `openLeadershipRecord()` and the site's own modal — the homepage is not a place
