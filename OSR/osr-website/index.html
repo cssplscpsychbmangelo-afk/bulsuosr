@@ -1304,20 +1304,25 @@ img,svg{max-width:100%; height:auto}
 .ld-hit:focus-visible{outline:2px solid #FFC9D1; outline-offset:-3px}
 
 /* ── The two primary figures ── */
-.ld-leaders{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:14px}
-.ld-leader{position:relative; isolation:isolate; overflow:hidden; aspect-ratio:4/5; background:var(--ink);
+.ld-leaders{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px}
+/* Two across at 3:2, not the 4:5 they were cut at. At the width the About page
+   gives them a standing figure is over half a screen tall — two of them are a
+   poster, not a record — so they lie down into a landscape plate: the portrait
+   still reads, the caption sits in the lower third, and the pair is something a
+   visitor passes rather than something they have to scroll around. */
+.ld-leader{position:relative; isolation:isolate; overflow:hidden; aspect-ratio:3/2; min-height:190px; background:var(--ink);
   border:1px solid var(--line); border-radius:6px;
   transition:border-color .35s var(--ease), box-shadow .35s var(--ease)}
 .ld-leader .ld-media{transform:scale(1.04); filter:grayscale(1) contrast(1.06) brightness(.7) blur(2px)}
-.ld-leader__body{position:absolute; z-index:3; left:0; right:0; bottom:0; padding:18px 18px 16px; color:#fff;
+.ld-leader__body{position:absolute; z-index:3; left:0; right:0; bottom:0; padding:15px 16px 14px; color:#fff;
   background:linear-gradient(180deg, rgba(17,18,20,0) 0%, rgba(17,18,20,.5) 52%, rgba(17,18,20,.94) 100%)}
 .ld-leader__num{display:block; font:600 10px "IBM Plex Mono",monospace; letter-spacing:.16em; color:#FFC9D1}
-.ld-leader__name{margin:7px 0 0; font:700 clamp(21px,2.3vw,28px)/1.04 var(--font-display); letter-spacing:-0.02em; color:#fff; overflow-wrap:anywhere}
-.ld-leader__role{margin:7px 0 0; font:600 10.5px "IBM Plex Mono",monospace; letter-spacing:.1em; text-transform:uppercase; color:#D5CEC7}
-.ld-leader__bio{margin:9px 0 0; font-size:13px; line-height:1.55; color:#D5CEC7; max-width:34ch;
+.ld-leader__name{margin:6px 0 0; font:700 clamp(18px,1.9vw,23px)/1.06 var(--font-display); letter-spacing:-0.02em; color:#fff; overflow-wrap:anywhere}
+.ld-leader__role{margin:6px 0 0; font:600 10px "IBM Plex Mono",monospace; letter-spacing:.1em; text-transform:uppercase; color:#D5CEC7}
+.ld-leader__bio{margin:8px 0 0; font-size:12.5px; line-height:1.5; color:#D5CEC7; max-width:38ch;
   opacity:0; transform:translateY(6px);
   transition:opacity .35s var(--ease) .08s, transform .35s var(--ease) .08s}
-.ld-leader__cue{display:block; margin-top:11px; font:600 10px "IBM Plex Mono",monospace; letter-spacing:.13em; text-transform:uppercase; color:#FFC9D1;
+.ld-leader__cue{display:block; margin-top:9px; font:600 9.5px "IBM Plex Mono",monospace; letter-spacing:.13em; text-transform:uppercase; color:#FFC9D1;
   opacity:0; transform:translateY(6px);
   transition:opacity .35s var(--ease) .14s, transform .35s var(--ease) .14s}
 .ld-leader:hover, .ld-leader:focus-within{border-color:rgba(166,25,46,.55); box-shadow:0 18px 40px rgba(17,18,20,.16)}
@@ -1367,6 +1372,41 @@ img,svg{max-width:100%; height:auto}
 .ld-strip.is-open .ld-card:not(.is-active) .ld-card__name{opacity:.6}
 .ld-empty{margin:16px 0 0; font-size:13.5px; line-height:1.55; color:var(--stone); max-width:56ch}
 
+/* ── The two seats on the homepage ─────────────────────────────────────────
+   The same two records the archive leads with, printed at the size a dashboard
+   row can carry: a portrait plate the width of a stamp, the seat, the name, one
+   line, and the way into the full record. It is the archive's own treatment —
+   greyscale under the red-to-ink wash, clearing as the card is pointed at — so
+   the homepage and About are visibly the same archive, only at different
+   distances. Nothing here is a second copy of the data: it reads LEADERSHIP
+   like the rest of the block and disappears with it. */
+.ld-duo{display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px}
+.ld-duo__card{position:relative; isolation:isolate; display:grid; grid-template-columns:88px minmax(0,1fr);
+  gap:14px; align-items:center; min-height:120px; padding:14px 16px;
+  background:#fff; border:1px solid var(--line); border-left:4px solid var(--red); border-radius:8px;
+  transition:border-color .3s var(--ease), box-shadow .3s var(--ease), transform .3s var(--ease)}
+/* The plate: a square of ink, blushed, holding either the portrait or the
+   archive's drawn bust. It clears the way every other portrait on the site
+   does, so a face is something you look at rather than something you are shown. */
+.ld-duo__frame{position:relative; isolation:isolate; overflow:hidden; width:88px; height:88px; border-radius:6px; background:var(--ink)}
+.ld-duo__frame .ld-media{transform:scale(1.06); filter:grayscale(1) contrast(1.05) brightness(.72) blur(1.5px)}
+.ld-duo__body{min-width:0}
+.ld-duo__num{display:block; font:600 10px "IBM Plex Mono",monospace; letter-spacing:.16em; color:var(--red)}
+.ld-duo__name{margin:3px 0 0; font:700 clamp(18px,1.7vw,21px)/1.12 var(--font-display); letter-spacing:-0.015em; color:var(--ink); overflow-wrap:anywhere}
+.ld-duo__role{margin:4px 0 0; font:600 10px "IBM Plex Mono",monospace; letter-spacing:.1em; text-transform:uppercase; color:var(--stone)}
+.ld-duo__bio{margin:6px 0 0; font-size:12.5px; line-height:1.5; color:var(--stone); max-width:46ch}
+.ld-duo__cue{display:inline-flex; align-items:center; gap:6px; margin-top:8px;
+  font:600 9.5px "IBM Plex Mono",monospace; letter-spacing:.12em; text-transform:uppercase; color:var(--red)}
+.ld-duo__cue svg{flex:0 0 auto; transition:transform .25s var(--ease)}
+.ld-duo__card:hover, .ld-duo__card:focus-within{border-color:rgba(166,25,46,.45); box-shadow:0 12px 28px rgba(17,18,20,.09); transform:translateY(-2px)}
+.ld-duo__card:hover .ld-media, .ld-duo__card:focus-within .ld-media{transform:scale(1.02); filter:grayscale(.15) contrast(1.03) brightness(.94) blur(0)}
+.ld-duo__card:hover .ld-media:after, .ld-duo__card:focus-within .ld-media:after{opacity:.16}
+.ld-duo__card:hover .ld-duo__cue svg{transform:translateX(3px)}
+/* The archive's focus ring is a light pink for ink cards; these cards are
+   paper, so the ring is the accent instead — 7.2:1 on white, where #FFC9D1
+   would have been invisible. */
+.ld-duo__card .ld-hit:focus-visible{outline:2px solid var(--red); outline-offset:-3px}
+
 /* ── The record: what a card opens into ──
    The site's own modal, so the archive does not ship a second dialog. */
 .ld-rec{display:grid; gap:18px}
@@ -1388,18 +1428,27 @@ img,svg{max-width:100%; height:auto}
 /* ── No hover, no cursor: the strip becomes a swipeable row ── */
 @media(max-width:760px){
   .ld-leaders{grid-template-columns:minmax(0,1fr)}
-  .ld-leader{aspect-ratio:5/4}
+  /* Stacked on a phone the card is the full width of the page, so it is held a
+     little taller than it is side by side — 4:3 leaves the printed description
+     room instead of letting the caption climb over the whole plate. */
+  .ld-leader{aspect-ratio:4/3}
   .ld-strip{height:auto; gap:10px; overflow-x:auto; scroll-snap-type:x proximity; padding-bottom:6px;
     -webkit-overflow-scrolling:touch; scrollbar-width:thin}
   .ld-card{flex:0 0 66%; height:290px; scroll-snap-align:center}
   .ld-card.is-active{flex-grow:0}
   .ld-rec__media{height:200px}
+  .ld-duo{grid-template-columns:minmax(0,1fr)}
+  .ld-duo__card{grid-template-columns:76px minmax(0,1fr); gap:12px; padding:13px 14px}
+  .ld-duo__frame{width:76px; height:76px}
 }
 /* On a touch device there is no preview state to hide behind, so the description
-   and the cue are simply printed: the first tap selects, the second opens. */
+   and the cue are simply printed: the first tap selects, the second opens. The
+   homepage pair has no preview at all, so its plate is simply developed. */
 @media(hover:none){
   .ld-leader__bio, .ld-leader__cue{opacity:1; transform:none}
   .ld-card__role{opacity:1}
+  .ld-duo__frame .ld-media{transform:scale(1.02); filter:grayscale(.15) contrast(1.03) brightness(.94) blur(0)}
+  .ld-duo__frame .ld-media:after{opacity:.16}
 }
 #page-about .ab-university{margin:0; font-size:14.5px; line-height:1.6; color:var(--ink-2); max-width:64ch}
 #page-about .ab-extern{display:inline-block; margin-top:12px; padding-bottom:2px; font:600 12.5px "IBM Plex Mono",monospace; color:var(--red); border-bottom:1px solid #FFD0D6}
@@ -1590,16 +1639,22 @@ img,svg{max-width:100%; height:auto}
         <span class="hero__plate hero__plate--deep" aria-hidden="true"></span>
         <span class="hero__plate" aria-hidden="true"></span>
         <!-- The card beside the masthead belongs to the Student Regent: who
-             holds the seat this term, their portrait, one line in their own
-             words, and the direct way to reach them. The name, term and message
-             come from Admin → About OSR; the portrait is filed once in the
-             leadership archive (Admin → Leadership) and the card shows it from
-             there, falling back to initials until one is filed. Until a name
-             exists the card stays hidden and the masthead takes the full width
-             — a placeholder is never shown. -->
+             holds the seat this term, one line in their own words, and the
+             direct way to reach them. The name, term and message come from
+             Admin → About OSR. Until the office confirms a name the card stays
+             hidden and the masthead takes the full width — a placeholder is
+             never shown. No portrait is filed here: the seal carries the
+             initials, and a photograph filed in the archive replaces them.
+
+             It is drawn as an official card rather than as a panel of copy, so
+             it carries itself against the masthead: a filing rule down the edge,
+             a seal where a face would be, the one line set as a quotation, and
+             the one action the card exists for spanning its width. Red stays an
+             accent — the rule, the seal's ring, the button — and never becomes a
+             wash. -->
         <div class="hero__card hero__card--regent" id="regentCard" aria-label="Student Regent" hidden>
           <div class="hero__card-head regent-card__head">
-            <span class="regent-card__eyebrow">Student Regent</span>
+            <span class="regent-card__eyebrow"><span class="regent-card__dot" aria-hidden="true"></span>Student Regent</span>
             <span class="regent-card__term" id="regentTerm">AY 2026–2027</span>
           </div>
           <div class="regent-card__person">
@@ -1609,8 +1664,12 @@ img,svg{max-width:100%; height:auto}
               <p class="regent-card__message" id="regentMessage"></p>
             </div>
           </div>
-          <div class="hero__card-actions">
-            <a class="btn btn--sm btn--red" href="#help" data-nav data-help="concern">Ask the Regent <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
+          <div class="hero__card-actions regent-card__actions">
+            <a class="btn btn--red regent-card__ask" href="#help" data-nav data-help="concern">Ask the Regent <svg class="btn__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></a>
+            <!-- The whole record, when the archive holds one. It is a button and
+                 not a link because it opens the record where the visitor already
+                 is, and it is absent entirely until somebody has filed it. -->
+            <button class="regent-card__record" type="button" id="regentRecord" hidden>Open the full record <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></button>
           </div>
         </div>
       </div>
@@ -1732,6 +1791,24 @@ img,svg{max-width:100%; height:auto}
         </div>
       </div>
     </div>
+
+    <!-- THE TWO SEATS — the Office's own two, on the dashboard. The same two
+         records the archive on About leads with, held at the size a dashboard row
+         can carry: a small portrait plate, the seat, the name, one line, and the
+         way into the full record. Every field is published from Admin →
+         Leadership; with nothing published the section is not drawn at all. -->
+    <section class="section reveal" id="homeLeadership" aria-labelledby="homeLeadershipTitle" hidden>
+      <div class="section__head">
+        <div>
+          <div class="eyebrow">The Office</div>
+          <h2 id="homeLeadershipTitle">Who holds the seat</h2>
+          <p>The Student Regent and the Executive Director, as published by the Office. Open a card for the full record.</p>
+        </div>
+        <a class="btn btn--sm btn--ghost" href="#about" data-nav>The whole Office</a>
+      </div>
+      <div class="ld-duo" id="homeLeadershipCards"></div>
+    </section>
+
     <style>
       @media(max-width:900px){ .dash-engage{grid-template-columns:1fr !important} }
 
@@ -1895,31 +1972,78 @@ img,svg{max-width:100%; height:auto}
    carry the card. */
 .hero--solo{grid-template-columns:minmax(0,1fr)}
 .hero--solo .hero__stage{display:none}
-.regent-card__head{flex-direction:row; align-items:center; justify-content:space-between; gap:10px}
-.regent-card__eyebrow{font:700 10px "IBM Plex Mono",monospace; letter-spacing:0.1em; text-transform:uppercase; color:var(--red)}
-.regent-card__term{font:600 10.5px "IBM Plex Mono",monospace; letter-spacing:0.03em; color:var(--ink-2); background:var(--paper-2); border:1px solid var(--line); padding:3px 8px; border-radius:999px; white-space:nowrap}
-.regent-card__person{display:grid; grid-template-columns:64px minmax(0,1fr); gap:14px; align-items:center}
-.regent-card__photo{width:64px; height:64px; border-radius:50%; overflow:hidden; background:var(--red); color:white; display:grid; place-items:center; font:600 21px var(--font-display); line-height:1}
+/* The card is the office's one face on the homepage, and a white panel beside a
+   62px masthead reads as a footnote. So it is drawn the way the office draws a
+   record: a heavier filing rule down the edge, an engraved corner the way a
+   form has one, a dry seal where a face would be, and the one action it exists
+   for spanning the full width. Red is still only an accent — the rule, the
+   seal's ring, the tab, the button, the dot on the label — and never a wash,
+   so the card is the loudest thing in the hero without leaving the palette. */
+.hero__card--regent{border-color:#E4DFD8; border-left-width:5px;
+  box-shadow:0 1px 0 rgba(17,18,20,0.03), 0 22px 52px rgba(17,18,20,0.10)}
+.hero__card--regent:hover, .hero__card--regent:focus-within{
+  box-shadow:0 1px 0 rgba(17,18,20,0.03), 0 26px 60px rgba(17,18,20,0.13)}
+/* A hatch in the corner, masked to a soft quarter-circle: the same engraving
+   the archive's plate uses, at a strength that reads as paper rather than ink. */
+.regent-card__head{position:relative; flex-direction:row; align-items:center; justify-content:space-between; gap:10px}
+.regent-card__head:before{content:""; position:absolute; top:-26px; right:-26px; width:132px; height:132px;
+  pointer-events:none; z-index:0;
+  background:repeating-linear-gradient(135deg, rgba(17,18,20,0.055) 0 1px, rgba(17,18,20,0) 1px 6px);
+  -webkit-mask-image:radial-gradient(closest-side, #000 12%, rgba(0,0,0,0) 100%);
+          mask-image:radial-gradient(closest-side, #000 12%, rgba(0,0,0,0) 100%)}
+.regent-card__eyebrow{position:relative; z-index:1; display:inline-flex; align-items:center; gap:7px;
+  font:700 10px "IBM Plex Mono",monospace; letter-spacing:0.1em; text-transform:uppercase; color:var(--red)}
+/* The filing mark, repeated at the size of a full stop. */
+.regent-card__dot{width:6px; height:6px; flex:0 0 auto; background:var(--red); border-radius:1px}
+.regent-card__term{position:relative; z-index:1; font:600 10.5px "IBM Plex Mono",monospace; letter-spacing:0.03em; color:var(--ink-2); background:var(--paper-2); border:1px solid var(--line); padding:3px 8px; border-radius:999px; white-space:nowrap}
+/* The column carries the seal and the paper ring around it, not just the disc. */
+.regent-card__person{position:relative; z-index:1; display:grid; grid-template-columns:74px minmax(0,1fr); gap:14px; align-items:center}
+/* The seal: a hairline of the accent held off the disc by a ring of paper, with
+   a second ring outside it. One box-shadow, no extra markup, and it tightens
+   when the card is pointed at. */
+.regent-card__photo{margin:5px; width:64px; height:64px; border-radius:50%; overflow:hidden; background:var(--red); color:white; display:grid; place-items:center; font:600 21px var(--font-display); line-height:1;
+  box-shadow:0 0 0 4px #fff, 0 0 0 5px rgba(166,25,46,0.45), 0 0 0 6px rgba(17,18,20,0.07);
+  transition:box-shadow .3s var(--ease)}
+.hero__card--regent:hover .regent-card__photo,
+.hero__card--regent:focus-within .regent-card__photo{box-shadow:0 0 0 4px #fff, 0 0 0 6px rgba(166,25,46,0.75), 0 0 0 7px rgba(17,18,20,0.09)}
 .regent-card__who{min-width:0}
 .regent-card__who h3{margin:0; font:600 19px/1.2 var(--font-display); letter-spacing:-0.01em; overflow-wrap:anywhere}
-.regent-card__message{margin:6px 0 0; font-size:13.5px; line-height:1.55; color:var(--stone)}
+/* The one line in the Regent's own words, set as what it is: a quotation, with
+   the opening mark in the accent and the text stepping past it. */
+.regent-card__message{position:relative; margin:6px 0 0; padding-left:15px; font-size:13.5px; line-height:1.55; color:var(--stone)}
+.regent-card__message:before{content:"\201C"; position:absolute; left:0; top:-1px;
+  font-family:var(--font-display); font-weight:700; font-size:26px; line-height:1; color:var(--red); opacity:0.55}
 .regent-card__photo img{width:100%; height:100%; object-fit:cover; object-position:50% 22%; display:block}
-.hero__card--regent .hero__card-actions{margin-top:2px}
+/* The action is the card's reason to be here, so it takes the width and the
+   weight; the way into the whole record sits under it as a quieter second. */
+.regent-card__actions{display:flex; flex-direction:column; align-items:stretch; gap:8px; margin-top:2px; padding-top:14px; border-top:1px solid var(--line)}
+.regent-card__ask{padding:11px 16px; font-size:13.5px; border-radius:9px; box-shadow:0 6px 18px rgba(166,25,46,0.18)}
+.regent-card__ask .btn__icon{width:15px; height:15px; transition:transform .18s var(--ease)}
+.regent-card__ask:hover .btn__icon{transform:translateX(3px)}
+/* Quiet, but still a target a thumb can hit: 24px of height with the padding
+   counted, not the 13px the type occupies. */
+.regent-card__record{appearance:none; border:0; background:none; padding:7px 0; min-height:26px; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  font:600 10px "IBM Plex Mono",monospace; letter-spacing:0.12em; text-transform:uppercase; color:var(--red)}
+.regent-card__record svg{transition:transform .18s var(--ease)}
+.regent-card__record:hover{text-decoration:underline; text-underline-offset:3px}
+.regent-card__record:hover svg{transform:translateX(3px)}
+.regent-card__record:focus-visible{outline:2px solid var(--red); outline-offset:3px; border-radius:3px}
 /* On a phone the compact card is right, but beside the full-size masthead on a
    wide screen it read as a stamp: the column now takes almost half the hero and
    the person on the card grows with it, so both halves carry the same weight. */
 @media(min-width:961px){
   .hero__card--regent{padding:30px; gap:18px}
-  .regent-card__person{grid-template-columns:96px minmax(0,1fr); gap:18px}
+  .regent-card__person{grid-template-columns:106px minmax(0,1fr); gap:18px}
   .regent-card__photo{width:96px; height:96px; font-size:30px}
   .regent-card__who h3{font-size:24px}
   .regent-card__message{font-size:15px; line-height:1.6; margin-top:8px}
   .regent-card__eyebrow{font-size:11px}
   .regent-card__term{font-size:12px; padding:4px 10px}
-  .hero__card--regent .hero__card-actions .btn--sm{padding:9px 16px; font-size:13px}
+  .regent-card__ask{padding:12px 18px; font-size:14px}
 }
 @media(max-width:420px){
-  .regent-card__person{grid-template-columns:52px minmax(0,1fr); gap:12px}
+  .regent-card__person{grid-template-columns:62px minmax(0,1fr); gap:12px}
   .regent-card__photo{width:52px; height:52px; font-size:17px}
   .regent-card__who h3{font-size:17px}
 }
@@ -4799,6 +4923,21 @@ const ldStripCard = row => `<article class="ld-card" data-id="${ldEsc(row.id)}">
   ${ldHit(row)}
 </article>`;
 
+/* The same two records again, at the size a dashboard row can carry: the
+   portrait becomes a plate beside the name instead of a card the name sits on.
+   One control over the whole of it, like every other card in the archive. */
+const ldDuoCard = row => `<article class="ld-duo__card" data-id="${ldEsc(row.id)}">
+  <span class="ld-duo__frame">${ldMedia(row)}</span>
+  <div class="ld-duo__body">
+    ${row.display_number ? `<span class="ld-duo__num">${ldEsc(row.display_number)}</span>` : ""}
+    <h3 class="ld-duo__name">${ldEsc(row.name)}</h3>
+    ${row.position ? `<p class="ld-duo__role">${ldEsc(row.position)}</p>` : ""}
+    ${row.short_bio ? `<p class="ld-duo__bio">${ldEsc(row.short_bio)}</p>` : ""}
+    <span class="ld-duo__cue">Open the record <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg></span>
+  </div>
+  ${ldHit(row)}
+</article>`;
+
 function ldSetActive(id){
   ldOpenId=String(id||"");
   const strip=document.getElementById("ldStrip");
@@ -4816,6 +4955,8 @@ function renderLeadership(){
   const board=document.getElementById("ldBoard");
   const strip=document.getElementById("ldStrip");
   const empty=document.getElementById("ldEmpty");
+  const duoBox=document.getElementById("homeLeadershipCards");
+  const duoSection=document.getElementById("homeLeadership");
 
   const rows=(Array.isArray(LEADERSHIP)?LEADERSHIP:[]).filter(row=>row && confirmedText(row.name)).map(row=>Object.assign({}, row, {
     name: confirmedText(row.name),
@@ -4838,6 +4979,14 @@ function renderLeadership(){
     ldSetActive(directors.some(row=>String(row.id)===ldOpenId) ? ldOpenId : ldFirstCardId());
   }
   if(empty) empty.hidden=Boolean(leaders.length || directors.length);
+  /* The homepage pair is the archive's own two seats, drawn from the same rows:
+     nothing published, no section — a dashboard row of empty cards would be the
+     same lie the archive refuses to tell. */
+  if(duoBox && duoSection){
+    duoBox.innerHTML=leaders.map(ldDuoCard).join("");
+    duoSection.hidden=!leaders.length;
+  }
+  updateRegentRecord();
 }
 
 /* The full record: portrait, quotation, the biography, and the three lists the
@@ -4915,6 +5064,29 @@ function bindLeadership(){
     openLeadershipRecord(id);
   });
 }
+
+/* The homepage pair has no row to reorganise and no preview to move, so it needs
+   only the click: one tap opens the record where the visitor already is. The
+   masthead card's quiet second action is bound here too — it is the same record,
+   reached from the person's name on the dashboard. */
+function bindHomeLeadership(){
+  const box=document.getElementById("homeLeadershipCards");
+  if(box && !box.dataset.bound){
+    box.dataset.bound="1";
+    box.addEventListener("click", event=>{
+      const hit=event.target && event.target.closest ? event.target.closest("[data-record]") : null;
+      if(hit) openLeadershipRecord(hit.dataset.record);
+    });
+  }
+  const card=document.getElementById("regentCard");
+  if(card && !card.dataset.bound){
+    card.dataset.bound="1";
+    card.addEventListener("click", event=>{
+      const button=event.target && event.target.closest ? event.target.closest("#regentRecord") : null;
+      if(button && regentRecordId) openLeadershipRecord(regentRecordId);
+    });
+  }
+}
 window.LEADERSHIP = LEADERSHIP;
 window.renderLeadership = renderLeadership;
 window.openLeadershipRecord = openLeadershipRecord;
@@ -4970,22 +5142,44 @@ function renderStudentRegent(overrides){
   if(ask && data.askHref) ask.setAttribute("href", data.askHref);
   card.hidden=false;
   document.querySelector(".hero")?.classList.remove("hero--solo");
+  /* The way into the whole record follows the name on the card, so it is looked
+     up again here and not only when the archive arrives. */
+  updateRegentRecord();
 }
-/* The portrait on the masthead card is the archive's portrait of the Regent:
-   the published record whose name matches the card's, or — when the names were
-   filed differently — the primary seat whose position names the Regent. A
-   Google Drive link pasted there is normalised by safePhoto like any photo. */
-function regentPhotoFromLeadership(){
+/* The archive's record of the person on the masthead card: the published row
+   whose name matches the card's, or — when the names were filed differently —
+   the primary seat whose position names the Regent. One lookup for both things
+   the card takes from the archive, so the portrait it shows and the record it
+   opens can never be two different people. `withPhoto` narrows it to the rows
+   that actually carry a portrait: a seat with no photograph must not stop the
+   card finding one on the other. */
+function regentSeatFromLeadership({ withPhoto=false } = {}){
   const norm=value=>String(value||"").toLowerCase().replace(/\s+/g," ").trim();
   const name=norm(confirmedText(Object.assign({}, STUDENT_REGENT, regentOverrides).name));
   /* The public endpoint already hands over published records only, so the page
      never asks who is withdrawn. */
   const rows=(Array.isArray(LEADERSHIP)?LEADERSHIP:[])
-    .filter(row=>row && confirmedText(row.name) && safePhoto(row.photo));
+    .filter(row=>row && confirmedText(row.name) && (!withPhoto || safePhoto(row.photo)));
   const byName=name && rows.find(row=>norm(row.name)===name);
   const bySeat=rows.find(row=>row.category==="primary" && /regent/i.test(String(row.position||"")));
-  const seat=byName || bySeat;
+  return byName || bySeat || null;
+}
+/* A Google Drive link pasted into the archive is normalised by safePhoto, like
+   any other photograph on the site. */
+const regentPhotoFromLeadership = () => {
+  const seat=regentSeatFromLeadership({ withPhoto:true });
   return seat ? safePhoto(seat.photo) : "";
+};
+/* The whole record, offered from the card only when the archive holds one: a
+   button that opens nothing is worse than no button, so it is drawn away until
+   somebody files the person. */
+let regentRecordId="";
+function updateRegentRecord(){
+  const button=document.getElementById("regentRecord");
+  if(!button) return;
+  const seat=regentSeatFromLeadership();
+  regentRecordId=seat ? String(seat.id||"") : "";
+  button.hidden=!regentRecordId;
 }
 window.renderStudentRegent = renderStudentRegent;
 // Exported so js/cms-integration.js can override them from Admin → Contact &
@@ -4997,7 +5191,7 @@ window.applyOfficialLinks = applyOfficialLinks;
 window.renderFooterOffice = renderFooterOffice;
 window.applyPrivacyRetention = applyPrivacyRetention;
 
-renderHomeAnnouncements(); renderAnnouncements(); renderBoard(); renderInitiatives(); renderResources(); renderSearch(); setRoute(location.hash||"#home"); updateSavedCounts(); updateUpNext(); bindHomeAnnFilters(); onScroll(); applyOfficialLinks(); renderFooterOffice(); applyPrivacyRetention(); renderStudentRegent(); bindLeadership(); renderLeadership();
+renderHomeAnnouncements(); renderAnnouncements(); renderBoard(); renderInitiatives(); renderResources(); renderSearch(); setRoute(location.hash||"#home"); updateSavedCounts(); updateUpNext(); bindHomeAnnFilters(); onScroll(); applyOfficialLinks(); renderFooterOffice(); applyPrivacyRetention(); renderStudentRegent(); bindLeadership(); bindHomeLeadership(); renderLeadership();
 
 window.ANNOUNCEMENTS = ANNOUNCEMENTS;
 window.BOARD_MEETINGS = BOARD_MEETINGS;
