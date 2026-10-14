@@ -83,6 +83,9 @@ function scan() {
   const hits = [];
   for (const file of tracked()) {
     if (!isText(file)) continue;
+    // This file has to be able to name the strings it hunts for, so it is the
+    // one place a pattern is allowed to appear literally.
+    if (file.endsWith('test/no-secrets.test.mjs')) continue;
     const full = path.join(repoRoot, file);
     let text;
     try { text = fs.readFileSync(full, 'utf8'); } catch { continue; }
