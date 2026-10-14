@@ -14,7 +14,7 @@ admin dashboard that is **fully standalone with only Neon**.
 Reference: rCloud CSSP LSC admin uses only Neon. This OSR admin now does the same:
 
 1. **DB-only credentials** — `admins` table in Neon. No env var.
-   - Fresh DB auto-seeds `admin@osr.bulsu.edu.ph / Admin123456!` OR you can create the first admin from the `/admin` setup form (`/api/auth/setup`).
+   - Fresh DB seeds **no** account: the first admin is created from the `/admin` setup form (`/api/auth/setup`). The site ships no default email or password.
 2. **JWT secret persistence** — On first migration, a random 96-char secret is generated and stored as `site_settings.jwt_secret`. `process.env.JWT_SECRET` is populated from DB, so sessions survive Netlify cold starts without env config.
 3. **Only DATABASE_URL required in Netlify Functions env** — set it with Functions scope and redeploy. No need to set `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `JWT_SECRET`.
 4. **Setup flow** — `GET /api/auth/setup-status` tells login page if DB has 0 admins → shows setup form. `POST /api/auth/setup` creates first admin without auth (blocked after first admin exists).
@@ -81,7 +81,7 @@ All sections support Create/Edit/Delete, Draft/Published/Archived, Preview, Save
 - Activity log: admin, action, content_type, content_id, details, timestamp.
 
 ### 27-29. Security, DB, API
-- No shipped/default admin password in source required for operation, but default seed exists for convenience and can be changed. Passwords hashed with `bcryptjs`; sessions use HttpOnly SameSite=Lax cookie (Secure in production); JWT secret persisted in DB, not required in env; login rate-limited; CORS allowlisted.
+- No shipped/default admin password: **no seed exists at all**, so there is nothing to guess and nothing to change before going live. Passwords hashed with `bcryptjs`; sessions use HttpOnly SameSite=Lax cookie (Secure in production); JWT secret persisted in DB, not required in env; login rate-limited; CORS allowlisted.
 - **DB**: 15 tables with id, timestamps, created_by, etc. A Neon database created before a table existed gains it from the additive Postgres migration (`schema_migrations`; the leadership archive is version 3) — `CREATE TABLE IF NOT EXISTS`, run from the one definition in `db/schema.js`, so no record is touched and the two copies can never drift apart.
 - **API**: REST clean
   ```
@@ -108,7 +108,7 @@ npm ci
 cp .env.example .env
 # Edit .env and set DATABASE_URL to your Neon URL (or leave empty for SQLite)
 npm start # → http://localhost:4000
-# Login: admin@osr.bulsu.edu.ph / Admin123456!  OR use setup form if fresh DB
+# No default login: open /admin and use the setup form to create the first admin
 ```
 
 Local uses `server/db/local-osr.db` and `server/uploads/` when DATABASE_URL empty.
@@ -129,14 +129,23 @@ Use repository-root `netlify.toml` with empty base directory. `/admin` is publis
 
 Set `DATABASE_URL` in Netlify → Site settings → Environment variables → Functions scope, then redeploy. See `server/DEPLOY.md`.
 
-## Neon Connection (provided)
+## Neon Connection
 
-The connection string you provided can be set as `DATABASE_URL` in Netlify. Locally, put it in `OSR/server/.env`. The admin will auto-migrate and seed.
+Copy the **pooled** connection string from Neon → Dashboard → Connection details
+and set it as `DATABASE_URL` in Netlify. Locally, put it in `OSR/server/.env`,
+which is git-ignored. The admin will auto-migrate on the first request.
 
-Example `.env`:
+Example `.env` — a placeholder, never a real string:
 ```
-DATABASE_URL=postgresql://neondb_owner:npg_I87tszbCRuwf@ep-little-smoke-b5vq9v7q-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+DATABASE_URL=postgresql://USER:PASSWORD@EP-NAME-pooler.REGION.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 ```
+
+**A connection string is a password.** It belongs in Netlify environment
+variables and in `OSR/server/.env` — never in a committed file. This repository
+is public: anything committed here should be treated as already published. If a
+real string ever reaches it, rotate the password in Neon *first*, and only then
+clean the file — deleting the line does not un-publish it. `npm test --prefix
+OSR/server` fails the build on a committed connection string or key.
 
 ## Guide Positioning Details
 - Uses `getBoundingClientRect()` + `window.innerWidth/Height` + `header.offsetHeight` + `window.scrollY`

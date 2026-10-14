@@ -66,11 +66,11 @@ test('the leadership archive', async t => {
   await migrateDatabase(db, sourcePath);
   await json('/api/auth/setup', {
     method: 'POST',
-    body: { name: 'Test Admin', email: 'admin@osr.bulsu.edu.ph', password: 'Admin123456789!' },
+    body: { name: 'Test Admin', email: 'admin@example.org', password: 'Test-Only-N0t-Real!' },
   });
   const login = await read(await json('/api/auth/login', {
     method: 'POST',
-    body: { email: 'admin@osr.bulsu.edu.ph', password: 'Admin123456789!' },
+    body: { email: 'admin@example.org', password: 'Test-Only-N0t-Real!' },
   }));
   assert.equal(login.status, 200, login.text);
   cookie = (login.headers.getSetCookie()[0] || '').split(';')[0];

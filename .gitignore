@@ -3,9 +3,31 @@ node_modules/
 *.log
 .DS_Store
 
+# ── Secrets and credentials ──────────────────────────────────────────────────
+# Every shape a .env can take, everywhere in the tree. .env.example is the one
+# file that is meant to be committed, so it is un-ignored explicitly.
+.env
+.env.*
+!.env.example
+*.env
+!*.env.example
+# Private keys, certificates and credential files.
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa*
+*.publishsettings
+# A connection string is a password: never a file that can be committed.
+DATABASE_URL*
+*.dburl
+
 # Local OSR CMS data must not enter Git.
 OSR/server/.env
+OSR/server/.env.*
 OSR/server/db/*.db*
+OSR/server/db/*.sqlite*
 OSR/server/uploads/
 
 # Admin static output is copied by the Netlify build (folder name = ADMIN_PATH).

@@ -61,16 +61,16 @@ test('PostgreSQL-backed Netlify CMS', async t => {
     await migrateDatabase(db, sourcePath);
     assert.equal((await db.prepare('SELECT COUNT(*) AS c FROM admins').get()).c, 0);
     assert.equal((await ok('/api/auth/setup-status')).needsSetup,true);
-    await ok('/api/auth/setup','POST',{name:'Test Admin',email:'admin@osr.bulsu.edu.ph',password:'Admin123456789!'},null);
+    await ok('/api/auth/setup','POST',{name:'Test Admin',email:'admin@example.org',password:'Test-Only-N0t-Real!'},null);
     assert.ok((await db.prepare('SELECT COUNT(*) AS c FROM calendar_events').get()).c > 0);
     assert.equal((await request('/api/health')).statusCode, 200);
   });
   await t.test('unauthenticated mutations and bad credentials are blocked', async () => {
     assert.equal((await request('/api/announcements', 'POST', { title: 'No' })).statusCode, 401);
-    assert.equal((await request('/api/auth/login', 'POST', { email: 'admin@osr.bulsu.edu.ph', password: 'wrong' })).statusCode, 401);
+    assert.equal((await request('/api/auth/login', 'POST', { email: 'admin@example.org', password: 'wrong' })).statusCode, 401);
   });
   await t.test('login issues an HttpOnly secure cookie', async () => {
-    const res = await request('/api/auth/login', 'POST', { email: 'admin@osr.bulsu.edu.ph', password: 'Admin123456789!' });
+    const res = await request('/api/auth/login', 'POST', { email: 'admin@example.org', password: 'Test-Only-N0t-Real!' });
     assert.equal(res.statusCode, 200, res.body);
     const value = res.multiValueHeaders?.['set-cookie']?.[0] || res.headers['set-cookie'];
     assert.match(value, /HttpOnly/);
@@ -79,7 +79,7 @@ test('PostgreSQL-backed Netlify CMS', async t => {
   });
   await t.test('new function instance reads the same account', async () => {
     handler = makeHandler();
-    assert.equal((await ok('/.netlify/functions/cms/auth/me')).email, 'admin@osr.bulsu.edu.ph');
+    assert.equal((await ok('/.netlify/functions/cms/auth/me')).email, 'admin@example.org');
   });
   await t.test('all admin sections and public endpoints execute PostgreSQL queries', async () => {
     for (const route of ['dashboard','announcements','board-meetings','initiatives','resources','calendar','guides','navigation','pages','media','activity','settings','pulse','pulse?view=yearly','pulse?view=all-time','pulse/export']) await ok('/api/'+route);

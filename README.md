@@ -28,12 +28,29 @@ configurations are now supported, so the site deploys either way.
 
 **Only required env var (Functions scope):**
 - `DATABASE_URL`: your Neon pooled connection string, copied directly from Neon.
-  Example: `postgresql://neondb_owner:npg_I87tszbCRuwf@ep-little-smoke-b5vq9v7q-pooler.c-7.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require`
+  Example: `postgresql://USER:PASSWORD@EP-NAME-pooler.REGION.aws.neon.tech/neondb?sslmode=require&channel_binding=require`
 
 That's it. No `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `JWT_SECRET` required:
 - Admin credentials live only in Neon (`admins` table)
 - JWT secret auto-generates and persists in `site_settings.jwt_secret` → sessions survive cold starts
-- Fresh DB: open `/admin` → setup form creates first admin in Neon, or default `admin@osr.bulsu.edu.ph / Admin123456!` is seeded automatically
+- Fresh DB: open `/admin` → the setup form creates the first admin in Neon. **No default account is seeded** — the site ships no known email or password.
+
+### Secrets
+
+Only one secret exists, and it never belongs in this repository:
+
+| Secret | Where it lives |
+|---|---|
+| `DATABASE_URL` (Neon connection string — it *is* the database password) | Netlify env vars (Functions scope), or `OSR/server/.env` locally |
+| `JWT_SECRET` | Auto-generated and persisted in `site_settings`; set it manually only to override |
+| Admin email + password | The `admins` table, hashed with bcrypt. Nothing is seeded. |
+
+`OSR/server/.env` is git-ignored; `OSR/server/.env.example` carries placeholders
+only. **This repository is public**, so anything committed here should be
+treated as published: if a real credential reaches it, rotate it at the provider
+*first* — deleting the line afterwards does not un-publish it.
+`npm test --prefix OSR/server` fails on a committed connection string, key, or
+the old default-credential pair, so one cannot creep back in.
 
 Redeploy, then open `https://your-site.netlify.app` (and `/OSRAdminControl2026`).
 
@@ -58,7 +75,7 @@ npm start
 
 Open `http://localhost:4000/admin`. Without `DATABASE_URL`, local development
 uses SQLite and local files. With `DATABASE_URL`, it uses Neon directly.
-Default login on a fresh DB: `admin@osr.bulsu.edu.ph / Admin123456!`. The setup form is available on `/admin` when no account exists.
+On a fresh database the setup form on `/admin` creates the first administrator. There is no default login — nothing is seeded, and the site never ships a password.
 
 ## Admin tools
 
@@ -161,7 +178,7 @@ drag-and-drop bundle fails the suite.
 
 ## What changed for standalone
 
-- `OSR/server/db/schema.js`: no longer reads `ADMIN_EMAIL`/`ADMIN_PASSWORD` env. Seeds default admin if empty, generates `jwt_secret` in `site_settings`.
+- `OSR/server/db/schema.js`: no longer reads `ADMIN_EMAIL`/`ADMIN_PASSWORD` env. Seeds **no** admin — the first account comes from `/auth/setup` — and generates `jwt_secret` in `site_settings`.
 - `OSR/server/db/postgres.js`: loads `jwt_secret` from DB into env, ensures persistence.
 - `OSR/server/middleware/auth.js`: `getJwtSecret()` no longer throws in production; generates ephemeral if missing, persists via DB.
 - `OSR/server/netlify/cms.mjs`: removed 503 for missing `JWT_SECRET`; only `DATABASE_URL` required. Loads secret from DB if env missing.
