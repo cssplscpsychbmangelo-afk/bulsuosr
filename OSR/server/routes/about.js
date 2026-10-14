@@ -79,7 +79,7 @@ export function sanitizeAboutContent(body) {
   return { content };
 }
 
-async function readAbout(db) {
+export async function readAbout(db) {
   try {
     const row = (await db.prepare('SELECT value FROM site_settings WHERE key=?').get(ABOUT_KEY));
     if (!row || !row.value) return {};
@@ -98,7 +98,7 @@ async function writeAbout(db, content) {
 // Public: the website reads the stored About content here. An empty object means
 // "show the wording built into the site", which is what a fresh install gets.
 router.get('/public', async (req, res) => {
-  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.set('Cache-Control', 'public, max-age=60');
   res.json(await readAbout(req.app.locals.db));
 });
 

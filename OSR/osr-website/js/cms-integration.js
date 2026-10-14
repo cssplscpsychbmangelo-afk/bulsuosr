@@ -440,28 +440,56 @@
     };
   }
 
+  // Every public section in one request. It costs one Netlify Function
+  // invocation instead of ten, and the free tier allows 125,000 of those a
+  // month: at ten per page load the site ran out of its allowance somewhere
+  // around eleven thousand visits. The response is cached for a minute by the
+  // CDN, so a reload inside that window costs nothing at all.
+  // A deployment whose function bundle predates /api/public/bootstrap answers
+  // 404 and the per-section calls below take over, so this is safe to ship
+  // before the backend that serves it.
+  async function fetchBootstrap(){
+    try{
+      const r = await fetch(`${API_BASE}/api/public/bootstrap`, {credentials:'include'});
+      if(!r.ok) return null;
+      const body = await r.json();
+      if(!body || typeof body !== 'object') return null;
+      return body;
+    }catch(e){ return null; }
+  }
+
   let isHydrating = false;
   async function hydrateAll(forceRefresh = false){
     if(isHydrating) return;
     isHydrating = true;
     try {
       if(forceRefresh) backendAvailable = true;
-      const anns = await fetchPublic('announcements', forceRefresh);
-      if(!backendAvailable) return;
+      let anns, boards, inits, ress, cals, guides, navs, leadership, settings, about;
 
-      const results = await Promise.allSettled([
-        fetchPublic('board-meetings', forceRefresh),
-        fetchPublic('initiatives', forceRefresh),
-        fetchPublic('resources', forceRefresh),
-        fetchPublic('calendar', forceRefresh),
-        fetchPublic('guides', forceRefresh),
-        fetchPublic('navigation', forceRefresh),
-        fetchPublic('leadership', forceRefresh),
-        fetchSettings(forceRefresh),
-        fetchAbout(forceRefresh)
-      ]);
+      const boot = forceRefresh ? null : await fetchBootstrap();
+      if(boot){
+        backendAvailable = true;
+        anns = boot.announcements; boards = boot['board-meetings']; inits = boot.initiatives;
+        ress = boot.resources; cals = boot.calendar; guides = boot.guides; navs = boot.navigation;
+        leadership = boot.leadership; settings = boot.settings; about = boot.about;
+      } else {
+        anns = await fetchPublic('announcements', forceRefresh);
+        if(!backendAvailable) return;
 
-      const [boards, inits, ress, cals, guides, navs, leadership, settings, about] = results.map(r => r.status==='fulfilled' ? r.value : null);
+        const results = await Promise.allSettled([
+          fetchPublic('board-meetings', forceRefresh),
+          fetchPublic('initiatives', forceRefresh),
+          fetchPublic('resources', forceRefresh),
+          fetchPublic('calendar', forceRefresh),
+          fetchPublic('guides', forceRefresh),
+          fetchPublic('navigation', forceRefresh),
+          fetchPublic('leadership', forceRefresh),
+          fetchSettings(forceRefresh),
+          fetchAbout(forceRefresh)
+        ]);
+
+        [boards, inits, ress, cals, guides, navs, leadership, settings, about] = results.map(r => r.status==='fulfilled' ? r.value : null);
+      }
 
       window.__CMS_DATA = {
         announcements: anns,

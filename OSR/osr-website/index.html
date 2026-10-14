@@ -4018,7 +4018,7 @@ function renderCmd(q){
     ...RESOURCES.map(r=> ({label:r.title, href:"#resources", cat:r.category})),
   ];
   const filtered = qq ? items.filter(i=> (i.label+" "+i.cat).toLowerCase().includes(qq)) : items.slice(0,8);
-  list.innerHTML = filtered.map(i=> `<div class="cmd__item${i.href === "#ideal-bulsu" ? " cmd__item--ideal" : ""}" role="option" data-href="${i.href}" data-id="${i.id||""}" data-type="${i.type||""}"><span><b>${escapeHtml(i.label)}</b><br><span>${escapeHtml(i.cat)}</span></span><span>→</span></div>`).join("") || `<div style="padding:16px; text-align:center; color:var(--stone)">No results for "${escapeHtml(q)}"</div>`;
+  list.innerHTML = filtered.map(i=> `<div class="cmd__item${i.href === "#ideal-bulsu" ? " cmd__item--ideal" : ""}" role="option" data-href="${escapeHtml(i.href)}" data-id="${escapeHtml(i.id||'')}" data-type="${escapeHtml(i.type||'')}"><span><b>${escapeHtml(i.label)}</b><br><span>${escapeHtml(i.cat)}</span></span><span>→</span></div>`).join("") || `<div style="padding:16px; text-align:center; color:var(--stone)">No results for "${escapeHtml(q)}"</div>`;
   list.querySelectorAll(".cmd__item").forEach(el=> el.addEventListener("click", ()=>{
     const href=el.dataset.href, id=el.dataset.id, type=el.dataset.type;
     closeCmd();
@@ -5417,9 +5417,13 @@ function pulsePulseTabIsActive(){
 
 function pulseStartLiveUpdates(){
   if(pulsePollTimer) return;
+  // Every poll is a Netlify Function invocation against a monthly allowance of
+  // 125,000. At 30s an idle tab on the Pulse view spent 120 an hour — a lecture
+  // hall of them emptied the month. Two minutes is still live for a number that
+  // moves a few times a day, and costs a quarter as much.
   pulsePollTimer=setInterval(()=>{
     if(!document.hidden && pulsePulseTabIsActive()) pulseRefreshLive();
-  }, 30000);
+  }, 120000);
 }
 
 window.addEventListener("DOMContentLoaded", ()=>pulseRefreshLive(), {once:true});

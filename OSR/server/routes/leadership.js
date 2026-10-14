@@ -154,11 +154,17 @@ async function log(db, admin, action, id) {
   } catch { /* the log must never be the reason a save failed */ }
 }
 
-// Public: the archive as the About page renders it.
+// Public: the archive as the About page renders it. Exported so the bootstrap
+// endpoint can hand the same rows over with the rest of the page — one request
+// per visit instead of eleven — without a second copy of the numbering rules.
+export async function publicLeadership(db) {
+  const rows = withDisplayNumbers(await readAll(db)).filter(row => Number(row.is_published) === 1);
+  return rows.map(publicRow);
+}
+
 leadershipRouter.get('/public', async (req, res) => {
-  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-  const rows = withDisplayNumbers(await readAll(req.app.locals.db)).filter(row => Number(row.is_published) === 1);
-  res.json(rows.map(publicRow));
+  res.set('Cache-Control', 'public, max-age=60');
+  res.json(await publicLeadership(req.app.locals.db));
 });
 
 // Admin: every record, published or not, with the sample flag the dashboard uses
