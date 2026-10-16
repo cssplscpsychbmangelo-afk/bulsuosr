@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import path from 'path';
 import { publicDir, adminDir, uploadDir } from './paths.js';
@@ -19,7 +20,10 @@ import activityRoutes from './routes/activity.js';
 import settingsRoutes from './routes/settings.js';
 import { concernsRouter, ratingsRouter } from './routes/feedback.js';
 import { submissionsRouter } from './routes/submissions.js';
-import { leadershipRouter } from './routes/leadership.js';
+import { leadershipRouter, publicLeadership } from './routes/leadership.js';
+import { readPublicSettings } from './routes/settings.js';
+import { readAbout } from './routes/about.js';
+import { publicReadLimiter } from './middleware/rateLimit.js';
 import staffRoutes from './routes/staff.js';
 import aboutRoutes from './routes/about.js';
 import pagesRoutes from './routes/pages.js';
@@ -63,6 +67,10 @@ if (!isProduction) {
 }
 
 app.disable('x-powered-by');
+// JSON shrinks about nine times over the wire, and the monthly allowance is
+// measured in bytes served, so compress every response the client asks for.
+// Static files keep their own long cache; they are cheap to repeat.
+app.use(compression({ threshold: 1024 }));
 // Netlify (or a local reverse proxy) terminates TLS; trust one hop in production so secure
 // cookies and the login rate limiter use the original request properties.
 if (isProduction) app.set('trust proxy', 1);
@@ -125,6 +133,13 @@ if (!mediaStore) {
 if (!mediaStore) app.use('/uploads', express.static(uploadDir));
 
 // API
+// The three public reads that live inside authenticated routers are throttled
+// and cached like the sections below: a visitor can reach them without a
+// session, so they can be looped like any other public endpoint. It has to be
+// mounted before the routers, or the router answers first and the throttle
+// never runs.
+app.use(['/api/leadership/public', '/api/settings/public', '/api/about/public'], publicReadLimiter);
+
 app.use('/api/auth', authRoutes);
 app.use('/api/announcements', announcementsRoutes);
 app.use('/api/board-meetings', boardRoutes);
@@ -148,47 +163,120 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin-users', adminUsersRoutes);
 app.use('/api/bulk', bulkRoutes);
 
-// Public aggregated endpoint
-app.get('/api/public/:type', async (req, res) => {
-  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-  res.set('Pragma', 'no-cache');
-  res.set('Expires', '0');
-  const type = req.params.type;
-  const map = {
-    'announcements': 'announcements',
-    'board-meetings': 'board_meetings',
-    'initiatives': 'initiatives',
-    'resources': 'resources',
-    'calendar': 'calendar_events',
-    'media': 'media',
-    'guides': 'guide_steps',
-    'navigation': 'navigation_items',
-    'pulse-aggregates': 'pulse_aggregates'
-  };
-  const table = map[type];
-  if (!table) return res.status(404).json({ error: 'Not found' });
+/* ── Public read endpoints ───────────────────────────────────────────────────
+   Everything below is what a visitor downloads, so it is written against the
+   two things that decide whether this site stays inside Netlify's free tier:
+
+   1. **One request, not eleven.** `/api/public/bootstrap` returns every section
+      in a single document. Each public request is a Function invocation and the
+      free tier allows 125,000 a month, so eleven per page load is a ceiling of
+      about 11,000 visits — a busy enrolment week would end it.
+   2. **A bounded response.** Every section is capped. A content mistake, or a
+      script pointed at one endpoint, cannot turn a single page load into a
+      megabyte. The caps sit far above what the office publishes; when one is
+      reached the response is cut and says so on the wire, rather than growing
+      quietly until the site is expensive.
+
+   The responses are cacheable for a minute. The office publishes deliberately,
+   and a minute of staleness costs nothing next to a CDN that never calls the
+   function at all — which is also what stops a loop from reaching it. */
+const PUBLIC_SECTIONS = {
+  'announcements': 'announcements',
+  'board-meetings': 'board_meetings',
+  'initiatives': 'initiatives',
+  'resources': 'resources',
+  'calendar': 'calendar_events',
+  'media': 'media',
+  'guides': 'guide_steps',
+  'navigation': 'navigation_items',
+  'pulse-aggregates': 'pulse_aggregates'
+};
+
+// Rows a public response will carry before it is cut. Read per request so the
+// tests can lower every cap at once and prove the cut happens.
+const PUBLIC_CAPS = {
+  announcements: 200,
+  board_meetings: 200,
+  initiatives: 100,
+  resources: 300,
+  calendar_events: 800,
+  media: 100,
+  guide_steps: 100,
+  navigation_items: 60,
+  pulse_aggregates: 600
+};
+const publicCap = table => Number(process.env.PUBLIC_ROW_CAP || PUBLIC_CAPS[table] || 200);
+
+const publicCache = res => res.set('Cache-Control', 'public, max-age=60');
+
+// One section, capped. `truncated` is the caller's signal that the office has
+// published more than the public page will carry, which is a thing somebody
+// needs to hear about rather than discover in the bandwidth bill.
+async function loadPublicSection(db, type) {
+  const table = PUBLIC_SECTIONS[type];
+  if (!table) return null;
+  let rows;
+  if (table === 'navigation_items') {
+    rows = (await db.prepare('SELECT * FROM navigation_items WHERE is_visible=1 ORDER BY order_index').all());
+  } else if (table === 'guide_steps') {
+    rows = (await db.prepare('SELECT * FROM guide_steps WHERE is_enabled=1 ORDER BY page, step_number').all());
+  } else if (table === 'media') {
+    rows = (await db.prepare("SELECT id,title,caption,category,url,created_at FROM media WHERE status='Published' AND file_type LIKE 'image/%' ORDER BY created_at DESC LIMIT 100").all());
+  } else if (table === 'pulse_aggregates') {
+    rows = (await db.prepare('SELECT * FROM pulse_aggregates ORDER BY period DESC, category').all());
+  } else {
+    // only published for public
+    rows = (await db.prepare(`SELECT * FROM ${table} WHERE ${table === 'initiatives' ? 'status_public' : 'status'}='Published' ORDER BY created_at DESC`).all());
+    // parse JSON fields
+    rows = rows.map(r => {
+      if (r.related_documents) try { r.related_documents = JSON.parse(r.related_documents); } catch {}
+      if (r.links) try { r.links = JSON.parse(r.links); } catch {}
+      if (r.allocation) try { r.allocation = JSON.parse(r.allocation); } catch {}
+      return r;
+    });
+  }
+  const cap = publicCap(table);
+  if (rows.length > cap) {
+    console.warn(`[OSR CMS] Public ${type} holds ${rows.length} rows; serving ${cap}. Raise the cap or archive old records.`);
+    return { rows: rows.slice(0, cap), truncated: true };
+  }
+  return { rows, truncated: false };
+}
+
+// The whole public site in one request.
+app.get('/api/public/bootstrap', publicReadLimiter, async (req, res) => {
+  const db = req.app.locals.db;
+  publicCache(res);
   try {
-    let rows;
-    if (table === 'navigation_items') {
-      rows = (await db.prepare('SELECT * FROM navigation_items WHERE is_visible=1 ORDER BY order_index').all());
-    } else if (table === 'guide_steps') {
-      rows = (await db.prepare('SELECT * FROM guide_steps WHERE is_enabled=1 ORDER BY page, step_number').all());
-    } else if (table === 'media') {
-      rows = (await db.prepare("SELECT id,title,caption,category,url,created_at FROM media WHERE status='Published' AND file_type LIKE 'image/%' ORDER BY created_at DESC LIMIT 100").all());
-    } else if (table === 'pulse_aggregates') {
-      rows = (await db.prepare('SELECT * FROM pulse_aggregates ORDER BY period DESC, category').all());
-    } else {
-      // only published for public
-      rows = (await db.prepare(`SELECT * FROM ${table} WHERE ${table === 'initiatives' ? 'status_public' : 'status'}='Published' ORDER BY created_at DESC`).all());
-      // parse JSON fields
-      rows = rows.map(r => {
-        if (r.related_documents) try { r.related_documents = JSON.parse(r.related_documents); } catch {}
-        if (r.links) try { r.links = JSON.parse(r.links); } catch {}
-        if (r.allocation) try { r.allocation = JSON.parse(r.allocation); } catch {}
-        return r;
-      });
+    const body = { generated_at: new Date().toISOString() };
+    const cut = [];
+    for (const type of Object.keys(PUBLIC_SECTIONS)) {
+      const section = await loadPublicSection(db, type);
+      body[type] = section.rows;
+      if (section.truncated) cut.push(type);
     }
-    res.json(rows);
+    body.leadership = await publicLeadership(db);
+    body.settings = await readPublicSettings(db);
+    body.about = await readAbout(db);
+    if (cut.length) res.set('X-OSR-Truncated', cut.join(','));
+    res.json(body);
+  } catch (error) {
+    console.error('[OSR CMS] Failed to build the public bootstrap:', error.message);
+    res.status(500).json({ error: 'Unable to load content' });
+  }
+});
+
+// Public aggregated endpoint — one section at a time. Kept for the admin
+// previews and anything else that wants a single list; the site itself asks
+// for the bootstrap above.
+app.get('/api/public/:type', publicReadLimiter, async (req, res) => {
+  publicCache(res);
+  const type = req.params.type;
+  if (!PUBLIC_SECTIONS[type]) return res.status(404).json({ error: 'Not found' });
+  try {
+    const section = await loadPublicSection(req.app.locals.db, type);
+    if (section.truncated) res.set('X-OSR-Truncated', type);
+    res.json(section.rows);
   } catch (error) {
     console.error('[OSR CMS] Failed to load public content:', error.message);
     res.status(500).json({ error: 'Unable to load content' });

@@ -2,7 +2,9 @@ import express from 'express';
 import { authRequired } from '../middleware/auth.js';
 const router=express.Router();
 async function log(db,a,act,id){ try{(await db.prepare('INSERT INTO activity_logs (admin_id, admin_email, action, content_type, content_id) VALUES (?,?,?,?,?)').run(a?.id||null,a?.email||'system',act,'navigation',id));}catch{} }
-router.get('/', async (req,res)=>{
+// The full list, including items the office has hidden, is for the admin screen
+// only; visitors read the filtered copy below.
+router.get('/', authRequired, async (req,res)=>{
   const db=req.app.locals.db;
   res.json((await db.prepare('SELECT * FROM navigation_items ORDER BY order_index').all()));
 });

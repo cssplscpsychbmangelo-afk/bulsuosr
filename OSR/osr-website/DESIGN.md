@@ -241,9 +241,17 @@ it is the only block on the About page that moves.
 - **No hover, no cursor.** Under `(hover:none)` the description and cue are simply
   printed, the first tap selects and the second opens the record, and tapping
   another card switches to that person. Under 760px the two primary figures stack
-  at 5:4 and the strip becomes a swipeable row (`scroll-snap-type:x proximity`,
+  at 4:3 and the strip becomes a swipeable row (`scroll-snap-type:x proximity`,
   cards at `flex:0 0 66%`) with no width animation — the one place horizontal
   scrolling is the point rather than an accident.
+- **The two primary figures lie down.** They were cut at 4:5, which at the width
+  the About page gives them made each one over half a screen tall: two of them
+  were a poster, not a record, and the visitor scrolled past a face to reach the
+  directorate. They are 3:2 now — a landscape plate at roughly half the height,
+  with the portrait still reading, the caption in the lower third, and the type
+  stepped down to match (name `clamp(18px,1.9vw,23px)`, description 12.5px).
+  Stacked on a phone they go to 4:3 rather than 3:2, because there the
+  description is printed rather than hovered and needs the room.
 - **A plate, never a pretend face.** A record with no portrait is drawn: a bust in
   light on ink under the same wash, with an engraving hatch fine enough that the
   blur-to-clear transition still reads on it. No photograph of a person is ever
@@ -274,6 +282,48 @@ the public page cannot print it. "Remove samples" deletes exactly those rows and
 nothing the office wrote. It is how the layout and the motion get checked before
 anybody has been appointed, and it is why the archive can ship empty.
 
+## The Office is on the dashboard too
+The Student Regent and the Executive Director are printed on the homepage as a
+pair of cards — a portrait plate the width of a stamp, the seat number, the name,
+the position, one line, and the way into the full record — with **the directorate
+under them as a tray of small tiles**: plate, seat, name, portfolio. It is **the
+same rows** the archive on About prints, read from `LEADERSHIP` in the order the
+office filed them, so there is no second copy of the data to keep in step: a
+record published, reordered or withdrawn in *Admin → Leadership* changes both
+pages at once. With nothing published the section is not drawn — not even a
+heading — because a dashboard row of empty cards is the same lie the archive
+refuses to tell. Either shelf alone is enough to draw the section, and a shelf
+the office has not filled is put away rather than left as a gap.
+
+- **The archive's treatment, at dashboard distance.** The plate is the archive's
+  own `.ld-media`: greyscale under the red-to-ink wash, blurred at rest, and it
+  comes clear as the card is pointed at, so the homepage and About are visibly
+  one archive seen from two distances rather than two components. On a touch
+  device there is no pointer to clear it, so the plate is simply printed
+  developed.
+- **A dashboard row is not given the height of a portrait.** No `aspect-ratio`:
+  the card is as tall as its contents ask for (`min-height:120px`), the plate is
+  a fixed 88px square, and the pair sits two across at 12px — it has to pass as
+  a row on a page that is already a dashboard, not become the second hero.
+- **The focus ring is the accent, not the archive's pink.** `.ld-hit` carries
+  `#FFC9D1` because it was written for cards on ink; these cards are paper, where
+  that pink measures next to nothing, so the ring is the institutional red
+  (7.2:1 on white).
+- **The directorate is a tray, not the strip.** Eight people are a roster on the
+  dashboard, not the signature of the page: the 320px row that expands on hover
+  is the one moving thing on About, and repeating it here would turn the
+  homepage into the About page. So a director is a line in a grid
+  (`repeat(auto-fill, minmax(268px,1fr))` — four across on a desktop, two on a
+  phone, one at the narrowest), carrying only what fits in 268px: the plate, the
+  seat number, the name and the portfolio. The description is left to the record,
+  where there is room for it. The head above it is the archive's own
+  `.ld-board__head`, and its title is read from `#ldBoardTitle`, so a heading the
+  office edits in *Admin → About OSR* is never written twice.
+- **One tap opens the record where the visitor is.** There is no strip to
+  reorganise and no preview state, so a click goes straight to
+  `openLeadershipRecord()` and the site's own modal — the homepage is not a place
+  a student should be navigated away from to read about a person.
+
 ## The masthead's card is a person
 The card beside the hero is the Student Regent — name, term, one line in their
 own words, and **Ask the Regent** into the concern form. It is the same card the
@@ -284,6 +334,22 @@ card is a person; without one, it is hidden and `.hero--solo` gives the masthead
 the full width. The quotation and the term are each shown only when the office
 has supplied one, so the card never carries an empty line, and the initials
 circle is the only picture of the person it holds.
+
+**It is drawn as an official card, not as a panel.** Beside a 62px masthead a
+white card with a sentence on it reads as a footnote, so the card carries the
+office's own marks instead of more furniture: the left-edge filing rule goes to
+5px, an engraved hatch sits masked into the top-right corner the way a form has
+one, the initials are held in a **dry seal** — a hairline of the accent ringed off
+the disc by 4px of paper, tightening when the card is pointed at — and the one
+line in the Regent's own words is set as a quotation, with an opening mark in the
+accent. **Ask the Regent** spans the card's full width and carries a hairline
+divider above it, because it is the reason the card exists; under it sits *Open
+the full record*, which opens the archive's record of the same person in the
+site's own modal and is **not drawn at all** until the archive holds one — a
+button that opens nothing is worse than no button. Red is still only an accent
+here: the rule, the seal's ring, the tab, the dot on the label and the button.
+It is never a wash, so the card is the loudest thing in the hero without leaving
+the palette.
 
 **The portrait is not here any more.** The masthead used to file a duotone
 photograph into the top of this card. It was the only face on the homepage, it

@@ -53,7 +53,7 @@ test('same-site login works behind a TLS-terminating proxy, foreign origins stay
   try {
     db = await initDb(path.join(dir, 'origin.db'));
     await seedFromFrontend(db);
-    await db.prepare('INSERT INTO admins (name,email,password_hash) VALUES (?,?,?)').run('Test Admin','admin@osr.bulsu.edu.ph',(await import('bcryptjs')).default.hashSync('Admin123456!',10));
+    await db.prepare('INSERT INTO admins (name,email,password_hash) VALUES (?,?,?)').run('Test Admin','admin@example.org',(await import('bcryptjs')).default.hashSync('Test-Only-N0t-Real!',10));
     const app = createApp(db);
     const server = await new Promise(resolve => {
       const listener = app.listen(0, '127.0.0.1', () => resolve(listener));
@@ -64,7 +64,7 @@ test('same-site login works behind a TLS-terminating proxy, foreign origins stay
       // node:http is used because fetch() refuses to set a Host header, and the
       // whole point is simulating the host the proxy forwards.
       const login = (origin) => new Promise((resolve, reject) => {
-        const body = JSON.stringify({ email: 'admin@osr.bulsu.edu.ph', password: 'Admin123456!' });
+        const body = JSON.stringify({ email: 'admin@example.org', password: 'Test-Only-N0t-Real!' });
         const req = request({
           host: '127.0.0.1',
           port,

@@ -45,7 +45,10 @@ const archive = {
     ['_redirects', path.join(siteDir, '_redirects')],
     ['_headers', path.join(siteDir, '_headers')],
     ['osr-logo.png', path.join(siteDir, 'osr-logo.png')],
-    ['osr-logo-original.png', path.join(siteDir, 'osr-logo-original.png')],
+    // osr-logo-original.png is deliberately not packed: it is the source the
+    // tab icons were traced from (tools/make-tab-icons.mjs reads it on a
+    // developer's machine) and nothing on the site links to it. Shipping it
+    // added 564 KB — most of the archive — to every hand-uploaded deploy.
     ['favicon.svg', path.join(siteDir, 'favicon.svg')],
     ['osr-mark.svg', path.join(siteDir, 'osr-mark.svg')],
     ['og-image.png', path.join(siteDir, 'og-image.png')],

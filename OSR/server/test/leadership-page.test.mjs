@@ -271,7 +271,7 @@ test('the archive is drawn by the page and fed by the CMS', async t => {
   assert.match(html, /function renderLeadership\(/, 'the page decides how the records are drawn');
   assert.match(html, /window\.applyLeadership = function\(rows\)/, 'so the CMS only hands over data');
   assert.match(html, /let LEADERSHIP = \[\];/, 'and nothing is hard-coded in the frontend');
-  assert.match(html, /bindLeadership\(\); renderLeadership\(\);/, 'the archive is bound and drawn at boot, before any fetch resolves');
+  assert.match(html, /bindLeadership\(\); bindHomeLeadership\(\); renderLeadership\(\);/, 'the archive is bound and drawn at boot, before any fetch resolves');
   assert.match(html, /openModal\(\{/, 'the record reuses the site’s own modal instead of shipping a second dialog');
   assert.match(integration, /fetchPublic\('leadership', forceRefresh\)/, 'the records are fetched with the rest of the page');
   assert.match(integration, /window\.applyLeadership\(leadership\)/, 'and applied through the page’s own renderer');
@@ -311,7 +311,7 @@ test('the blur-to-clear row is the signature, and it is written in the sheet', (
 test('the archive survives a phone without becoming a horizontal scroll trap', () => {
   const mobile = html.slice(html.indexOf('@media(max-width:760px){\n  .ld-leaders'), html.indexOf('@media(hover:none){'));
   assert.match(mobile, /\.ld-leaders\{grid-template-columns:minmax\(0,1fr\)\}/, 'the two primary figures stack');
-  assert.match(mobile, /\.ld-leader\{aspect-ratio:5\/4\}/, 'and stay large enough to be the top of the page');
+  assert.match(mobile, /\.ld-leader\{aspect-ratio:4\/3\}/, 'and are held tall enough for the description that is printed on a touch device');
   assert.match(mobile, /\.ld-strip\{height:auto; gap:10px; overflow-x:auto; scroll-snap-type:x proximity/,
     'the strip becomes a swipeable row, which is the one place horizontal scrolling is the point');
   assert.match(mobile, /\.ld-card\{flex:0 0 66%; height:290px; scroll-snap-align:center\}/, 'each card is a swipe target');

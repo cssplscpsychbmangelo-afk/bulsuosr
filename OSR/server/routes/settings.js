@@ -31,15 +31,20 @@ export const WRITABLE_SETTING_KEYS = new Set([
   ...PUBLIC_SETTING_KEYS,
   'site_tagline','office_postal','office_country','admissions_note','emergency_note'
 ]);
-router.get('/public', async (req,res)=>{
-  res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
-  const db=req.app.locals.db;
+// The office facts the public site is allowed to read, and nothing else: the
+// JWT secret lives in the same table and must never be in this object.
+export async function readPublicSettings(db){
   const rows=(await db.prepare('SELECT * FROM site_settings').all());
   const obj={}; rows.forEach(r=>{ if(r.key !== 'jwt_secret') obj[r.key]=r.value; });
   // only expose public keys
   const pub={};
   PUBLIC_SETTING_KEYS.forEach(k=>{ if(obj[k]) pub[k]=obj[k]; });
-  res.json(pub);
+  return pub;
+}
+
+router.get('/public', async (req,res)=>{
+  res.set('Cache-Control', 'public, max-age=60');
+  res.json(await readPublicSettings(req.app.locals.db));
 });
 // OSR staff route: only the contact/office keys above, any signed-in admin.
 router.patch('/contact', authRequired, async (req,res)=>{
