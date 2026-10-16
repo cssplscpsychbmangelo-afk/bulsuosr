@@ -755,17 +755,46 @@ img,svg{max-width:100%; height:auto}
 .initiative--compact .initiative__purpose{margin-top:12px}
 
 
-/* FIX: OSR title ugly / crampled — connect STUDENT REGENT, remove paragraph space */
-.hero__title{max-width:none !important; text-wrap:balance; display:block; margin:22px 0 14px !important; line-height:0.92 !important; letter-spacing:-0.035em !important; font-size:clamp(42px, 5.4vw, 64px) !important}
-.hero__title span{white-space:nowrap; display:inline-block; margin-left:0.08em}
-.hero__lead{margin-top:10px !important; line-height:1.65 !important}
+/* Hero masthead — clean two-line stacked title.
+   "OFFICE OF THE" sits as a tight line in ink, "STUDENT REGENT" drops to
+   its own line in seal red, sized slightly larger, no underline (the
+   underline was crowding the descenders and making the title read as a
+   link). A touch more margin above the lead so the copy breathes. */
+.hero__title{
+  max-width:none !important;
+  text-wrap:balance;
+  display:block;
+  margin:22px 0 6px !important;
+  font-size:clamp(42px, 5.4vw, 64px) !important;
+  line-height:0.94 !important;
+  letter-spacing:-0.035em !important;
+  font-weight:700 !important;
+}
+.hero__title span{
+  display:block !important;
+  white-space:normal;
+  margin-left:0 !important;
+  margin-top:2px !important;
+  color:var(--red);
+}
+.hero__title span:after{display:none !important;}
 .hero__kicker{margin-bottom:2px}
-.hero__actions{margin-top:22px !important}
-.hero__meta{margin-top:20px !important; padding-top:16px}
+.hero__lead{margin-top:18px !important; line-height:1.65 !important; max-width:60ch !important;}
+.hero__actions{margin-top:24px !important}
+.hero__meta{margin-top:22px !important; padding-top:16px}
 
+@media(min-width:960px){
+  .hero__title span{
+    /* On wide screens the red line gets a small lift so the two lines read
+       as a unit rather than two stacked blocks. */
+    font-size:1.04em;
+    letter-spacing:-0.035em;
+  }
+}
 @media(max-width:640px){
-  .hero__title{font-size:clamp(34px, 9vw, 44px) !important; line-height:0.94 !important}
-  .hero__title span{white-space:nowrap}
+  .hero__title{font-size:clamp(34px, 9vw, 44px) !important; line-height:0.96 !important; margin:18px 0 4px !important;}
+  .hero__title span{display:block !important;}
+  .hero__lead{margin-top:14px !important;}
 }
 
 /* FIX: dashboard blocks cluttered — breathing, hierarchy, not cluttered */
@@ -775,8 +804,7 @@ img,svg{max-width:100%; height:auto}
 #page-home > .upnext + .dash-engage{margin-top:16px !important}
 
 /* Sections — remove cluttered borders, add air */
-#page-home .section{margin-top:44px !important; padding:36px 0 4px !important; border-top:none !important; position:relative}
-#page-home .section:before{content:""; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, var(--line) 12%, var(--line) 88%, transparent)}
+#page-home .section{margin-top:44px !important; border-top:none !important; position:relative}
 #page-home .section:first-of-type{margin-top:40px !important}
 #page-home .section__head{margin-bottom:22px !important; gap:16px}
 #page-home .section__head p{margin-top:6px}
@@ -2155,17 +2183,46 @@ img,svg{max-width:100%; height:auto}
 .initiative--compact .initiative__purpose{margin-top:12px}
 
 
-/* FIX: OSR title ugly / crampled — connect STUDENT REGENT, remove paragraph space */
-.hero__title{max-width:none !important; text-wrap:balance; display:block; margin:22px 0 14px !important; line-height:0.92 !important; letter-spacing:-0.035em !important; font-size:clamp(42px, 5.4vw, 64px) !important}
-.hero__title span{white-space:nowrap; display:inline-block; margin-left:0.08em}
-.hero__lead{margin-top:10px !important; line-height:1.65 !important}
+/* Hero masthead — clean two-line stacked title.
+   "OFFICE OF THE" sits as a tight line in ink, "STUDENT REGENT" drops to
+   its own line in seal red, sized slightly larger, no underline (the
+   underline was crowding the descenders and making the title read as a
+   link). A touch more margin above the lead so the copy breathes. */
+.hero__title{
+  max-width:none !important;
+  text-wrap:balance;
+  display:block;
+  margin:22px 0 6px !important;
+  font-size:clamp(42px, 5.4vw, 64px) !important;
+  line-height:0.94 !important;
+  letter-spacing:-0.035em !important;
+  font-weight:700 !important;
+}
+.hero__title span{
+  display:block !important;
+  white-space:normal;
+  margin-left:0 !important;
+  margin-top:2px !important;
+  color:var(--red);
+}
+.hero__title span:after{display:none !important;}
 .hero__kicker{margin-bottom:2px}
-.hero__actions{margin-top:22px !important}
-.hero__meta{margin-top:20px !important; padding-top:16px}
+.hero__lead{margin-top:18px !important; line-height:1.65 !important; max-width:60ch !important;}
+.hero__actions{margin-top:24px !important}
+.hero__meta{margin-top:22px !important; padding-top:16px}
 
+@media(min-width:960px){
+  .hero__title span{
+    /* On wide screens the red line gets a small lift so the two lines read
+       as a unit rather than two stacked blocks. */
+    font-size:1.04em;
+    letter-spacing:-0.035em;
+  }
+}
 @media(max-width:640px){
-  .hero__title{font-size:clamp(34px, 9vw, 44px) !important; line-height:0.94 !important}
-  .hero__title span{white-space:nowrap}
+  .hero__title{font-size:clamp(34px, 9vw, 44px) !important; line-height:0.96 !important; margin:18px 0 4px !important;}
+  .hero__title span{display:block !important;}
+  .hero__lead{margin-top:14px !important;}
 }
 
 /* FIX: dashboard blocks cluttered — breathing, hierarchy, not cluttered */
@@ -2175,8 +2232,7 @@ img,svg{max-width:100%; height:auto}
 #page-home > .upnext + .dash-engage{margin-top:16px !important}
 
 /* Sections — remove cluttered borders, add air */
-#page-home .section{margin-top:44px !important; padding:36px 0 4px !important; border-top:none !important; position:relative}
-#page-home .section:before{content:""; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg, transparent, var(--line) 12%, var(--line) 88%, transparent)}
+#page-home .section{margin-top:44px !important; border-top:none !important; position:relative}
 #page-home .section:first-of-type{margin-top:40px !important}
 #page-home .section__head{margin-bottom:22px !important; gap:16px}
 #page-home .section__head p{margin-top:6px}
@@ -2440,6 +2496,305 @@ html.cursor-on,html.cursor-on *{cursor:none !important}
   .osr-cursor,.osr-cursor__i{transition:none !important}
 }
 @media print{.osr-cursor{display:none}}
+
+/* =============================================================
+   SPACING + LAYOUT RHYTHM FIX — comprehensive across all pages.
+   Goals (NO design/function changes — spacing/layout only):
+   1. Section subtitles/descriptions under every h2 are pinned to a
+      narrow flex-shrunk column on desktop because the left div in
+      .section__head sizes to content. Force the left column to
+      expand so subtitles use the page width, not just the title.
+   2. Apply generous, consistent section rhythm and card gaps on
+      EVERY page (home + announcements + board + initiatives +
+      resources + help + about + track + ideal-bulsu + calendar +
+      search + staff), using the audit's spacing scale.
+   3. Fix cramped components identified during audit:
+       - Privacy "What we collect" dl: wide label column.
+       - About page ab-hero and ab-block ledes already look fine but
+         we bump ab-block vertical rhythm to match other pages.
+       - Key-value contact rows on Help (kv) — let the value wrap
+         instead of getting squeezed on one line.
+       - about-card padding and gaps consistent.
+       - Filter bars, empty states, feed items, calendar events,
+         and help-form columns — uniform padding.
+       - Track page and search/staff heads (inline margin-bottom:10px)
+         overridden to a consistent 28px.
+   ============================================================= */
+
+/* --- Root-cause fix: the left <div> in .section__head must GROW ---
+   .section__head is display:flex; justify-content:space-between, but
+   the left column (eyebrow + h2 + p) has no flex setting so it sizes
+   to content width. When h2 is short the <p> is pinched even when
+   max-width is generous. Fixing flex:1 1 auto lets the subtitle fill
+   available horizontal space. min-width:0 prevents overflow. */
+.section__head{flex-wrap:nowrap !important; align-items:flex-end !important;}
+.section__head > div:first-of-type{
+  flex:1 1 auto !important;
+  min-width:0 !important;
+  max-width:100% !important;
+}
+/* The right-side actions (badge / .row / lone btn) must hug content
+   and never stretch. If there is no right action the rule is a no-op. */
+.section__head > .row,
+.section__head > .badge,
+.section__head > .btn,
+.section__head > a.btn{
+  flex:0 0 auto !important;
+  margin-left:auto !important;
+}
+/* Tablet/mobile: let heads wrap so the right column drops under */
+@media(max-width:720px){
+  .section__head{flex-wrap:wrap !important; align-items:flex-start !important;}
+  .section__head > .row,
+  .section__head > .badge,
+  .section__head > .btn,
+  .section__head > a.btn{margin-left:0 !important;}
+  #page-home .section__head{flex-direction:column !important; align-items:flex-start !important;}
+}
+
+/* --- Universal subtitle width and breathing room --- */
+.section__head p{
+  max-width:72ch !important;
+  margin-top:10px !important;
+  line-height:1.6 !important;
+}
+.section__head h2{margin-bottom:0 !important;}
+@media(min-width:960px){
+  .hero__lead{max-width:62ch !important;}
+}
+
+/* --- Section rhythm (all pages) --- */
+.section{
+  padding-top:56px !important;
+  padding-bottom:8px !important;
+  margin-top:56px !important;
+  border-top:1px solid var(--line) !important;
+}
+.section--first{
+  padding-top:32px !important;
+  margin-top:0 !important;
+  border-top:none !important;
+}
+.section__head{margin-bottom:28px !important; gap:20px !important;}
+
+/* Override inline cramped margins on some heads
+   (calendar, ideal-bulsu used style="margin-bottom:10px"). */
+.section__head[style*="margin-bottom:10px"],
+.section__head[style*="margin-bottom:10px"]{margin-bottom:24px !important;}
+
+/* --- Homepage sections: bigger, softer inset divider (hairline now drawn
+       inside .section__head:before as part of the register mark) --- */
+#page-home .section{
+  margin-top:72px !important;
+  border-top:none !important;
+}
+#page-home .section:first-of-type{margin-top:56px !important;}
+/* Padding-top is set by the separator block below to make room for the
+   register lane; leave padding here neutral so it doesn't double up. */
+
+/* --- Card grid gaps (uniform across pages) --- */
+.quick{margin-top:32px !important;}
+.quick a{padding:22px 20px; min-height:112px;}
+.quick b{font-size:15px;}
+.quick span.sub{margin-top:7px; line-height:1.5;}
+
+.feed{gap:16px !important;}
+.initiatives{gap:20px !important; margin-top:4px;}
+.resource-list{gap:14px !important; margin-top:4px;}
+.board-list{border-radius:12px; overflow:hidden; margin-top:4px;}
+.board-list + .empty,
+.feed + .empty,
+.resource-list + .empty{margin-top:18px;}
+.empty{padding:28px !important;}
+
+/* --- About cards + contact kv + help forms --- */
+.about-card{padding:22px !important;}
+.about-card h3{margin-bottom:10px !important;}
+.about-card p{line-height:1.6 !important;}
+
+/* kv rows (contact info on Help page). Allow span to wrap instead
+   of fighting the label for space on one line. */
+.kv{padding:11px 0 !important; gap:18px !important; align-items:flex-start;}
+.kv b{flex:0 0 auto; padding-top:1px;}
+.kv span{text-align:left !important; flex:1 1 auto; min-width:0; line-height:1.55;}
+
+.help-duo{gap:18px !important;}
+.help-form{gap:12px !important; margin-top:14px;}
+.help-form__cols{gap:12px !important;}
+
+.divider{margin:18px 0 !important;}
+
+/* --- Filters bar --- */
+.filters-wrap{padding:8px 0 12px !important; margin:-8px 0 18px !important;}
+.filters{padding:14px !important; gap:10px !important;}
+
+/* --- Calendar --- */
+.cal-grid{gap:24px !important;}
+.cal-month-head{padding:14px 18px !important;}
+.cal-event{padding:16px 18px !important; gap:16px !important;}
+.cal-dash-row{height:50px !important; min-height:50px !important;}
+
+/* --- Build Your Ideal BulSU cards --- */
+.ideal-card{padding:20px !important; margin-top:20px !important;}
+
+/* --- Dashboard strips (homepage) --- */
+.ideal-cta{margin-top:28px !important;}
+.ideal-cta__panel{padding:26px; gap:24px;}
+.upnext{margin-top:24px !important; padding:20px 22px; gap:18px;}
+#dashCalendar{margin-top:24px !important;}
+.dash-engage{margin-top:24px !important; gap:16px !important;}
+.dash-engage > div{padding:20px 22px !important; gap:16px !important;}
+
+/* --- About page lede — felt too heavy (display serif at display size made
+   the one-line intro read as a second headline). Swap to body typography
+   with a quieter weight/color so it reads as the subtitle it is. --- */
+#page-about .ab-lede{
+  font-family:"IBM Plex Sans",system-ui,-apple-system,Segoe UI,Roboto,sans-serif !important;
+  font-weight:400 !important;
+  font-size:clamp(15px,1.55vw,17px) !important;
+  line-height:1.65 !important;
+  color:var(--ink-2) !important;
+  letter-spacing:0 !important;
+}
+#page-about .ab-mandate .ab-lede{
+  font-size:clamp(15.5px,1.6vw,17.5px) !important;
+  color:var(--ink-2) !important;
+}
+
+/* --- Homepage section separators · simple hairline ---
+   A single subtle inset hairline with generous whitespace — no
+   ornaments, no stamps, no tabs. Just quiet visual rhythm between
+   sections, consistent across the homepage. */
+#page-home .section{
+  position:relative;
+  padding:64px 0 8px !important;
+  margin-top:72px !important;
+  border-top:none !important;
+}
+#page-home .section:first-of-type{margin-top:56px !important;}
+#page-home .section:before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:48px;
+  right:48px;
+  height:1px;
+  background:var(--line-2);
+  opacity:.9;
+  pointer-events:none;
+}
+/* Make sure the eyebrow goes back to its normal non-stretched self */
+#page-home .eyebrow{
+  width:auto;
+  display:inline-flex !important;
+  padding:0 !important;
+  margin:0 !important;
+  position:static !important;
+}
+#page-home .eyebrow:before{display:inline-block !important;}
+#page-home .eyebrow:after{display:none !important;}
+/* Hide any leftover ornamental pseudo-elements */
+#page-home .section:after{display:none !important;}
+#page-home .section__head:before{display:none !important;}
+#page-home .section__head:after{display:none !important;}
+
+@media(max-width:959px){
+  #page-home .section{padding:52px 0 8px !important; margin-top:52px !important;}
+  #page-home .section:before{left:24px; right:24px;}
+}
+@media(max-width:640px){
+  #page-home .section{padding:40px 0 4px !important; margin-top:44px !important;}
+  #page-home .section:before{left:0; right:0;}
+}
+@media(prefers-reduced-motion:reduce){
+  /* static */
+}
+
+
+#page-about .ab-hero{padding:40px 36px 36px !important;}
+#page-about .ab-hero p{max-width:70ch !important;}
+#page-about .ab-block{padding:48px 0 40px !important;}
+/* Widen the lead paragraphs on About — they were capped at 56-60ch which
+   made one-sentence ledes like the Office/University intros wrap awkwardly
+   on desktop and look pinched under the heading. */
+#page-about .ab-lede{max-width:72ch !important; margin-bottom:20px !important; line-height:1.55 !important;}
+#page-about .ab-mandate .ab-lede{max-width:68ch !important;}
+#page-about .ab-mandate__list{max-width:72ch !important; gap:12px !important;}
+#page-about .ab-university{max-width:72ch !important; line-height:1.65 !important;}
+#page-about .ab-block__title{margin-bottom:12px !important;}
+#page-about .ab-block__num{margin-bottom:14px !important;}
+#page-about .ld{margin-top:36px !important;}
+#page-about .ab-mandate{padding:4px 0 4px 24px !important;}
+
+/* --- Privacy "What we collect" blocks --- */
+.privacy{margin:18px 0 0; padding:14px 0 0;}
+.privacy dl{max-width:100%; gap:12px;}
+.privacy dl > div{
+  grid-template-columns:minmax(0,1fr) !important;
+  gap:3px 0 !important;
+  padding:0; background:transparent; border:none;
+}
+.privacy dt{font-size:13px; font-weight:700; color:var(--ink); letter-spacing:-0.005em;}
+.privacy dd{margin:0; font-size:13.5px; line-height:1.6; color:var(--ink-2);}
+@media(min-width:640px){
+  .privacy dl > div{
+    grid-template-columns:minmax(180px,1fr) minmax(0,2.2fr) !important;
+    gap:0 28px !important;
+    align-items:baseline;
+  }
+}
+
+/* --- Track page issued card + steps breathing --- */
+.track-issued{padding:22px !important;}
+.track-steps{gap:10px !important;}
+
+/* --- Back-to-home button at top of inner pages --- */
+.section--first > .btn--ghost.btn--sm{margin-bottom:18px !important;}
+
+/* --- Tablet (641–959px) --- */
+@media(max-width:959px){
+  .section{padding-top:40px !important; margin-top:40px !important;}
+  .section--first{padding-top:24px !important;}
+  #page-home .section{margin-top:52px !important;}
+  .ideal-cta__panel{padding:22px; gap:18px;}
+  .quick{margin-top:24px !important;}
+  .quick a{padding:18px 16px; min-height:96px;}
+  .about-card{padding:18px !important;}
+  #page-about .ab-hero{padding:30px 24px 28px !important;}
+  #page-about .ab-block{padding:36px 0 30px !important;}
+  #page-about .ab-lede{max-width:64ch !important;}
+  #page-about .ab-mandate .ab-lede{max-width:60ch !important;}
+  #page-about .ab-university{max-width:64ch !important;}
+  #page-about .ab-mandate{padding-left:18px !important;}
+}
+
+/* --- Mobile (≤640px) --- */
+@media(max-width:640px){
+  .section{padding-top:32px !important; margin-top:32px !important;}
+  .section--first{padding-top:20px !important;}
+  .section__head{margin-bottom:20px !important; gap:14px !important;}
+  #page-home .section{margin-top:44px !important;}
+  .quick a{padding:16px 14px; min-height:88px;}
+  .upnext{padding:16px; gap:12px;}
+  .dash-engage > div{padding:16px !important;}
+  .ideal-cta__panel{padding:20px; gap:16px; border-radius:12px;}
+  .about-card{padding:16px !important;}
+  .help-duo{gap:14px !important;}
+  #page-about .ab-hero{padding:24px 18px 22px !important;}
+  #page-about .ab-block{padding:28px 0 22px !important;}
+  #page-about .ab-lede{max-width:100% !important;}
+  #page-about .ab-mandate .ab-lede{max-width:100% !important;}
+  #page-about .ab-university{max-width:100% !important;}
+  #page-about .ab-mandate__list{max-width:100% !important;}
+  #page-about .ab-mandate{padding-left:14px !important;}
+  .cal-event{padding:14px 14px !important; gap:12px !important; grid-template-columns:78px minmax(0,1fr) auto !important;}
+  .cal-event__date{font-size:10.5px;}
+}
+
+/* --- Reduced-motion safety: don't introduce new motion --- */
+@media(prefers-reduced-motion:reduce){
+  .quick a, .feed__item, .board-row, .initiative, .cal-event, .dash-engage > div{transition:none !important;}
+}
 
 </style>
 

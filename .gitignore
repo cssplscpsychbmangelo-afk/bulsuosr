@@ -34,3 +34,4 @@ OSR/server/uploads/
 OSR/osr-website/admin/
 OSR/osr-website/OSRAdminControl2026/
 .netlify/
+__pycache__/
